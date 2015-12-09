@@ -1,5 +1,6 @@
 
 import UserController from './user';
+import HmeController from './hme';
 
 import Router from 'koa-router';
 import fs from 'fs';
@@ -19,6 +20,7 @@ export default class Routes {
       var publicRoute = new Router()
 
       publicRoute.get('/rest/user/', UserController.index);
+      publicRoute.get('/rest/hme/hello/', HmeController.hello);
 
       app.use(publicRoute.middleware())
 
