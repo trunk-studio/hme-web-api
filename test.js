@@ -7,14 +7,24 @@ console.log('hello');
 var SerialPort = require("serialport").SerialPort;
 
 
-var serialPort = new SerialPort('COM4', {baudrate: 115200}, true);
+var serialPort = new SerialPort('/dev/ttyUSB0', {baudrate: 115200}, true);
 
 serialPort.open()
 
 serialPort.on ('open', function () {
-    console.log("Open");
-    serialPort.write(0x05);
-    serialPort.on ('data', function( data ) {
-        console.log("data" + data.toString());
-    });
+
+    var initTest = function () {
+      serialPort.write(0x05);
+    }
+
+    var initTest2 = function () {
+      serialPort.write(0x05);
+    }
+
+
+
+    initTest();
+    // serialPort.on ('data', function( data ) {
+    //     console.log("data" + data.toString());
+    // });
 });
