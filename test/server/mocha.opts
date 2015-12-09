@@ -1,0 +1,3 @@
+-t 500000
+--recursive test/server/beforeAll.js
+--reporter spec
