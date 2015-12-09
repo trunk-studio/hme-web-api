@@ -1,9 +1,4 @@
-"use strict";
-/**
- * Dependencies
- */
-
-describe.only("hme", () => {
+describe("hme", () => {
 
 
 
