@@ -9,16 +9,18 @@ var SerialPort = require("serialport").SerialPort;
 
 var serialPort = new SerialPort('/dev/ttyUSB0', {baudrate: 115200}, true);
 
+var buff = new Buffer([128,1,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0,128,1,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0,128,1,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0])
 
+console.log(buff);
 
  serialPort.on("open", function () {
       console.log('open');
-
+		
       serialPort.on('data', function(data) {
         console.log('data received: ' + data);		
       });
       
-      serialPort.write('AAA', function(err, results) {
+      serialPort.write(buff, function(err, results) {
         console.log('err ' + err);
         console.log('results ' + results);
       });
