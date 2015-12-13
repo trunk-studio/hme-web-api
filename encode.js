@@ -1,30 +1,26 @@
 console.log('hello');
 
-//var SerialPort = require("serialport").SerialPort
-//var serialPort = new SerialPort("/dev/tty-usbserial1", {
-//  baudrate: 57600
-//}, false); // this is the openImmediately flag [default is true]
-var SerialPort = require("serialport").SerialPort;
-
-
-var serialPort = new SerialPort('/dev/ttyUSB0', {baudrate: 115200}, true);
+/* 建立 3 Bytes 的記憶體空間 */
+var buf = new Buffer(3);
 
 var buff = new Buffer([128,1,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0])
 
 console.log(buff);
 
- serialPort.on("open", function () {
-      console.log('open');
 
-      serialPort.on('data', function(data) {
-        console.log('data received: ' + data);
-      });
+var WordTo3Byte = function (u16word) {
+  console.log('WordTo3Byte');
+ // serialPort.write(0x05);
+}
 
-      serialPort.write(buff, function(err, results) {
-        console.log('err ' + err);
-        console.log('results ' + results);
-      });
-    });
+var initTest2 = function () {
+  console.log('initTest2');
+ // serialPort.write(0x05);
+}
+
+initTest1();
+
+initTest2();
 
 //serialPort.open();
 
