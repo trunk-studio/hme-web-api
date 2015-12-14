@@ -1,11 +1,5 @@
-"use strict";
-/**
- * Dependencies
- */
 
 describe("User", () => {
-
-
 
   it("index all user", (done) => {
 
@@ -17,6 +11,20 @@ describe("User", () => {
       done(error);
     });
 
+  });
+
+  it.only("login test", async (done) => {
+    try {
+      let result = await request.get('/rest/hme/login')
+        .send({
+          role:'admin',
+          password: 'admin'
+        });
+      console.log(result.body);
+      done();
+    } catch (e) {
+      done(e);
+    }
   });
 
 });
