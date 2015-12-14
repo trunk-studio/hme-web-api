@@ -17,15 +17,15 @@ import Services from './services';
 // mount route
 import mount from 'koa-mount';
 import serve from 'koa-static';
-// import webpack from 'webpack';
-// import webpackConfig from '../webpack.config';
-// import webpackDevMiddleware from 'koa-webpack-dev-middleware';
-// import webpackHotMiddleware from 'webpack-hot-middleware';
+import webpack from 'webpack';
+import webpackConfig from '../webpack.config';
+import webpackDevMiddleware from 'koa-webpack-dev-middleware';
+import webpackHotMiddleware from 'koa-webpack-hot-middleware';
 
 const env = process.env.NODE_ENV || 'development';
 const app = koa();
 
-// const compiler = webpack(webpackConfig);
+const compiler = webpack(webpackConfig);
 
 
 app.use(koaBodyParser());
@@ -59,20 +59,21 @@ var controllers = new Controllers(app);
 controllers.setupPublicRoute()
 controllers.setupAppRoute()
 
-app.use(mount('/assets', serve(path.join(__dirname, '../public/js'))));
+app.use(
+  webpackDevMiddleware(compiler, {
+    noInfo: true,
+    publicPath: webpackConfig.output.publicPath
+  })
+);
 
-// app.use(
-//   webpackDevMiddleware(compiler, {
-//     noInfo: true,
-//     publicPath: '/assets'///webpackConfig.output.publicPath
-//   })
-// );
-//
-// app.use(
-//   function* () {
-//     webpackHotMiddleware(compiler)
-//   }
-// );
+app.use(function* (next) {
+  yield require("webpack-hot-middleware")(compiler).bind(null, this.req, this.res);
+  yield next;
+});
+
+app.use(mount('/', serve(path.join(__dirname, '../public/js'))));
+
+
 
 var liftApp = async () => {
   try {

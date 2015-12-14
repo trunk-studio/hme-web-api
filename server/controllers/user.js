@@ -55,17 +55,14 @@ exports.delete = function *() {
 exports.login = function *() {
   let success = null;
   try {
-    console.log('============');
     let userData = {
           admin: 'admin',
           engineer: 'engineer',
           user: 'user'
     };
-    console.log('aa',userData);
     let pass = false;
     let role = this.request.body.role;
     let password = this.request.body.password;
-    console.log('body',this.request.body);
 
     if(userData[role] == password)
       success = true;

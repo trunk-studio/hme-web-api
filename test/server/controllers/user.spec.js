@@ -13,14 +13,14 @@ describe("User", () => {
 
   });
 
-  it.only("login test", async (done) => {
+  it.only("login success test", async (done) => {
     try {
       let result = await request.get('/rest/hme/login')
         .send({
           role:'admin',
           password: 'admin'
         });
-      console.log(result.body);
+      result.body.success.should.be.true;
       done();
     } catch (e) {
       done(e);
