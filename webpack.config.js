@@ -5,7 +5,8 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = {
   entry: {
     //js
-    app: [path.resolve(__dirname, './frontend/js/app.js')],
+    // hotMiddleware: 'webpack-hot-middleware/client',
+    app: [path.resolve(__dirname, './frontend/js/app.js')]
     // backend_app: [path.resolve(__dirname, './assets/backend/js/app.js')],
 
     //css
@@ -20,8 +21,9 @@ module.exports = {
   plugins: [
     //relative to output.path
     // new webpack.optimize.CommonsChunkPlugin('/js/chunk.js', []),
-    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    // new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.NoErrorsPlugin()
     // new ExtractTextPlugin("./css/app.css")
   ],
   module: {

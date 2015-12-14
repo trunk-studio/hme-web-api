@@ -14,11 +14,19 @@ import Models from './models';
 import Controllers from './controllers';
 import Services from './services';
 
+// mount route
 import mount from 'koa-mount';
 import serve from 'koa-static';
+// import webpack from 'webpack';
+// import webpackConfig from '../webpack.config';
+// import webpackDevMiddleware from 'koa-webpack-dev-middleware';
+// import webpackHotMiddleware from 'webpack-hot-middleware';
 
 const env = process.env.NODE_ENV || 'development';
 const app = koa();
+
+// const compiler = webpack(webpackConfig);
+
 
 app.use(koaBodyParser());
 
@@ -53,6 +61,18 @@ controllers.setupAppRoute()
 
 app.use(mount('/assets', serve(path.join(__dirname, '../public/js'))));
 
+// app.use(
+//   webpackDevMiddleware(compiler, {
+//     noInfo: true,
+//     publicPath: '/assets'///webpackConfig.output.publicPath
+//   })
+// );
+//
+// app.use(
+//   function* () {
+//     webpackHotMiddleware(compiler)
+//   }
+// );
 
 var liftApp = async () => {
   try {
