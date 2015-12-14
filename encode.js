@@ -70,35 +70,72 @@ var CopBitModify = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_
   //[128,1,0,0,17,2,0,0,1,0,0,107,1,0,2,0,0,125,1,0,105,1,0,94,1,0,74,4,0]
 }
 
-// var WordBufTo3ByteBuf = function(WordB) {
-// 	//用於將WordTypeList編碼為3Byte,並加入3ByteTypeList中
-//   var ByteBuf = new Buffer(0);
-//   for (var i = 0; i < WordB.length; i++) {
-//     var buffers = [ByteBuf,WordTo3Byte(WordB[i])];
-//     ByteBuf = Buffer.concat(buffers, totalLength);
-//   } ;
-// 	return(ByteBuf);
-// }
+//未測試
+var CopBitInv = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry, u8Mask_Arry){
+  var u8DataOut_arry =[];
+	var u8Header = 0x80;
+  u8DataOut_arry.push(u8Header);
+  u8DataOut_arry = u8DataOut_arry.concat(WordTo3Byte(u8DevID));
+  u8DataOut_arry.push(u8FuncCT);
+  u8DataOut_arry = u8DataOut_arry.concat(WordTo3Byte(u8DataNum));
+  u8DataOut_arry = WordListToAdd3ByteList(u8Addr_Arry, u8DataOut_arry);
+  u8DataOut_arry = WordListToAdd3ByteList(u8Mask_Arry, u8DataOut_arry);
+	u8DataOut_arry = u8DataOut_arry.concat(DataListToChkSum3ByteList(u8DataOut_arry));
+	return (u8DataOut_arry);
+}
+//讀寫函式 連續與非連續內容都相同
+//未測試
+var CopWordRd = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry){
+  var u8DataOut_arry =[];
+	var u8Header = 0x80;
+  u8DataOut_arry.push(u8Header);
+  u8DataOut_arry = u8DataOut_arry.concat(WordTo3Byte(u8DevID));
+  u8DataOut_arry.push(u8FuncCT);
+  u8DataOut_arry = u8DataOut_arry.concat(WordTo3Byte(u8DataNum));
+  u8DataOut_arry = WordListToAdd3ByteList(u8Addr_Arry, u8DataOut_arry);
+	u8DataOut_arry = u8DataOut_arry.concat(DataListToChkSum3ByteList(u8DataOut_arry));
+	return (u8DataOut_arry);
+}
+//未測試
+var CopDiscWordRd = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry){
+  var u8DataOut_arry =[];
+	var u8Header = 0x80;
+  u8DataOut_arry.push(u8Header);
+  u8DataOut_arry = u8DataOut_arry.concat(WordTo3Byte(u8DevID));
+  u8DataOut_arry.push(u8FuncCT);
+  u8DataOut_arry = u8DataOut_arry.concat(WordTo3Byte(u8DataNum));
+  u8DataOut_arry = WordListToAdd3ByteList(u8Addr_Arry, u8DataOut_arry);
+	u8DataOut_arry = u8DataOut_arry.concat(DataListToChkSum3ByteList(u8DataOut_arry));
+	return (u8DataOut_arry);
+}
+//未測試
+var CopDiscWordWt = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
+  var u8DataOut_arry =[];
+	var u8Header = 0x80;
+  u8DataOut_arry.push(u8Header);
+  u8DataOut_arry = u8DataOut_arry.concat(WordTo3Byte(u8DevID));
+  u8DataOut_arry.push(u8FuncCT);
+  u8DataOut_arry = u8DataOut_arry.concat(WordTo3Byte(u8DataNum));
+  u8DataOut_arry = WordListToAdd3ByteList(u8Addr_Arry, u8DataOut_arry);
+  u8DataOut_arry = WordListToAdd3ByteList(u8DataIn_Arry, u8DataOut_arry);
+	u8DataOut_arry = u8DataOut_arry.concat(DataListToChkSum3ByteList(u8DataOut_arry));
+	return (u8DataOut_arry);
 
-// var initTest2 = function () {
-//   var Headerbuf = 0xEA;
-//   var Abuf = new Buffer([1,2]);
-//   var Bbuf = new Buffer([3,4,5]);
-//   var Headerbuf = new Buffer([Headerbuf]);
-//   var buffers = [Headerbuf, Abuf, Bbuf];
-//
-//   var totalLength = 0;
-//   for (var i = 0; i < buffers.length; i++) {
-//     totalLength += buffers[i].length;
-//   }
-//
-//   var bufA = Buffer.concat(buffers, totalLength);
-//
-//   console.log(Headerbuf);
-//   console.log('initTest2');
-//   console.log(bufA);
-//  // serialPort.write(0x05);
-// }
+}
+//未測試
+var CopWordWt = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
+  var u8DataOut_arry =[];
+	var u8Header = 0x80;
+  u8DataOut_arry.push(u8Header);
+  u8DataOut_arry = u8DataOut_arry.concat(WordTo3Byte(u8DevID));
+  u8DataOut_arry.push(u8FuncCT);
+  u8DataOut_arry = u8DataOut_arry.concat(WordTo3Byte(u8DataNum));
+  u8DataOut_arry = WordListToAdd3ByteList(u8Addr_Arry, u8DataOut_arry);
+  u8DataOut_arry = WordListToAdd3ByteList(u8DataIn_Arry, u8DataOut_arry);
+	u8DataOut_arry = u8DataOut_arry.concat(DataListToChkSum3ByteList(u8DataOut_arry));
+	return (u8DataOut_arry);
+}
+
 
 var initTest2 = function (DevID,FuncCT,DataNum,Addr_list) {
   DataOut_list = [];
@@ -118,48 +155,3 @@ console.log(WordTo3Byte(data));
 //console.log(CopBitModify(1, 17, 2, [1,2], [2,3], [233,156]));
 console.log(CopBitModify(1, 17, 2, [1,235], [2,253], [233,222]))
 //WordBufTo3ByteBuf();
-
-//serialPort.open();
-
-/*
-serialPort.on ('open', function (error) {
-	console.log('/dev/ttyUSB0 is open');
-
-
-	  if ( error ) {
-		console.log('failed to open: '+error);
-	  } else {
-		console.log('open');
-		serialPort.on('data', function(data) {
-		  console.log('data received: ' + data);
-		});
-		serialPort.write("ls\n", function(err, results) {
-		  console.log('err ' + err);
-		  console.log('results ' + results);
-		});
-	  }
-
-
-    var initTest = function () {
-		console.log('initTest');
-      //serialPort.write(0x05);
-    }
-
-    var initTest2 = function () {
-		console.log('initTest2');
-     // serialPort.write(0x05);
-    }
-
-    //initTest();
-
-
-
-    // serialPort.on ('data', function( data ) {
-    //     console.log("data" + data.toString());
-    // });
-});
-
- serialPort.on('data', function(data) {
-      console.log('data received: ' + data);
-    });
-	*/
