@@ -22,7 +22,7 @@ export default class Routes {
       publicRoute.get('/rest/user/', UserController.index);
       publicRoute.get('/rest/hme/hello/', HmeController.hello);
 
-      publicRoute.get('/test', function *() {
+      publicRoute.get('/', function *() {
         const HTML = `
         <!DOCTYPE html>
         <html>

@@ -36,4 +36,20 @@ class MyComponent extends React.Component {
   }
 }
 
-ReactDOM.render(<MyComponent />, document.getElementById('react-view'));
+class MyComponent2 extends React.Component {
+  render() {
+    return <div>Hello</div>;
+  }
+}
+
+
+ReactDOM.render(
+  (
+    <Router>
+      <Route path="/" component={MyComponent}/>
+      <Route path="about" component={MyComponent2}/>
+    </Router>
+  )
+  , document.getElementById('react-view'));
+
+  // <Route path="*" component={NoMatch}/>
