@@ -135,17 +135,64 @@ var CopWordWt = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arr
 	u8DataOut_arry = u8DataOut_arry.concat(DataListToChkSum3ByteList(u8DataOut_arry));
 	return (u8DataOut_arry);
 }
+//未測試
+var ClientOp = function(u8DevID, sFunc, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry, RepeatNum){
+	//用於進行通訊,讀寫操作燈具裝置之記憶體
+	//u8DevID = 裝置ID, sFunc = 記憶體操作方式, u8DataNum = 資料長度(Word)
+	//u8Addr_Arry = 欲操作之(燈具)記憶體位址, u8Mask_Arry = 位元操作遮罩, RepeatNum = 重傳次數上限
 
+	//sFunc:{'Inital':, 'Close':, 'BitModify':寫入特定位元, 'BitInv':翻轉特定位元, 'WordRd':讀取連續記憶體位置,
+	//	 'DiscWordRd':讀取非連續記憶體位置, 'WordWt':寫入連續記憶體位置, 'DiscWordWt':寫入非連續記憶體位置}
 
-var initTest2 = function (DevID,FuncCT,DataNum,Addr_list) {
-  DataOut_list = [];
-  Header = 0x80;
-  DataOut_list.push(Header);
-  DataOut_list = DataOut_list.concat(WordTo3Byte(DevID));
-  DataOut_list.push(FuncCT);
-  DataOut_list = DataOut_list.concat(WordTo3Byte(DataNum));
-  DataOut_list = WordListToAdd3ByteList(Addr_list, DataOut_list);
-  return  (DataOut_list);
+	//要寫入串列通訊的資料
+	u16DataWt_arry = []
+
+	FuncCommTable = {'Inital':0, 'Close':0, 'BitModify':17, 'BitInv':18, 'WordRd':33, 'DiscWordRd':34,
+					'WordWt':49, 'DiscWordWt':50}
+  switch (expression) {
+    case 'DiscWordWt':
+      u16DataWt_arry = CopDiscWordWt(u8DevID, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry, u8DataIn_Arry);
+      break;
+    case 'BitModify':
+      u16DataWt_arry = CopBitModify(u8DevID, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry);
+      break;
+    case 'BitInv':
+      u16DataWt_arry = CopBitInv(u8DevID, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry, u8Mask_Arry);
+      break;
+    case 'WordRd':
+      u16DataWt_arry = CopWordRd(u8DevID, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry);
+      break;
+    case 'DiscWordRd':
+      u16DataWt_arry = CopDiscWordRd(u8DevID, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry);
+      break;
+    case 'WordWt':
+      u16DataWt_arry = CopWordWt(u8DevID, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry, u8DataIn_Arry);
+      break;
+    default:
+      console.log('ClientOp_Func_ERROR');
+      return(0);
+  }
+	// //透過串列通訊寫入(u16DataWt_arry)並回傳回饋資料(u16ReData_list)
+	// return(SerialWR(u8DevID, u16DataWt_arry, sFunc, u8DataNum, RepeatNum))
+  return(u16DataWt_arry);
+}
+
+var initTest2 = function () {
+
+  aa = 'b';
+  switch (aa) {
+    case 'a':
+      console.log('a');
+      break;
+    case 'b':
+      console.log('b');
+      break;
+    case 'c':
+      console.log('c');
+      break;
+    default:
+  }
+  return(0);
 }
 var data = 0xfeab;
 // [FEAB]=>[2B, 7D, 03]
@@ -153,5 +200,32 @@ console.log(WordTo3Byte(data));
 
 //console.log(initTest2(0x0180,0xab,0xfeab,[0xfecc,0xfeab]));
 //console.log(CopBitModify(1, 17, 2, [1,2], [2,3], [233,156]));
-console.log(CopBitModify(1, 17, 2, [1,235], [2,253], [233,222]))
+console.log(CopBitModify(1, 17, 2, [1,235], [2,253], [233,222]));
+
+initTest2();
 //WordBufTo3ByteBuf();
+
+
+
+
+//Serial
+//
+// var SerialPort = require("serialport").SerialPort;
+//
+//
+// var serialPort = new SerialPort('/dev/ttyUSB0', {baudrate: 115200}, true);
+//
+// serialPort.open()
+//
+// serialPort.on("open", function () {
+//      console.log('open');
+//
+//      serialPort.on('data', function(data) {
+//        console.log('data received: ' + data);
+//      });
+//
+//      serialPort.write(buff, function(err, results) {
+//        console.log('err ' + err);
+//        console.log('results ' + results);
+//      });
+//    });
