@@ -9,22 +9,57 @@ var SerialPort = require("serialport").SerialPort;
 
 var serialPort = new SerialPort('/dev/ttyUSB0', {baudrate: 115200}, true);
 
-var buff = new Buffer([128,1,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0])
+var cbuf = new Buffer([128,1,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0])
+var ary = [1,2]
 
-console.log(buff);
+var a = []
+
+console.log(cbuf);
 
  serialPort.on("open", function () {
       console.log('open');
 
-      serialPort.on('data', function(data) {
-        console.log('data received: ' + data);
-      });
+        serialPort.on('data', function(data) {
+          //var buff = new Buffer(data)
+          console.log(data);
+          console.log('RX='+data);
+          console.log('data len: ' + data.length);
+          for (var i = 0; i < data.length; i++) {
+            a.push(data[i]);
+            }
 
-      serialPort.write(buff, function(err, results) {
-        console.log('err ' + err);
-        console.log('results ' + results);
-      });
+
+        });
+
+        serialPort.write(ary, function(err, results) {
+          console.log('err ' + err);
+          console.log('TXDATA=');
+          console.log('TX=' + results);
+        });
+
+
     });
+
+
+var test1 = function(){
+  console.log("Run test1")
+}
+
+setTimeout(function(){
+  console.log("Run test2");
+  serialPort.write('ss', function(err, results) {
+    console.log('err ' + err);
+    console.log('TXDATA=');
+    console.log('TX=' + results);
+  });
+  test1();
+},3000);
+
+  setTimeout(function(str1, str2) {
+    console.log(str1 + " " + str2);
+    console.log(a);
+  }, 5000, "Hello.", "How are you?");
+
 
 //serialPort.open();
 
