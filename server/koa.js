@@ -14,7 +14,8 @@ import Models from './models';
 import Controllers from './controllers';
 import Services from './services';
 
-
+import mount from 'koa-mount';
+import serve from 'koa-static';
 
 const env = process.env.NODE_ENV || 'development';
 const app = koa();
@@ -50,6 +51,7 @@ var controllers = new Controllers(app);
 controllers.setupPublicRoute()
 controllers.setupAppRoute()
 
+app.use(mount('/assets', serve(path.join(__dirname, '../public/js'))));
 
 
 var liftApp = async () => {

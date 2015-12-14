@@ -22,6 +22,26 @@ export default class Routes {
       publicRoute.get('/rest/user/', UserController.index);
       publicRoute.get('/rest/hme/hello/', HmeController.hello);
 
+      publicRoute.get('/test', function *() {
+        const HTML = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Redux Demo</title>
+
+            <script>
+            </script>
+          </head>
+          <body>
+            <div id="react-view"></div>
+            <script type="application/javascript" src="assets/bundle.js"></script>
+          </body>
+        </html>
+        `;
+        this.body = HTML
+      })
+      // publicRoute.get('/', MainController.index);
       app.use(publicRoute.middleware())
 
 
