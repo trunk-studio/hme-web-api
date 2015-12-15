@@ -53,7 +53,7 @@ exports.delete = function *() {
 };
 
 exports.login = function *() {
-  let success = null;
+  let success = false;
   try {
     let userData = {
           admin: 'admin',

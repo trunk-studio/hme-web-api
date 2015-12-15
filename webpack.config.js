@@ -35,7 +35,23 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [path.resolve(__dirname, './frontend/')]
+        include: [path.resolve(__dirname, './frontend/')],
+        query: {
+          'stage': 0,
+          'plugins': ['react-transform'],
+          'extra': {
+            'react-transform': {
+              'transforms': [{
+                'transform': 'react-transform-hmr',
+                'imports': ['react'],
+                'locals': ['module']
+              }, {
+                'transform': 'react-transform-catch-errors',
+                'imports': ['react', 'redbox-react']
+              }]
+            }
+          }
+        }
       },
       {
         test: /\.css$/,

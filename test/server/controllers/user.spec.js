@@ -13,7 +13,7 @@ describe("User", () => {
 
   });
 
-  it.only("login success test", async (done) => {
+  it("login success test", async (done) => {
     try {
       let result = await request.get('/rest/hme/login')
         .send({
@@ -21,6 +21,20 @@ describe("User", () => {
           password: 'admin'
         });
       result.body.success.should.be.true;
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
+
+  it.only("login failed test", async (done) => {
+    try {
+      let result = await request.get('/rest/hme/login')
+        .send({
+          role:'admin',
+          password: '123'
+        });
+      result.body.success.should.be.false;
       done();
     } catch (e) {
       done(e);
