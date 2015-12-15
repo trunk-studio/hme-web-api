@@ -66,10 +66,12 @@ app.use(
   })
 );
 
-app.use(function* (next) {
-  yield require("webpack-hot-middleware")(compiler).bind(null, this.req, this.res);
-  yield next;
-});
+app.use(webpackHotMiddleware(compiler));
+// app.use(function* (next) {
+//   yield require("webpack-hot-middleware")(compiler).bind(null, this.req, this.res);
+//   yield next;
+// });
+
 
 app.use(mount('/', serve(path.join(__dirname, '../public/js'))));
 

@@ -8,6 +8,7 @@ const Tab = require('material-ui/lib/tabs/tab');
 
 export default class ManagePage extends React.Component {
   render() {
+
     let scanResult = [
        { payload: '1', text: 'm1' },
        { payload: '2', text: 'm2' },

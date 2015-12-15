@@ -6,7 +6,7 @@ module.exports = {
   entry: [
     //js
     'webpack-hot-middleware/client',
-    './frontend/js/app.js'
+    './frontend/js/index.js'
     // backend_app: [path.resolve(__dirname, './assets/backend/js/app.js')],
 
     //css
@@ -23,8 +23,8 @@ module.exports = {
     // new webpack.optimize.CommonsChunkPlugin('/js/chunk.js', []),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
-    // new ExtractTextPlugin("./css/app.css")
+    new webpack.NoErrorsPlugin(),
+    new ExtractTextPlugin("./css/app.css")
   ],
   module: {
     loaders: [
@@ -35,7 +35,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [path.resolve(__dirname, './frontend/')],
+        include: [path.resolve(__dirname, './frontend/js')],
         query: {
           'stage': 0,
           'plugins': ['react-transform'],
@@ -56,6 +56,11 @@ module.exports = {
       {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract("style-loader", "css-loader")
+      },
+      {
+        test: /\.scss$/,
+        include: [path.resolve(__dirname, './frontend/sass')],
+        loaders: ["style", "css?sourceMap", "sass?sourceMap"]
       },
       {
         test: /\.less$/,
