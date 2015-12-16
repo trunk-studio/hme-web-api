@@ -1,6 +1,4 @@
 
-var encd = require("./encode.js");
-
 console.log('hello');
 
 //var SerialPort = require("serialport").SerialPort
@@ -80,23 +78,26 @@ var testUart = function(){
   } ,0.5);
 }
 
-var RxDecode = function(u8RawDataArry){
+var RxDecode = function(u8RxDataArry){
   //檢查接收的資料並解碼
 
   //分割資料段
-  var u8RawIdArry = u8RawDataArry.slice(1,4);
-  if(u8RawDataArry.length > 8){
+  var u8RawIdArry = u8RxDataArry.slice(1,4);
+  if(u8RxDataArry.length > 8){
     //沒有回傳記憶體資料時，封包標準長度為8Byte
-    var u8RawDataArry = u8RawDataArry.slice(5,u8RawDataArry.length-3);
+    var u8RawDataArry = u8RxDataArry.slice(5,u8RxDataArry.length-3);
   } else {
     var u8RawDataArry = [];
   }
-  var u8RawChkSumArry = u8RawDataArry.slice(u8RawDataArry.length-2,u8RawDataArry.length);
-  var u8RawHeader = u8RawDataArry[0];
-  var u8RawCommand = u8RawDataArry[4];
+  var u8RawChkSumArry = u8RxDataArry.slice(u8RxDataArry.length-3,u8RxDataArry.length);
+  var u8RawHeader = u8RxDataArry[0];
+  var u8RawCommand = u8RxDataArry[4];
   //檢查資料內容
-  console.log('ID'+u8RawIdArry);
-
+  // console.log('ID = '+u8RawIdArry);
+  // console.log('Data = '+u8RawDataArry);
+  // console.log('Chk = '+u8RawChkSumArry);
+  // console.log('Header = '+u8RawHeader);
+  // console.log('Comm = '+u8RawCommand);
 
   // #開始驗證資料正確性
   // #Check ChkSumErr
