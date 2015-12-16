@@ -26,9 +26,7 @@ describe("hme", () => {
 
     try {
       let result = await services.hme.ping();
-
-      console.log('=== ping result ===', result);
-      (result != null).should.be.equal.true;
+      result.should.be.not.null;
       done();
     } catch (e) {
       done(e);
