@@ -27,7 +27,7 @@ describe("User", () => {
     }
   });
 
-  it.only("login failed test", async (done) => {
+  it("login failed test", async (done) => {
     try {
       let result = await request.get('/rest/hme/login')
         .send({
