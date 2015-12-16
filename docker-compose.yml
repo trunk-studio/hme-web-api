@@ -16,7 +16,9 @@ web-arm:
   volumes:
     - ./:/app
   devices:
-    - /dev/usb:/dev/usb
+    - /dev/ttyUSB0:/dev/ttyUSB0
+  environment:
+    SERIALPORT: '/dev/ttyUSB0'
 
   restart: always
 
@@ -37,5 +39,4 @@ web:
   working_dir: /app
   volumes:
     - ./:/app
-
   restart: always
