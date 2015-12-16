@@ -47,6 +47,32 @@ describe("hme", () => {
       }
     });
 
+    it("u3ByteToWord", done => {
+      try {
+        let result = services.hme.encode.u3ByteToWord('aaabbcc');
+        console.log(result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+    it("WordListToAdd3ByteList", done => {
+      try {
+        let params = {
+          WordDatat_list: 'aaa',
+          Data_list: 'bbb'
+        }
+        let result = services.hme.encode.WordListToAdd3ByteList(params);
+        console.log(result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+
+
   });
 
 

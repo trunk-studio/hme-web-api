@@ -37,7 +37,9 @@ export default class Encode {
   	return(u3Byte[0] + ((u3Byte[1]<<7)&0xff) + (((u3Byte[1]>>1) + (u3Byte[2]<<6))* 0x100));
   }
 
-  WordListToAdd3ByteList = function(WordDatat_list, Data_list) {
+  WordListToAdd3ByteList = function({Data_list, WordDatat_list}) {
+    console.log('=== Data_list ===', Data_list);
+    console.log('=== WordDatat_list ===', WordDatat_list);
   	//用於將WordTypeList編碼為3Byte,並加入3ByteTypeList中
     for (var i = 0; i < WordDatat_list.length; i++) {
   		Data_list = Data_list.concat(this.WordTo3Byte(WordDatat_list[i]));
@@ -234,4 +236,3 @@ export default class Encode {
   //        console.log('results ' + results);
   //      });
   //    });
-}
