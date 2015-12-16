@@ -23,7 +23,7 @@ export default class Routes {
       publicRoute.get('/rest/hme/hello/', HmeController.hello);
       publicRoute.get('/rest/hme/ping/', HmeController.ping);
 
-      publicRoute.get('/rest/hme/login', UserController.login);
+      publicRoute.post('/rest/hme/login', UserController.login);
 
       publicRoute.get('/', function *() {
         const HTML = `

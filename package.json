@@ -12,6 +12,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.8.1",
     "blocked": "^1.1.0",
     "debug": "^2.2.0",
     "isomorphic-fetch": "^2.2.0",
@@ -42,6 +43,7 @@
     "babel-plugin-react-transform": "^1.1.1",
     "chai": "^3.4.1",
     "extract-text-webpack-plugin": "^0.9.1",
+    "json-loader": "^0.5.4",
     "koa-webpack-dev-middleware": "^1.0.1",
     "koa-webpack-hot-middleware": "^1.0.1",
     "mocha": "^2.2.5",
