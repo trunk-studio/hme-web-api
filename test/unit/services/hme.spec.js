@@ -11,7 +11,7 @@ describe("hme", () => {
   });
 
 
-  it("service hello", done => {
+  it("serial Port connect", done => {
 
     try {
       services.hme.serialPortIsOpen.should.be.true;
@@ -21,5 +21,20 @@ describe("hme", () => {
     }
 
   });
+
+  it("serial Port ping", async done => {
+
+    try {
+      let result = await services.hme.ping();
+
+      console.log('=== ping result ===', result);
+      (result != null).should.be.equal.true;
+      done();
+    } catch (e) {
+      done(e);
+    }
+
+  });
+
 
 });

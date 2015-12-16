@@ -1,18 +1,20 @@
 let SerialPort = require("serialport").SerialPort;
 
 export default class Hme {
-    constructor (serialPortName) {
-      this.serialPortName = serialPortName;
-      this.serialPortIsOpen = false;
-      this.serialPort = undefined;
-    }
+  constructor (serialPortName) {
+    this.serialPortName = serialPortName;
+    this.serialPortIsOpen = false;
+    this.serialPort = undefined;
+    this.restComm = [128,1,0,0,0,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0];
+  }
 
-    hello = (app) => {
-      let hello = 'yes!';
-      return {hello};
-    }
+  hello = (app) => {
+    let hello = 'yes!';
+    return {hello};
+  }
 
-    connectSerialPort = async () => {
+  connectSerialPort = async () => {
+    try {
       if(this.serialPortName != undefined){
         // var RestComm = [128,1,0,0,0,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0]
 
@@ -29,7 +31,28 @@ export default class Hme {
       } else {
         console.log('=== connectSerialPort without serialPortName ===');
       }
-
+    } catch (e) {
+      throw e;
     }
+  }
 
+  ping = async () => {
+    try {
+      let serialPort = this.serialPort;
+      let restComm = this.restComm;
+
+      let result = await new Promise((resolve, reject) => {
+        serialPort.write(restComm, function(err, results) {
+          if(err) return reject(err);
+          
+          resolve(results);
+          console.log('TX Num =' + results);
+        });
+      }
+
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  }
 }
