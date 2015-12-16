@@ -4,3 +4,9 @@ exports.hello = function *() {
 
   this.body = {result}
 };
+
+
+exports.ping = function *() {
+  let result = yield services.hme.ping()
+  this.body = {result}
+};

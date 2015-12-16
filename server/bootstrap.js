@@ -35,6 +35,7 @@ export default async (cb) => {
     let createdVisitor = await models.User.create(visitorUser);
     let createdEditor = await models.User.create(editorUser);
     let createdAdmin = await models.User.create(adminUser);
+    await services.hme.connectSerialPort();
 
   } catch (e) {
 

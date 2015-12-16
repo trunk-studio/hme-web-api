@@ -51,3 +51,25 @@ exports.delete = function *() {
 
   this.body = {result}
 };
+
+exports.login = function *() {
+  let success = false;
+  try {
+    let userData = {
+          admin: 'admin',
+          engineer: 'engineer',
+          user: 'user'
+    };
+    let pass = false;
+    let role = this.request.body.role;
+    let password = this.request.body.password;
+
+    if(userData[role] == password)
+      success = true;
+
+    this.body = { success }
+  } catch(e) {
+    console.error("delete user error", e);
+  }
+
+}
