@@ -16,7 +16,6 @@ export default class Hme {
   connectSerialPort = async () => {
     try {
       if(this.serialPortName != undefined){
-        // var RestComm = [128,1,0,0,0,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0]
 
         let serialPort = new SerialPort(this.serialPortName, {baudrate: 115200}, true);
         this.serialPort = serialPort
@@ -44,11 +43,11 @@ export default class Hme {
       let result = await new Promise((resolve, reject) => {
         serialPort.write(restComm, function(err, results) {
           if(err) return reject(err);
-          
+
           resolve(results);
           console.log('TX Num =' + results);
         });
-      }
+      });
 
       return result;
     } catch (e) {
