@@ -48,9 +48,9 @@ export default class LoginPage extends React.Component {
 }
 
 function _injectPropsFromStore(state) {
-  console.log('state', state);
+  console.log('_injectPropsFromStore', state);
   let { auth } = state;
-  console.log('auth', auth);
+  console.log('_injectPropsFromStore  auth', auth);
   return {
     auth: auth,
     test: {yoo: 'hello'}
