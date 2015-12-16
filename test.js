@@ -197,7 +197,7 @@ var UartTxRx = function(DataOutArry, RxDataLen){
 ser.on("open", function () {
   var aaa = [1];
   console.log('serialPor open');
-  RxDecode([1,2,3,4,5,6,7,8,9,10])
+  RxDecode([1,2,3,4,5,6,7,8,9,10]);
   //testUart();
 });
 
