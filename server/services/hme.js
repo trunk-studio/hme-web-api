@@ -27,12 +27,16 @@ export default class Hme {
         });
 
         console.log('=== openSerialPort ===', this.serialPortIsOpen);
+
+        this._eventsSetup();
       } else {
         console.log('=== connectSerialPort without serialPortName ===');
       }
     } catch (e) {
       throw e;
     }
+
+
   }
 
   ping = async () => {
@@ -53,5 +57,10 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
+  }
+  _eventsSetup = () => {
+
+    console.log('=== start eventsSetup ===');
+
   }
 }
