@@ -6,6 +6,7 @@ export const SELECT_REDDIT = 'SELECT_REDDIT'
 export const INVALIDATE_REDDIT = 'INVALIDATE_REDDIT'
 
 export function selectReddit(reddit) {
+  console.log(reddit);
   return {
     type: SELECT_REDDIT,
     reddit
@@ -27,6 +28,7 @@ function requestPosts(reddit) {
 }
 
 function receivePosts(reddit, json) {
+  console.log('aa');
   return {
     type: RECEIVE_POSTS,
     reddit: reddit,
