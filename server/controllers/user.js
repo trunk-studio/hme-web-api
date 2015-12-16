@@ -56,9 +56,9 @@ exports.login = function *() {
   let success = false;
   try {
     let userData = {
-          admin: 'admin',
-          engineer: 'engineer',
-          user: 'user'
+      admin: 'admin',
+      engineer: 'engineer',
+      user: 'user'
     };
     let pass = false;
     let role = this.request.body.role;

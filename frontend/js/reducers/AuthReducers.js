@@ -1,25 +1,20 @@
 import { combineReducers } from 'redux'
 import {
   RECEIVED_LOGIN
-} from '../actions/auth'
+} from '../actions/AuthActions'
 
-function auth(state = { }, action) {
-  console.log('reducer',action);
+export function login(state = { }, action) {
   switch (action.type) {
     case RECEIVED_LOGIN:
       console.log('received login next state',Object.assign({}, state,
         action.data
       ));
-      return Object.assign({}, state,
-        action.data
-      );
+      return {
+        ...state,
+        ...action.data
+      };
+      // return action.data
     default:
       return state
   }
 }
-
-const rootReducer = combineReducers({
-  auth
-})
-
-export default rootReducer
