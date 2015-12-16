@@ -12,7 +12,6 @@ export default class Encode {
   }
 
   WordTo3Byte = function (u16word) {
-    console.log('this.WordTo3Byte');
     //用於將1Word資料編碼為3Byte
 
     //u8Byte:用於存放轉好的資料,元素=Bytet,長度=3
@@ -28,7 +27,6 @@ export default class Encode {
     u8ByteArry[1] = u16ByteLHbuf[1]
     //console.log(u8Byte3buf);
     // [FEAB]=>[2B, 7D, 03]
-    console.log('this.WordTo3Byte= '+u8ByteArry);
     return(u8ByteArry);
   }
 
@@ -48,7 +46,7 @@ export default class Encode {
   }
   //?未測試
   DataListToChkSum3ByteList = function(Data_Arry) {
-  	u16ChkSum = 0;
+  	let u16ChkSum = 0;
   	for(var i = 0; i < Data_Arry.length; i++){
   		u16ChkSum = u16ChkSum + Data_Arry[i];
     }
@@ -58,16 +56,29 @@ export default class Encode {
   }
 
 
-  CopBitModify = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry){
+  CopBitModify = function(u8DevID, GroupNum, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry){
     var u8DataOut_arry =[];
   	var u8Header = 0x80;
     u8DataOut_arry.push(u8Header);
     u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
+    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(GroupNum));
     u8DataOut_arry.push(u8FuncCT);
     u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
-    u8DataOut_arry = this.WordListToAdd3ByteList(u8Addr_Arry, u8DataOut_arry);
-    u8DataOut_arry = this.WordListToAdd3ByteList(u8DataIn_Arry, u8DataOut_arry);
-    u8DataOut_arry = this.WordListToAdd3ByteList(u8Mask_Arry, u8DataOut_arry);
+    let params = {
+      Data_list: u8DataOut_arry,
+      WordDatat_list: u8Addr_Arry
+    }
+    u8DataOut_arry = this.WordListToAdd3ByteList(params);
+    let params2 = {
+      Data_list: u8DataOut_arry,
+      WordDatat_list: u8DataIn_Arry
+    }
+    u8DataOut_arry = this.WordListToAdd3ByteList(params2);
+    let params3 = {
+      Data_list: u8DataOut_arry,
+      WordDatat_list: u8Mask_Arry
+    }
+    u8DataOut_arry = this.WordListToAdd3ByteList(params3);
   	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
   	return (u8DataOut_arry);
 
@@ -76,72 +87,161 @@ export default class Encode {
   }
 
   //未測試
-  CopBitInv = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry, u8Mask_Arry){
+  CopBitInv = function(u8DevID, GroupNum, u8FuncCT, u8DataNum, u8Addr_Arry, u8Mask_Arry){
     var u8DataOut_arry =[];
   	var u8Header = 0x80;
     u8DataOut_arry.push(u8Header);
     u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
+    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(GroupNum));
     u8DataOut_arry.push(u8FuncCT);
     u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
-    u8DataOut_arry = this.WordListToAdd3ByteList(u8Addr_Arry, u8DataOut_arry);
-    u8DataOut_arry = this.WordListToAdd3ByteList(u8Mask_Arry, u8DataOut_arry);
+    let params = {
+      Data_list: u8DataOut_arry,
+      WordDatat_list: u8Addr_Arry
+    }
+    u8DataOut_arry = this.WordListToAdd3ByteList(params);
+    let params2 = {
+      Data_list: u8DataOut_arry,
+      WordDatat_list: u8Mask_Arry
+    }
+    u8DataOut_arry = this.WordListToAdd3ByteList(params2);
   	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
   	return (u8DataOut_arry);
   }
-  //讀寫函式 連續與非連續內容都相同
-  //未測試
-  CopWordRd = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry){
+
+  CopWordRd = function(u8DevID, GroupNum, u8FuncCT, u8DataNum, u8Addr_Arry){
     var u8DataOut_arry =[];
   	var u8Header = 0x80;
     u8DataOut_arry.push(u8Header);
     u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
+    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(GroupNum));
     u8DataOut_arry.push(u8FuncCT);
     u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
-    u8DataOut_arry = this.WordListToAdd3ByteList(u8Addr_Arry, u8DataOut_arry);
+    let params = {
+      Data_list: u8DataOut_arry,
+      WordDatat_list: [u8Addr_Arry[0]]
+    }
+    u8DataOut_arry = this.WordListToAdd3ByteList(params);
   	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
   	return (u8DataOut_arry);
+    // TEST:
+    // let params = {
+    //   u8DevID:0xfff,
+    //   GroupNum:0x00,
+    //   sFunc:'WordRd',
+    //   u8DataNum:5,
+    //   u8Addr_Arry:[0x01,0xfff,0x123,0x555,0xf53],
+    //   u8DataIn_Arry:[],
+    //   u8Mask_Arry:[],
+    //   RepeatNum:1
+    // }
+    //[ 128, 127, 31, 0, 0, 0, 0, 33, 5, 0, 0, 1, 0, 0, 69, 2, 0 ]
+
+
   }
-  //未測試
-  CopDiscWordRd = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry){
+
+  CopDiscWordRd = function(u8DevID, GroupNum, u8FuncCT, u8DataNum, u8Addr_Arry){
     var u8DataOut_arry =[];
   	var u8Header = 0x80;
     u8DataOut_arry.push(u8Header);
     u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
+    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(GroupNum));
     u8DataOut_arry.push(u8FuncCT);
     u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
-    u8DataOut_arry = this.WordListToAdd3ByteList(u8Addr_Arry, u8DataOut_arry);
-  	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
-  	return (u8DataOut_arry);
-  }
-  //未測試
-  CopDiscWordWt = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
-    var u8DataOut_arry =[];
-  	var u8Header = 0x80;
-    u8DataOut_arry.push(u8Header);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
-    u8DataOut_arry.push(u8FuncCT);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
-    u8DataOut_arry = this.WordListToAdd3ByteList(u8Addr_Arry, u8DataOut_arry);
-    u8DataOut_arry = this.WordListToAdd3ByteList(u8DataIn_Arry, u8DataOut_arry);
+    let params = {
+      Data_list: u8DataOut_arry,
+      WordDatat_list: u8Addr_Arry
+    }
+    u8DataOut_arry = this.WordListToAdd3ByteList(params);
   	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
   	return (u8DataOut_arry);
 
+    // let params = {
+    //   u8DevID:0xfff,
+    //   GroupNum:0x00,
+    //   sFunc:'DiscWordRd',
+    //   u8DataNum:5,
+    //   u8Addr_Arry:[0x01,0xfff,0x123,0x555,0xf53],
+    //   u8DataIn_Arry:[],
+    //   u8Mask_Arry:[],
+    //   RepeatNum:1
+    // }
+    // [ 128,127,31,0,0,0,0,34,5,0,0,1,0,0,127,31,0,35,2,0,85,10,0,83,30,0,89,5,0 ]
+
   }
-  //未測試
-  CopWordWt = function(u8DevID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
+
+
+  CopDiscWordWt = function(u8DevID, GroupNum, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
     var u8DataOut_arry =[];
   	var u8Header = 0x80;
     u8DataOut_arry.push(u8Header);
     u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
+    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(GroupNum));
     u8DataOut_arry.push(u8FuncCT);
     u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
-    u8DataOut_arry = this.WordListToAdd3ByteList(u8Addr_Arry, u8DataOut_arry);
-    u8DataOut_arry = this.WordListToAdd3ByteList(u8DataIn_Arry, u8DataOut_arry);
+    let params = {
+      Data_list: u8DataOut_arry,
+      WordDatat_list: u8Addr_Arry
+    }
+    u8DataOut_arry = this.WordListToAdd3ByteList(params);
+    let params2 = {
+      Data_list: u8DataOut_arry,
+      WordDatat_list: u8DataIn_Arry
+    }
+    u8DataOut_arry = this.WordListToAdd3ByteList(params2);
   	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
   	return (u8DataOut_arry);
+    // let params = {
+    //   u8DevID:0x5ff,
+    //   GroupNum:0x00,
+    //   sFunc:'DiscWordWt',
+    //   u8DataNum:5,
+    //   u8Addr_Arry:[0x01,0xfff,0x123,0x555,0xf53],
+    //   u8DataIn_Arry:[0xfe3,0xef5,0xa33,0x563,0xa12],
+    //   u8Mask_Arry:[],
+    //   RepeatNum:1
+    // }
+    //[ 128,127,11,0,0,0,0,50,5,0,0,1,0,0,127,31,0,35,2,0,85,10,0,83,30,0,99,31,0,117,29,0,51,20,0,99,10,0,18,20,0,67,9,0 ]
+
+  }
+
+
+  CopWordWt = function(u8DevID, GroupNum, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
+    var u8DataOut_arry =[];
+  	var u8Header = 0x80;
+    u8DataOut_arry.push(u8Header);
+    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
+    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(GroupNum));
+    u8DataOut_arry.push(u8FuncCT);
+    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
+    let params = {
+      Data_list: u8DataOut_arry,
+      WordDatat_list: [u8Addr_Arry[0]]
+    }
+    u8DataOut_arry = this.WordListToAdd3ByteList(params);
+    let params2 = {
+      Data_list: u8DataOut_arry,
+      WordDatat_list: u8DataIn_Arry
+    }
+    u8DataOut_arry = this.WordListToAdd3ByteList(params2);
+  	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
+  	return (u8DataOut_arry);
+    // let params = {
+    //   u8DevID:0x5ff,
+    //   GroupNum:0x00,
+    //   sFunc:'WordWt',
+    //   u8DataNum:5,
+    //   u8Addr_Arry:[0x01,0xfff,0x123,0x555,0xf53],
+    //   u8DataIn_Arry:[0xfe3,0xef5,0xa33,0x563,0xa12],
+    //   u8Mask_Arry:[],
+    //   RepeatNum:1
+    // }
+    // let resu
+    // [ 128,127,11,0,0,0,0,49,5,0,0,1,0,0,99,31,0,117,29,0,51,20,0,99,10,0,18,20,0,47,6,0 ]
+
   }
   //未測試
-  ClientOp = function(u8DevID, sFunc, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry, RepeatNum){
+  ClientOp = function({u8DevID, GroupNum, sFunc, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry, RepeatNum}){
   	//用於進行通訊,讀寫操作燈具裝置之記憶體
   	//u8DevID = 裝置ID, sFunc = 記憶體操作方式, u8DataNum = 資料長度(Word)
   	//u8Addr_Arry = 欲操作之(燈具)記憶體位址, u8Mask_Arry = 位元操作遮罩, RepeatNum = 重傳次數上限
@@ -150,28 +250,37 @@ export default class Encode {
   	//	 'DiscWordRd':讀取非連續記憶體位置, 'WordWt':寫入連續記憶體位置, 'DiscWordWt':寫入非連續記憶體位置}
 
   	//要寫入串列通訊的資料
-  	u16DataWt_arry = []
+    console.log('u8DevID', u8DevID);
+    console.log('GroupNum', GroupNum);
+    console.log('sFunc', sFunc);
+    console.log('u8DataNum', u8DataNum);
+    console.log('u8Addr_Arry', u8Addr_Arry);
+    console.log('u8DataIn_Arry', u8DataIn_Arry);
+    console.log('u8Mask_Arry', u8Mask_Arry);
+    console.log('RepeatNum', RepeatNum);
 
-  	FuncCommTable = {'Inital':0, 'Close':0, 'BitModify':17, 'BitInv':18, 'WordRd':33, 'DiscWordRd':34,
-  					'WordWt':49, 'DiscWordWt':50}
-    switch (expression) {
+  	let u16DataWt_arry = [];
+
+  	let FuncCommTable = {'Inital':0, 'Close':0, 'BitModify':17, 'BitInv':18, 'WordRd':33, 'DiscWordRd':34,
+  					'WordWt':49, 'DiscWordWt':50};
+    switch (sFunc) {
       case 'DiscWordWt':
-        u16DataWt_arry = this.CopDiscWordWt(u8DevID, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry, u8DataIn_Arry);
+        u16DataWt_arry = this.CopDiscWordWt(u8DevID, GroupNum, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry, u8DataIn_Arry);
         break;
       case 'BitModify':
-        u16DataWt_arry = this.CopBitModify(u8DevID, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry);
+        u16DataWt_arry = this.CopBitModify(u8DevID, GroupNum, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry);
         break;
       case 'BitInv':
-        u16DataWt_arry = this.CopBitInv(u8DevID, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry, u8Mask_Arry);
+        u16DataWt_arry = this.CopBitInv(u8DevID, GroupNum, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry, u8Mask_Arry);
         break;
       case 'WordRd':
-        u16DataWt_arry = this.CopWordRd(u8DevID, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry);
+        u16DataWt_arry = this.CopWordRd(u8DevID, GroupNum, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry);
         break;
       case 'DiscWordRd':
-        u16DataWt_arry = this.CopDiscWordRd(u8DevID, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry);
+        u16DataWt_arry = this.CopDiscWordRd(u8DevID, GroupNum, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry);
         break;
       case 'WordWt':
-        u16DataWt_arry = this.CopWordWt(u8DevID, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry, u8DataIn_Arry);
+        u16DataWt_arry = this.CopWordWt(u8DevID, GroupNum, (FuncCommTable[sFunc] & 0x7f), u8DataNum, u8Addr_Arry, u8DataIn_Arry);
         break;
       default:
         console.log('this.ClientOp_Func_ERROR');
@@ -182,26 +291,8 @@ export default class Encode {
     return(u16DataWt_arry);
   }
 
-  initTest2 = function () {
-
-    aa = 'b';
-    switch (aa) {
-      case 'a':
-        console.log('a');
-        break;
-      case 'b':
-        console.log('b');
-        break;
-      case 'c':
-        console.log('c');
-        break;
-      default:
-    }
-    return(0);
-  }
 
 }
-
   // [FEAB]=>[2B, 7D, 03]
   //console.log(this.WordTo3Byte(data));
 
@@ -211,28 +302,3 @@ export default class Encode {
 
   //initTest2();
   //WordBufTo3ByteBuf();
-
-
-
-
-  //Serial
-  //
-  // var SerialPort = require("serialport").SerialPort;
-  //
-  //
-  // var serialPort = new SerialPort('/dev/ttyUSB0', {baudrate: 115200}, true);
-  //
-  // serialPort.open()
-  //
-  // serialPort.on("open", function () {
-  //      console.log('open');
-  //
-  //      serialPort.on('data', function(data) {
-  //        console.log('data received: ' + data);
-  //      });
-  //
-  //      serialPort.write(buff, function(err, results) {
-  //        console.log('err ' + err);
-  //        console.log('results ' + results);
-  //      });
-  //    });
