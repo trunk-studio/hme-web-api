@@ -14,10 +14,19 @@ import Models from './models';
 import Controllers from './controllers';
 import Services from './services';
 
-
+// mount route
+import mount from 'koa-mount';
+import serve from 'koa-static';
+import webpack from 'webpack';
+import webpackConfig from '../webpack.config';
+import webpackDevMiddleware from 'koa-webpack-dev-middleware';
+import webpackHotMiddleware from 'koa-webpack-hot-middleware';
 
 const env = process.env.NODE_ENV || 'development';
 const app = koa();
+
+const compiler = webpack(webpackConfig);
+
 
 app.use(koaBodyParser());
 
@@ -50,6 +59,22 @@ var controllers = new Controllers(app);
 controllers.setupPublicRoute()
 controllers.setupAppRoute()
 
+app.use(
+  webpackDevMiddleware(compiler, {
+    noInfo: true,
+    publicPath: webpackConfig.output.publicPath
+  })
+);
+
+app.use(webpackHotMiddleware(compiler));
+// app.use(function* (next) {
+//   yield require("webpack-hot-middleware")(compiler).bind(null, this.req, this.res);
+//   yield next;
+// });
+
+
+app.use(mount('/', serve(path.join(__dirname, '../public/js'))));
+
 
 
 var liftApp = async () => {
@@ -58,6 +83,7 @@ var liftApp = async () => {
     await models.sequelize.sync({force: config.connection.force})
 
     await bootstrap();
+    
     app.listen(config.port);
 
     if (process.send) process.send('online');
