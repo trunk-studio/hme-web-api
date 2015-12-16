@@ -1,0 +1,42 @@
+build-arm:
+  container_name: hmi-web
+  image: hypriot/rpi-node:4
+  command: "/bin/bash -l -c 'npm i'"
+  working_dir: /app
+  volumes:
+    - ./:/app
+
+web-arm:
+  container_name: hmi-web
+  image: hypriot/rpi-node:4
+  command: "/bin/bash -l -c 'npm start'"
+  ports:
+    - "3000:3000"
+  working_dir: /app
+  volumes:
+    - ./:/app
+  devices:
+    - /dev/ttyUSB0:/dev/ttyUSB0
+  environment:
+    SERIALPORT: '/dev/ttyUSB0'
+
+  restart: always
+
+build:
+  container_name: hmi-build
+  image: node:4
+  command: "/bin/bash -l -c 'npm i'"
+  working_dir: /app
+  volumes:
+    - ./:/app
+
+web:
+  container_name: hmi-web
+  image: node:4
+  command: "/bin/bash -l -c 'npm start'"
+  ports:
+    - "3000:3000"
+  working_dir: /app
+  volumes:
+    - ./:/app
+  restart: always

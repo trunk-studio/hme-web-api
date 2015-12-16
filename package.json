@@ -5,13 +5,16 @@
   "main": "server/index.js",
   "scripts": {
     "start": "node server/",
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha --opts ./test/server/mocha.opts --compilers js:babel/register ./test/server/**/*.spec.js"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --opts ./test/server/mocha.opts --compilers js:babel/register ./test/server/**/*.spec.js",
+    "start-arm": "docker-compose run --rm --service-ports web-arm",
+    "start-arm-prod": "docker-compose run -d --rm --service-ports web-arm"
   },
   "license": "MIT",
   "dependencies": {
     "axios": "^0.8.1",
     "blocked": "^1.1.0",
     "debug": "^2.2.0",
+    "isomorphic-fetch": "^2.2.0",
     "koa": "^0.21.0",
     "koa-bodyparser": "^2.0.1",
     "koa-logger": "^1.2.2",
