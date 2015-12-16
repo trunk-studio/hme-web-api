@@ -13,4 +13,12 @@ describe("hme", () => {
 
   });
 
+  it("ping", (done) => {
+    request.get("/rest/hme/ping")
+    .expect(200)
+    .end((error, res) => {
+      console.log('res.body', res.body);
+      done(error);
+    });
+  });
 });

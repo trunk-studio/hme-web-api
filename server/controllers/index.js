@@ -21,6 +21,7 @@ export default class Routes {
 
       publicRoute.get('/rest/user/', UserController.index);
       publicRoute.get('/rest/hme/hello/', HmeController.hello);
+      publicRoute.get('/rest/hme/ping/', HmeController.ping);
 
       publicRoute.post('/rest/hme/login', UserController.login);
 

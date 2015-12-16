@@ -83,6 +83,7 @@ var liftApp = async () => {
     await models.sequelize.sync({force: config.connection.force})
 
     await bootstrap();
+    
     app.listen(config.port);
 
     if (process.send) process.send('online');
