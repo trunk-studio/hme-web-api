@@ -16,7 +16,9 @@ export default class Hme {
       if(this.serialPortName != undefined){
         // var RestComm = [128,1,0,0,0,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0]
 
-        this.serialPort = new SerialPort(this.serialPortName, {baudrate: 115200}, true);
+        let serialPort = new SerialPort(this.serialPortName, {baudrate: 115200}, true);
+        this.serialPort = serialPort
+
         this.serialPortIsOpen = await new Promise((resolve, reject) => {
           serialPort.on ('open', function () {
             resolve(true)
