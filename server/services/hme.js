@@ -1,4 +1,5 @@
 let SerialPort = require("serialport").SerialPort;
+let Encode = require("./encode");
 
 export default class Hme {
   constructor (serialPortName) {
@@ -6,6 +7,7 @@ export default class Hme {
     this.serialPortIsOpen = false;
     this.serialPort = undefined;
     this.restComm = [128,1,0,0,0,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0];
+    this.encode = new Encode();
   }
 
   hello = (app) => {
