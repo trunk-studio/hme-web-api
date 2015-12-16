@@ -1,4 +1,6 @@
-console.log('hello');
+
+
+
 
 /* 建立 3 Bytes 的記憶體空間 */
 var buf = new Buffer(3);
@@ -7,7 +9,7 @@ var buff = new Buffer([128,1,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0]);
 
 console.log(buff);
 
-
+module.exports ={
 var WordTo3Byte = function (u16word) {
   console.log('WordTo3Byte');
   //用於將1Word資料編碼為3Byte
@@ -194,15 +196,17 @@ var initTest2 = function () {
   }
   return(0);
 }
+
+}
 var data = 0xfeab;
 // [FEAB]=>[2B, 7D, 03]
-console.log(WordTo3Byte(data));
+//console.log(WordTo3Byte(data));
 
 //console.log(initTest2(0x0180,0xab,0xfeab,[0xfecc,0xfeab]));
 //console.log(CopBitModify(1, 17, 2, [1,2], [2,3], [233,156]));
-console.log(CopBitModify(1, 17, 2, [1,235], [2,253], [233,222]));
+//console.log(CopBitModify(1, 17, 2, [1,235], [2,253], [233,222]));
 
-initTest2();
+//initTest2();
 //WordBufTo3ByteBuf();
 
 
