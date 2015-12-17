@@ -51,7 +51,7 @@ export default class Hme {
           if(err) return reject(err);
 
           resolve(results);
-          console.log('TX Num =' + results);
+          console.log('TX1 Num =' + results);
         });
       });
 
@@ -60,6 +60,27 @@ export default class Hme {
       throw e;
     }
   }
+
+  ping2 = async () => {
+    try {
+      let serialPort = this.serialPort;
+      let restComm = this.restComm;
+
+      let result = await new Promise((resolve, reject) => {
+        serialPort.write(restComm, function(err, results) {
+          if(err) return reject(err);
+          resolve(results);
+          console.log('TX2 Num =' + results);
+        });
+      });
+
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+
   _eventsSetup = () => {
 
     console.log('=== start eventsSetup ===');

@@ -122,4 +122,7 @@ var RxDecode = function(FuncCT, DevID, u8RxDataArry){
   //     #!!
   //     DataRd_list = []
 }
+
+
+
 RxDecode(0,0,[0xC0,2,3,4,5,6,7,8,9,10,11,12,13,14]);

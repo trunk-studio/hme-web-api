@@ -292,6 +292,74 @@ export default class Encode {
   }
 
 
+
+  RxDecode = function({FuncCT, DevID, u8RxDataArry}){
+    //檢查接收的資料並解碼
+
+    //分割資料段
+    var u8RawHeader = u8RxDataArry[0];
+    if (u8RawHeader != 0xC0) {
+      console.log('HeaderErr')
+      return([]);
+    }
+    var u8RawIdArry = u8RxDataArry.slice(1,4);
+    if(u8RxDataArry.length > 8){
+      //沒有回傳記憶體資料時，封包標準長度為8Byte
+      var u8RawDataArry = u8RxDataArry.slice(5,u8RxDataArry.length-3);
+    } else {
+      var u8RawDataArry = [];
+    }
+    var u8RawChkSumArry = u8RxDataArry.slice(u8RxDataArry.length-3,u8RxDataArry.length);
+    var u8RawCommand = u8RxDataArry[4];
+    //檢查資料內容
+    // console.log('ID = '+u8RawIdArry);
+    // console.log('Data = '+u8RawDataArry);
+    // console.log('Chk = '+u8RawChkSumArry);
+    // console.log('Header = '+u8RawHeader);
+    // console.log('Comm = '+u8RawCommand);
+
+    // #開始驗證資料正確性
+    // #Check ChkSumErr
+    var RespDataArry = u8RxDataArry.slice(0,u8RxDataArry.length-3);
+    var u16ReChkSum = 0xffff & RespDataArry.reduce(function(a, b) { return a + b; });
+    console.log(u16ReChkSum);
+    if (u16ReChkSum != this.u3ByteToWord(u8RawChkSumArry)) {
+      console.log('HeaderErr')
+      return([]);
+    }
+    // #將原始接接收資料解碼( 3Byte to 1Word )
+    var u8ReData2DArry = [];
+    var u16ReDataArry = [];
+    var BoolChk = 0;
+    for (var i = 0; i < (u8RawDataArry.length/3); i++) {
+      u8ReData2DArry[i] = (u8RawDataArry.slice(i*3,i*3+3));
+    }
+    console.log(u8ReData2DArry);
+    if(FuncCT == 33 || FuncCT == 34){
+      //WordRd or DiscWordRd 需做檢查
+      for (var i = 0; i < u8ReData2DArry.length; i++) {
+        BoolChk +=  (u8ReData2DArry[i][0] & 0x80);
+        BoolChk +=  (u8ReData2DArry[i][1] & 0x80);
+        BoolChk +=  (u8ReData2DArry[i][2] & 0xfc);
+      }
+      if (BoolChk == 0) {
+        console.log('chk Ok');
+        for (var variable in Re3BDataOut_list) {
+          u16ReDataArry = u16ReDataArry.concat(u3ByteToWord(variable));
+        }
+        return(u16ReDataArry)
+      } else {
+        console.log('chk false');
+      }
+    }else {
+      //其他都不需要做檢查，無記憶體資料回傳
+      console.log('No Data');
+      return([])
+    }
+
+  }
+
+
 }
   // [FEAB]=>[2B, 7D, 03]
   //console.log(this.WordTo3Byte(data));
