@@ -5,13 +5,12 @@ export const RECEIVED_LOGIN = 'RECEIVED_LOGIN'
 
 export function requestLogin(loginData) {
   console.log(loginData);
+  // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
       .post('http://localhost:3000/rest/hme/login', loginData)
-      .then((response) => {
-        return dispatch(receivedLogin(response.data));
-      });
-  }
+      .then(response => dispatch(receivedLogin(response.data)));
+  };
 }
 
 export function receivedLogin(data) {

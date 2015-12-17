@@ -7,26 +7,25 @@ const SelectField = require('material-ui/lib/select-field');
 const TextField = require('material-ui/lib/text-field');
 const Tabs = require('material-ui/lib/tabs/tabs');
 const Tab = require('material-ui/lib/tabs/tab');
-
+const RefreshIndicator = require('material-ui/lib/refresh-indicator');
 
 export default class LoginPage extends React.Component {
 
   constructor(props) {
     super(props);
-    this._login = this._login.bind(this);
-    this._handleRoleChanged = this._handleRoleChanged.bind(this);
     this.state = {
+      loadingStatus: 'ready',
       role: 'engineer'
     }
   }
 
-  _handleRoleChanged(e) {
+  _handleRoleChanged = (e) => {
     this.setState({
       role: e.target.value
     });
   }
 
-  _login(e) {
+  _login = (e) => {
     e.preventDefault();
     let Password = this.refs.password;
     let password = Password.getValue();
@@ -62,8 +61,9 @@ export default class LoginPage extends React.Component {
     let roles = [
        { payload: 'engineer', text: '原廠工程師' },
        { payload: 'admin', text: '主控者' },
-       { payload: 'user', text: '操作人員' },
+       { payload: 'user', text: '操作人員' }
     ];
+    const {loadingStatus} = this.props;
     return (
       <Tabs>
         <Tab label="Login">
@@ -76,7 +76,11 @@ export default class LoginPage extends React.Component {
               hintText="Password Field"
               type="password" />
             <RaisedButton label="Login" onTouchTap={this._login}/>
-        </div>
+            {
+              this.props.isLoading &&
+              <RefreshIndicator size={40} left={100} top={40} status="loading" />
+            }
+          </div>
         </Tab>
       </Tabs>
     );
@@ -85,9 +89,10 @@ export default class LoginPage extends React.Component {
 
 function _injectPropsFromStore(state) {
   console.log('inject',state);
-  let { login } = state;
+  let { login, isLoading } = state;
   return {
-    login: login
+    login: login,
+    isLoading: isLoading
   };
 }
 
