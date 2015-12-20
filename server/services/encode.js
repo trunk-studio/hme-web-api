@@ -293,6 +293,10 @@ export default class Encode {
 
 
 
+
+
+
+
   RxDecode = function({FuncCT, DevID, u8RxDataArry}){
     //檢查接收的資料並解碼
 

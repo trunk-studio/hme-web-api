@@ -36,27 +36,16 @@ var chkDataBuf = function(){
 }
 
 //測試發送並接收
-var testUart = function(){
+var testUart = function(u8TxDataArry){
   var DataBufArry = [];
   var T1num = 0;
   var RxLen = 0;
 
   console.log('testUart ');
-  ser.write(cbuf, function(err, results) {
+  ser.write(u8TxDataArry, function(err, results) {
     console.log('testerr ' + err);
     console.log('testTX=' + results);
   });
-  //接收2Byte
-  // console.log('testRx ');
-  // var RxLen = 0;
-  //  while (RxLen < 2) {
-  //    //console.log('readwhile...')
-  //    if (RxBufArry.length != 0) {
-  //      DataBufArry.push(RxBufArry.shift());
-  //      RxLen++;
-  //      console.log('read...')
-  //    }
-  //  };
 
   //每0.5ms檢查是否有接收並複製
   var T1id = setInterval(function(){
@@ -71,11 +60,11 @@ var testUart = function(){
       clearInterval(T1id);
       console.log('End:Rx OK');
       console.log(DataBufArry);
-    }else if (T1num > 10) { //設定時須注意單位時間
+    }else if (T1num > 500) { //設定時須注意單位時間
       clearInterval(T1id);
       console.log('End:TimeOut');
     }
-  } ,0.5);
+  } ,1);
 }
 
 var RxDecode = function(u8RxDataArry){

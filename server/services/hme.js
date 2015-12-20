@@ -8,7 +8,9 @@ export default class Hme {
     this.serialPort = undefined;
     this.restComm = [128,1,0,0,0,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0];
     this.encode = new Encode();
+    this.RxBufArry = [999];
   }
+
 
   hello = (app) => {
     let hello = 'yes!';
@@ -37,8 +39,6 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-
-
   }
 
   ping = async () => {
@@ -61,18 +61,40 @@ export default class Hme {
     }
   }
 
+
+  ping3 = async (data) => {
+    try {
+      console.log(this.RxBufArry);
+      this.RxBufArry.push(data);
+      return 0;
+    } catch (e) {
+      throw e;
+    }
+  }
+
   ping2 = async () => {
     try {
       let serialPort = this.serialPort;
       let restComm = this.restComm;
+      let arry = this.RxBufArry;
+      let DataBufArry =[];
+      let T1num = 0;
+      let RxLen = 0;
 
       let result = await new Promise((resolve, reject) => {
         serialPort.write(restComm, function(err, results) {
           if(err) return reject(err);
-          resolve(results);
-          console.log('TX2 Num =' + results);
+        console.log('this=',restComm);
+        serialPort.drain(function (error) {
+          console.log('drain');
+          setTimeout(function () {
+            console.log('arry=',arry);
+          }, 10);
+
         });
+
       });
+    });
 
       return result;
     } catch (e) {
@@ -82,8 +104,20 @@ export default class Hme {
 
 
   _eventsSetup = () => {
+    let serialPort = this.serialPort;
+    let RxBufArry = this.RxBufArry
 
     console.log('=== start eventsSetup ===');
+
+    serialPort.on('data', function(data) {
+      //var buff = new Buffer(data)
+      //console.log(this);
+      console.log('RXdata len: ' + data.length);
+      for (let i = 0; i < data.length; i++) {
+        RxBufArry.push(data[i]);
+        console.log(data[i]);
+      }
+    });
 
   }
 }
