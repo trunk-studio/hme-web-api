@@ -7,6 +7,13 @@ exports.hello = function *() {
 
 
 exports.ping = function *() {
-  let result = yield services.hme.ping()
+  let result = yield services.hme.ping();
+  this.body = {result}
+};
+
+
+exports.searchDevice = function *() {
+  let result = yield services.hme.SearchDevice();
+  console.log('controller',result);
   this.body = {result}
 };
