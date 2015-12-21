@@ -8,61 +8,62 @@ import path from 'path';
 
 export default class Routes {
 
-    constructor (app) {
-      var router = new Router();
-      this.router = router;
-      this.app = app;
+  constructor (app) {
+    var router = new Router();
+    this.router = router;
+    this.app = app;
 
-    }
+  }
 
-    setupPublicRoute() {
-      var app = this.app;
-      var publicRoute = new Router()
+  setupPublicRoute() {
+    var app = this.app;
+    var publicRoute = new Router()
 
-      publicRoute.get('/rest/user/', UserController.index);
-      publicRoute.get('/rest/hme/hello/', HmeController.hello);
-      publicRoute.get('/rest/hme/ping/', HmeController.ping);
+    publicRoute.get('/rest/user/', UserController.index);
+    publicRoute.get('/rest/hme/hello/', HmeController.hello);
+    publicRoute.get('/rest/hme/ping/', HmeController.ping);
 
-      publicRoute.post('/rest/hme/login', UserController.login);
+    publicRoute.post('/rest/hme/login', UserController.login);
 
-      publicRoute.get('/', function *() {
-        const HTML = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Redux Demo</title>
+    publicRoute.get('/', function *() {
+      const HTML = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Redux Demo</title>
 
-            <script>
-            </script>
-          </head>
-          <body>
-            <div id="react-view"></div>
-            <script type="application/javascript" src="assets/bundle.js"></script>
-          </body>
-        </html>
-        `;
-        this.body = HTML
-      })
-      // publicRoute.get('/', MainController.index);
-      app.use(publicRoute.middleware())
-
-
-      app.use(function *(next) {
-
-        if (true || services.user.isAuthenticated(this)) {
-          yield next
-        } else {
-          this.redirect('/auth/login')
-        }
-      })
-
-    }
-
-    setupAppRoute() {
-
-      this.app.use(this.router.middleware())
+          <script>
+          </script>
+        </head>
+        <body>
+          <div id="react-view"></div>
+          <script type="application/javascript" src="assets/bundle.js"></script>
+          <script type="text/javascript" src="http://mbostock.github.com/d3/d3.v2.js"></script>
+        </body>
+      </html>
+      `;
+      this.body = HTML
+    })
+    // publicRoute.get('/', MainController.index);
+    app.use(publicRoute.middleware())
 
 
-    }
+    app.use(function *(next) {
+
+      if (true || services.user.isAuthenticated(this)) {
+        yield next
+      } else {
+        this.redirect('/auth/login')
+      }
+    })
+
+  }
+
+  setupAppRoute() {
+
+    this.app.use(this.router.middleware())
+
+
+  }
 }
