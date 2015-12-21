@@ -22,7 +22,7 @@ describe("hme", () => {
     });
   });
 
-  it.only("SearchDevice", (done) => {
+  it("SearchDevice", async (done) => {
     try {
       let result = await request.get("/rest/hme/searchDevice");
       result.status.should.be.equal(200);
