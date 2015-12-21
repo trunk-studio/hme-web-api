@@ -34,10 +34,16 @@ describe("hme", () => {
 
     });
 
-    it.only("serial Port ping2", async done => {
+    it.only("serial Port UartTxRx", async done => {
 
       try {
-        let result = await services.hme.ping2();
+        let restComm = [128,1,0,0,0,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0];
+        let params = {
+          Comm:restComm,
+          RxLen:8
+        }
+
+        let result = await services.hme.UartTxRx(params);
         result.should.be.not.null;
         done();
       } catch (e) {
@@ -45,6 +51,16 @@ describe("hme", () => {
       }
 
     });
+
+    // it.only("SearchDevice", done => {
+    //   try {
+    //     let result = services.hme.SearchDevice();
+    //     console.log(result);
+    //     done();
+    //   } catch (e) {
+    //     done(e);
+    //   }
+    // });
 
 
   });

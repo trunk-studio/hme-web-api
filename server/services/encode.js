@@ -363,6 +363,39 @@ export default class Encode {
 
   }
 
+  // SearchDevice = function(){
+  //   let ReDevArry = [];
+  //   let ReDataArry = [];
+  //   for (let i = 1; i < 5; i++) {
+  //     //輪詢ID:1~200
+  //     let params = {
+  //       u8DevID:i,
+  //       GroupNum:0,
+  //       sFunc:'WordRd',
+  //       u8DataNum:1,
+  //       u8Addr_Arry:[1031],  //Device group
+  //       u8DataIn_Arry:[],
+  //       u8Mask_Arry:[],
+  //       RepeatNum:1
+  //     }
+  //     let Comm = services.hme.encode.ClientOp(params);
+  //     let params2 ={
+  //       Comm:Comm,
+  //       RxLen:11
+  //     }
+  //     let ReDataArry = services.hme.UartTxRx(params2);
+  //     if (ReDataArry != []) {
+  //       let DevData = {
+  //         DevID:i,
+  //         DevGroup:ReDataArry[0]
+  //       };
+  //       ReDevArry.push(DevData);
+  //     }
+  //   }
+  //   console.log('Devs:',ReDevArry);
+  //   return(ReDevArry);
+  // }
+
 
 }
   // [FEAB]=>[2B, 7D, 03]

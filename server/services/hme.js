@@ -62,44 +62,45 @@ export default class Hme {
   }
 
 
-  ping3 = async (data) => {
-    try {
-      console.log(this.RxBufArry);
-      this.RxBufArry.push(data);
-      return 0;
-    } catch (e) {
-      throw e;
-    }
-  }
 
-  ping2 = async () => {
+
+  UartTxRx = async ({Comm,RxLen}) => {
     try {
       let serialPort = this.serialPort;
-      let restComm = this.restComm;
-      let arry = this.RxBufArry;
+      let Rxarry = this.RxBufArry ;
       let DataBufArry =[];
       let T1num = 0;
-      let RxLen = 0;
 
       let result = await new Promise((resolve, reject) => {
-        serialPort.write(restComm, function(err, results) {
+        //Rxarry= [1];
+        Rxarry.length = 0;
+        serialPort.write(Comm, function(err, results) {
           if(err) return reject(err);
-        console.log('this=',restComm);
+        console.log('TX=',Comm);
         serialPort.drain(function (error) {
-          console.log('drain');
-          setTimeout(function () {
-            console.log('arry=',arry);
-          }, 10);
-
+          var T1id = setInterval(function(){
+            T1num++;
+            if (Rxarry.length == RxLen) {
+              resolve(results);
+              console.log('RX arry=',Rxarry);
+              clearInterval(T1id);
+            } else if (T1num > 5) {
+              console.log('TimeOver!');
+              resolve(results);
+              clearInterval(T1id);
+            } else {
+              console.log(Rxarry.length,'Byte');
+              console.log(T1num,'ms');
+            }
+          } ,1);
         });
-
       });
     });
-
       return result;
     } catch (e) {
       throw e;
     }
+
   }
 
 
@@ -115,7 +116,7 @@ export default class Hme {
       console.log('RXdata len: ' + data.length);
       for (let i = 0; i < data.length; i++) {
         RxBufArry.push(data[i]);
-        console.log(data[i]);
+        // console.log(data[i]);
       }
     });
 

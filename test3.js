@@ -60,7 +60,7 @@ let SearchDevice = function(){
       u8Mask_Arry:[]
     }
     let Comm = services.hme.encode.CopBitModify(params);
-    let ReDataArry = UartTxRx(comm);
+    let ReDataArry = services.hme.UartTxRx(comm);
     if (ReDataArry != []) {
       let DevData = {
         DevID:i,
