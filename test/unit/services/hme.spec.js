@@ -34,7 +34,7 @@ describe("hme", () => {
 
     });
 
-    it.only("serial Port UartTxRx", async done => {
+    it("serial Port UartTxRx", async done => {
 
       try {
         let restComm = [128,1,0,0,0,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0];
@@ -42,9 +42,21 @@ describe("hme", () => {
           Comm:restComm,
           RxLen:8
         }
-
         let result = await services.hme.UartTxRx(params);
-        result.should.be.not.null;
+        result.should.be.equal[ 192, 1, 0, 0, 50, 115, 1, 0 ];
+        console.log('UartTxRx result',result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it.only("serial Port SearchDevice", async done => {
+
+      try {
+        let result = await services.hme.SearchDevice();
+        console.log('SearchDevice result',result);
         done();
       } catch (e) {
         done(e);

@@ -81,11 +81,18 @@ export default class Hme {
           var T1id = setInterval(function(){
             T1num++;
             if (Rxarry.length == RxLen) {
+              results = Rxarry;
               resolve(results);
               console.log('RX arry=',Rxarry);
               clearInterval(T1id);
             } else if (T1num > 5) {
-              console.log('TimeOver!');
+              console.log('TimeOut!');
+              results = [];
+              resolve(results);
+              clearInterval(T1id);
+            } else if (Rxarry.length > RxLen) {
+              console.log('DataErr!');
+              results = [];
               resolve(results);
               clearInterval(T1id);
             } else {
@@ -100,7 +107,41 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
+  }
 
+  SearchDevice = async () => {
+    try {
+      let ReDevArry = [];
+      let i = 1;
+      let params = {
+        u8DevID:i,
+        GroupNum:0,
+        sFunc:'WordRd',
+        u8DataNum:1,
+        u8Addr_Arry:[1031],  //Device group
+        u8DataIn_Arry:[],
+        u8Mask_Arry:[],
+        RepeatNum:1
+      }
+      let Comm = this.encode.ClientOp(params);
+      console.log('Comm=',Comm);
+      let params2 = {
+        Comm:Comm,
+        RxLen:11
+      }
+      let ReDataArry = await this.UartTxRx(params2);
+      if (ReDataArry != []) {
+        let DevData = {
+          DevID:i,
+          DevGroup:ReDataArry[0]
+        };
+        ReDevArry.push(DevData);
+      }
+
+      return(ReDevArry);
+    } catch (e) {
+      throw e;
+    }
   }
 
 

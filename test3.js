@@ -43,31 +43,28 @@ var UartTxRx = function(u8TxDataArry){
 }
 
 
-
-
-
-let SearchDevice = function(){
-  ReDevArry = [];
-  for (let i = 1; i < 200; i++) {
+var SearchDevice = function(){
+  let ReDevArry = [];
     //輪詢ID:1~200
-    let params = {
-      u8DevID:i,
-      GroupNum:0,
-      u8FuncCT:WordRd,
-      u8DataNum:1,
-      u8Addr_Arry:[1031],  //Device group
-      u8DataIn_Arry:[],
-      u8Mask_Arry:[]
-    }
-    let Comm = services.hme.encode.CopBitModify(params);
-    let ReDataArry = services.hme.UartTxRx(comm);
-    if (ReDataArry != []) {
-      let DevData = {
-        DevID:i,
-        DevGroup:ReDataArry[0]
-      };
-      ReDevArry.push(DevData);
-    }
+  let params = {
+    u8DevID:i,
+    GroupNum:0,
+    sFunc:'WordRd',
+    u8DataNum:1,
+    u8Addr_Arry:[1031],  //Device group
+    u8DataIn_Arry:[],
+    u8Mask_Arry:[],
+    RepeatNum:1
   }
+  let Comm = services.hme.encode.ClientOp(params);
+  let ReDataArry = services.hme.UartTxRx(Comm);
+  if (ReDataArry != []) {
+    let DevData = {
+      DevID:i,
+      DevGroup:ReDataArry[0]
+    };
+    ReDevArry.push(DevData);
+  }
+
   return(ReDevArry);
 }
