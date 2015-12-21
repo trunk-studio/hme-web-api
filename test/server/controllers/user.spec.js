@@ -15,7 +15,7 @@ describe("User", () => {
 
   it("login success test", async (done) => {
     try {
-      let result = await request.get('/rest/hme/login')
+      let result = await request.post('/rest/hme/login')
         .send({
           role:'admin',
           password: 'admin'
@@ -29,7 +29,7 @@ describe("User", () => {
 
   it("login failed test", async (done) => {
     try {
-      let result = await request.get('/rest/hme/login')
+      let result = await request.post('/rest/hme/login')
         .send({
           role:'admin',
           password: '123'
