@@ -157,7 +157,7 @@ export default class Hme {
     }
   }
 
-  DevTest = async () => {
+  TestDevice = async (DevID) => {
     try {
       let serialPort = this.serialPort;
       let restComm = this.restComm;

@@ -52,11 +52,26 @@ describe("hme", () => {
 
     });
 
-    it.only("serial Port SearchDevice", async done => {
+    it("serial Port SearchDevice", async done => {
 
       try {
         let result = await services.hme.SearchDevice();
         console.log('SearchDevice result',result);
+        result.should.be.Array;
+        result[0].should.have.any.keys('DevID', 'DevGroup');
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it.only("serial Port TestDevice", async done => {
+
+      try {
+        let DevID = 1;
+        let result = await services.hme.TestDevice(DevID);
+        result.should.be.equal(DevID);
         done();
       } catch (e) {
         done(e);
