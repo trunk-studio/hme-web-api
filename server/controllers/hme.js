@@ -15,5 +15,5 @@ exports.ping = function *() {
 exports.searchDevice = function *() {
   let result = yield services.hme.SearchDevice();
   console.log('controller',result);
-  this.body = {result}
+  this.body = {...result}
 };
