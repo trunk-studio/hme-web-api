@@ -136,7 +136,7 @@ export default class Hme {
         DevGroup:[]
       };
       //let i = 1;
-      for (let i = 0; i < 350; i++) {
+      for (let i = 0; i < 200; i++) {
         params.u8DevID = i;
         params2.Comm = this.encode.ClientOp(params);
         console.log('Comm=',params2.Comm);
@@ -150,10 +150,28 @@ export default class Hme {
           DevData.DevGroup = ReDataArry[0];
           ReDevArry.push(DevData);
         }
-
       }
-
       return(ReDevArry);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  DevTest = async () => {
+    try {
+      let serialPort = this.serialPort;
+      let restComm = this.restComm;
+
+      let result = await new Promise((resolve, reject) => {
+        serialPort.write(restComm, function(err, results) {
+          if(err) return reject(err);
+
+          resolve(results);
+          console.log('TX1 Num =' + results);
+        });
+      });
+
+      return result;
     } catch (e) {
       throw e;
     }
