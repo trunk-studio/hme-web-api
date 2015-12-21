@@ -96,8 +96,7 @@ export default class Hme {
               resolve(results);
               clearInterval(T1id);
             } else {
-              console.log(Rxarry.length,'Byte');
-              console.log(T1num,'ms');
+
             }
           } ,1);
         });
@@ -112,9 +111,9 @@ export default class Hme {
   SearchDevice = async () => {
     try {
       let ReDevArry = [];
-      let i = 1;
+      let ReDataArry = [];
       let params = {
-        u8DevID:i,
+        u8DevID:1,
         GroupNum:0,
         sFunc:'WordRd',
         u8DataNum:1,
@@ -123,25 +122,35 @@ export default class Hme {
         u8Mask_Arry:[],
         RepeatNum:1
       }
-      let Comm = this.encode.ClientOp(params);
-      console.log('Comm=',Comm);
       let params2 = {
-        Comm:Comm,
+        Comm:[],
         RxLen:11
       }
-      let RawArry =  await this.UartTxRx(params2);
       let params3 = {
         FuncCT:33,
         DevID:1,
-        u8RxDataArry:RawArry
+        u8RxDataArry:[]
       }
-      let ReDataArry = this.encode.RxDecode(params3);
-      if (ReDataArry != []) {
-        let DevData = {
-          DevID:i,
-          DevGroup:ReDataArry[0]
-        };
-        ReDevArry.push(DevData);
+      let DevData = {
+        DevID:null,
+        DevGroup:[]
+      };
+      //let i = 1;
+      for (let i = 0; i < 350; i++) {
+        params.u8DevID = i;
+        params2.Comm = this.encode.ClientOp(params);
+        console.log('Comm=',params2.Comm);
+
+        params3.u8RxDataArry =  await this.UartTxRx(params2);
+        params3.DevID = i;
+        ReDataArry = this.encode.RxDecode(params3);
+        if (ReDataArry.length != 0) {
+          console.log('out =',ReDataArry);
+          DevData.DevID = i;
+          DevData.DevGroup = ReDataArry[0];
+          ReDevArry.push(DevData);
+        }
+
       }
 
       return(ReDevArry);
