@@ -129,7 +129,13 @@ export default class Hme {
         Comm:Comm,
         RxLen:11
       }
-      let ReDataArry = await this.UartTxRx(params2);
+      let RawArry =  await this.UartTxRx(params2);
+      let params3 = {
+        FuncCT:33,
+        DevID:1,
+        u8RxDataArry:RawArry
+      }
+      let ReDataArry = this.encode.RxDecode(params3);
       if (ReDataArry != []) {
         let DevData = {
           DevID:i,

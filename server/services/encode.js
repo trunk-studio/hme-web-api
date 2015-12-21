@@ -348,9 +348,10 @@ export default class Encode {
       }
       if (BoolChk == 0) {
         console.log('chk Ok');
-        for (var variable in Re3BDataOut_list) {
-          u16ReDataArry = u16ReDataArry.concat(u3ByteToWord(variable));
+        for (var variable in u8ReData2DArry) {
+          u16ReDataArry = u16ReDataArry.concat(this.u3ByteToWord(variable));
         }
+        console.log(u16ReDataArry);
         return(u16ReDataArry)
       } else {
         console.log('chk false');
