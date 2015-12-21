@@ -8,6 +8,7 @@ injectTapEventPlugin();
 
 const LoginPage = require('../components/LoginPage');
 const ManagePage = require('../components/ManagePage');
+const LEDColorPage = require('../components/LEDColorPage');
 
 
 export default class App extends React.Component {
@@ -16,6 +17,7 @@ export default class App extends React.Component {
       <Router>
         <Route path="/" component={LoginPage}/>
         <Route path="/manage" component={ManagePage}/>
+        <Route path="/LEDColor" component={LEDColorPage}/>
       </Router>
     );
   }
