@@ -27,7 +27,7 @@ describe("hme", () => {
       let result = await request.get("/rest/hme/searchDevice");
       result.status.equal(200);
       result.body.should.be.Array;
-      result[0].should.have.any.keys('DevID', 'DevGroup');
+      result.body[0].should.have.any.keys('DevID', 'DevGroup');
       done();
     } catch (e) {
       done(e);
