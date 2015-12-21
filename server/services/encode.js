@@ -335,7 +335,7 @@ export default class Encode {
     var u8ReData2DArry = [];
     var u16ReDataArry = [];
     var BoolChk = 0;
-    for (var i = 0; i < (u8RawDataArry.length/3); i++) {
+    for (let i = 0; i < (u8RawDataArry.length/3); i++) {
       u8ReData2DArry[i] = (u8RawDataArry.slice(i*3,i*3+3));
     }
     console.log(u8ReData2DArry);
@@ -348,8 +348,10 @@ export default class Encode {
       }
       if (BoolChk == 0) {
         console.log('chk Ok');
-        for (var variable in u8ReData2DArry) {
-          u16ReDataArry = u16ReDataArry.concat(this.u3ByteToWord(variable));
+        console.log(u8ReData2DArry);
+        for (let i = 0; i < (u8ReData2DArry.length); i++) {
+          console.log(u8ReData2DArry[i]);
+          u16ReDataArry = u16ReDataArry.concat(this.u3ByteToWord(u8ReData2DArry[i]));
         }
         console.log(u16ReDataArry);
         return(u16ReDataArry)
