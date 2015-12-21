@@ -1,45 +1,85 @@
 import React                from 'react';
 import { connect } from 'react-redux'
-import { requestLogin } from '../actions/auth'
+import { requestLogin } from '../actions/AuthActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
 const TextField = require('material-ui/lib/text-field');
 const Tabs = require('material-ui/lib/tabs/tabs');
 const Tab = require('material-ui/lib/tabs/tab');
-
+const RefreshIndicator = require('material-ui/lib/refresh-indicator');
 
 export default class LoginPage extends React.Component {
 
   constructor(props) {
     super(props);
-    this._login = this._login.bind(this);
+    this.state = {
+      loadingStatus: 'ready',
+      role: 'engineer'
+    }
   }
 
-  _login(e) {
+  _handleRoleChanged = (e) => {
+    this.setState({
+      role: e.target.value
+    });
+  }
+
+  _login = (e) => {
     e.preventDefault();
-    console.log('clicked');
-    console.log('props',this.props);
-    // const {dispatch} = this.props;
-    // dispatch(requestLogin({test: 'yooo'}));
-    this.props.requestLogin({test: 'yooo'});
+    let Password = this.refs.password;
+    let password = Password.getValue();
+    if(password.length > 0) {
+      this.props.requestLogin({
+        role: this.state.role,
+        password: password
+      });
+    }
+    else {
+      Password.clearValue();
+      Password.focus();
+      Password.setErrorText('Please fill the password field.');
+      // alert('Please fill the password field.');
+    }
+  }
+
+  componentDidMount() {
+    console.log('did');
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.login.success)
+      window.location = "#manage";
+    else {
+      let Password = this.refs.password;
+      Password.focus();
+      Password.setErrorText('Wrong Password');
+    }
   }
 
   render() {
     let roles = [
-       { payload: '1', text: '原廠工程師' },
-       { payload: '2', text: '主控者' },
-       { payload: '3', text: '操作人員' },
+       { payload: 'engineer', text: '原廠工程師' },
+       { payload: 'admin', text: '主控者' },
+       { payload: 'user', text: '操作人員' }
     ];
+    const {loadingStatus} = this.props;
     return (
       <Tabs>
-        <Tab>
+        <Tab label="Login">
           <div style={{display: 'table-caption'}}>
-            <SelectField menuItems={roles}/>
+            <SelectField
+              onChange={this._handleRoleChanged}
+              menuItems={roles}/>
             <TextField
+              ref="password"
               hintText="Password Field"
               type="password" />
             <RaisedButton label="Login" onTouchTap={this._login}/>
+            {
+              this.props.isLoading &&
+              <RefreshIndicator size={40} left={100} top={40} status="loading" />
+            }
           </div>
         </Tab>
       </Tabs>
@@ -48,12 +88,11 @@ export default class LoginPage extends React.Component {
 }
 
 function _injectPropsFromStore(state) {
-  console.log('state', state);
-  let { auth } = state;
-  console.log('auth', auth);
+  console.log('inject',state);
+  let { login, isLoading } = state;
   return {
-    auth: auth,
-    test: {yoo: 'hello'}
+    login: login,
+    isLoading: isLoading
   };
 }
 
