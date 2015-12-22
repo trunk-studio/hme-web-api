@@ -20,21 +20,14 @@ const TableHeaderColumn = require('material-ui/lib/table/table-header-column');
 const TableRow = require('material-ui/lib/table/table-row');
 const TableRowColumn = require('material-ui/lib/table/table-row-column');
 
-export default class SettingGraph extends React.Component {
+export default class ScheduleSlider extends React.Component {
 
   constructor(props) {
     super(props);
   }
 
   componentDidMount () {
-    let graph = new SimpleGraph("chart1", {
-      "xmax": 12,
-      "xmin": 0,
-      "ymax": 100,
-      "ymin": 0,
-      "title": "Light Schedule",
-      "xlabel": "Time", "ylabel": "%"
-    });
+
   }
 
   render () {
@@ -53,45 +46,30 @@ export default class SettingGraph extends React.Component {
     return (
       <Tabs>
         <Tab label="D3">
-          <div className="self-center" style={{
-          width: '100%'
-          }}>
-            <div id="chart1" className="chart"/>
-            <div className="row">
-              <div className="col-md-1">
-                <RadioButtonGroup name="shipSpeed" defaultSelected="not_light">
-                  <RadioButton value="light"/>
-                  <RadioButton value="not_light"/>
-                  <RadioButton value="ludicrous"/>
-                </RadioButtonGroup>
-              </div>
-              <div className="col-md-4" width={200}>
-                <DatePicker hintText="7/15/2015"/>
-                <DatePicker hintText="7/15/2015"/>
-                <DatePicker hintText="7/15/2015"/>
-              </div>
-              <div className="col-md-4">
-                <SelectField menuItems={testData}/>
-                <SelectField menuItems={testData}/>
-                <SelectField menuItems={testData}/>
-                <RaisedButton label="add"/>
-              </div>
-            </div>
-            <div className="row"></div>
+          <div className="self-center" style={{width: '100%'}}>
+            <RaisedButton label="Add" style={{marginLeft:'80%', marginTop: '15px'}} />
             <Table>
-              <TableHeader>
+              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                 <TableRow>
+                  <TableHeaderColumn >Edit</TableHeaderColumn>
                   <TableHeaderColumn >Start Date</TableHeaderColumn>
                   <TableHeaderColumn >Days</TableHeaderColumn>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody displayRowCheckbox={false}>
                 <TableRow>
                   <TableRowColumn>
-
-
+                    <RaisedButton label="EDIT" />
                   </TableRowColumn>
-                  <TableRowColumn>name</TableRowColumn>
+                  <TableRowColumn>7/15/2015</TableRowColumn>
+                  <TableRowColumn>Days</TableRowColumn>
+                </TableRow>
+                <TableRow>
+                  <TableRowColumn>
+                    <RaisedButton label="EDIT" />
+                  </TableRowColumn>
+                  <TableRowColumn>7/15/2015</TableRowColumn>
+                  <TableRowColumn>Days</TableRowColumn>
                 </TableRow>
               </TableBody>
             </Table>
@@ -111,4 +89,4 @@ const _injectPropsFormActions = {
   requestLogin
 }
 
-export default connect(_injectPropsFromStore, _injectPropsFormActions)(SettingGraph);
+export default connect(_injectPropsFromStore, _injectPropsFormActions)(ScheduleSlider);

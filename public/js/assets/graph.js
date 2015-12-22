@@ -53,7 +53,7 @@ SimpleGraph = function(elemid, options) {
   var xrange =  (this.options.xmax - this.options.xmin),
       yrange2 = (this.options.ymax - this.options.ymin) / 2,
       yrange4 = yrange2 / 2,
-      datacount = this.size.width/30;
+      datacount = 12;
 
   this.points = d3.range(datacount).map(function(i) {
     return { x: i * xrange / datacount, y: this.options.ymin + yrange4 + Math.random() * yrange2 };
@@ -163,7 +163,7 @@ SimpleGraph.prototype.update = function() {
       .attr("class", function(d) { return d === self.selected ? "selected" : null; })
       .attr("cx",    function(d) { return self.x(d.x); })
       .attr("cy",    function(d) { return self.y(d.y); })
-      .attr("r", 5.0)
+      .attr("r", 15.0)
       .style("cursor", "move")
       .on("mousedown.drag",  self.datapoint_drag())
       .on("touchstart.drag", self.datapoint_drag());
@@ -379,10 +379,10 @@ SimpleGraph.prototype.yaxis_drag = function(d) {
   }
 };
 
-// $('body').on({
-//   'mousewheel': function(e) {
-//     if (e.target.id == 'el') return;
-//     e.preventDefault();
-//     e.stopPropagation();
-//   }
-// })
+$('body').on({
+  'mousewheel': function(e) {
+    if (e.target.id == 'el') return;
+    e.preventDefault();
+    e.stopPropagation();
+  }
+})
