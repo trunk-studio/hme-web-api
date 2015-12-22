@@ -20,14 +20,14 @@ export default class SettingGraph extends React.Component {
   }
 
   componentDidMount() {
-    console.log('aa');
-    let graph = new SimpleGraph("chart1", {
-      "xmax": 24, "xmin": 0,
-      "ymax": 100, "ymin": 0,
-      "title": "Light Schedule",
-      "xlabel": "Time",
-      "ylabel": "Y Axis"
-    });
+    // let graph = new SimpleGraph("chart1", {
+    //   "xmax": 24, "xmin": 0,
+    //   "ymax": 100, "ymin": 0,
+    //   "title": "Light Schedule",
+    //   "xlabel": "Time",
+    //   "ylabel": "%"
+    // });
+    //             <div id="chart1" className="chart" />
   }
 
   render() {
@@ -40,34 +40,31 @@ export default class SettingGraph extends React.Component {
       <Tabs>
         <Tab label="D3">
           <div className="self-center" style={{width: '600px'}}>
-            <div id="chart1" className="chart" />
+
             <div className="row">
               <div className="col-md-1">
                 <RadioButtonGroup name="shipSpeed" defaultSelected="not_light">
                   <RadioButton
-                    value="light"
-                    style={{marginBottom:16}} />
+                    value="light" />
                   <RadioButton
-                    value="not_light"
-                    style={{marginBottom:16}}/>
+                    value="not_light" />
                   <RadioButton
-                    value="ludicrous"
-                    style={{marginBottom:16}}/>
+                    value="ludicrous" />
                 </RadioButtonGroup>
               </div>
-              <div className="col-md-3">
-                <DatePicker hintText="7/15/2015" className="col-md-6"/>
-                <DatePicker hintText="7/15/2015" className="col-md-6"/>
-                <DatePicker hintText="7/15/2015" className="col-md-6"/>
+              <div className="col-md-4" width={200}>
+                <DatePicker hintText="7/15/2015" />
+                <DatePicker hintText="7/15/2015" />
+                <DatePicker hintText="7/15/2015" />
               </div>
-              <div className="col-md-3">
+              <div className="col-md-4">
                 <SelectField menuItems={testData}/>
                 <SelectField menuItems={testData}/>
                 <SelectField menuItems={testData}/>
+                <RaisedButton label="add" />
               </div>
             </div>
             <div className="row">
-
             </div>
           </div>
         </Tab>
