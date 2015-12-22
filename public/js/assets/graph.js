@@ -378,3 +378,11 @@ SimpleGraph.prototype.yaxis_drag = function(d) {
     self.downy = self.y.invert(p[1]);
   }
 };
+
+// $('body').on({
+//   'mousewheel': function(e) {
+//     if (e.target.id == 'el') return;
+//     e.preventDefault();
+//     e.stopPropagation();
+//   }
+// })
