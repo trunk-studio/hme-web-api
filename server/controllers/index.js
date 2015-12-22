@@ -32,14 +32,14 @@ export default class Routes {
         <head>
           <meta charset="utf-8">
           <title>Redux Demo</title>
-
-          <script>
-          </script>
+          <link rel=stylesheet type="text/css" href="assets/graph.css">
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
         </head>
         <body>
           <div id="react-view"></div>
-          <script type="application/javascript" src="assets/bundle.js"></script>
           <script type="text/javascript" src="http://mbostock.github.com/d3/d3.v2.js"></script>
+          <script type="text/javascript" src="assets/graph.js"></script>
+          <script type="application/javascript" src="assets/bundle.js"></script>
         </body>
       </html>
       `;

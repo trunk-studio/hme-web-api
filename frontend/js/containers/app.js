@@ -14,8 +14,8 @@ export default class App extends React.Component {
   render() {
     return (
       <Router>
-        <Route path="/" component={LoginPage}/>
-        <Route path="/manage" component={ManagePage}/>
+        <Route path="/" component={LoginPage} />
+        <Route path="/manage" component={ManagePage} />
         <Route path="/graph" component={SettingGraph} />
       </Router>
     );
