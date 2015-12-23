@@ -66,14 +66,13 @@ describe("hme", () => {
 
     });
 
-    it("serial Port TestDevice", async done => {
+    it.only("serial Port TestDevice", async done => {
 
       try {
         let DevID = 1;
         let result = await services.hme.TestDevice(DevID);
         console.log('TestDevice result',result);
-        result.DevID.should.be.equal(DevID);
-        result.success.should.be.true;
+        result.should.be.true;
         done();
       } catch (e) {
         done(e);
@@ -81,15 +80,36 @@ describe("hme", () => {
 
     });
 
-    it.only("serial Port SetLedCtrlMode", async done => {
+    it("serial Port SetLedCtrlMode", async done => {
 
       try {
         let DevID = 1;
-        let CtrlMode = 'Fast';
+        let CtrlMode = 'Interact';
         let result = await services.hme.SetLedCtrlMode(DevID, CtrlMode);
         console.log('SetLedCtrlMode result',result);
-        result.DevID.should.be.equal(DevID);
-        result.success.should.be.true;
+        //result.DevID.should.be.equal(DevID);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port SetLedBrighter", async done => {
+
+      try {
+        let params = {
+          DevID:1,
+          Led1Bgt:10000,
+          Led2Bgt:5000,
+          Led3Bgt:1000,
+          Led4Bgt:500,
+          Led5Bgt:100
+        }
+        let result = await services.hme.SetLedBrighter(params);
+        console.log('SetLedBrighter result',result);
+        result.should.be.true;
         done();
       } catch (e) {
         done(e);
