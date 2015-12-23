@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     classMethods: {
       associate: (models) => {
+        Slave.hasMany(models.Device);
       }
     }
   });
