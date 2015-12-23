@@ -20,79 +20,69 @@ const TableHeaderColumn = require('material-ui/lib/table/table-header-column');
 const TableRow = require('material-ui/lib/table/table-row');
 const TableRowColumn = require('material-ui/lib/table/table-row-column');
 
-export default class SettingGraph extends React.Component {
+export default class ScheduleSlider extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      schedule: [
+        {
+          startDate: '1/12/2015',
+          days: '1'
+        }, {
+          startDate: '2/12/2015',
+          days: '2'
+        }, {
+          startDate: '3/12/2015',
+          days: '3'
+        }
+      ]
+    }
   }
 
   componentDidMount () {
-    let graph = new SimpleGraph("chart1", {
-      "xmax": 12,
-      "xmin": 0,
-      "ymax": 100,
-      "ymin": 0,
-      "title": "Light Schedule",
-      "xlabel": "Time", "ylabel": "%"
-    });
+
+  }
+
+  _addRow = (e) => {
+    this.setState({
+      schedule: [
+        ...this.state.schedule, {
+          startDate: 'new',
+          days: 'new'
+        }
+      ]
+    })
   }
 
   render () {
-    let testData = [
-      {
-        payload: '1',
-        text: 'test1'
-      }, {
-        payload: '2',
-        text: 'test2'
-      }, {
-        payload: '3',
-        text: 'test3'
-      }
-    ];
+    let rows = [];
+    this.state.schedule.forEach((row,i) => {
+      rows.push(
+        <TableRow key={i}>
+          <TableRowColumn>
+            <RaisedButton label="EDIT" />
+          </TableRowColumn>
+          <TableRowColumn>{row.startDate}</TableRowColumn>
+          <TableRowColumn>{row.days}</TableRowColumn>
+        </TableRow>
+      );
+    });
     return (
       <Tabs>
         <Tab label="D3">
-          <div className="self-center" style={{
-          width: '100%'
-          }}>
-            <div id="chart1" className="chart"/>
-            <div className="row">
-              <div className="col-md-1">
-                <RadioButtonGroup name="shipSpeed" defaultSelected="not_light">
-                  <RadioButton value="light"/>
-                  <RadioButton value="not_light"/>
-                  <RadioButton value="ludicrous"/>
-                </RadioButtonGroup>
-              </div>
-              <div className="col-md-4" width={200}>
-                <DatePicker hintText="7/15/2015"/>
-                <DatePicker hintText="7/15/2015"/>
-                <DatePicker hintText="7/15/2015"/>
-              </div>
-              <div className="col-md-4">
-                <SelectField menuItems={testData}/>
-                <SelectField menuItems={testData}/>
-                <SelectField menuItems={testData}/>
-                <RaisedButton label="add"/>
-              </div>
-            </div>
-            <div className="row"></div>
+          <div className="self-center" style={{width: '100%'}}>
+            <RaisedButton label="Add" onTouchTap={this._addRow} style={{marginLeft:'80%', marginTop: '15px'}} />
             <Table>
-              <TableHeader>
+              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                 <TableRow>
+                  <TableHeaderColumn >Edit</TableHeaderColumn>
                   <TableHeaderColumn >Start Date</TableHeaderColumn>
                   <TableHeaderColumn >Days</TableHeaderColumn>
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableRowColumn>
-
-
-                  </TableRowColumn>
-                  <TableRowColumn>name</TableRowColumn>
-                </TableRow>
+              <TableBody displayRowCheckbox={false}>
+                {rows}
               </TableBody>
             </Table>
           </div>
@@ -111,4 +101,4 @@ const _injectPropsFormActions = {
   requestLogin
 }
 
-export default connect(_injectPropsFromStore, _injectPropsFormActions)(SettingGraph);
+export default connect(_injectPropsFromStore, _injectPropsFormActions)(ScheduleSlider);
