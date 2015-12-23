@@ -65,19 +65,21 @@ export default class LoginPage extends React.Component {
     return (
       <Tabs>
         <Tab label="Login">
-          <div style={{display: 'table-caption'}}>
-            <SelectField
-              onChange={this._handleRoleChanged}
-              menuItems={roles}/>
-            <TextField
-              ref="password"
-              hintText="Password Field"
-              type="password" />
-            <RaisedButton label="Login" onTouchTap={this._login}/>
-            {
-              this.props.isLoading &&
-              <RefreshIndicator size={40} left={100} top={40} status="loading" />
-            }
+          <div className="self-center" style={{width: '210px'}}>
+            <div style={{display: 'table-caption'}}>
+              <SelectField
+                onChange={this._handleRoleChanged}
+                menuItems={roles}/>
+              <TextField
+                ref="password"
+                hintText="Password Field"
+                type="password" />
+              <RaisedButton label="Login" onTouchTap={this._login} style={{float:'right', marginRight:'10%'}}/>
+              {
+                this.props.isLoading &&
+                <RefreshIndicator size={40} left={100} top={40} status="loading" />
+              }
+            </div>
           </div>
         </Tab>
       </Tabs>

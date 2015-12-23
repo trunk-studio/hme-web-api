@@ -379,10 +379,10 @@ SimpleGraph.prototype.yaxis_drag = function(d) {
   }
 };
 
-$('body').on({
-  'mousewheel': function(e) {
-    if (e.target.id == 'el') return;
-    e.preventDefault();
-    e.stopPropagation();
-  }
-})
+// $('body').on({
+//   'mousewheel': function(e) {
+//     if (e.target.id == 'el') return;
+//     e.preventDefault();
+//     e.stopPropagation();
+//   }
+// })
