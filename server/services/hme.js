@@ -131,12 +131,10 @@ export default class Hme {
         DevID:1,
         u8RxDataArry:[]
       }
-      let DevData = {
-        DevID:null,
-        DevGroup:[]
-      };
+
       //let i = 1;
-      for (let i = 0; i < 200; i++) {
+      let ii = 0;
+      for (let i = 0; i < 10; i++) {
         params.u8DevID = i;
         params2.Comm = this.encode.ClientOp(params);
         console.log('Comm=',params2.Comm);
@@ -145,10 +143,15 @@ export default class Hme {
         params3.DevID = i;
         ReDataArry = this.encode.RxDecode(params3);
         if (ReDataArry.length != 0) {
+          console.log('out =', i);
           console.log('out =',ReDataArry);
-          DevData.DevID = i;
-          DevData.DevGroup = ReDataArry[0];
+          let DevData = {
+            DevID:i,
+            DevGroup:ReDataArry[0]
+          }
           ReDevArry.push(DevData);
+          ii++;
+          console.log('out =',ReDevArry);
         }
       }
       return(ReDevArry);
@@ -159,22 +162,68 @@ export default class Hme {
 
   TestDevice = async (DevID) => {
     try {
+      let ReDataArry = [];
       let serialPort = this.serialPort;
-      let restComm = this.restComm;
+      let COpParams = {
+        u8DevID:DevID,
+        GroupNum:0,
+        sFunc:'WordWt',
+        u8DataNum:5,
+        u8Addr_Arry:[90],  //Device group
+        u8DataIn_Arry:[50, 5000, 50, 5000, 5000],
+        u8Mask_Arry:[],
+        RepeatNum:1
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:8
+      }
+      let DecodParams = {
+        FuncCT:49,
+        DevID:DevID,
+        u8RxDataArry:[]
+      }
 
-      let result = await new Promise((resolve, reject) => {
-        serialPort.write(restComm, function(err, results) {
-          if(err) return reject(err);
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
 
-          resolve(results);
-          console.log('TX1 Num =' + results);
-        });
-      });
 
-      return result;
+        return ({DevID: DevID, success: true});
+      } else {
+        return ({DevID: DevID, success: false});
+      };
+
+
     } catch (e) {
       throw e;
     }
+
+    SetLedCtrlMode = async (DevID, CtrlMode) =>{
+      let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
+      let COpParams = {
+        u8DevID:DevID,
+        GroupNum:0,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[100],  //Device group
+        u8DataIn_Arry:[CtrlModeTable[CtrlMode]],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:8
+      }
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+        return ({DevID: DevID, success: true});
+      } else {
+        return ({DevID: DevID, success: false});
+      };
+    }
+
   }
 
 

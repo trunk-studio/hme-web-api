@@ -52,13 +52,13 @@ describe("hme", () => {
 
     });
 
-    it("serial Port SearchDevice", async done => {
+    it.only("serial Port SearchDevice", async done => {
 
       try {
         let result = await services.hme.SearchDevice();
         console.log('SearchDevice result',result);
         result.should.be.Array;
-        result[0].should.have.any.keys('DevID', 'DevGroup');
+        //result[0].should.have.any.keys('DevID', 'DevGroup');
         done();
       } catch (e) {
         done(e);
@@ -66,12 +66,30 @@ describe("hme", () => {
 
     });
 
-    it.only("serial Port TestDevice", async done => {
+    it.only("serial Port SearchDevice2", async done => {
+
+      try {
+        let result = await services.hme.SearchDevice();
+        let result2 = await services.hme.SearchDevice();
+        console.log('SearchDevice result',result);
+        console.log('SearchDevice result2',result2);
+        result.should.be.Array;
+        //result[0].should.have.any.keys('DevID', 'DevGroup');
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port TestDevice", async done => {
 
       try {
         let DevID = 1;
         let result = await services.hme.TestDevice(DevID);
-        result.should.be.equal(DevID);
+        console.log('TestDevice result',result);
+        result.DevID.should.be.equal(DevID);
+        result.success.should.be.true;
         done();
       } catch (e) {
         done(e);
@@ -79,15 +97,7 @@ describe("hme", () => {
 
     });
 
-    // it.only("SearchDevice", done => {
-    //   try {
-    //     let result = services.hme.SearchDevice();
-    //     console.log(result);
-    //     done();
-    //   } catch (e) {
-    //     done(e);
-    //   }
-    // });
+
 
 
   });
