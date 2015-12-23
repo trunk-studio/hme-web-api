@@ -48,8 +48,8 @@ export default class ScheduleSlider extends React.Component {
     this.setState({
       schedule: [
         ...this.state.schedule, {
-          startDate: '1/1/2016',
-          days: '100'
+          startDate: 'new',
+          days: 'new'
         }
       ]
     })
