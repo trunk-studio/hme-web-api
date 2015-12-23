@@ -39,6 +39,7 @@ export default class Routes {
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet">
         <link rel=stylesheet type="text/css" href="assets/graph.css">
+        <link rel=stylesheet type="text/css" href="assets/nv.d3.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
         </head>
         <body>
@@ -48,7 +49,7 @@ export default class Routes {
           <script type="text/javascript" src="assets/graph.js"></script>
           <script type="application/javascript" src="assets/bundle.js"></script>
           <script>
-          document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
+            document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
           </script>
         </body>
       </html>

@@ -19,6 +19,8 @@ const CardMedia = require('material-ui/lib/card/card-media');
 const CardText = require('material-ui/lib/card/card-text');
 const CardTitle = require('material-ui/lib/card/card-title');
 
+const NVD3Chart = require('../../../public/js/assets/react-nvd3');
+
 export default class LEDColorPage extends React.Component {
 
   _cctChanged = (e, value) => {
@@ -37,21 +39,51 @@ export default class LEDColorPage extends React.Component {
        { payload: '4', text: 'Weekends' },
        { payload: '5', text: 'Weekly' },
     ];
+    let datum = [{
+          key: "Cumulative Return",
+          values: [
+            {
+              "label" : "A" ,
+              "value" : -29.765957771107
+            } ,
+            {
+              "label" : "B" ,
+              "value" : 0
+            } ,
+            {
+              "label" : "C" ,
+              "value" : 32.807804682612
+            } ,
+            {
+              "label" : "D" ,
+              "value" : 196.45946739256
+            } ,
+            {
+              "label" : "E" ,
+              "value" : 0.19434030906893
+            } ,
+            {
+              "label" : "F" ,
+              "value" : -98.079782601442
+            } ,
+            {
+              "label" : "G" ,
+              "value" : -13.925743130903
+            } ,
+            {
+              "label" : "H" ,
+              "value" : -5.1387322875705
+            }
+          ]
+        }
+      ];
     return (
       <Tabs>
         <Tab label="D3">
           <div className="self-center" style={{width: '1200px'}}>
               <div className="col-md-6">
                 <div className="row">
-                  <Card>
-                    <CardHeader
-                      title="Demo Url Based Avatar"
-                      subtitle="Subtitle"
-                      avatar="http://lorempixel.com/100/100/nature/"/>
-                    <CardMedia overlay={<CardTitle title="Title" subtitle="Subtitle"/>}>
-                      <img src="http://lorempixel.com/600/337/nature/"/>
-                    </CardMedia>
-                  </Card>
+                  <NVD3Chart id="barChart" type="discreteBarChart" datum={datum} x="label" y="value"/>
                 </div>
                 <div className="row">
                   <RaisedButton label="全開" />
