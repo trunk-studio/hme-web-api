@@ -133,7 +133,6 @@ export default class Hme {
       }
 
       //let i = 1;
-      let ii = 0;
       for (let i = 0; i < 10; i++) {
         params.u8DevID = i;
         params2.Comm = this.encode.ClientOp(params);
@@ -150,7 +149,6 @@ export default class Hme {
             DevGroup:ReDataArry[0]
           }
           ReDevArry.push(DevData);
-          ii++;
           console.log('out =',ReDevArry);
         }
       }
@@ -198,8 +196,10 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
+  }
 
-    SetLedCtrlMode = async (DevID, CtrlMode) =>{
+  SetLedCtrlMode = async (DevID, CtrlMode) => {
+    try {
       let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
       let COpParams = {
         u8DevID:DevID,
@@ -215,6 +215,11 @@ export default class Hme {
         Comm:[],
         RxLen:8
       }
+      let DecodParams = {
+        FuncCT:49,
+        DevID:DevID,
+        u8RxDataArry:[]
+      }
       TxParams.Comm = this.encode.ClientOp(COpParams);
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
       if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
@@ -222,8 +227,11 @@ export default class Hme {
       } else {
         return ({DevID: DevID, success: false});
       };
-    }
 
+
+    } catch (e) {
+      throw e;
+    }
   }
 
 

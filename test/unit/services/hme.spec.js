@@ -52,27 +52,11 @@ describe("hme", () => {
 
     });
 
-    it.only("serial Port SearchDevice", async done => {
+    it("serial Port SearchDevice", async done => {
 
       try {
         let result = await services.hme.SearchDevice();
         console.log('SearchDevice result',result);
-        result.should.be.Array;
-        //result[0].should.have.any.keys('DevID', 'DevGroup');
-        done();
-      } catch (e) {
-        done(e);
-      }
-
-    });
-
-    it.only("serial Port SearchDevice2", async done => {
-
-      try {
-        let result = await services.hme.SearchDevice();
-        let result2 = await services.hme.SearchDevice();
-        console.log('SearchDevice result',result);
-        console.log('SearchDevice result2',result2);
         result.should.be.Array;
         //result[0].should.have.any.keys('DevID', 'DevGroup');
         done();
@@ -88,6 +72,22 @@ describe("hme", () => {
         let DevID = 1;
         let result = await services.hme.TestDevice(DevID);
         console.log('TestDevice result',result);
+        result.DevID.should.be.equal(DevID);
+        result.success.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it.only("serial Port SetLedCtrlMode", async done => {
+
+      try {
+        let DevID = 1;
+        let CtrlMode = 'Fast';
+        let result = await services.hme.SetLedCtrlMode(DevID, CtrlMode);
+        console.log('SetLedCtrlMode result',result);
         result.DevID.should.be.equal(DevID);
         result.success.should.be.true;
         done();
