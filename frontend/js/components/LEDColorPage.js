@@ -58,12 +58,12 @@ export default class LEDColorPage extends React.Component {
     return (
       <Tabs>
         <Tab label="D3">
-          <div className="self-center" style={{width: '1200px'}}>
+          <div className="self-center" style={{width: '100%', margin: '50px'}}>
               <div className="col-md-6">
                 <div className="row">
-                  <LineChart ref="chart" data={chartData} width="600" height="600"/>
+                  <LineChart ref="chart" data={chartData} width="600" height="600" />
                 </div>
-                <div className="row">
+                <div className="row" style={{marginLeft:'30px'}}>
                   <RaisedButton label="全開" />
                   <RaisedButton label="6500K" />
                   <RaisedButton label="4600K" />
@@ -86,7 +86,7 @@ export default class LEDColorPage extends React.Component {
                       <RadioButton
                         value="ALL"
                         label="ALL"
-                        style={{marginBottom:16}} />
+                        style={{marginBottom:16}}/>
                       <RadioButton
                         value="GROUP"
                         label="GROUP"
@@ -100,7 +100,7 @@ export default class LEDColorPage extends React.Component {
                     <DropDownMenu menuItems={menuItems} />
                   </div>
                 </div>
-                <div className="row">
+                <div className="row" style={{marginRight:'100px'}}>
                   <Slider name="CCT" defaultValue={1} description="CCT" step="0.1" onChange={this._cctChanged}/>
                   <Slider name="Bright" defaultValue={1} description="Bright"/>
                 </div>

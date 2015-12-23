@@ -90,7 +90,7 @@ export default class EditSchedule extends React.Component {
               </div>
             </div>
             <div className="row">
-              <RaisedButton label="維護燈具參數" style={{float: 'right', margin: '15px', marginRight: '10%'}}/>
+              <RaisedButton label="維護燈具參數" style={{float: 'right', margin: '15px', marginRight: '10%'}} linkButton={true} href="#/LEDColor"/>
             </div>
             <div id="chart1" className="chart"/>
             <div className="row">
