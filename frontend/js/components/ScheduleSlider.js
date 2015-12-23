@@ -24,30 +24,55 @@ export default class ScheduleSlider extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      schedule: [
+        {
+          startDate: '1/12/2015',
+          days: '1'
+        }, {
+          startDate: '2/12/2015',
+          days: '2'
+        }, {
+          startDate: '3/12/2015',
+          days: '3'
+        }
+      ]
+    }
   }
 
   componentDidMount () {
 
   }
 
+  _addRow = (e) => {
+    this.setState({
+      schedule: [
+        ...this.state.schedule, {
+          startDate: '1/1/2016',
+          days: '100'
+        }
+      ]
+    })
+  }
+
   render () {
-    let testData = [
-      {
-        payload: '1',
-        text: 'test1'
-      }, {
-        payload: '2',
-        text: 'test2'
-      }, {
-        payload: '3',
-        text: 'test3'
-      }
-    ];
+    let rows = [];
+    this.state.schedule.forEach((row,i) => {
+      rows.push(
+        <TableRow key={i}>
+          <TableRowColumn>
+            <RaisedButton label="EDIT" />
+          </TableRowColumn>
+          <TableRowColumn>{row.startDate}</TableRowColumn>
+          <TableRowColumn>{row.days}</TableRowColumn>
+        </TableRow>
+      );
+    });
     return (
       <Tabs>
         <Tab label="D3">
           <div className="self-center" style={{width: '100%'}}>
-            <RaisedButton label="Add" style={{marginLeft:'80%', marginTop: '15px'}} />
+            <RaisedButton label="Add" onTouchTap={this._addRow} style={{marginLeft:'80%', marginTop: '15px'}} />
             <Table>
               <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                 <TableRow>
@@ -57,20 +82,7 @@ export default class ScheduleSlider extends React.Component {
                 </TableRow>
               </TableHeader>
               <TableBody displayRowCheckbox={false}>
-                <TableRow>
-                  <TableRowColumn>
-                    <RaisedButton label="EDIT" />
-                  </TableRowColumn>
-                  <TableRowColumn>7/15/2015</TableRowColumn>
-                  <TableRowColumn>15</TableRowColumn>
-                </TableRow>
-                <TableRow>
-                  <TableRowColumn>
-                    <RaisedButton label="EDIT" />
-                  </TableRowColumn>
-                  <TableRowColumn>7/15/2015</TableRowColumn>
-                  <TableRowColumn>7</TableRowColumn>
-                </TableRow>
+                {rows}
               </TableBody>
             </Table>
           </div>
