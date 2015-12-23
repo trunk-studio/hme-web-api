@@ -10,7 +10,9 @@ const LoginPage = require('../components/LoginPage');
 const ManagePage = require('../components/ManagePage');
 const LEDColorPage = require('../components/LEDColorPage');
 const SettingGraph = require('../components/SettingGraph');
-const ScheduleSlider = require('../components/ScheduleSlider');
+const ScheduleList = require('../components/ScheduleList');
+const EditSchedule = require('../components/EditSchedule');
+
 export default class App extends React.Component {
   render() {
     return (
@@ -18,8 +20,9 @@ export default class App extends React.Component {
         <Route path="/" component={LoginPage} />
         <Route path="/manage" component={ManagePage} />
         <Route path="/graph" component={SettingGraph} />
+        <Route path="/schedule/list" component={ScheduleList} />
+        <Route path="/schedule/edit" component={EditSchedule} />
         <Route path="/LEDColor" component={LEDColorPage}/>
-        <Route path="/ScheduleSlider" component={ScheduleSlider} />
       </Router>
     );
   }
