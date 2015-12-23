@@ -9,7 +9,9 @@ injectTapEventPlugin();
 const LoginPage = require('../components/LoginPage');
 const ManagePage = require('../components/ManagePage');
 const SettingGraph = require('../components/SettingGraph');
-const ScheduleSlider = require('../components/ScheduleSlider');
+const ScheduleList = require('../components/ScheduleList');
+const EditSchedule = require('../components/EditSchedule');
+
 export default class App extends React.Component {
   render() {
     return (
@@ -17,7 +19,8 @@ export default class App extends React.Component {
         <Route path="/" component={LoginPage} />
         <Route path="/manage" component={ManagePage} />
         <Route path="/graph" component={SettingGraph} />
-        <Route path="/ScheduleSlider" component={ScheduleSlider} />
+        <Route path="/schedule/list" component={ScheduleList} />
+        <Route path="/schedule/edit" component={EditSchedule} />
       </Router>
     );
   }

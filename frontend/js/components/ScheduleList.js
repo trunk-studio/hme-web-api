@@ -20,7 +20,7 @@ const TableHeaderColumn = require('material-ui/lib/table/table-header-column');
 const TableRow = require('material-ui/lib/table/table-row');
 const TableRowColumn = require('material-ui/lib/table/table-row-column');
 
-export default class ScheduleSlider extends React.Component {
+export default class ScheduleList extends React.Component {
 
   constructor(props) {
     super(props);
@@ -101,4 +101,4 @@ const _injectPropsFormActions = {
   requestLogin
 }
 
-export default connect(_injectPropsFromStore, _injectPropsFormActions)(ScheduleSlider);
+export default connect(_injectPropsFromStore, _injectPropsFormActions)(ScheduleList);
