@@ -58,7 +58,7 @@ describe("hme", () => {
         let result = await services.hme.SearchDevice();
         console.log('SearchDevice result',result);
         result.should.be.Array;
-        //result[0].should.have.any.keys('DevID', 'DevGroup');
+        result[0].should.have.any.keys('DevID', 'DevGroup');
         done();
       } catch (e) {
         done(e);
@@ -66,7 +66,7 @@ describe("hme", () => {
 
     });
 
-    it.only("serial Port TestDevice", async done => {
+    it("serial Port TestDevice", async done => {
 
       try {
         let DevID = 1;
@@ -81,13 +81,15 @@ describe("hme", () => {
     });
 
     it("serial Port SetLedCtrlMode", async done => {
-
+      // 設定燈具使用模式
+      // Normal:依照燈具FlashMemory所設定之亮度參數運作
+      // Fast:依照燈具FlashMemory所設定之亮度參數運作，但模擬時間加速
+      // Interact:反應手動設定，即時DEMO
       try {
         let DevID = 1;
         let CtrlMode = 'Interact';
         let result = await services.hme.SetLedCtrlMode(DevID, CtrlMode);
         console.log('SetLedCtrlMode result',result);
-        //result.DevID.should.be.equal(DevID);
         result.should.be.true;
         done();
       } catch (e) {
@@ -96,8 +98,9 @@ describe("hme", () => {
 
     });
 
-    it("serial Port SetLedBrighter", async done => {
-
+    it.only("serial Port SetLedBrighter", async done => {
+      // 設定LED燈亮度DEMO
+      // 在Interact模式下才有效果
       try {
         let params = {
           DevID:1,
