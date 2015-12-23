@@ -43,16 +43,6 @@ export default class LEDColorPage extends React.Component {
         labels: ["", "", "", "", "", "",],
         datasets: [
             {
-                label: "My First dataset",
-                fillColor: "rgba(220,220,220,0.2)",
-                strokeColor: "rgba(220,220,220,1)",
-                pointColor: "rgba(220,220,220,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
-                data: [65, 59, 80, 81, 56, 55, 40]
-            },
-            {
                 label: "My Second dataset",
                 fillColor: "rgba(151,187,205,0.2)",
                 strokeColor: "rgba(151,187,205,1)",
@@ -71,7 +61,7 @@ export default class LEDColorPage extends React.Component {
           <div className="self-center" style={{width: '1200px'}}>
               <div className="col-md-6">
                 <div className="row">
-                  <LineChart ref="chart" data={chartData} width="600" height="250"/>
+                  <LineChart ref="chart" data={chartData} width="600" height="600"/>
                 </div>
                 <div className="row">
                   <RaisedButton label="全開" />
