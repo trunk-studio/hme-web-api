@@ -62,14 +62,14 @@ export default class ScheduleSlider extends React.Component {
                     <RaisedButton label="EDIT" />
                   </TableRowColumn>
                   <TableRowColumn>7/15/2015</TableRowColumn>
-                  <TableRowColumn>Days</TableRowColumn>
+                  <TableRowColumn>15</TableRowColumn>
                 </TableRow>
                 <TableRow>
                   <TableRowColumn>
                     <RaisedButton label="EDIT" />
                   </TableRowColumn>
                   <TableRowColumn>7/15/2015</TableRowColumn>
-                  <TableRowColumn>Days</TableRowColumn>
+                  <TableRowColumn>7</TableRowColumn>
                 </TableRow>
               </TableBody>
             </Table>
