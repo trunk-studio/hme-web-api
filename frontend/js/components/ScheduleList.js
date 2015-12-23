@@ -61,7 +61,7 @@ export default class ScheduleList extends React.Component {
       rows.push(
         <TableRow key={i}>
           <TableRowColumn>
-            <RaisedButton label="EDIT" />
+            <RaisedButton label="EDIT" linkButton={true} href="#/schedule/edit"/>
           </TableRowColumn>
           <TableRowColumn>{row.startDate}</TableRowColumn>
           <TableRowColumn>{row.days}</TableRowColumn>
