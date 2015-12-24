@@ -21,16 +21,12 @@ module.exports = (sequelize, DataTypes) => {
     RE:{
       type: DataTypes.INTEGER,
       allowNull: false
-    },
-    group:{
-      type: DataTypes.STRING
-    },
-    single:{
-      type: DataTypes.STRING
     }
   }, {
     classMethods: {
       associate: (models) => {
+        ScheduleDetailConfig.belongsTo(models.Group);
+        ScheduleDetailConfig.belongsTo(models.Device);
       }
     }
   });
