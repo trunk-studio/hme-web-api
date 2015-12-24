@@ -58,11 +58,6 @@ module.exports = {
         loader: ExtractTextPlugin.extract("style-loader", "css-loader")
       },
       {
-        test: /\.scss$/,
-        include: [path.resolve(__dirname, './frontend/sass')],
-        loaders: ["style", "css?sourceMap", "sass?sourceMap"]
-      },
-      {
         test: /\.less$/,
         loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
       },
@@ -70,6 +65,9 @@ module.exports = {
       {
         test: /.(png|woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'url-loader?limit=100000'
+      },{
+        test: /\.json$/,
+        loader: 'json-loader'
       }
     ]
   }

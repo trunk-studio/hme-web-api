@@ -1,6 +1,5 @@
 
-describe("hme", () => {
-  describe("with seriel port", () => {
+describe("hme with seriel port", () => {
     before(async done => {
       try {
         await services.hme.connectSerialPort();
@@ -100,8 +99,13 @@ describe("hme", () => {
 
     });
 
+<<<<<<< HEAD:test/unit/services/hme.spec.js
     it.only("serial Port SetLedBrighter", async done => {
       // 設定DEMO時的LED燈亮度
+=======
+    it("serial Port SetLedBrighter", async done => {
+      // 設定LED燈亮度DEMO
+>>>>>>> 35746fcbb767b6446c29aaac08c6a7ba5420a7d2:test/unit/services/hme.withSerial.spec.js
       // 在Interact模式下才有效果
       try {
         let params = {
@@ -121,11 +125,8 @@ describe("hme", () => {
       }
 
     });
-
-
-
-
   });
+<<<<<<< HEAD:test/unit/services/hme.spec.js
 
   describe("without seriel port", () => {
 
@@ -220,4 +221,6 @@ describe("hme", () => {
 
 
 
+=======
+>>>>>>> trunk-studio-master:test/unit/services/hme.withSerial.spec.js
 });

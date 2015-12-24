@@ -23,34 +23,40 @@ export default class ManagePage extends React.Component {
     return (
       <Tabs>
         <Tab label="TEST">
-          <div style={{display: 'table-caption'}}>
-            <div style={{display: 'inline-flex'}}>
-              <RaisedButton label="SCAN" />
-            </div>
-            <div style={{display: 'inline-flex'}}>
-              <SelectField menuItems={scanResult}/>
-              <RaisedButton label="TEST" />
-            </div>
-            <div style={{display: 'inline-flex'}}>
-              <SelectField menuItems={groups}/>
-              <RaisedButton label="Grouping" />
+          <div className="self-center" style={{width: '350px'}}>
+            <div style={{display: 'table-caption'}}>
+              <div style={{display: 'inline-flex'}}>
+                <RaisedButton label="SCAN" />
+              </div>
+              <div style={{display: 'inline-flex'}}>
+                <SelectField menuItems={scanResult}/>
+                <RaisedButton label="TEST" />
+              </div>
+              <div style={{display: 'inline-flex'}}>
+                <SelectField menuItems={groups}/>
+                <RaisedButton label="Grouping" />
+              </div>
             </div>
           </div>
         </Tab>
         <Tab label="Group Test">
-          <div style={{display: 'table-caption'}}>
-            <SelectField menuItems={groups}/>
-            <RaisedButton label="TEST" />
+          <div className="self-center" style={{width: '220px'}}>
+            <div style={{display: 'table-caption'}}>
+              <SelectField menuItems={groups}/>
+              <RaisedButton label="TEST" />
+            </div>
           </div>
         </Tab>
         <Tab label="Report Setting">
-          <div style={{display: 'table-caption'}}>
-            <TextField
-              hintText="Report Email"
-              floatingLabelText="Report Email"
-              type="text" />
-            <SelectField menuItems={groups}/>
-            <RaisedButton label="Add in" />
+          <div className="self-center" style={{width: '200px'}}>
+            <div style={{display: 'table-caption'}}>
+              <TextField
+                hintText="Report Email"
+                floatingLabelText="Report Email"
+                type="text" />
+              <SelectField menuItems={groups}/>
+              <RaisedButton label="Add in" style={{float: 'right', marginRight:'10%'}}/>
+            </div>
           </div>
         </Tab>
       </Tabs>
