@@ -48,9 +48,9 @@ export default class Routes {
           <script type="text/javascript" src="http://mbostock.github.com/d3/d3.v2.js"></script>
           <script type="text/javascript" src="assets/graph.js"></script>
           <script type="application/javascript" src="assets/bundle.js"></script>
-          <script>
+          <!--<script>
             document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
-          </script>
+          </script>-->
         </body>
       </html>
       `;

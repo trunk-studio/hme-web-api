@@ -5,6 +5,7 @@ const SelectField = require('material-ui/lib/select-field');
 const TextField = require('material-ui/lib/text-field');
 const Tabs = require('material-ui/lib/tabs/tabs');
 const Tab = require('material-ui/lib/tabs/tab');
+const ScheduleList = require('./ScheduleList');
 
 export default class ManagePage extends React.Component {
   render() {
@@ -58,6 +59,9 @@ export default class ManagePage extends React.Component {
               <RaisedButton label="Add in" style={{float: 'right', marginRight:'10%'}}/>
             </div>
           </div>
+        </Tab>
+        <Tab label='Schedule List'>
+          <ScheduleList />
         </Tab>
       </Tabs>
     );
