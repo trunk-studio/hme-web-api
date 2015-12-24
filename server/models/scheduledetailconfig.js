@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
     RE:{
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    CCT:{
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    Bright:{
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     classMethods: {
