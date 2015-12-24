@@ -152,10 +152,10 @@ describe("hme", () => {
 
     it("ClientOp.CopBitInv", done => {
       try {
-        //CopWordRd = function(u8DevID, GroupNum, u8FuncCT, u8DataNum, u8Addr_Arry)
+        //CopWordRd = function(u8DevID, GroupID, u8FuncCT, u8DataNum, u8Addr_Arry)
         let params = {
           u8DevID:0xa55,
-          GroupNum:0x00,
+          GroupID:0x00,
           sFunc:'BitInv',
           u8DataNum:2,
           u8Addr_Arry:[0xf125,0x123],

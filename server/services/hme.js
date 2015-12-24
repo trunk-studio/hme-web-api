@@ -80,14 +80,12 @@ export default class Hme {
         Rxarry.length = 0;
         serialPort.write(Comm, function(err, results) {
           if(err) return reject(err);
-        console.log('TX=',Comm);
         serialPort.drain(function (error) {
           var T1id = setInterval(function(){
             T1num++;
             if (Rxarry.length == RxLen) {
               results = Rxarry;
               resolve(results);
-              console.log('RX arry=',Rxarry);
               clearInterval(T1id);
             } else if (T1num > 5) {
               console.log('TimeOut!');
@@ -117,7 +115,7 @@ export default class Hme {
       let ReDataArry = [];
       let params = {
         u8DevID:1,
-        GroupNum:0,
+        GroupID:0,
         sFunc:'WordRd',
         u8DataNum:1,
         u8Addr_Arry:[1031],  //Device group
@@ -161,7 +159,8 @@ export default class Hme {
     }
   }
 
-  TestDevice = async (DevID) => {
+
+  TestDevice = async (DevID, GroupID) => {
     try {
       let BrightArry = [5000, 10, 5000, 10, 5000, 10];
       let serialPort = this.serialPort;
@@ -169,7 +168,7 @@ export default class Hme {
 
       let params = {
         DevID:DevID,
-        GroupNum = 0,
+        GroupID:0,
         Led1Bgt:0,
         Led2Bgt:0,
         Led3Bgt:0,
@@ -207,12 +206,12 @@ export default class Hme {
   }
 
 
-  SetLedCtrlMode = async (DevID, GroupNum, CtrlMode) => {
+  SetLedCtrlMode = async (DevID, GroupID, CtrlMode) => {
     try {
       let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
       let COpParams = {
         u8DevID:DevID,
-        GroupNum:GroupNum,
+        GroupID:GroupID,
         sFunc:'WordWt',
         u8DataNum:1,
         u8Addr_Arry:[100],  //Device group
@@ -244,11 +243,11 @@ export default class Hme {
     }
   }
 
-  SetLedBrighter = async ({DevID, GroupNum, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt}) => {
+  SetLedBrighter = async ({DevID, GroupID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt}) => {
     try {
       let COpParams = {
         u8DevID:DevID,
-        GroupNum:GroupNum,
+        GroupID:GroupID,
         sFunc:'WordWt',
         u8DataNum:5,
         u8Addr_Arry:[90],
@@ -265,7 +264,6 @@ export default class Hme {
         DevID:DevID,
         u8RxDataArry:[]
       }
-      console.log(COpParams);
       TxParams.Comm = this.encode.ClientOp(COpParams);
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
       if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
@@ -285,12 +283,12 @@ export default class Hme {
 
   }
 
-  FlashMemoryWrite = async (DevID, GroupNum) => {
+  FlashMemoryWrite = async (DevID, GroupID) => {
     try {
       let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
       let COpParams = {
         u8DevID:DevID,
-        GroupNum:0,
+        GroupID:0,
         sFunc:'WordWt',
         u8DataNum:1,
         u8Addr_Arry:[100],  //Device group
