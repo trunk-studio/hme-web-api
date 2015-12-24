@@ -20,8 +20,9 @@ const TableHeaderColumn = require('material-ui/lib/table/table-header-column');
 const TableRow = require('material-ui/lib/table/table-row');
 const TableRowColumn = require('material-ui/lib/table/table-row-column');
 const Slider = require('material-ui/lib/slider');
+const LineChart = require("react-chartjs").Line;
 
-export default class EditSchedule extends React.Component {
+export default class ScheduleDetail extends React.Component {
 
   constructor(props) {
     super(props);
@@ -42,14 +43,7 @@ export default class EditSchedule extends React.Component {
   }
 
   componentDidMount () {
-    let graph = new SimpleGraph("chart1", {
-      "xmax": 12,
-      "xmin": 0,
-      "ymax": 100,
-      "ymin": 0,
-      "title": "Light Schedule",
-      "xlabel": "Time", "ylabel": "%"
-    });
+
   }
 
   _addRow = (e) => {
@@ -64,6 +58,21 @@ export default class EditSchedule extends React.Component {
   }
 
   render () {
+    let chartData = {
+      labels: ["0", "2", "4", "6", "8", "12"],
+      datasets: [
+          {
+              label: "My Second dataset",
+              fillColor: "rgba(151,187,205,0.2)",
+              strokeColor: "rgba(151,187,205,1)",
+              pointColor: "rgba(151,187,205,1)",
+              pointStrokeColor: "#fff",
+              pointHighlightFill: "#fff",
+              pointHighlightStroke: "rgba(151,187,205,1)",
+              data: [28, 48, 40, 19, 86, 27, 90]
+          }
+      ]
+    };
     let rows = [];
     this.state.schedule.forEach((row,i) => {
       rows.push(
@@ -79,7 +88,7 @@ export default class EditSchedule extends React.Component {
     });
     return (
       <Tabs>
-        <Tab label="Edit Schedule">
+        <Tab label="Schedule Detail">
           <div className="self-center" style={{width: '100%'}}>
             <div className="row" style={{padding: '15px'}}>
               <div className="col-md-offset-2 col-xs-offset-2 col-md-4 col-sm-4 col-xs-4">
@@ -92,7 +101,13 @@ export default class EditSchedule extends React.Component {
             <div className="row">
               <RaisedButton label="維護燈具參數" style={{float: 'right', margin: '15px', marginRight: '10%'}} linkButton={true} href="#/LEDColor"/>
             </div>
-            <div id="chart1" className="chart"/>
+            <div className="row">
+              <LineChart ref="chart" data={chartData} style={{width:'80%'}} className="center-self"/>
+              <div className="center-self" style={{width:'80%'}}>
+                <div style={{width: '20px'}} />
+                <Slider name="test" value={0.5} className="center-self"/>
+              </div>
+            </div>
             <div className="row">
               <RaisedButton label="Add" onTouchTap={this._addRow}  style={{float: 'right', margin: '15px', marginRight: '10%'}}/>
             </div>
@@ -108,6 +123,7 @@ export default class EditSchedule extends React.Component {
               </TableBody>
             </Table>
           </div>
+
         </Tab>
       </Tabs>
     );
@@ -123,4 +139,4 @@ const _injectPropsFormActions = {
   requestLogin
 }
 
-export default connect(_injectPropsFromStore, _injectPropsFormActions)(EditSchedule);
+export default connect(_injectPropsFromStore, _injectPropsFormActions)(ScheduleDetail);

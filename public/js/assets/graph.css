@@ -38,3 +38,17 @@ circle.selected:hover {
     margin-left: auto;
     margin-right: auto;
   }
+
+
+/*center*/
+.center-self {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.center-self.horizontal-slider {
+  width: 80%;
+}
