@@ -85,6 +85,8 @@ describe("hme", () => {
       // Normal:依照燈具FlashMemory所設定之亮度參數運作
       // Fast:依照燈具FlashMemory所設定之亮度參數運作，但模擬時間加速
       // Interact:反應手動設定，即時DEMO
+      // 一開機是進入Normal
+      // 燈具維護這類使用者可以直接操作UI讓燈具產生反應的模式是Interact
       try {
         let DevID = 1;
         let CtrlMode = 'Interact';
@@ -99,7 +101,7 @@ describe("hme", () => {
     });
 
     it.only("serial Port SetLedBrighter", async done => {
-      // 設定LED燈亮度DEMO
+      // 設定DEMO時的LED燈亮度
       // 在Interact模式下才有效果
       try {
         let params = {

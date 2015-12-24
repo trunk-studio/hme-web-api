@@ -111,7 +111,6 @@ export default class Hme {
       throw e;
     }
   }
-
   SearchDevice = async () => {
     try {
       let ReDevArry = [];
@@ -170,6 +169,7 @@ export default class Hme {
 
       let params = {
         DevID:DevID,
+        GroupNum = 0,
         Led1Bgt:0,
         Led2Bgt:0,
         Led3Bgt:0,
@@ -207,12 +207,12 @@ export default class Hme {
   }
 
 
-  SetLedCtrlMode = async (DevID, CtrlMode) => {
+  SetLedCtrlMode = async (DevID, GroupNum, CtrlMode) => {
     try {
       let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
       let COpParams = {
         u8DevID:DevID,
-        GroupNum:0,
+        GroupNum:GroupNum,
         sFunc:'WordWt',
         u8DataNum:1,
         u8Addr_Arry:[100],  //Device group
@@ -244,11 +244,11 @@ export default class Hme {
     }
   }
 
-  SetLedBrighter = async ({DevID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt}) => {
+  SetLedBrighter = async ({DevID, GroupNum, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt}) => {
     try {
       let COpParams = {
         u8DevID:DevID,
-        GroupNum:0,
+        GroupNum:GroupNum,
         sFunc:'WordWt',
         u8DataNum:5,
         u8Addr_Arry:[90],
@@ -283,6 +283,43 @@ export default class Hme {
 
 
 
+  }
+
+  FlashMemoryWrite = async (DevID, GroupNum) => {
+    try {
+      let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
+      let COpParams = {
+        u8DevID:DevID,
+        GroupNum:0,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[100],  //Device group
+        u8DataIn_Arry:[CtrlModeTable[CtrlMode]],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:8
+      }
+      let DecodParams = {
+        FuncCT:49,
+        DevID:DevID,
+        u8RxDataArry:[]
+      }
+
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+        return (true);
+      } else {
+        return (false);
+      };
+
+
+    } catch (e) {
+      throw e;
+    }
   }
 
 
