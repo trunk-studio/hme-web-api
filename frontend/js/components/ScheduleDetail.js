@@ -56,6 +56,9 @@ export default class ScheduleDetail extends React.Component {
       ]
     })
   }
+  _slide = (e, value) => {
+    console.log(value);
+  }
 
   render () {
     let chartData = {
@@ -103,9 +106,14 @@ export default class ScheduleDetail extends React.Component {
             </div>
             <div className="row">
               <LineChart ref="chart" data={chartData} style={{width:'80%'}} className="center-self"/>
-              <div className="center-self" style={{width:'80%'}}>
-                <div style={{width: '20px'}} />
-                <Slider name="test" value={0.5} className="center-self"/>
+              {/*<div className="col-xs-2" style={{padding: '0px'}}>
+                <Slider name="test" value={0.5} className="straight-slider"/>
+              </div>*/}
+            </div>
+            <div className="row">
+              <div className="center-self" style={{width:'80%', paddingLeft: '28px'}}>
+                <Slider ref="timeSlider" name="test" value={0.5} className="center-self"
+                  onChange={this._slide}/>
               </div>
             </div>
             <div className="row">

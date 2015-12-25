@@ -52,3 +52,9 @@ circle.selected:hover {
 .center-self.horizontal-slider {
   width: 80%;
 }
+
+.straight-slider {
+  -ms-transform: rotate(270deg);
+  -webkit-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
