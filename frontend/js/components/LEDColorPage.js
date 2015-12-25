@@ -55,7 +55,7 @@ export default class LEDColorPage extends React.Component {
         <AppBar
           title="Title"
           iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-          iconElementRight={<FlatButton label="Save"/>}
+          iconElementRight={<FlatButton label="Save" onTouchTap={this.backClick} />}
           onLeftIconButtonTouchTap={this.backClick} />
         <div className="self-center" style={{width: '100%', margin: '50px'}}>
             <div className="col-md-6">

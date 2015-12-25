@@ -25,6 +25,7 @@ export default class Routes {
     publicRoute.get('/rest/hme/searchDevice', HmeController.searchDevice);
 
     publicRoute.post('/rest/hme/login', UserController.login);
+    publicRoute.post('/rest/schedule/config/update', UserController.login);
 
     publicRoute.get('/', function *() {
       const HTML = `
