@@ -27,7 +27,7 @@
     "moment": "^2.10.6",
     "mysql": "^2.9.0",
     "react": "^0.14.3",
-    "react-chartjs": "^0.6.0",
+    "react-chartjs": "https://github.com/jhudson8/react-chartjs.git#0.7.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.0",
     "react-router": "^1.0.1",
