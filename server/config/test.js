@@ -1,12 +1,12 @@
 export default {
-  'port': 3000,
+  'port': 3001,
+  'domain': 'localhost',
   'connection': {
-    'dialect': 'sqlite',
-    'storage': './db.development.sqlite',
-    'username': null,
-    'password': null,
-    'database': null,
-    'force': true
-
+    'username': 'admin',
+    'password': 'root',
+    'database': 'mobious',
+    'host': '127.0.0.1',
+    'dialect': 'mysql',
+    'force': false
   }
 };

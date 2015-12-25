@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     classMethods: {
       associate: (models) => {
         ScheduleDetail.belongsTo(models.Schedule);
+        ScheduleDetail.hasMany(models.ScheduleDetailConfig)
       }
     }
   });

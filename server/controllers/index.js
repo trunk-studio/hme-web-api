@@ -1,6 +1,7 @@
 
 import UserController from './user';
 import HmeController from './hme';
+import ScheduleController from './schedule'
 
 import Router from 'koa-router';
 import fs from 'fs';
@@ -25,7 +26,8 @@ export default class Routes {
     publicRoute.get('/rest/hme/searchDevice', HmeController.searchDevice);
 
     publicRoute.post('/rest/hme/login', UserController.login);
-    publicRoute.post('/rest/schedule/config/update', UserController.login);
+
+    publicRoute.post('/rest/schedule/config/update', ScheduleController.configUpdate);
 
     publicRoute.get('/', function *() {
       const HTML = `
