@@ -1,7 +1,7 @@
 
 describe("Schedule", () => {
 
-  describe.only("Detail Config", () => {
+  describe("Detail Config", () => {
     let scheduleDetailConfig
     before(async (done) => {
       try {
