@@ -4,7 +4,7 @@ const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js')
 
 const LineChart = require("react-chartjs").Line;
 
-export default class LEDColorPage extends React.Component {
+export default class ScheduleDetailConfig extends React.Component {
 
   _cctChanged = (e, value) => {
     console.log(value,this.refs.colorSlider,this.refs.chart);
