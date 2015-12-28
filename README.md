@@ -25,7 +25,8 @@ local docker run master slave
 make dev-env-build
 eval `docker-machine env --swarm hme-master`
 docker network create --driver overlay hme-net
-docker-compose run build
+rm -rf node_modules/
+docker-compose run --rm build
 docker-compose up -d mysql
 ```
 
@@ -36,4 +37,16 @@ docker-compose run --rm --service-ports web-master
 docker-compose run --rm --service-ports web-slave-01
 ```
 
-### sample from master access slave
+### test master access slave
+
+```
+docker-compose up -d web-slave-01
+docker-compose run --rm --service-ports web-master /bin/bash -l
+```
+
+### test slave access master
+
+```
+docker-compose up -d web-master
+docker-compose run --rm --service-ports web-slave-01 /bin/bash -l
+```
