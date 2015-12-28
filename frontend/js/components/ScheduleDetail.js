@@ -100,7 +100,7 @@ export default class ScheduleDetail extends React.Component {
             <div className="row">
               <RaisedButton label="維護燈具參數" style={{
               float: 'right', margin: '15px', marginRight: '10%'
-              }} linkButton={true} href="#/LEDColor"/>
+              }} linkButton={true} href="#/schedule/config"/>
             </div>
             <div className="row">
               <LineChart ref="chart" data={chartData} style={{
