@@ -28,6 +28,7 @@ export default class Routes {
     publicRoute.post('/rest/hme/login', UserController.login);
 
     publicRoute.post('/rest/schedule/config/update', ScheduleController.configUpdate);
+    publicRoute.get('/rest/schedule/config/:id', ScheduleController.getConfigDetail);
 
     publicRoute.get('/', function *() {
       const HTML = `

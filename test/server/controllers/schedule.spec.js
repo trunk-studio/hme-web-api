@@ -52,5 +52,15 @@ describe("Schedule", () => {
         done(e);
       }
     });
+
+    it("update should success", async (done) => {
+      try {
+        let result = await request.get('/rest/schedule/config/'+scheduleDetailConfig.id);
+        result.datasets[0].data.should.be.not.Null();
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
   });
 });
