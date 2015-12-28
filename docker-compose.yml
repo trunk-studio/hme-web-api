@@ -72,6 +72,7 @@ web-master:
     - "MYSQL_USER=admin"
     - "MYSQL_PASS=root"
     - "MASTER=true"
+    - "SLAVE_01_HOST=web-slave-01"
     - "constraint:node==hme-master"
 
 
