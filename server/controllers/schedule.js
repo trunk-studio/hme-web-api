@@ -53,3 +53,27 @@ exports.getConfigDetail = function *() {
   }
 
 }
+
+
+exports.createSchedule = function *() {
+  try {
+    console.log("==== createSchedule ===");
+    let newSchedule = this.request.body;
+    let result = yield services.schedule.create(newSchedule);
+    this.body =  result;
+  } catch(e) {
+    console.error("delete user error", e);
+  }
+
+}
+
+exports.getAllSchedule = function *() {
+  try {
+    console.log("==== getAllSchedule ===");
+    let result = yield services.schedule.findAll();
+    this.body =  result;
+  } catch(e) {
+    console.error("delete user error", e);
+  }
+
+}
