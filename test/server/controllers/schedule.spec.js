@@ -1,5 +1,5 @@
 
-describe.only("Schedule", () => {
+describe("Schedule", () => {
 
   describe("Detail Config", () => {
     let scheduleDetailConfig

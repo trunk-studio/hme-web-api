@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-describe.skip("schedule", () => {
+describe.only("schedule", () => {
 
   it("create", async(done) => {
     try {
@@ -11,7 +11,6 @@ describe.skip("schedule", () => {
       let result = await services.schedule.create(newSchedule);
       result.dataValues.should.have.any.keys('StartDate', 'Days');
       done();
-
     } catch (e) {
       done(e);
     }
@@ -26,6 +25,7 @@ describe.skip("schedule", () => {
           Days: 15
         };
         await models.Schedule.create(newSchedule);
+        done();
       } catch (e) {
         done(e);
       }
@@ -34,7 +34,7 @@ describe.skip("schedule", () => {
     it( "All" , async done => {
       try {
         let result = await services.schedule.findAll();
-        result.toJSON()[0].should.have.any.keys('StartDate', 'Days');
+        result[0].dataValues.should.have.any.keys('StartDate', 'Days');
         done();
       } catch (e) {
         done(e);
