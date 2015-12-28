@@ -1,5 +1,5 @@
 
-describe("Schedule", () => {
+describe.only("Schedule", () => {
 
   describe("Detail Config", () => {
     let scheduleDetailConfig
@@ -37,6 +37,7 @@ describe("Schedule", () => {
     it("update should success", async (done) => {
       try {
         let data = {
+          id: scheduleDetailConfig.id,
           WW: 199,
           DB: 299,
           BL: 399,
@@ -46,7 +47,7 @@ describe("Schedule", () => {
           Bright: 799,
         }
         let result = await request.post('/rest/schedule/config/update').send(data);
-        result.WW.should.be.not.equal(scheduleDetailConfig.WW);
+        result.body.WW.should.be.not.equal(scheduleDetailConfig.WW);
         done();
       } catch (e) {
         done(e);
@@ -56,7 +57,8 @@ describe("Schedule", () => {
     it("get config should success", async (done) => {
       try {
         let result = await request.get('/rest/schedule/config/'+scheduleDetailConfig.id);
-        result.datasets[0].data.should.be.not.Null();
+        console.log(result.body);
+        result.body.datasets[0].data.should.be.Array;
         done();
       } catch (e) {
         done(e);
