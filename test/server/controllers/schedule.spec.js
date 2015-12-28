@@ -53,7 +53,7 @@ describe("Schedule", () => {
       }
     });
 
-    it("update should success", async (done) => {
+    it("get config should success", async (done) => {
       try {
         let result = await request.get('/rest/schedule/config/'+scheduleDetailConfig.id);
         result.datasets[0].data.should.be.not.Null();
