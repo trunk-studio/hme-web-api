@@ -80,5 +80,5 @@ circle.selected:hover {
 }
 
 #react-view {
-  overflow: hidden;
+  overflow-x: hidden;
 }

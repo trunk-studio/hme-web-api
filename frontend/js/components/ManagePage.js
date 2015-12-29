@@ -1,4 +1,6 @@
 import React                from 'react';
+import { connect } from 'react-redux'
+import { requestScan, receivedScan } from '../actions/TestActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -8,13 +10,22 @@ const Tab = require('material-ui/lib/tabs/tab');
 const ScheduleList = require('./ScheduleList');
 
 export default class ManagePage extends React.Component {
-  render() {
 
-    let scanResult = [
-       { payload: '1', text: 'm1' },
-       { payload: '2', text: 'm2' },
-       { payload: '3', text: 'm3' },
-    ];
+
+  _handleScan = (e) => {
+    this.props.requestScan();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // if(this.props.deviceList.length) {
+    //   let scanResult = [];
+    //   for(let device of this.props.deviceList) {
+    //       scanResult.push({payload: 'DevID', text: 'DevID'});
+    //   }
+    // }
+  }
+
+  render() {
 
     let groups = [
        { payload: '1', text: 'group1' },
@@ -27,10 +38,10 @@ export default class ManagePage extends React.Component {
           <div className="self-center" style={{width: '350px'}}>
             <div style={{display: 'table-caption'}}>
               <div style={{display: 'inline-flex'}}>
-                <RaisedButton label="SCAN" />
+                <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField menuItems={scanResult}/>
+                <SelectField menuItems={this.props.scanResult}/>
                 <RaisedButton label="TEST" />
               </div>
               <div style={{display: 'inline-flex'}}>
@@ -67,3 +78,23 @@ export default class ManagePage extends React.Component {
     );
   }
 }
+
+function _injectPropsFromStore(state) {
+  let { testDevice } = state;
+  let scanResult = [];
+  if(testDevice.deviceList) {
+    for(let device of testDevice.deviceList) {
+      scanResult.push({payload: device.DevID, text: device.DevID});
+    }
+  }
+  return {
+    scanResult: scanResult
+  };
+}
+
+const _injectPropsFromActions = {
+  requestScan
+}
+
+
+export default connect(_injectPropsFromStore, _injectPropsFromActions)(ManagePage);
