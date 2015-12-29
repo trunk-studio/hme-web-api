@@ -79,12 +79,12 @@ export default class LoginPage extends React.Component {
                 type="password"
                 onEnterKeyDown={this._login}/>
             </div>
-            <div className="row">
+            <div className="row" style={{height: '40px'}}>
               <RaisedButton label="Login" onTouchTap={this._login} style={{float:'right', marginRight:'10%'}}/>
-              {
+              {/*
                 this.props.isLoading &&
                 <RefreshIndicator size={40} left={100} top={40} status="loading" />
-              }
+              */}
             </div>
           </div>
         </Tab>
