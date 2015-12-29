@@ -1,5 +1,5 @@
 
-describe.only("Schedule", () => {
+describe("Schedule", () => {
 
   let newSchedule, scheduleDetail;
   before( async done => {
