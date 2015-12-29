@@ -38,3 +38,47 @@ circle.selected:hover {
     margin-left: auto;
     margin-right: auto;
   }
+
+
+/*center*/
+.center-self {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.center-self.horizontal-slider {
+  width: 80%;
+}
+
+.straight-slider {
+  -ms-transform: rotate(270deg);
+  -webkit-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
+
+
+/* vertical slider */
+
+.vertical-slider {
+  /* IE 9 */
+  -webkit-transform: rotate(270deg);
+  /* Chrome, Safari, Opera */
+  transform: rotate(270deg);
+  width: 164px;
+  float: right;
+  margin-right: 20px;
+}
+
+.vertical-slider .rc-slider-mark-text {
+  /* IE 9 */
+  -webkit-transform: rotate(90deg);
+  /* Chrome, Safari, Opera */
+  transform: rotate(90deg);
+}
+
+#react-view {
+  overflow: hidden;
+}

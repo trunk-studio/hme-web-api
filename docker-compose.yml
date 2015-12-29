@@ -60,3 +60,88 @@ web:
     SERIALPORT: '/dev/ttyUSB0'
 
   restart: always
+
+web-master:
+  container_name: hme-master
+  image: node:4
+  command: "/bin/bash -l -c 'npm start'"
+  net: "hme-net"
+
+  environment:
+    - "MYSQL_HOST=mysql"
+    - "MYSQL_USER=admin"
+    - "MYSQL_PASS=root"
+    - "MASTER=true"
+    - "SLAVE_01_HOST=web-slave-01"
+    - "constraint:node==hme-master"
+
+
+  ports:
+      - "80:3000"
+  working_dir: /app
+  volumes:
+    - ./:/app
+
+  restart: always
+
+web-slave-01:
+
+  container_name: web-slave-01
+  image: node:4
+  command: "/bin/bash -l -c 'npm start'"
+
+  net: "hme-net"
+
+  environment:
+    - "MYSQL_HOST=mysql"
+    - "MYSQL_USER=admin"
+    - "MYSQL_PASS=root"
+    - "MASTER=false"
+    - "MASTER_HOST=hme-master"
+    - "constraint:node==hme-slave-01"
+
+  ports:
+      - "80:3000"
+  working_dir: /app
+  volumes:
+    - ./:/app
+
+  restart: always
+
+mysql:
+  container_name: mysql
+  image: dgraziotin/mysql
+  volumes:
+    - ../database:/var/lib/mysql/
+
+  net: "hme-net"
+
+  ports:
+    - "3306:3306"
+
+
+  environment:
+    - "MYSQL_ADMIN_PASS=root"
+    - "MYSQL_USER_DB=hme"
+    - "CREATE_MYSQL_BASIC_USER_AND_DB=true"
+    - "constraint:node==hme-master"
+
+  restart: always
+
+
+# web:
+#   container_name: web
+#   image: bfirsh/compose-mongodb-demo
+#   net: "hme-net"
+#   environment:
+#     - "MONGO_HOST=mongo"
+#     - "constraint:node==hme-slave-01"
+#   ports:
+#       - "80:5000"
+# mongo:
+#   container_name: mongo
+#   image: mongo
+#   net: "hme-net"
+#   environment:
+#     - "MONGO_HOST=mongo"
+#     - "constraint:node==hme-master"

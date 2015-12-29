@@ -1,6 +1,7 @@
 
 import UserController from './user';
 import HmeController from './hme';
+import ScheduleController from './schedule'
 
 import Router from 'koa-router';
 import fs from 'fs';
@@ -26,6 +27,15 @@ export default class Routes {
 
     publicRoute.post('/rest/hme/login', UserController.login);
 
+    publicRoute.post('/rest/schedule/create', ScheduleController.createSchedule);
+    publicRoute.get('/rest/schedule/findAll', ScheduleController.getAllSchedule);
+    publicRoute.get('/rest/schedule/:id', ScheduleController.getOneSchedule);
+    publicRoute.post('/rest/schedule/update/day', ScheduleController.updateScheduleDay);
+    publicRoute.post('/rest/schedule/update/detail', ScheduleController.updateScheduleDetail);
+
+    publicRoute.post('/rest/schedule/config/update', ScheduleController.configUpdate);
+    publicRoute.get('/rest/schedule/config/:id', ScheduleController.getConfigDetail);
+
     publicRoute.get('/', function *() {
       const HTML = `
       <!DOCTYPE html>
@@ -41,6 +51,7 @@ export default class Routes {
         <link rel=stylesheet type="text/css" href="assets/graph.css">
         <link rel=stylesheet type="text/css" href="assets/nv.d3.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <link rel=stylesheet type="text/css" href="assets/index.css">
         </head>
         <body>
           <div id="react-view"></div>
@@ -48,9 +59,9 @@ export default class Routes {
           <script type="text/javascript" src="http://mbostock.github.com/d3/d3.v2.js"></script>
           <script type="text/javascript" src="assets/graph.js"></script>
           <script type="application/javascript" src="assets/bundle.js"></script>
-          <script>
+          <!--<script>
             document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
-          </script>
+          </script>-->
         </body>
       </html>
       `;

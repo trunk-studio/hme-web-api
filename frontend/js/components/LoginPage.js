@@ -45,8 +45,9 @@ export default class LoginPage extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if('success' in this.props.login) {
-      if(this.props.login.success)
-        window.location = "#manage";
+      if(this.props.login.success) {
+        window.location.href = "/#manage";
+      }
       else {
         let Password = this.refs.password;
         Password.focus();
@@ -65,20 +66,25 @@ export default class LoginPage extends React.Component {
     return (
       <Tabs>
         <Tab label="Login">
-          <div className="self-center" style={{width: '210px'}}>
-            <div style={{display: 'table-caption'}}>
+          <div className="self-center" style={{width: "210px"}}>
+            <div className="row">
               <SelectField
                 onChange={this._handleRoleChanged}
                 menuItems={roles}/>
+            </div>
+            <div className="row">
               <TextField
                 ref="password"
                 hintText="Password Field"
-                type="password" />
+                type="password"
+                onEnterKeyDown={this._login}/>
+            </div>
+            <div className="row" style={{height: '40px'}}>
               <RaisedButton label="Login" onTouchTap={this._login} style={{float:'right', marginRight:'10%'}}/>
-              {
+              {/*
                 this.props.isLoading &&
                 <RefreshIndicator size={40} left={100} top={40} status="loading" />
-              }
+              */}
             </div>
           </div>
         </Tab>

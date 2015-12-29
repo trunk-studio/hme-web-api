@@ -4,7 +4,7 @@ const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js')
 
 const LineChart = require("react-chartjs").Line;
 
-export default class LEDColorPage extends React.Component {
+export default class ScheduleDetailConfig extends React.Component {
 
   _cctChanged = (e, value) => {
     console.log(value,this.refs.colorSlider,this.refs.chart);
@@ -55,7 +55,7 @@ export default class LEDColorPage extends React.Component {
         <AppBar
           title="Title"
           iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-          iconElementRight={<FlatButton label="Save"/>}
+          iconElementRight={<FlatButton label="Save" onTouchTap={this.backClick} />}
           onLeftIconButtonTouchTap={this.backClick} />
         <div className="self-center" style={{width: '100%', margin: '50px'}}>
             <div className="col-md-6">

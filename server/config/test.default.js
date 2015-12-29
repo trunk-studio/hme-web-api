@@ -1,5 +1,5 @@
 export default {
-  'port': 3000,
+  'port': 3001,
   'connection': {
     'dialect': 'sqlite',
     'storage': './db.development.sqlite',
@@ -7,6 +7,5 @@ export default {
     'password': null,
     'database': null,
     'force': true
-
   }
 };
