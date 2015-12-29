@@ -3,8 +3,7 @@
 module.exports = (sequelize, DataTypes) => {
   var ScheduleDetail = sequelize.define('ScheduleDetail', {
     weight: DataTypes.FLOAT,
-    StartTime: DataTypes.TIME,
-    EndTime: DataTypes.TIME,
+    StartTime: DataTypes.TIME
   }, {
     classMethods: {
       associate: (models) => {

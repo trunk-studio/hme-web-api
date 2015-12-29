@@ -50,16 +50,15 @@ describe("schedule", () => {
           Days: 15
         };
         newSchedule = await models.Schedule.create(newSchedule);
-        let sdfgcheduleConfig = [];
+        let scheduleConfig = [];
         for(let a = 0; a<24; a+=2){
-          sdfgcheduleConfig.push({
+          scheduleConfig.push({
             "weight": 1,
             "StartTime": "00:"+ a +":00",
-            "EndTime": "00:"+ (a+1) +":59",
             "ScheduleId": newSchedule.id
           });
         }
-        await models.ScheduleDetail.bulkCreate(sdfgcheduleConfig);
+        await models.ScheduleDetail.bulkCreate(scheduleConfig);
         scheduleDetail = await models.ScheduleDetail.findOne({
           where:{
             ScheduleId: newSchedule.id
@@ -90,13 +89,11 @@ describe("schedule", () => {
         let data = {
           ScheduleDetailId: scheduleDetail.id,
           weight: 100,
-          StartTime: '00:00:01',
-          EndTime:'00:02:59'
+          StartTime: '00:00:01'
         };
         let result = await services.schedule.updateScheduleDetail(data);
         result.weight.should.be.not.equal(scheduleDetail.weight);
         result.StartTime.should.be.not.equal(scheduleDetail.StartTime);
-        result.EndTime.should.be.not.equal(scheduleDetail.EndTime);
         done();
       } catch (e) {
         done(e);

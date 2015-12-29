@@ -2,16 +2,15 @@ module.exports = {
   create: async (data) => {
     try {
       let schedule = await models.Schedule.create(data);
-      let sdfgcheduleConfig = [];
+      let scheduleConfig = [];
       for(let a = 0; a<24; a+=2){
-        sdfgcheduleConfig.push({
+        scheduleConfig.push({
           "weight": 1,
           "StartTime": "00:"+ a +":00",
-          "EndTime": "00:"+ (a+1) +":59",
           "ScheduleId": schedule.id
         });
       }
-      await models.ScheduleDetail.bulkCreate(sdfgcheduleConfig);
+      await models.ScheduleDetail.bulkCreate(scheduleConfig);
       return schedule;
     } catch (e) {
       throw e;
@@ -38,12 +37,11 @@ module.exports = {
     }
   },
 
-  updateScheduleDetail: async({ScheduleDetailId, weight, StartTime, EndTime}) => {
+  updateScheduleDetail: async({ScheduleDetailId, weight, StartTime}) => {
     try {
       let scheduleDetail = await models.ScheduleDetail.findById(ScheduleDetailId);
       scheduleDetail.weight = weight;
       scheduleDetail.StartTime = StartTime;
-      scheduleDetail.EndTime = EndTime;
       scheduleDetail = await scheduleDetail.save();
       return scheduleDetail;
     } catch (e) {
