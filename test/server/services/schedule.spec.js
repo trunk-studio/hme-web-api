@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 describe.only("schedule", () => {
 
   it("create", async(done) => {
