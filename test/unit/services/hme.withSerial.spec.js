@@ -111,7 +111,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port testDevice", async done => {
+    it("serial Port testDevice", async done => {
 
       try {
         // 當DevID != 0，groupID設定無效
@@ -172,4 +172,25 @@ describe("hme with seriel port", () => {
       }
 
     });
+
+    it.only("serial Port setGroupID", async done => {
+
+      try {
+        let DevID = 1;
+        let groupID = 5;
+        let result = await services.hme.setGroupID(DevID, groupID);
+        console.log('setGroupID result',result);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+
+
+
+
+
   });

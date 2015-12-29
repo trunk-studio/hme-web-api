@@ -1,11 +1,13 @@
 export default {
-  port: parseInt(process.env.PORT, 10) || 3000,
+  'port': 3000,
+  'domain': 'localhost',
   'connection': {
-    'dialect': 'sqlite',
-    'storage': './db.development.sqlite',
-    'username': null,
-    'password': null,
-    'database': null,
-    'force': true
+    'database': 'hme',
+    'username': process.env.MYSQL_USER || "root",
+    'password': process.env.MYSQL_PASS || "root",
+    'host': process.env.MYSQL_HOST || "localhost",
+    'port': process.env.MYSQL_PORT || "3306",
+    'dialect': 'mysql',
+    'force': false
   }
 };

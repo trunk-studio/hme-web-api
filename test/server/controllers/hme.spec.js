@@ -2,7 +2,7 @@ describe("hme", () => {
 
 
 
-  it("hello", (done) => {
+  it("hello localhost", (done) => {
 
     request.get("/rest/hme/hello")
     .expect(200)
@@ -12,6 +12,19 @@ describe("hme", () => {
     });
 
   });
+
+  it.skip("hello slave", (done) => {
+
+    request_slave.get("/rest/hme/hello")
+    .expect(200)
+    .end((error, res) => {
+      console.log('res.body', res.body);
+      done(error);
+    });
+
+  });
+
+
 
   it("ping", (done) => {
     request.get("/rest/hme/ping")

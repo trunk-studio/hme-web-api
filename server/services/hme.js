@@ -390,6 +390,48 @@ export default class Hme {
     }
   }
 
+  setGroupID = async (DevID, groupID) => {
+    try {
+        let COpParams = {
+        u8DevID:DevID,
+        groupID:0,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[1031], //Device group
+        u8DataIn_Arry:[groupID],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:8
+      }
+      let DecodParams = {
+        FuncCT:49,
+        DevID:DevID,
+        u8RxDataArry:[]
+      }
+
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+        if (this.flashMemoryWrite(DevID,0)){
+          return (true);
+        }else {
+          return (false);
+        }
+      } else {
+        return (false);
+      };
+
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
+
+
 
   _eventsSetup = () => {
     let serialPort = this.serialPort;

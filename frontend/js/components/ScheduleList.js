@@ -69,25 +69,21 @@ export default class ScheduleList extends React.Component {
       );
     });
     return (
-      <Tabs>
-        <Tab label="D3">
-          <div className="self-center" style={{width: '100%'}}>
-            <RaisedButton label="Add" onTouchTap={this._addRow} style={{marginLeft:'80%', marginTop: '15px'}} />
-            <Table>
-              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-                <TableRow>
-                  <TableHeaderColumn >Edit</TableHeaderColumn>
-                  <TableHeaderColumn >Start Date</TableHeaderColumn>
-                  <TableHeaderColumn >Days</TableHeaderColumn>
-                </TableRow>
-              </TableHeader>
-              <TableBody displayRowCheckbox={false}>
-                {rows}
-              </TableBody>
-            </Table>
-          </div>
-        </Tab>
-      </Tabs>
+      <div className="self-center" style={{width: '100%'}}>
+        <RaisedButton label="Add" onTouchTap={this._addRow} style={{marginLeft:'80%', marginTop: '15px'}} />
+        <Table>
+          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+            <TableRow>
+              <TableHeaderColumn >Edit</TableHeaderColumn>
+              <TableHeaderColumn >Start Date</TableHeaderColumn>
+              <TableHeaderColumn >Days</TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false}>
+            {rows}
+          </TableBody>
+        </Table>
+      </div>
     );
   }
 }
