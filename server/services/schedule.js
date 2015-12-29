@@ -18,7 +18,6 @@ module.exports = {
     }
   },
 
-
   findAll: async () => {
     try {
       let schedule = await models.Schedule.findAll();
@@ -26,5 +25,17 @@ module.exports = {
     } catch (e) {
       throw e;
     }
+  },
+
+  updateDay: async({ScheduleId, Days}) => {
+    try {
+      let schedule = await models.Schedule.findById(ScheduleId);
+      schedule.Days = Days;
+      await schedule.save();
+      return schedule;
+    } catch (e) {
+      throw e;
+    }
   }
+
 }
