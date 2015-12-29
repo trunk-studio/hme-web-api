@@ -8,7 +8,7 @@ export function requestLogin(loginData) {
   // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
-      .post('http://localhost:3000/rest/hme/login', loginData)
+      .post('/rest/hme/login', loginData)
       .then(response => dispatch(receivedLogin(response.data)));
   };
 }
