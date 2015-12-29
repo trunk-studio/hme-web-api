@@ -78,3 +78,7 @@ circle.selected:hover {
   /* Chrome, Safari, Opera */
   transform: rotate(90deg);
 }
+
+#react-view {
+  overflow: hidden;
+}
