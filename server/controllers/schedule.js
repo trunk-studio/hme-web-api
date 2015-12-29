@@ -67,6 +67,17 @@ exports.createSchedule = function *() {
 
 }
 
+exports.getOneSchedule = function *() {
+  try {
+    console.log("==== getOneSchedule ===");
+    let id = this.params.id;
+    let result = yield services.schedule.find(id);
+    this.body =  result;
+  } catch(e) {
+    console.error("delete user error", e);
+  }
+}
+
 exports.getAllSchedule = function *() {
   try {
     console.log("==== getAllSchedule ===");

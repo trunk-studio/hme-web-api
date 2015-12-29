@@ -28,6 +28,16 @@ describe("Schedule", () => {
     done(e);
   }
 });
+it("find", async (done) => {
+  try {
+    let result = await request.get('/rest/schedule/'+newSchedule.id);
+    result.body.id.should.be.equal(newSchedule.id);
+    result.body.ScheduleDetails.should.be.an.Array;
+    done();
+  } catch (e) {
+    done(e);
+  }
+});
 
 it("update day", async (done) => {
   try {

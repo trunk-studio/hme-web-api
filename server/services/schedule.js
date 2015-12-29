@@ -17,6 +17,20 @@ module.exports = {
     }
   },
 
+  find: async (id) => {
+    try {
+      let schedule = await models.Schedule.findOne({
+        where:{
+          id: id
+        },
+        include: models.ScheduleDetail
+      });
+      return schedule;
+    } catch (e) {
+      throw e;
+    }
+  },
+
   findAll: async () => {
     try {
       let schedule = await models.Schedule.findAll();
