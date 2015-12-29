@@ -41,6 +41,7 @@ export default class Routes {
         <link rel=stylesheet type="text/css" href="assets/graph.css">
         <link rel=stylesheet type="text/css" href="assets/nv.d3.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <link rel=stylesheet type="text/css" href="assets/index.css">
         </head>
         <body>
           <div id="react-view"></div>
