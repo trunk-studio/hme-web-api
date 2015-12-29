@@ -5,7 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "start": "node server/",
-    "test":      "NODE_ENV=test ./node_modules/.bin/mocha --opts ./test/server/mocha.opts --compilers js:babel/register ./test/server/**/*.spec.js",
+    "test":      "NODE_ENV=test ./node_modules/.bin/mocha --opts ./test/server/mocha.opts --compilers js:babel/register ./test/unit/services/hme.withSerial.spec.js",
     "test-unit": "NODE_ENV=test ./node_modules/.bin/mocha --opts ./test/unit/mocha.opts --compilers js:babel/register ./test/unit/**/*.spec.js",
     "start-arm": "docker-compose run --rm --service-ports web-arm",
     "start-arm-prod": "docker-compose run -d --rm --service-ports web-arm"

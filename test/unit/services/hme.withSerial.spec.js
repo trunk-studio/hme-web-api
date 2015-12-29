@@ -65,11 +65,60 @@ describe("hme with seriel port", () => {
 
     });
 
-    it("serial Port TestDevice", async done => {
+    it("serial Port testAll", async done => {
 
       try {
+        //測試所有燈具
+        let result = await services.hme.testAll();
+        console.log('testAll result',result);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port testDevID", async done => {
+
+      try {
+        //測試特定DevID之燈具
         let DevID = 1;
-        let result = await services.hme.TestDevice(DevID);
+        let result = await services.hme.testDevID(DevID);
+        console.log('testDevID result',result);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port testGroup", async done => {
+
+      try {
+        //測試特定GroupID分組之燈具
+        //使用testGroup功能時，即使該Group不存在也不會報錯
+        //只能測試serial part是否將命令發送出去
+        let groupID = 1;
+        let result = await services.hme.testGroup(groupID);
+        console.log('testDevID result',result);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it.only("serial Port testDevice", async done => {
+
+      try {
+        // 當DevID != 0，groupID設定無效
+        // DevID == 0 && groupID == 0，測試全部裝置
+        let DevID = 1;
+        let groupID = 1;
+        let result = await services.hme.testDevice(DevID, groupID);
         console.log('TestDevice result',result);
         result.should.be.true;
         done();
@@ -87,9 +136,10 @@ describe("hme with seriel port", () => {
       // 一開機是進入Normal
       // 燈具維護這類使用者可以直接操作UI讓燈具產生反應的模式是Interact
       try {
-        let DevID = 1;
+        let DevID = 0;
+        let groupID = 1;
         let CtrlMode = 'Interact';
-        let result = await services.hme.SetLedCtrlMode(DevID, CtrlMode);
+        let result = await services.hme.SetLedCtrlMode(DevID, groupID, CtrlMode);
         console.log('SetLedCtrlMode result',result);
         result.should.be.true;
         done();
@@ -99,22 +149,19 @@ describe("hme with seriel port", () => {
 
     });
 
-<<<<<<< HEAD:test/unit/services/hme.spec.js
-    it.only("serial Port SetLedBrighter", async done => {
-      // 設定DEMO時的LED燈亮度
-=======
+
     it("serial Port SetLedBrighter", async done => {
-      // 設定LED燈亮度DEMO
->>>>>>> 35746fcbb767b6446c29aaac08c6a7ba5420a7d2:test/unit/services/hme.withSerial.spec.js
+      // 設定DEMO時的LED燈亮度
       // 在Interact模式下才有效果
       try {
         let params = {
-          DevID:1,
-          Led1Bgt:10000,
-          Led2Bgt:5000,
-          Led3Bgt:1000,
-          Led4Bgt:500,
-          Led5Bgt:100
+          DevID:0,
+          groupID:1,
+          Led1Bgt:1000,
+          Led2Bgt:500,
+          Led3Bgt:100,
+          Led4Bgt:50,
+          Led5Bgt:1000
         }
         let result = await services.hme.SetLedBrighter(params);
         console.log('SetLedBrighter result',result);
@@ -126,101 +173,3 @@ describe("hme with seriel port", () => {
 
     });
   });
-<<<<<<< HEAD:test/unit/services/hme.spec.js
-
-  describe("without seriel port", () => {
-
-    it("WordTo3Byte", done => {
-      try {
-        let result = services.hme.encode.WordTo3Byte('aaabbcc');
-        console.log(result);
-        done();
-      } catch (e) {
-        done(e);
-      }
-    });
-
-    it("u3ByteToWord", done => {
-      try {
-        let result = services.hme.encode.u3ByteToWord('aaabbcc');
-        console.log(result);
-        done();
-      } catch (e) {
-        done(e);
-      }
-    });
-
-
-    it("ClientOp.CopBitInv", done => {
-      try {
-        //CopWordRd = function(u8DevID, GroupID, u8FuncCT, u8DataNum, u8Addr_Arry)
-        let params = {
-          u8DevID:0xa55,
-          GroupID:0x00,
-          sFunc:'BitInv',
-          u8DataNum:2,
-          u8Addr_Arry:[0xf125,0x123],
-          u8DataIn_Arry:[],
-          u8Mask_Arry:[0xffff,0xeeee],
-          RepeatNum:1
-        }
-        let result = services.hme.encode.ClientOp(params);
-        result[0].should.be.equal(128);
-        result[1].should.be.equal(85);
-        result[2].should.be.equal(20);
-        result[3].should.be.equal(0);
-        result[4].should.be.equal(0);
-        result[5].should.be.equal(0);
-        result[6].should.be.equal(0);
-        result[7].should.be.equal(18);
-        result[8].should.be.equal(2);
-        result[9].should.be.equal(0);
-        result[10].should.be.equal(0);
-        result[11].should.be.equal(37);
-        result[12].should.be.equal(98);
-        result[13].should.be.equal(3);
-        result[14].should.be.equal(35);
-        result[15].should.be.equal(2);
-        result[16].should.be.equal(0);
-        result[17].should.be.equal(127);
-        result[18].should.be.equal(127);
-        result[19].should.be.equal(3);
-        result[20].should.be.equal(110);
-        result[21].should.be.equal(93);
-        result[22].should.be.equal(3);
-        result[23].should.be.equal(123);
-        result[24].should.be.equal(6);
-        result[25].should.be.equal(0);
-        console.log(result);
-        done();
-      } catch (e) {
-        done(e);
-      }
-    });
-
-    it("RxDecode", done => {
-      try {
-        let testArry = [192, 1, 0, 0, 50, 115, 1, 0];
-        let params = {
-            FuncCT:50,
-            DevID:1,
-            u8RxDataArry:testArry
-          };
-        let result = services.hme.encode.RxDecode(params);
-        console.log('RxDecode = ', result);
-        done();
-      } catch (e) {
-        done(e);
-      }
-    });
-
-
-
-
-  });
-
-
-
-=======
->>>>>>> trunk-studio-master:test/unit/services/hme.withSerial.spec.js
-});
