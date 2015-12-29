@@ -1,8 +1,6 @@
 
 describe("Schedule", () => {
 
-<<<<<<< HEAD
-=======
   let newSchedule, scheduleDetail;
   before( async done => {
   try {
@@ -71,7 +69,6 @@ it("update detail", async (done) => {
   }
 });
 
->>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
   describe("Detail Config", () => {
     let scheduleDetailConfig
     before(async (done) => {

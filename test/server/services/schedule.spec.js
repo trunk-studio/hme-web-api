@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-import moment from 'moment';
-
-describe.skip("schedule", () => {
-=======
 describe("schedule", () => {
->>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
 
   it("create", async(done) => {
     try {
@@ -15,10 +9,6 @@ describe("schedule", () => {
       let result = await services.schedule.create(newSchedule);
       result.dataValues.should.have.any.keys('StartDate', 'Days');
       done();
-<<<<<<< HEAD
-
-=======
->>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
     } catch (e) {
       done(e);
     }
@@ -33,10 +23,7 @@ describe("schedule", () => {
           Days: 15
         };
         await models.Schedule.create(newSchedule);
-<<<<<<< HEAD
-=======
         done();
->>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
       } catch (e) {
         done(e);
       }
@@ -45,9 +32,6 @@ describe("schedule", () => {
     it( "All" , async done => {
       try {
         let result = await services.schedule.findAll();
-<<<<<<< HEAD
-        result.toJSON()[0].should.have.any.keys('StartDate', 'Days');
-=======
         result[0].dataValues.should.have.any.keys('StartDate', 'Days');
         done();
       } catch (e) {
@@ -110,7 +94,6 @@ describe("schedule", () => {
         let result = await services.schedule.updateScheduleDetail(data);
         result.weight.should.be.not.equal(scheduleDetail.weight);
         result.StartTime.should.be.not.equal(scheduleDetail.StartTime);
->>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
         done();
       } catch (e) {
         done(e);
