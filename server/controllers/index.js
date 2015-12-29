@@ -27,6 +27,15 @@ export default class Routes {
 
     publicRoute.post('/rest/hme/login', UserController.login);
 
+<<<<<<< HEAD
+=======
+    publicRoute.post('/rest/schedule/create', ScheduleController.createSchedule);
+    publicRoute.get('/rest/schedule/findAll', ScheduleController.getAllSchedule);
+    publicRoute.get('/rest/schedule/:id', ScheduleController.getOneSchedule);
+    publicRoute.post('/rest/schedule/update/day', ScheduleController.updateScheduleDay);
+    publicRoute.post('/rest/schedule/update/detail', ScheduleController.updateScheduleDetail);
+
+>>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
     publicRoute.post('/rest/schedule/config/update', ScheduleController.configUpdate);
     publicRoute.get('/rest/schedule/config/:id', ScheduleController.getConfigDetail);
 

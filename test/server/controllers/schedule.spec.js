@@ -1,6 +1,77 @@
 
 describe("Schedule", () => {
 
+<<<<<<< HEAD
+=======
+  let newSchedule, scheduleDetail;
+  before( async done => {
+  try {
+    newSchedule = {
+      StartDate: moment('1900/11/10','YYYY/MM/DD'),
+      Days: 15
+    };
+    newSchedule = await models.Schedule.create(newSchedule);
+    let scheduleConfig = [];
+    for(let a = 0; a<24; a+=2){
+      scheduleConfig.push({
+        "weight": 1,
+        "StartTime": "00:"+ a +":00",
+        "ScheduleId": newSchedule.id
+      });
+    }
+    await models.ScheduleDetail.bulkCreate(scheduleConfig);
+    scheduleDetail = await models.ScheduleDetail.findOne({
+      where:{
+        ScheduleId: newSchedule.id
+      }
+    });
+    done();
+  } catch (e) {
+    done(e);
+  }
+});
+it("find", async (done) => {
+  try {
+    let result = await request.get('/rest/schedule/'+newSchedule.id);
+    result.body.id.should.be.equal(newSchedule.id);
+    result.body.ScheduleDetails.should.be.an.Array;
+    done();
+  } catch (e) {
+    done(e);
+  }
+});
+
+it("update day", async (done) => {
+  try {
+    let data = {
+      ScheduleId: newSchedule.id,
+      Days: 17
+    };
+    let result = await request.post('/rest/schedule/update/day').send(data);
+    result.body.Days.should.be.not.equal(newSchedule.Days);
+    done();
+  } catch (e) {
+    done(e);
+  }
+});
+
+it("update detail", async (done) => {
+  try {
+    let data = {
+      ScheduleDetailId: scheduleDetail.id,
+      weight: 100,
+      StartTime: '00:00:01'
+    };
+    let result = await request.post('/rest/schedule/update/detail').send(data);
+    result.body.weight.should.be.not.equal(scheduleDetail.weight);
+    result.body.StartTime.should.be.not.equal(scheduleDetail.StartTime);
+    done();
+  } catch (e) {
+    done(e);
+  }
+});
+
+>>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
   describe("Detail Config", () => {
     let scheduleDetailConfig
     before(async (done) => {
@@ -37,6 +108,10 @@ describe("Schedule", () => {
     it("update should success", async (done) => {
       try {
         let data = {
+<<<<<<< HEAD
+=======
+          id: scheduleDetailConfig.id,
+>>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
           WW: 199,
           DB: 299,
           BL: 399,
@@ -46,7 +121,11 @@ describe("Schedule", () => {
           Bright: 799,
         }
         let result = await request.post('/rest/schedule/config/update').send(data);
+<<<<<<< HEAD
         result.WW.should.be.not.equal(scheduleDetailConfig.WW);
+=======
+        result.body.WW.should.be.not.equal(scheduleDetailConfig.WW);
+>>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
         done();
       } catch (e) {
         done(e);
@@ -56,7 +135,12 @@ describe("Schedule", () => {
     it("get config should success", async (done) => {
       try {
         let result = await request.get('/rest/schedule/config/'+scheduleDetailConfig.id);
+<<<<<<< HEAD
         result.datasets[0].data.should.be.not.Null();
+=======
+        console.log(result.body);
+        result.body.datasets[0].data.should.be.Array;
+>>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
         done();
       } catch (e) {
         done(e);
