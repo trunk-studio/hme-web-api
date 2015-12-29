@@ -45,8 +45,9 @@ export default class LoginPage extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if('success' in this.props.login) {
-      if(this.props.login.success)
-        window.location = "#manage";
+      if(this.props.login.success) {
+        window.location.href = "/#manage";
+      }
       else {
         let Password = this.refs.password;
         Password.focus();

@@ -3,9 +3,10 @@ export default {
   'domain': 'localhost',
   'connection': {
     'database': 'hme',
-    'username': process.env.MYSQL_ENV_MYSQL_USER_NAME || "root",
-    'password': process.env.MYSQL_ENV_MYSQL_ADMIN_PASS || "root",
-    'host': process.env.MYSQL_PORT_3306_TCP_ADDR || "localhost",
+    'username': process.env.MYSQL_USER || "root",
+    'password': process.env.MYSQL_PASS || "root",
+    'host': process.env.MYSQL_HOST || "localhost",
+    'port': process.env.MYSQL_PORT || "3306",
     'dialect': 'mysql',
     'force': false
   }
