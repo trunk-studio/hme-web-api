@@ -87,3 +87,14 @@ exports.updateScheduleDay = function *() {
     console.error("delete user error", e);
   }
 }
+
+exports.updateScheduleDetail = function *() {
+  try {
+    console.log("==== updateDay ===");
+    let data = this.request.body;
+    let result = yield services.schedule.updateScheduleDetail(data);
+    this.body =  result;
+  } catch(e) {
+    console.error("delete user error", e);
+  }
+}

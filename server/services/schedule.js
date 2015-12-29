@@ -36,6 +36,19 @@ module.exports = {
     } catch (e) {
       throw e;
     }
+  },
+
+  updateScheduleDetail: async({ScheduleDetailId, weight, StartTime, EndTime}) => {
+    try {
+      let scheduleDetail = await models.ScheduleDetail.findById(ScheduleDetailId);
+      scheduleDetail.weight = weight;
+      scheduleDetail.StartTime = StartTime;
+      scheduleDetail.EndTime = EndTime;
+      scheduleDetail = await scheduleDetail.save();
+      return scheduleDetail;
+    } catch (e) {
+      throw e;
+    }
   }
 
 }

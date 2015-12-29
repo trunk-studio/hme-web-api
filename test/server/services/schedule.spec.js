@@ -42,7 +42,7 @@ describe("schedule", () => {
   });
 
   describe("Schedule Detail", async done => {
-    let newSchedule;
+    let newSchedule, scheduleDetail;
     before( async done => {
       try {
         newSchedule = {
@@ -60,6 +60,11 @@ describe("schedule", () => {
           });
         }
         await models.ScheduleDetail.bulkCreate(sdfgcheduleConfig);
+        scheduleDetail = await models.ScheduleDetail.findOne({
+          where:{
+            ScheduleId: newSchedule.id
+          }
+        });
         done();
       } catch (e) {
         done(e);
@@ -74,6 +79,24 @@ describe("schedule", () => {
         };
         let result = await services.schedule.updateDay(data);
         result.Days.should.be.not.equal(newSchedule.Days);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+    it( "update Schedule Detail" , async done => {
+      try {
+        let data = {
+          ScheduleDetailId: scheduleDetail.id,
+          weight: 100,
+          StartTime: '00:00:01',
+          EndTime:'00:02:59'
+        };
+        let result = await services.schedule.updateScheduleDetail(data);
+        result.weight.should.be.not.equal(scheduleDetail.weight);
+        result.StartTime.should.be.not.equal(scheduleDetail.StartTime);
+        result.EndTime.should.be.not.equal(scheduleDetail.EndTime);
         done();
       } catch (e) {
         done(e);

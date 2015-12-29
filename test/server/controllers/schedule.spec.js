@@ -1,7 +1,7 @@
 
 describe.only("Schedule", () => {
 
-  let newSchedule;
+  let newSchedule, scheduleDetail;
   before( async done => {
   try {
     newSchedule = {
@@ -19,6 +19,11 @@ describe.only("Schedule", () => {
       });
     }
     await models.ScheduleDetail.bulkCreate(sdfgcheduleConfig);
+    scheduleDetail = await models.ScheduleDetail.findOne({
+      where:{
+        ScheduleId: newSchedule.id
+      }
+    });
     done();
   } catch (e) {
     done(e);
@@ -31,8 +36,26 @@ it("update day", async (done) => {
       ScheduleId: newSchedule.id,
       Days: 17
     };
-    let result = await request.post('/rest/schedule/updateDay').send(data);
+    let result = await request.post('/rest/schedule/update/day').send(data);
     result.body.Days.should.be.not.equal(newSchedule.Days);
+    done();
+  } catch (e) {
+    done(e);
+  }
+});
+
+it("update detail", async (done) => {
+  try {
+    let data = {
+      ScheduleDetailId: scheduleDetail.id,
+      weight: 100,
+      StartTime: '00:00:01',
+      EndTime:'00:02:59'
+    };
+    let result = await request.post('/rest/schedule/update/detail').send(data);
+    result.body.weight.should.be.not.equal(scheduleDetail.weight);
+    result.body.StartTime.should.be.not.equal(scheduleDetail.StartTime);
+    result.body.EndTime.should.be.not.equal(scheduleDetail.EndTime);
     done();
   } catch (e) {
     done(e);
