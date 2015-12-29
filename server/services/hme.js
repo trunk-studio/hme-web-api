@@ -122,6 +122,8 @@ export default class Hme {
     }
   }
 
+
+
   SearchDevice = async () => {
     try {
       let ReDevArry = [];
