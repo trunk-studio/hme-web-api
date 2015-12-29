@@ -105,10 +105,7 @@ it("update detail", async (done) => {
     it("update should success", async (done) => {
       try {
         let data = {
-<<<<<<< HEAD
-=======
           id: scheduleDetailConfig.id,
->>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
           WW: 199,
           DB: 299,
           BL: 399,
@@ -118,11 +115,7 @@ it("update detail", async (done) => {
           Bright: 799,
         }
         let result = await request.post('/rest/schedule/config/update').send(data);
-<<<<<<< HEAD
-        result.WW.should.be.not.equal(scheduleDetailConfig.WW);
-=======
         result.body.WW.should.be.not.equal(scheduleDetailConfig.WW);
->>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
         done();
       } catch (e) {
         done(e);
@@ -132,12 +125,8 @@ it("update detail", async (done) => {
     it("get config should success", async (done) => {
       try {
         let result = await request.get('/rest/schedule/config/'+scheduleDetailConfig.id);
-<<<<<<< HEAD
-        result.datasets[0].data.should.be.not.Null();
-=======
         console.log(result.body);
         result.body.datasets[0].data.should.be.Array;
->>>>>>> cc0d6db3d2f26fa62f17d072eb381cc8be4abdd7
         done();
       } catch (e) {
         done(e);
