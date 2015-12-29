@@ -13,7 +13,6 @@ export function requestScan() {
 }
 
 export function receivedScan(data) {
-  console.log('act',data);
   return {
     type: RECEIVED_SCAN,
     data
