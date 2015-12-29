@@ -79,18 +79,21 @@ export default class ScheduleDetail extends React.Component {
     }
     let chartData = {
       labels: [
-        "0", "2", "4", "6", "8", "12"
+        "0", "2", "4", "6", "8", "12", "14", "16", "18", "20", "22", "24"
       ],
       datasets: [
         {
           label: "My Second dataset",
+          scaleBeginAtZero: true,
+          responsive: true,
+          scaleFontSize: 10,
           fillColor: "rgba(151,187,205,0.2)",
           strokeColor: "rgba(151,187,205,1)",
           pointColor: "rgba(151,187,205,1)",
           pointStrokeColor: "#fff",
           pointHighlightFill: "#fff",
           pointHighlightStroke: "rgba(151,187,205,1)",
-          data: [28, 48, 40, 19, 86, 27, 90]
+          data: [28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86]
         }
       ]
     };
@@ -113,6 +116,7 @@ export default class ScheduleDetail extends React.Component {
           <div className="self-center" style={{
           width: '100%'
           }}>
+            {/*}
             <div className="row" style={{
             padding: '15px'
             }}>
@@ -132,50 +136,82 @@ export default class ScheduleDetail extends React.Component {
               float: 'right', margin: '15px', marginRight: '10%'
               }} linkButton={true} href="#/schedule/config"/>
             </div>
+            */}
             <div className="row">
               <div className="center-self">
                 <div className="col-md-11 col-sm-11 col-xs-11">
                   <LineChart ref="chart" data={chartData} style={{
                     marginLeft: '5px',
                     width: '100%',
-                    height: '600px'
+                    height: '200px'
                     }} className=""/>
                 </div>
-                <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '295px',
-                  position: 'absolute', right: '-285px'}}>
-                  <VerticalSlider className="vertical-slider" min={0} max={100} marks={percent_marks} included={false} style={{float: 'right'}} />
+                <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '93px',
+                  position: 'absolute', right: '-84px'}}>
+                  <VerticalSlider className="vertical-slider"
+                    min={0} max={100} marks={percent_marks}
+                    included={false} style={{float: 'right'}} />
                 </div>
               </div>
               {/*<div className="col-xs-2" style={{padding: '0px'}}>
                 <Slider name="test" value={0.5} className="straight-slider"/>
               </div>*/}
             </div>
-            <div className='row' style={{marginTop: '20px'}}>
+            <div className='row' style={{marginTop: '0px'}}>
               <div style={{
-                width: '83%', paddingLeft: '0px'
+                width: '83%'
                 }} className="center-self">
-                <Slider min={0} max={120} marks={marks} included={false} defaultValue={20} style={{width: '100%'}}/>
+                <Slider min={0} max={120} marks={marks} included={false} defaultValue={20} allowCross={false} style={{width: '100%'}}/>
+              </div>
+            </div>
+            {/*
+            <div className='row' style={{marginTop: '25px'}}>
+              <div style={{
+                width: '83%'
+                }} className="center-self">
+                <Slider min={0} max={120} step={10} marks={marks} included={false} defaultValue={20} style={{width: '100%'}}/>
+              </div>
+            </div>
+            */}
+            <div className="row" style={{
+              marginTop: '23px'
+              }}>
+              <div className="center-self" style={{width:'100%'}}>
+                {/*
+                <div className="col-xs-1"><button fullWidth={true} label="00:00" secondary={true} style={{marginLeft: '3px'}}>22:00</button></div>
+                <div className="col-xs-1"><button fullWidth={true} label="02:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
+                <div className="col-xs-1"><button fullWidth={true} label="04:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
+                <div className="col-xs-1"><button fullWidth={true} label="06:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
+                <div className="col-xs-1"><button fullWidth={true} label="08:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
+                <div className="col-xs-1"><button fullWidth={true} label="10:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
+                <div className="col-xs-1"><button fullWidth={true} label="12:00" secondary={true} style={{marginLeft: '3px'}}>22:00</button></div>
+                <div className="col-xs-1"><button fullWidth={true} label="14:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
+                <div className="col-xs-1"><button fullWidth={true} label="16:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
+                <div className="col-xs-1"><button fullWidth={true} label="18:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
+                <div className="col-xs-1"><button fullWidth={true} label="20:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
+                <div className="col-xs-1"><button fullWidth={true} label="22:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
+*/}
+                <div className="col-xs-2"><RaisedButton fullWidth={true} label="00:00" secondary={true} style={{marginLeft: '3px'}}/></div>
+                <div className="col-xs-2"><RaisedButton fullWidth={true} label="02:00" secondary={true} style={{marginLeft: '3px'}} /></div>
+                <div className="col-xs-2"><RaisedButton fullWidth={true} label="04:00" secondary={true} style={{marginLeft: '3px'}} /></div>
+                <div className="col-xs-2"><RaisedButton fullWidth={true} label="06:00" secondary={true} style={{marginLeft: '3px'}} /></div>
+                <div className="col-xs-2"><RaisedButton fullWidth={true} label="08:00" secondary={true} style={{marginLeft: '3px'}} /></div>
+                <div className="col-xs-2"><RaisedButton fullWidth={true} label="10:00" secondary={true} style={{marginLeft: '3px'}} /></div>
               </div>
             </div>
             <div className="row" style={{
-            marginTop: '25px'
-            }}>
-              <div className="center-self" style={{width:'560px'}}>
-                <RaisedButton label="00:00" secondary={true} style={{marginLeft: '6px'}}/>
-                <RaisedButton label="02:00" secondary={true} style={{marginLeft: '5px'}} />
-                <RaisedButton label="04:00" secondary={true} style={{marginLeft: '5px'}} />
-                <RaisedButton label="06:00" secondary={true} style={{marginLeft: '5px'}} />
-                <RaisedButton label="08:00" secondary={true} style={{marginLeft: '5px'}} />
-                <RaisedButton label="10:00" secondary={true} style={{marginLeft: '5px'}} />
+                  marginTop: '5px'
+                  }}>
+
+              <div className="center-self" style={{width:'100%'}}>
+                <div className="col-xs-2"><RaisedButton fullWidth={true} label="12:00" secondary={true} style={{marginLeft: '3px'}}/></div>
+                <div className="col-xs-2"><RaisedButton fullWidth={true} label="14:00" secondary={true} style={{marginLeft: '3px'}} /></div>
+                <div className="col-xs-2"><RaisedButton fullWidth={true} label="16:00" secondary={true} style={{marginLeft: '3px'}} /></div>
+                <div className="col-xs-2"><RaisedButton fullWidth={true} label="18:00" secondary={true} style={{marginLeft: '3px'}} /></div>
+                <div className="col-xs-2"><RaisedButton fullWidth={true} label="20:00" secondary={true} style={{marginLeft: '3px'}} /></div>
+                <div className="col-xs-2"><RaisedButton fullWidth={true} label="22:00" secondary={true} style={{marginLeft: '3px'}} /></div>
               </div>
-              <div className="center-self" style={{width: '560px', marginTop: '10px', marginBottom: '10px'}}>
-                <RaisedButton label="12:00" secondary={true} style={{marginLeft: '6px'}}/>
-                <RaisedButton label="14:00" secondary={true} style={{marginLeft: '5px'}} />
-                <RaisedButton label="16:00" secondary={true} style={{marginLeft: '5px'}} />
-                <RaisedButton label="18:00" secondary={true} style={{marginLeft: '5px'}} />
-                <RaisedButton label="20:00" secondary={true} style={{marginLeft: '5px'}} />
-                <RaisedButton label="22:00" secondary={true} style={{marginLeft: '5px'}} />
-              </div>
+
             </div>
             <div className="row">
             </div>
@@ -196,19 +232,6 @@ export default class ScheduleDetail extends React.Component {
               float: 'right', margin: '15px', marginRight: '10%'
               }}/>
             </div>
-            */}
-            {/*
-            <Table>
-              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-                <TableRow>
-                  <TableHeaderColumn className="col-xs-2">Time</TableHeaderColumn>
-                  <TableHeaderColumn className="col-xs-6">Weight</TableHeaderColumn>
-                </TableRow>
-              </TableHeader>
-              <TableBody displayRowCheckbox={false}>
-                {rows}
-              </TableBody>
-            </Table>
             */}
           </div>
         </Tab>
