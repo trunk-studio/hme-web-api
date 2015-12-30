@@ -139,7 +139,7 @@ export default class Encode {
   }
 
   CopDiscWordRd = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry){
-    var u8DataOut_arry =[];
+    let u8DataOut_arry =[];
   	var u8Header = 0x80;
     u8DataOut_arry.push(u8Header);
     u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
@@ -170,13 +170,20 @@ export default class Encode {
 
 
   CopDiscWordWt = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
-    var u8DataOut_arry =[];
-  	var u8Header = 0x80;
-    u8DataOut_arry.push(u8Header);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(groupID));
-    u8DataOut_arry.push(u8FuncCT);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
+    let u8DataOut_arry = [
+      0x80,
+      ...this.WordTo3Byte(u8DevID),
+      ...this.WordTo3Byte(groupID),
+      u8FuncCT,
+      ...this.WordTo3Byte(u8DataNum)
+    ];
+    // var u8DataOut_arry =[];
+  	// var u8Header = 0x80;
+    // u8DataOut_arry.push(u8Header);
+    // u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
+    // u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(groupID));
+    // u8DataOut_arry.push(u8FuncCT);
+    // u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
     let params = {
       Data_list: u8DataOut_arry,
       WordDatat_list: u8Addr_Arry
@@ -248,14 +255,14 @@ export default class Encode {
   	//	 'DiscWordRd':讀取非連續記憶體位置, 'WordWt':寫入連續記憶體位置, 'DiscWordWt':寫入非連續記憶體位置}
 
   	//要寫入串列通訊的資料
-    console.log('u8DevID', u8DevID);
-    console.log('groupID', groupID);
-    console.log('sFunc', sFunc);
-    console.log('u8DataNum', u8DataNum);
-    console.log('u8Addr_Arry', u8Addr_Arry);
-    console.log('u8DataIn_Arry', u8DataIn_Arry);
-    console.log('u8Mask_Arry', u8Mask_Arry);
-    console.log('RepeatNum', RepeatNum);
+    // console.log('u8DevID', u8DevID);
+    // console.log('groupID', groupID);
+    // console.log('sFunc', sFunc);
+    // console.log('u8DataNum', u8DataNum);
+    // console.log('u8Addr_Arry', u8Addr_Arry);
+    // console.log('u8DataIn_Arry', u8DataIn_Arry);
+    // console.log('u8Mask_Arry', u8Mask_Arry);
+    // console.log('RepeatNum', RepeatNum);
 
   	let u16DataWt_arry = [];
 
@@ -360,47 +367,5 @@ export default class Encode {
 
   }
 
-  // SearchDevice = function(){
-  //   let ReDevArry = [];
-  //   let ReDataArry = [];
-  //   for (let i = 1; i < 5; i++) {
-  //     //輪詢ID:1~200
-  //     let params = {
-  //       u8DevID:i,
-  //       groupID:0,
-  //       sFunc:'WordRd',
-  //       u8DataNum:1,
-  //       u8Addr_Arry:[1031],  //Device group
-  //       u8DataIn_Arry:[],
-  //       u8Mask_Arry:[],
-  //       RepeatNum:1
-  //     }
-  //     let Comm = services.hme.encode.ClientOp(params);
-  //     let params2 ={
-  //       Comm:Comm,
-  //       RxLen:11
-  //     }
-  //     let ReDataArry = services.hme.UartTxRx(params2);
-  //     if (ReDataArry != []) {
-  //       let DevData = {
-  //         DevID:i,
-  //         DevGroup:ReDataArry[0]
-  //       };
-  //       ReDevArry.push(DevData);
-  //     }
-  //   }
-  //   console.log('Devs:',ReDevArry);
-  //   return(ReDevArry);
-  // }
-
 
 }
-  // [FEAB]=>[2B, 7D, 03]
-  //console.log(this.WordTo3Byte(data));
-
-  //console.log(initTest2(0x0180,0xab,0xfeab,[0xfecc,0xfeab]));
-  //console.log(this.CopBitModify(1, 17, 2, [1,2], [2,3], [233,156]));
-  //console.log(this.CopBitModify(1, 17, 2, [1,235], [2,253], [233,222]));
-
-  //initTest2();
-  //WordBufTo3ByteBuf();

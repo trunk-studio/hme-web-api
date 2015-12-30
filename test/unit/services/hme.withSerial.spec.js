@@ -176,9 +176,9 @@ describe("hme with seriel port", () => {
     it.only("serial Port setGroupID", async done => {
 
       try {
-        //將Device1的groupID設為5
+        //將Device1的groupID設為3
         let DevID = 1;
-        let groupID = 5;
+        let groupID = 3;
         let result = await services.hme.setGroupID(DevID, groupID);
         console.log('setGroupID result',result);
         result.should.be.true;

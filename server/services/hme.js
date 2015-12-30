@@ -356,42 +356,6 @@ export default class Hme {
 
   }
 
-  flashMemoryWrite = async (DevID, groupID) => {
-    try {
-        let COpParams = {
-        u8DevID:DevID,
-        groupID:groupID,
-        sFunc:'WordWt',
-        u8DataNum:1,
-        u8Addr_Arry:[1021],  //Addr 1021 = FMC Wr
-        u8DataIn_Arry:[1],
-        u8Mask_Arry:[],
-        RepeatNum:5
-      }
-      let TxParams = {
-        Comm:[],
-        RxLen:8
-      }
-      let DecodParams = {
-        FuncCT:49,
-        DevID:DevID,
-        u8RxDataArry:[]
-      }
-
-      TxParams.Comm = this.encode.ClientOp(COpParams);
-      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
-        return (true);
-      } else {
-        return (false);
-      };
-
-
-    } catch (e) {
-      throw e;
-    }
-  }
-
   setGroupID = async (DevID, groupID) => {
     try {
         let COpParams = {
@@ -431,6 +395,44 @@ export default class Hme {
       throw e;
     }
   }
+
+  flashMemoryWrite = async (DevID, groupID) => {
+    try {
+        let COpParams = {
+        u8DevID:DevID,
+        groupID:groupID,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[1021],  //Addr 1021 = FMC Wr
+        u8DataIn_Arry:[1],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:8
+      }
+      let DecodParams = {
+        FuncCT:49,
+        DevID:DevID,
+        u8RxDataArry:[]
+      }
+
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+        return (true);
+      } else {
+        return (false);
+      };
+
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
+
 
 
 
