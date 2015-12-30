@@ -404,6 +404,9 @@ export default class Hme {
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
       if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID || DevID == 0){
         //await this.setLedCtrlMode(DevID, groupID,'Interact');
+        if ( await this.setLedCtrlMode(DevID, groupID, 'Interact') == false){
+          return (false);
+        }
         return (true);
       } else {
         return (false);

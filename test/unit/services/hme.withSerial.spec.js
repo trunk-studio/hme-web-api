@@ -173,7 +173,29 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port setGroupID", async done => {
+    it.only("serial Port setLedBrigh", async done => {
+      // 設定DEMO時的LED燈亮度
+      // 在Interact模式下才有效果
+      // LedCH: All, LedCH1, LedCH2, LedCH3, LedCH4, LedCH5
+      // BrighNum: 1~10000
+      try {
+        let params = {
+          DevID:1,
+          groupID:1,
+          LedCH:'LedCH2',
+          BrighNum:800
+        }
+        let result = await services.hme.setLedBrigh(params);
+        console.log('setLedBrigh result',result);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port setGroupID", async done => {
 
       try {
         //將Device1的groupID設為6
@@ -188,10 +210,6 @@ describe("hme with seriel port", () => {
       }
 
     });
-
-
-
-
 
 
   });

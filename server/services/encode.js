@@ -306,7 +306,7 @@ export default class Encode {
     Resp = {
       devID,
       comm,
-      data = []
+      data:[]
     }
 
 
