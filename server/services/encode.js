@@ -303,14 +303,21 @@ export default class Encode {
 
   RxDecode = function({FuncCT, DevID, u8RxDataArry}){
     //檢查接收的資料並解碼
+    Resp = {
+      devID,
+      comm,
+      data = []
+    }
+
 
     //分割資料段
-    var u8RawHeader = u8RxDataArry[0];
+    let u8RawHeader = u8RxDataArry[0];
     if (u8RawHeader != 0xC0) {
       console.log('HeaderErr')
       return([]);
     }
     var u8RawIdArry = u8RxDataArry.slice(1,4);
+
     if(u8RxDataArry.length > 8){
       //沒有回傳記憶體資料時，封包標準長度為8Byte
       var u8RawDataArry = u8RxDataArry.slice(5,u8RxDataArry.length-3);
