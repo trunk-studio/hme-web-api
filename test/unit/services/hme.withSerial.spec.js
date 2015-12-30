@@ -128,7 +128,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it("serial Port setLedCtrlMode", async done => {
+    it("serial Port SetLedCtrlMode", async done => {
       // 設定燈具使用模式
       // Normal:依照燈具FlashMemory所設定之亮度參數運作
       // Fast:依照燈具FlashMemory所設定之亮度參數運作，但模擬時間加速
@@ -139,8 +139,8 @@ describe("hme with seriel port", () => {
         let DevID = 0;
         let groupID = 1;
         let CtrlMode = 'Interact';
-        let result = await services.hme.setLedCtrlMode(DevID, groupID, CtrlMode);
-        console.log('setLedCtrlMode result',result);
+        let result = await services.hme.SetLedCtrlMode(DevID, groupID, CtrlMode);
+        console.log('SetLedCtrlMode result',result);
         result.should.be.true;
         done();
       } catch (e) {
@@ -150,7 +150,7 @@ describe("hme with seriel port", () => {
     });
 
 
-    it("serial Port setLedBrighter", async done => {
+    it("serial Port SetLedBrighter", async done => {
       // 設定DEMO時的LED燈亮度
       // 在Interact模式下才有效果
       try {
@@ -163,8 +163,8 @@ describe("hme with seriel port", () => {
           Led4Bgt:50,
           Led5Bgt:1000
         }
-        let result = await services.hme.setLedBrighter(params);
-        console.log('setLedBrighter result',result);
+        let result = await services.hme.SetLedBrighter(params);
+        console.log('SetLedBrighter result',result);
         result.should.be.true;
         done();
       } catch (e) {
@@ -176,9 +176,9 @@ describe("hme with seriel port", () => {
     it.only("serial Port setGroupID", async done => {
 
       try {
-        //將Device1的groupID設為6
+        //將Device1的groupID設為5
         let DevID = 1;
-        let groupID = 6;
+        let groupID = 5;
         let result = await services.hme.setGroupID(DevID, groupID);
         console.log('setGroupID result',result);
         result.should.be.true;
