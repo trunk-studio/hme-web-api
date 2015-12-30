@@ -72,6 +72,19 @@ circle.selected:hover {
   margin-right: 20px;
 }
 
+/* schedule detail Slider*/
+.slider {
+  height: 50px;
+}
+
+.slider div{
+  margin-top: 0px !important;
+}
+
+.smalllRaisedBnutton > div {
+  min-width: 30px !important;
+}
+
 .vertical-slider .rc-slider-mark-text {
   /* IE 9 */
   -webkit-transform: rotate(90deg);
