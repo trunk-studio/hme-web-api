@@ -55,28 +55,28 @@ export default class Encode {
 
 
   CopBitModify = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry){
-    var u8DataOut_arry =[];
-  	var u8Header = 0x80;
-    u8DataOut_arry.push(u8Header);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(groupID));
-    u8DataOut_arry.push(u8FuncCT);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
-    let params = {
+    let u8DataOut_arry =[
+      0x80,
+      ...this.WordTo3Byte(u8DevID),
+      ...this.WordTo3Byte(groupID),
+      u8FuncCT,
+      ...this.WordTo3Byte(u8DataNum)
+    ];
+    let addrParams = {
       Data_list: u8DataOut_arry,
       WordDatat_list: u8Addr_Arry
     }
-    u8DataOut_arry = this.WordListToAdd3ByteList(params);
-    let params2 = {
+    u8DataOut_arry = this.WordListToAdd3ByteList(addrParams);
+    let dataParams = {
       Data_list: u8DataOut_arry,
       WordDatat_list: u8DataIn_Arry
     }
-    u8DataOut_arry = this.WordListToAdd3ByteList(params2);
-    let params3 = {
+    u8DataOut_arry = this.WordListToAdd3ByteList(dataParams);
+    let maskParams = {
       Data_list: u8DataOut_arry,
       WordDatat_list: u8Mask_Arry
     }
-    u8DataOut_arry = this.WordListToAdd3ByteList(params3);
+    u8DataOut_arry = this.WordListToAdd3ByteList(maskParams);
   	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
   	return (u8DataOut_arry);
 
@@ -86,40 +86,40 @@ export default class Encode {
 
 
   CopBitInv = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8Mask_Arry){
-    var u8DataOut_arry =[];
-  	var u8Header = 0x80;
-    u8DataOut_arry.push(u8Header);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(groupID));
-    u8DataOut_arry.push(u8FuncCT);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
-    let params = {
+    let u8DataOut_arry =[
+      0x80,
+      ...this.WordTo3Byte(u8DevID),
+      ...this.WordTo3Byte(groupID),
+      u8FuncCT,
+      ...this.WordTo3Byte(u8DataNum)
+    ];
+    let addrParams = {
       Data_list: u8DataOut_arry,
       WordDatat_list: u8Addr_Arry
     }
-    u8DataOut_arry = this.WordListToAdd3ByteList(params);
-    let params2 = {
+    u8DataOut_arry = this.WordListToAdd3ByteList(addrParams);
+    let maskParams = {
       Data_list: u8DataOut_arry,
       WordDatat_list: u8Mask_Arry
     }
-    u8DataOut_arry = this.WordListToAdd3ByteList(params2);
+    u8DataOut_arry = this.WordListToAdd3ByteList(maskParams);
   	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
   	return (u8DataOut_arry);
   }
 
   CopWordRd = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry){
-    var u8DataOut_arry =[];
-  	var u8Header = 0x80;
-    u8DataOut_arry.push(u8Header);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(groupID));
-    u8DataOut_arry.push(u8FuncCT);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
-    let params = {
+    let u8DataOut_arry =[
+      0x80,
+      ...this.WordTo3Byte(u8DevID),
+      ...this.WordTo3Byte(groupID),
+      u8FuncCT,
+      ...this.WordTo3Byte(u8DataNum)
+    ];
+    let addrParams = {
       Data_list: u8DataOut_arry,
       WordDatat_list: [u8Addr_Arry[0]]
     }
-    u8DataOut_arry = this.WordListToAdd3ByteList(params);
+    u8DataOut_arry = this.WordListToAdd3ByteList(addrParams);
   	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
   	return (u8DataOut_arry);
     // TEST:
@@ -139,18 +139,18 @@ export default class Encode {
   }
 
   CopDiscWordRd = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry){
-    let u8DataOut_arry =[];
-  	var u8Header = 0x80;
-    u8DataOut_arry.push(u8Header);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(groupID));
-    u8DataOut_arry.push(u8FuncCT);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
-    let params = {
+    let u8DataOut_arry =[
+      0x80,
+      ...this.WordTo3Byte(u8DevID),
+      ...this.WordTo3Byte(groupID),
+      u8FuncCT,
+      ...this.WordTo3Byte(u8DataNum)
+    ];
+    let addrParams = {
       Data_list: u8DataOut_arry,
       WordDatat_list: u8Addr_Arry
     }
-    u8DataOut_arry = this.WordListToAdd3ByteList(params);
+    u8DataOut_arry = this.WordListToAdd3ByteList(addrParams);
   	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
   	return (u8DataOut_arry);
 
@@ -177,23 +177,16 @@ export default class Encode {
       u8FuncCT,
       ...this.WordTo3Byte(u8DataNum)
     ];
-    // var u8DataOut_arry =[];
-  	// var u8Header = 0x80;
-    // u8DataOut_arry.push(u8Header);
-    // u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
-    // u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(groupID));
-    // u8DataOut_arry.push(u8FuncCT);
-    // u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
-    let params = {
+    let addrParams = {
       Data_list: u8DataOut_arry,
       WordDatat_list: u8Addr_Arry
     }
-    u8DataOut_arry = this.WordListToAdd3ByteList(params);
-    let params2 = {
+    u8DataOut_arry = this.WordListToAdd3ByteList(addrParams);
+    let dataParams = {
       Data_list: u8DataOut_arry,
       WordDatat_list: u8DataIn_Arry
     }
-    u8DataOut_arry = this.WordListToAdd3ByteList(params2);
+    u8DataOut_arry = this.WordListToAdd3ByteList(dataParams);
   	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
   	return (u8DataOut_arry);
     // let params = {
@@ -212,23 +205,29 @@ export default class Encode {
 
 
   CopWordWt = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
-    var u8DataOut_arry =[];
-  	var u8Header = 0x80;
-    u8DataOut_arry.push(u8Header);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(groupID));
-    u8DataOut_arry.push(u8FuncCT);
-    u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
-    let params = {
+    let u8DataOut_arry = [
+      0x80,
+      ...this.WordTo3Byte(u8DevID),
+      ...this.WordTo3Byte(groupID),
+      u8FuncCT,
+      ...this.WordTo3Byte(u8DataNum)
+    ];
+  	// var u8Header = 0x80;
+    // u8DataOut_arry.push(u8Header);
+    // u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DevID));
+    // u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(groupID));
+    // u8DataOut_arry.push(u8FuncCT);
+    // u8DataOut_arry = u8DataOut_arry.concat(this.WordTo3Byte(u8DataNum));
+    let addrParams = {
       Data_list: u8DataOut_arry,
       WordDatat_list: [u8Addr_Arry[0]]
     }
-    u8DataOut_arry = this.WordListToAdd3ByteList(params);
-    let params2 = {
+    u8DataOut_arry = this.WordListToAdd3ByteList(addrParams);
+    let dataParams = {
       Data_list: u8DataOut_arry,
       WordDatat_list: u8DataIn_Arry
     }
-    u8DataOut_arry = this.WordListToAdd3ByteList(params2);
+    u8DataOut_arry = this.WordListToAdd3ByteList(dataParams);
   	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
   	return (u8DataOut_arry);
     // let params = {
