@@ -68,6 +68,7 @@ export default class Hme {
 
 
 
+
   UartTxRx = async ({Comm,RxLen}) => {
     try {
       let serialPort = this.serialPort;
@@ -80,37 +81,48 @@ export default class Hme {
         Rxarry.length = 0;
         serialPort.write(Comm, function(err, results) {
           if(err) return reject(err);
-        console.log('TX=',Comm);
-        serialPort.drain(function (error) {
-          var T1id = setInterval(function(){
-            T1num++;
-            if (Rxarry.length == RxLen) {
-              results = Rxarry;
-              resolve(results);
-              console.log('RX arry=',Rxarry);
-              clearInterval(T1id);
-            } else if (T1num > 5) {
-              console.log('TimeOut!');
-              results = [];
-              resolve(results);
-              clearInterval(T1id);
-            } else if (Rxarry.length > RxLen) {
-              console.log('DataErr!');
-              results = [];
-              resolve(results);
-              clearInterval(T1id);
-            } else {
 
-            }
-          } ,1);
+          var T2id = setTimeout(function(){
+            console.log('drain eer' );
+            return reject(results);
+          },100);
+
+          serialPort.drain(function (error) {
+            console.log('UART drain');
+            var T1id = setInterval(function(){
+              T1num++;
+              if (Rxarry.length == RxLen) {
+                results = Rxarry;
+                clearInterval(T1id);
+                clearTimeout(T2id);
+                return resolve(results);
+              } else if (T1num > 2) {
+                console.log('TimeOut!');
+                results = [];
+                clearInterval(T1id);
+                clearTimeout(T2id);
+                return resolve(results);
+              } else if (Rxarry.length > RxLen) {
+                console.log('DataErr!');
+                results = [];
+                clearInterval(T1id);
+                clearTimeout(T2id);
+                return resolve(results);
+              } else {
+
+              }
+            } ,2);
+          });
         });
       });
-    });
       return result;
     } catch (e) {
+      console.log('ERROR!!');
       throw e;
     }
   }
+
+
 
   SearchDevice = async () => {
     try {
@@ -118,7 +130,7 @@ export default class Hme {
       let ReDataArry = [];
       let params = {
         u8DevID:1,
-        GroupNum:0,
+        groupID:0,
         sFunc:'WordRd',
         u8DataNum:1,
         u8Addr_Arry:[1031],  //Device group
@@ -130,21 +142,21 @@ export default class Hme {
         Comm:[],
         RxLen:11
       }
-      let params3 = {
+      let DecodParams = {
         FuncCT:33,
         DevID:1,
         u8RxDataArry:[]
       }
 
-      //let i = 1;
-      for (let i = 0; i < 10; i++) {
+      for (let i = 1; i < 300; i++) {
         params.u8DevID = i;
+        console.log('Search DevID:',params.u8DevID);
         params2.Comm = this.encode.ClientOp(params);
-        console.log('Comm=',params2.Comm);
+        console.log('Sech Comm=',params2.Comm);
 
-        params3.u8RxDataArry =  await this.UartTxRx(params2);
-        params3.DevID = i;
-        ReDataArry = this.encode.RxDecode(params3);
+        DecodParams.u8RxDataArry =  await this.UartTxRx(params2);
+        DecodParams.DevID = i;
+        ReDataArry = this.encode.RxDecode(DecodParams);
         if (ReDataArry.length != 0) {
           console.log('out =', i);
           console.log('out =',ReDataArry);
@@ -162,41 +174,99 @@ export default class Hme {
     }
   }
 
-  TestDevice = async (DevID) => {
+  testAll = async () => {
+    try {
+      await this.testGroup(0, 0)
+      return (true);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  testDevID = async (DevID) => {
+    try {
+      console.log('DevID:',DevID);
+      return (await this.testDevice(DevID,0));
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  testGroup = async (groupID) => {
     try {
       let BrightArry = [5000, 10, 5000, 10, 5000, 10];
       let serialPort = this.serialPort;
       let triggerTimeMs = 500;
+      let DevID = 0;
 
-      let params = {
+      let LedBghParams = {
         DevID:DevID,
+        groupID:groupID,
         Led1Bgt:0,
         Led2Bgt:0,
         Led3Bgt:0,
         Led4Bgt:0,
         Led5Bgt:0
       }
+      console.log('DevID:',DevID);
+      console.log('groupID:',groupID);
+      console.log('LedBghParams:',LedBghParams);
+      await this.setLedBrighter(LedBghParams);
+      await this.setLedCtrlMode(DevID, groupID, 'Interact');
+      for (var i in BrightArry) {
+        LedBghParams.Led1Bgt = BrightArry[i];
+        LedBghParams.Led2Bgt = BrightArry[i];
+        LedBghParams.Led3Bgt = BrightArry[i];
+        LedBghParams.Led4Bgt = BrightArry[i];
+        LedBghParams.Led5Bgt = BrightArry[i];
+        await this.setLedBrighter(LedBghParams);
+        await this.sleep(triggerTimeMs);
+      }
+      await this.setLedBrighter(LedBghParams);
+      await this.sleep(triggerTimeMs);
+      await this.setLedCtrlMode(DevID, groupID, 'Normal');
+      return (true);
+    } catch (e) {
+      throw e;
+    }
+  }
 
-      if (await this.SetLedBrighter(params) == false){
+  testDevice = async (DevID, groupID) => {
+    try {
+      let BrightArry = [5000, 10, 5000, 10, 5000, 10];
+      let serialPort = this.serialPort;
+      let triggerTimeMs = 500;
+
+      let LedBghParams = {
+        DevID:DevID,
+        groupID:groupID,
+        Led1Bgt:0,
+        Led2Bgt:0,
+        Led3Bgt:0,
+        Led4Bgt:0,
+        Led5Bgt:0
+      }
+      console.log('testDevice,DevID:',DevID,'groupID:',groupID);
+      if (await this.setLedBrighter(LedBghParams) == false){
         return (false);
       }
-      if ( await this.SetLedCtrlMode(DevID, 'Interact') == false){
+      if ( await this.setLedCtrlMode(DevID, groupID, 'Interact') == false){
         return (false);
       }
 
       for (var i in BrightArry) {
-        params.Led1Bgt = BrightArry[i];
-        params.Led2Bgt = BrightArry[i];
-        params.Led3Bgt = BrightArry[i];
-        params.Led4Bgt = BrightArry[i];
-        params.Led5Bgt = BrightArry[i];
-        if ( await this.SetLedBrighter(params) == false){
+        LedBghParams.Led1Bgt = BrightArry[i];
+        LedBghParams.Led2Bgt = BrightArry[i];
+        LedBghParams.Led3Bgt = BrightArry[i];
+        LedBghParams.Led4Bgt = BrightArry[i];
+        LedBghParams.Led5Bgt = BrightArry[i];
+        if ( await this.setLedBrighter(LedBghParams) == false){
           return (false);
         }
         await this.sleep(triggerTimeMs);
       }
 
-      if ( await this.SetLedCtrlMode(DevID, 'Normal') == false){
+      if ( await this.setLedCtrlMode(DevID, groupID, 'Normal') == false){
         return (false);
       }
       return (true);
@@ -207,16 +277,134 @@ export default class Hme {
   }
 
 
-  SetLedCtrlMode = async (DevID, CtrlMode) => {
+  setLedCtrlMode = async (DevID, groupID, CtrlMode) => {
     try {
       let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
       let COpParams = {
         u8DevID:DevID,
-        GroupNum:0,
+        groupID:groupID,
         sFunc:'WordWt',
         u8DataNum:1,
         u8Addr_Arry:[100],  //Device group
         u8DataIn_Arry:[CtrlModeTable[CtrlMode]],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:8
+      }
+      let DecodParams = {
+        FuncCT:49,
+        DevID:DevID,
+        u8RxDataArry:[]
+      }
+      console.log('setLedCtrlMode,DevID:',DevID,'groupID:',groupID);
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID || DevID == 0){
+        return (true);
+      } else {
+        return (false);
+      };
+
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  setLedBrighter = async ({DevID, groupID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt}) => {
+    try {
+      let COpParams = {
+        u8DevID:DevID,
+        groupID:groupID,
+        sFunc:'WordWt',
+        u8DataNum:5,
+        u8Addr_Arry:[90],
+        u8DataIn_Arry:[Led1Bgt,Led2Bgt,Led3Bgt,Led4Bgt,Led5Bgt],
+        u8Mask_Arry:[],
+        RepeatNum:1
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:8
+      }
+      let DecodParams = {
+        FuncCT:49,
+        DevID:DevID,
+        u8RxDataArry:[]
+      }
+      console.log('setLedBrighter,COpParams:',COpParams);
+      console.log('setLedBrighter,DevID:',DevID,'groupID:',groupID);
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID || DevID == 0){
+        //await this.setLedCtrlMode(DevID, groupID,'Interact');
+        return (true);
+      } else {
+        return (false);
+      };
+
+    } catch (e) {
+      throw e;
+    }
+
+
+
+
+
+  }
+
+  setGroupID = async (DevID, groupID) => {
+    try {
+        let COpParams = {
+        u8DevID:DevID,
+        groupID:0,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[1031], //Device group
+        u8DataIn_Arry:[groupID],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:8
+      }
+      let DecodParams = {
+        FuncCT:49,
+        DevID:DevID,
+        u8RxDataArry:[]
+      }
+
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+        if (this.flashMemoryWrite(DevID,0)){
+          return (true);
+        }else {
+          return (false);
+        }
+      } else {
+        return (false);
+      };
+
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  flashMemoryWrite = async (DevID, groupID) => {
+    try {
+        let COpParams = {
+        u8DevID:DevID,
+        groupID:groupID,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[1021],  //Addr 1021 = FMC Wr
+        u8DataIn_Arry:[1],
         u8Mask_Arry:[],
         RepeatNum:5
       }
@@ -244,46 +432,9 @@ export default class Hme {
     }
   }
 
-  SetLedBrighter = async ({DevID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt}) => {
-    try {
-      let COpParams = {
-        u8DevID:DevID,
-        GroupNum:0,
-        sFunc:'WordWt',
-        u8DataNum:5,
-        u8Addr_Arry:[90],
-        u8DataIn_Arry:[Led1Bgt,Led2Bgt,Led3Bgt,Led4Bgt,Led5Bgt],
-        u8Mask_Arry:[],
-        RepeatNum:1
-      }
-      let TxParams = {
-        Comm:[],
-        RxLen:8
-      }
-      let DecodParams = {
-        FuncCT:49,
-        DevID:DevID,
-        u8RxDataArry:[]
-      }
-      console.log(COpParams);
-      TxParams.Comm = this.encode.ClientOp(COpParams);
-      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
-        await this.SetLedCtrlMode(DevID,'Interact');
-        return (true);
-      } else {
-        return (false);
-      };
-
-    } catch (e) {
-      throw e;
-    }
 
 
 
-
-
-  }
 
 
   _eventsSetup = () => {
