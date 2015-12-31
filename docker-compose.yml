@@ -129,6 +129,30 @@ mysql:
   restart: always
 
 
+swarm-manager:
+  image: hypriot/rpi-swarm
+  ports:
+   - "3375:2375"
+  command: "manage consul://office.trunk-studio.com:8500/swarm"
+
+slave-00:
+  image: "hypriot/rpi-swarm"
+  command: "join --addr=192.168.168.120:2375 consul://office.trunk-studio.com:8500/swarm"
+  restart: always
+
+consul:
+  image: "hypriot/rpi-consul"
+  ports:
+   - "8500:8500"
+  command: "agent -server -data-dir /data -bootstrap-expect 1 -ui-dir /ui -client=0.0.0.0"
+  volumes:
+  - "/data"
+
+slave-01:
+  image: "hypriot/rpi-swarm"
+  command: "join --addr=192.168.168.134:2375 consul://office.trunk-studio.com:8500/swarm"
+  restart: always
+
 # web:
 #   container_name: web
 #   image: bfirsh/compose-mongodb-demo
