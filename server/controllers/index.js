@@ -19,6 +19,11 @@ export default class Routes {
     var app = this.app;
     var publicRoute = new Router()
 
+    publicRoute.get('/rest/info/', function *() {
+      let {APP_NAME} = process.env
+      this.body = {APP_NAME}
+    })
+
     publicRoute.get('/rest/user/', UserController.index);
     publicRoute.get('/rest/hme/hello/', HmeController.hello);
     publicRoute.get('/rest/hme/ping/', HmeController.ping);
