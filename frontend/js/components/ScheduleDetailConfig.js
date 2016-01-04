@@ -65,12 +65,10 @@ export default class ScheduleDetailConfig extends React.Component {
   }
 
   backClick = () => {
-    alert("!!!!!!");
   }
 
 
   render() {
-    console.log("?????????",this.props.config);
     let menuItems = [
        { payload: '1', text: 'Never' },
        { payload: '2', text: 'Every Night' },

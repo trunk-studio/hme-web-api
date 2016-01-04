@@ -2,7 +2,6 @@ import { RECEIVED_GET_SCHEDULE_DETAIL_CONFIG, RECEIVED_UPDATE_SCHEDULE_DETAIL_CO
 } from '../actions/ScheduleDetailConfigActions'
 
 export function scheduleDetailConfig(state = { }, action) {
-  console.log("action!!!!!!!!!!",action);
   switch (action.type) {
     case RECEIVED_GET_SCHEDULE_DETAIL_CONFIG:
       return {
