@@ -24,29 +24,15 @@ exports.getConfigDetail = function *() {
     let id = this.params.id;
     let config = yield models.ScheduleDetailConfig.findById(id);
 
-    let chartData = {
-      labels: ["", "", "", "", "", "",""],
-      datasets: [
-        {
-          label: "My Second dataset",
-          fillColor: "rgba(151,187,205,0.2)",
-          strokeColor: "rgba(151,187,205,1)",
-          pointColor: "rgba(151,187,205,1)",
-          pointStrokeColor: "#fff",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(151,187,205,1)",
-          data: [
-            config.WW,
-            config.DB,
-            config.BL,
-            config.GR,
-            config.RE,
-            config.CCT,
-            config.Bright
-          ]
-        }
-      ]
-    };
+    let chartData = [
+      config.WW,
+      config.DB,
+      config.BL,
+      config.GR,
+      config.RE,
+      config.CCT,
+      config.Bright
+    ];
     this.body =  chartData;
   } catch(e) {
     console.error("delete user error", e);
