@@ -1,6 +1,4 @@
-import {
-  REQUEST_CREATE, RECEIVED_CREATE,
-  REQUEST_LIST, RECEIVED_LIST
+import { RECEIVED_CREATE, RECEIVED_LIST
 } from '../actions/ScheduleListActions'
 
 export function schedule(state = { }, action) {

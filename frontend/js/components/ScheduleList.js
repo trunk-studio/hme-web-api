@@ -1,7 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import { requestCreate, receivedCreate,
-         requestGetList, receivedGetList} from '../actions/ScheduleListActions'
+import { requestCreate, requestGetList} from '../actions/ScheduleListActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -82,7 +81,7 @@ function _injectPropsFromStore(state) {
   };
 }
 
-const _injectPropsFormActions = {
+const _injectPropsFromActions = {
   requestGetList,
   requestCreate
 }
