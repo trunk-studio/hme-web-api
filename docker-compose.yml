@@ -54,10 +54,6 @@ web:
   volumes:
     - ./:/app
 
-  devices:
-    - /dev/ttyUSB0:/dev/ttyUSB0
-  environment:
-    SERIALPORT: '/dev/ttyUSB0'
 
   restart: always
 
@@ -127,6 +123,80 @@ mysql:
     - "constraint:node==hme-master"
 
   restart: always
+
+
+swarm-manager:
+  image: hypriot/rpi-swarm
+  ports:
+   - "3375:2375"
+  command: "manage consul://office.trunk-studio.com:8500/swarm"
+
+slave-00:
+  image: "hypriot/rpi-swarm"
+  command: "join --addr=192.168.168.120:2375 consul://office.trunk-studio.com:8500/swarm"
+  restart: always
+
+consul:
+  image: "hypriot/rpi-consul"
+  ports:
+   - "8500:8500"
+  command: "agent -server -data-dir /data -bootstrap-expect 1 -ui-dir /ui -client=0.0.0.0"
+  volumes:
+  - "/data"
+
+slave-01:
+  image: "hypriot/rpi-swarm"
+  command: "join --addr=192.168.168.134:2375 consul://office.trunk-studio.com:8500/swarm"
+  restart: always
+
+
+
+web_01:
+  container_name: hmi-web-01
+  image: node:4
+  command: "/bin/bash -l -c 'npm start'"
+  expose:
+    - "3000"
+  working_dir: /app
+  volumes:
+    - ./:/app
+
+  environment:
+    - "VIRTUAL_HOST=192.168.99.119"
+    - "APP_NAME=hmi-web-01"
+
+  restart: always
+
+web_02:
+  container_name: hmi-web-02
+  image: node:4
+  command: "/bin/bash -l -c 'npm start'"
+  expose:
+    - "3000"
+  working_dir: /app
+  volumes:
+    - ./:/app
+
+  environment:
+    - "VIRTUAL_HOST=192.168.99.119"
+    - "APP_NAME=hmi-web-02"
+
+  restart: always
+
+nginx-proxy:
+  container_name: nginx-proxy
+  image: jwilder/nginx-proxy
+  ports:
+    - "80:80"
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+
+  restart: always
+
+
+
+
+
 
 
 # web:
