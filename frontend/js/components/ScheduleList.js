@@ -25,22 +25,6 @@ export default class ScheduleList extends React.Component {
 
   constructor(props) {
     super(props);
-    // this.props.requestGetList();
-    // this.state = this.props.schedule;
-    // {
-    //   schedule: [
-    //     {
-    //       startDate: '1/12/2015',
-    //       days: '1'
-    //     }, {
-    //       startDate: '2/12/2015',
-    //       days: '2'
-    //     }, {
-    //       startDate: '3/12/2015',
-    //       days: '3'
-    //     }
-    //   ]
-    // }
   }
 
   componentDidMount () {
@@ -48,33 +32,23 @@ export default class ScheduleList extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-      console.log("?????????????",this.props);
   }
 
   _addRow = (e) => {
     this.props.requestCreate();
-    // this.setState({
-    //   schedule: [
-    //     ...this.state.schedule, {
-    //       startDate: 'new',
-    //       days: 'new'
-    //     }
-    //   ]
-    // })
   }
 
   render () {
-    console.log("#########",this.props.scheduleList);
     let rows = [];
     if(this.props.scheduleList){
       this.props.scheduleList.forEach((row,i) => {
         rows.push(
-          <TableRow key={i}>
+          <TableRow key={row.id}>
             <TableRowColumn>
-              <RaisedButton label="EDIT" linkButton={true} href="#/schedule/edit"/>
+              <RaisedButton label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
             </TableRowColumn>
-            <TableRowColumn>{row.startDate}</TableRowColumn>
-            <TableRowColumn>{row.days}</TableRowColumn>
+            <TableRowColumn>{row.startDate || 'new'}</TableRowColumn>
+            <TableRowColumn>{row.days || 'new'}</TableRowColumn>
           </TableRow>
         );
       });
