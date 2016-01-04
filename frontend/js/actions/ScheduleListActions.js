@@ -16,7 +16,6 @@ export function requestCreate() {
 }
 
 export function receivedCreate(data) {
-  console.log("receivedCreate !!!!!!!!",data);
   return {
     type: RECEIVED_CREATE,
     data
@@ -34,7 +33,6 @@ export function requestGetList() {
 }
 
 export function receivedGetList(data) {
-  console.log("receivedGetList !!!!!!!!",data);
   return {
     type: RECEIVED_LIST,
     data

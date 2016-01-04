@@ -4,17 +4,12 @@ import {
 } from '../actions/ScheduleListActions'
 
 export function schedule(state = { }, action) {
-  console.log("action!!!!!!",action, state);
   switch (action.type) {
     case RECEIVED_CREATE:
-
-      let newScheduleList = state.scheduleList? state.scheduleList : {} ;
-      newScheduleList.push(action.data);
-      console.log('123');
-      // console.log(scheduleList, newstate);
+      let newScheduleList=[];
       return {
         ...state,
-        scheduleList: newScheduleList
+        scheduleList: [...state.scheduleList,action.data]
       };
     case RECEIVED_LIST:
       return {

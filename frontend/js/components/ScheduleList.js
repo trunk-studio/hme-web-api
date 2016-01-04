@@ -64,10 +64,10 @@ export default class ScheduleList extends React.Component {
   }
 
   render () {
-    console.log("#########",this.props.schedule);
+    console.log("#########",this.props.scheduleList);
     let rows = [];
-    if(this.props.schedule){
-      this.props.schedule.forEach((row,i) => {
+    if(this.props.scheduleList){
+      this.props.scheduleList.forEach((row,i) => {
         rows.push(
           <TableRow key={i}>
             <TableRowColumn>
@@ -102,8 +102,9 @@ export default class ScheduleList extends React.Component {
 function _injectPropsFromStore(state) {
   // let { login, isLoading } = state;
   console.log("_injectPropsFromStore!!",state);
+  let {schedule} = state;
   return {
-    schedule: state.schedule.scheduleList
+    scheduleList: schedule.scheduleList
   };
 }
 
