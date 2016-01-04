@@ -80,10 +80,10 @@ export default class ManagePage extends React.Component {
 }
 
 function _injectPropsFromStore(state) {
-  let { testDevice } = state;
+  let { scanDevice } = state;
   let scanResult = [];
-  if(testDevice.deviceList) {
-    for(let device of testDevice.deviceList) {
+  if(scanDevice.deviceList) {
+    for(let device of scanDevice.deviceList) {
       scanResult.push({payload: device.DevID, text: device.DevID});
     }
   }

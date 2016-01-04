@@ -24,9 +24,9 @@ export default class Routes {
     publicRoute.get('/rest/hme/hello/', HmeController.hello);
     publicRoute.get('/rest/hme/ping/', HmeController.ping);
     publicRoute.get('/rest/hme/searchDevice', HmeController.searchDevice);
+    publicRoute.get('/rest/hme/deviceGroup/findAll', HmeController.findAllDeviceGroups);
 
     publicRoute.post('/rest/hme/login', UserController.login);
-
     publicRoute.post('/rest/schedule/create', ScheduleController.createSchedule);
     publicRoute.get('/rest/schedule/findAll', ScheduleController.getAllSchedule);
     publicRoute.get('/rest/schedule/:id', ScheduleController.getOneSchedule);
