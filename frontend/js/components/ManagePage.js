@@ -1,4 +1,6 @@
 import React                from 'react';
+import { connect } from 'react-redux'
+import { requestScan, requestDeviceGroup } from '../actions/TestActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -8,33 +10,34 @@ const Tab = require('material-ui/lib/tabs/tab');
 const ScheduleList = require('./ScheduleList');
 
 export default class ManagePage extends React.Component {
+
+
+  _handleScan = (e) => {
+    this.props.requestScan();
+  }
+  componentDidMount() {
+    this.props.requestScan();
+    this.props.requestDeviceGroup();
+  }
+  componentDidUpdate(prevProps, prevState) {
+  }
+
   render() {
 
-    let scanResult = [
-       { payload: '1', text: 'm1' },
-       { payload: '2', text: 'm2' },
-       { payload: '3', text: 'm3' },
-    ];
-
-    let groups = [
-       { payload: '1', text: 'group1' },
-       { payload: '2', text: 'group2' },
-       { payload: '3', text: 'group3' },
-    ];
     return (
       <Tabs>
         <Tab label="TEST">
           <div className="self-center" style={{width: '350px'}}>
             <div style={{display: 'table-caption'}}>
               <div style={{display: 'inline-flex'}}>
-                <RaisedButton label="SCAN" />
+                <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField menuItems={scanResult}/>
+                <SelectField menuItems={this.props.deviceList}/>
                 <RaisedButton label="TEST" />
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField menuItems={groups}/>
+                <SelectField menuItems={this.props.groupList}/>
                 <RaisedButton label="Grouping" />
               </div>
             </div>
@@ -43,7 +46,7 @@ export default class ManagePage extends React.Component {
         <Tab label="Group Test">
           <div className="self-center" style={{width: '220px'}}>
             <div style={{display: 'table-caption'}}>
-              <SelectField menuItems={groups}/>
+              <SelectField menuItems={this.props.groupList}/>
               <RaisedButton label="TEST" />
             </div>
           </div>
@@ -55,7 +58,7 @@ export default class ManagePage extends React.Component {
                 hintText="Report Email"
                 floatingLabelText="Report Email"
                 type="text" />
-              <SelectField menuItems={groups}/>
+              <SelectField menuItems={this.props.groupList}/>
               <RaisedButton label="Add in" style={{float: 'right', marginRight:'10%'}}/>
             </div>
           </div>
@@ -67,3 +70,32 @@ export default class ManagePage extends React.Component {
     );
   }
 }
+
+function _injectPropsFromStore(state) {
+  let { scanDevice } = state;
+  let scanResult = [],
+      groupList = [];
+  if(scanDevice.deviceList) {
+    for(let device of scanDevice.deviceList) {
+      scanResult.push({payload: device.DevID, text: device.DevID});
+    }
+  }
+
+  if(scanDevice.groupList) {
+    for(let group of scanDevice.groupList) {
+      groupList.push({payload: group.id, text: group.id});
+    }
+  }
+  return {
+    deviceList: scanResult,
+    groupList: groupList
+  };
+}
+
+const _injectPropsFromActions = {
+  requestScan,
+  requestDeviceGroup
+}
+
+
+export default connect(_injectPropsFromStore, _injectPropsFromActions)(ManagePage);
