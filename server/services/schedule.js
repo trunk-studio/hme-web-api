@@ -10,7 +10,8 @@ module.exports = {
           "ScheduleId": schedule.id
         });
       }
-      await models.ScheduleDetail.bulkCreate(scheduleConfig);
+      let a = await models.ScheduleDetail.bulkCreate(scheduleConfig);
+      console.log("!!!!!!!!!!!!",a[0]);
       return schedule;
     } catch (e) {
       throw e;
