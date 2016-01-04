@@ -1,5 +1,4 @@
 import {
-  REQUEST_SCAN,
   RECEIVED_SCAN,
   RECEIVED_DEVICEGROUP
 } from '../actions/TestActions'

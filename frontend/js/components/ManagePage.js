@@ -1,6 +1,6 @@
 import React                from 'react';
 import { connect } from 'react-redux'
-import { requestScan, receivedScan, requestDeviceGroup } from '../actions/TestActions'
+import { requestScan, requestDeviceGroup } from '../actions/TestActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -72,7 +72,7 @@ export default class ManagePage extends React.Component {
 }
 
 function _injectPropsFromStore(state) {
-  let { scanDevice} = state;
+  let { scanDevice } = state;
   let scanResult = [],
       groupList = [];
   if(scanDevice.deviceList) {
