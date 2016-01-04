@@ -86,4 +86,4 @@ const _injectPropsFromActions = {
   requestCreate
 }
 
-export default connect(_injectPropsFromStore, _injectPropsFormActions)(ScheduleList);
+export default connect(_injectPropsFromActions, _injectPropsFormActions)(ScheduleList);
