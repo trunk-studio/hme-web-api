@@ -173,7 +173,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port setGroupID", async done => {
+    it("serial Port setGroupID", async done => {
 
       try {
         //將Device1的groupID設為6

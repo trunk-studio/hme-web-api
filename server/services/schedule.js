@@ -10,8 +10,19 @@ module.exports = {
           "ScheduleId": schedule.id
         });
       }
-      let a = await models.ScheduleDetail.bulkCreate(scheduleConfig);
-      console.log("!!!!!!!!!!!!",a[0]);
+      await models.ScheduleDetail.bulkCreate(scheduleConfig);
+      let findScheduleConfig = await models.ScheduleDetail.findAll({
+        where:{
+          "ScheduleId": schedule.id
+        }
+      });
+      let scheduleConfigId = [];
+      findScheduleConfig.forEach(function(i){
+        scheduleConfigId.push({
+          "ScheduleDetailId": i.id,
+        });
+      });
+      await models.ScheduleDetailConfig.bulkCreate(scheduleConfigId);
       return schedule;
     } catch (e) {
       throw e;

@@ -1,6 +1,6 @@
 describe("schedule", () => {
 
-  it("create", async(done) => {
+  it.only("create", async(done) => {
     try {
       let newSchedule = {
         StartDate: moment('2015/11/10','YYYY/MM/DD'),
