@@ -18,33 +18,40 @@ export default class ScheduleDetailConfig extends React.Component {
   _wwChanged = (e, value) => {
     this.refs.chart.state.chart.datasets[0].points[0].value = value;
     this.refs.chart.state.chart.update();
+    this._saveConfig();
   }
   _dbChanged = (e, value) => {
     this.refs.chart.state.chart.datasets[0].points[1].value = value;
     this.refs.chart.state.chart.update();
+    this._saveConfig();
   }
   _blChanged = (e, value) => {
     this.refs.chart.state.chart.datasets[0].points[2].value = value;
     this.refs.chart.state.chart.update();
+    this._saveConfig();
   }
   _grChanged = (e, value) => {
     this.refs.chart.state.chart.datasets[0].points[3].value = value;
     this.refs.chart.state.chart.update();
+    this._saveConfig();
   }
   _reChanged = (e, value) => {
     this.refs.chart.state.chart.datasets[0].points[4].value = value;
     this.refs.chart.state.chart.update();
+    this._saveConfig();
   }
   _cctChanged = (e, value) => {
     this.refs.chart.state.chart.datasets[0].points[5].value = value;
     this.refs.chart.state.chart.update();
+    this._saveConfig();
   }
   _brightChanged = (e, value) => {
     this.refs.chart.state.chart.datasets[0].points[6].value = value;
     this.refs.chart.state.chart.update();
+    this._saveConfig();
   }
 
-  _saveConfig = (e)=> {
+  _saveConfig(){
     this.props.requestUpdateScheduleDetailConfig({
       id: this.props.params.id,
       WW: this.refs.WW.state.value,
@@ -131,13 +138,13 @@ export default class ScheduleDetailConfig extends React.Component {
             </div>
           </div>
           <div className="col-md-4 col-sm-4 col-xs-4">
-            <Slider ref="WW" name="WW" defaultValue={0} max={1000} value={wwValue} description="WW" className="slider" onDragStop={this._saveConfig} onChange={this._wwChanged} />
-            <Slider ref="DB" name="DB" defaultValue={0} max={1000} value={dbValue} description="DB" className="slider" onDragStop={this._saveConfig} onChange={this._dbChanged} />
-            <Slider ref="BL" name="BL" defaultValue={0} max={1000} value={blValue} description="BL" className="slider" onDragStop={this._saveConfig} onChange={this._blChanged} />
-            <Slider ref="GR" name="GR" defaultValue={0} max={1000} value={grValue} description="GR" className="slider" onDragStop={this._saveConfig} onChange={this._grChanged} />
-            <Slider ref="RE" name="RE" defaultValue={0} max={1000} value={reValue} description="RE" className="slider" onDragStop={this._saveConfig} onChange={this._reChanged} />
-            <Slider ref="CCT" name="CCT" defaultValue={0} max={1000} value={cctValue} description="CCT" step="100" className="slider" onDragStop={this._saveConfig} onChange={this._cctChanged}/>
-            <Slider ref="Bright" name="Bright" defaultValue={0} className="slider" max={1000} value={brightValue} description="Bright" onDragStop={this._saveConfig} onChange={this._brightChanged}/>
+            <Slider ref="WW" name="WW" defaultValue={0} max={1000} value={wwValue} description="WW" className="slider" onChange={this._wwChanged} />
+            <Slider ref="DB" name="DB" defaultValue={0} max={1000} value={dbValue} description="DB" className="slider" onChange={this._dbChanged} />
+            <Slider ref="BL" name="BL" defaultValue={0} max={1000} value={blValue} description="BL" className="slider" onChange={this._blChanged} />
+            <Slider ref="GR" name="GR" defaultValue={0} max={1000} value={grValue} description="GR" className="slider" onChange={this._grChanged} />
+            <Slider ref="RE" name="RE" defaultValue={0} max={1000} value={reValue} description="RE" className="slider" onChange={this._reChanged} />
+            <Slider ref="CCT" name="CCT" defaultValue={0} max={1000} value={cctValue} description="CCT" step="100" className="slider" onChange={this._cctChanged}/>
+            <Slider ref="Bright" name="Bright" defaultValue={0} className="slider" max={1000} value={brightValue} description="Bright" onChange={this._brightChanged}/>
           </div>
         </div>
       </div>
