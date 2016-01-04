@@ -29,3 +29,19 @@ exports.searchDevice = function *() {
   console.log('controller',result);
   this.body = result
 };
+
+exports.findAllDeviceGroups = function *() {
+  // let result = await models.groups.findAll();
+  let result = [
+    {
+      id: 1
+    },
+    {
+      id: 2
+    },
+    {
+      id: 3
+    }
+  ];
+  this.body = result
+}
