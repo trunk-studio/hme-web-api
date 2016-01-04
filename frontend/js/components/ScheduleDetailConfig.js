@@ -1,32 +1,69 @@
 import React                from 'react';
-import { AppBar, IconButton, FlatButton , Slider, RadioButton, RadioButtonGroup, DropDownMenu, RaisedButton} from 'material-ui'
+import { AppBar, IconButton, FlatButton , Slider, RadioButton, RadioButtonGroup, DropDownMenu, RaisedButton} from 'material-ui';
+import { connect } from 'react-redux'
+import { requestGetScheduleDetailConfig, requestUpdateScheduleDetailConfig} from '../actions/ScheduleDetailConfigActions'
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
 
 const LineChart = require("react-chartjs").Line;
 
 export default class ScheduleDetailConfig extends React.Component {
 
-  _cctChanged = (e, value) => {
-    console.log(value,this.refs.colorSlider,this.refs.chart);
-    this.refs.colorSlider.setState({
-      percent: value,
-      value: value
-    });
+  componentDidMount () {
+    this.props.requestGetScheduleDetailConfig(this.props.params.id);
+  }
 
-    this.refs.chart.state.chart.datasets[0].points[0].value = value * Math.random() * 100;
-    this.refs.chart.state.chart.datasets[0].points[1].value = value * Math.random() * 100;
-    this.refs.chart.state.chart.datasets[0].points[2].value = value * Math.random() * 100;
-    this.refs.chart.state.chart.datasets[0].points[3].value = value * Math.random() * 100;
-    this.refs.chart.state.chart.datasets[0].points[4].value = value * Math.random() * 100;
+  componentDidUpdate(prevProps, prevState) {
+  }
+
+  _wwChanged = (e, value) => {
+    this.refs.chart.state.chart.datasets[0].points[0].value = value;
+    this.refs.chart.state.chart.update();
+  }
+  _dbChanged = (e, value) => {
+    this.refs.chart.state.chart.datasets[0].points[1].value = value;
+    this.refs.chart.state.chart.update();
+  }
+  _blChanged = (e, value) => {
+    this.refs.chart.state.chart.datasets[0].points[2].value = value;
+    this.refs.chart.state.chart.update();
+  }
+  _grChanged = (e, value) => {
+    this.refs.chart.state.chart.datasets[0].points[3].value = value;
+    this.refs.chart.state.chart.update();
+  }
+  _reChanged = (e, value) => {
+    this.refs.chart.state.chart.datasets[0].points[4].value = value;
+    this.refs.chart.state.chart.update();
+  }
+  _cctChanged = (e, value) => {
+    this.refs.chart.state.chart.datasets[0].points[5].value = value;
+    this.refs.chart.state.chart.update();
+  }
+  _brightChanged = (e, value) => {
+    this.refs.chart.state.chart.datasets[0].points[6].value = value;
     this.refs.chart.state.chart.update();
   }
 
-  backClick = (e) => {
+  _saveConfig = (e)=> {
+    this.props.requestUpdateScheduleDetailConfig({
+      id: this.props.params.id,
+      WW: this.refs.WW.state.value,
+      DB: this.refs.DB.state.value,
+      BL: this.refs.BL.state.value,
+      GR: this.refs.GR.state.value,
+      RE: this.refs.RE.state.value,
+      CCT: this.refs.CCT.state.value,
+      Bright: this.refs.Bright.state.value,
+    })
+  }
+
+  backClick = () => {
     alert("!!!!!!");
   }
 
 
   render() {
+    console.log("?????????",this.props.config);
     let menuItems = [
        { payload: '1', text: 'Never' },
        { payload: '2', text: 'Every Night' },
@@ -35,7 +72,7 @@ export default class ScheduleDetailConfig extends React.Component {
        { payload: '5', text: 'Weekly' },
     ];
     let chartData = {
-        labels: ["", "", "", "", "", "",],
+        labels: ["", "", "", "", "", "",""],
         datasets: [
             {
                 label: "My Second dataset",
@@ -45,10 +82,28 @@ export default class ScheduleDetailConfig extends React.Component {
                 pointStrokeColor: "#fff",
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(151,187,205,1)",
-                data: [28, 48, 40, 19, 86, 27, 90]
+                data: this.props.config || [0,0,0,0,0,0,0]
             }
         ]
     };
+    let wwValue, dbValue, blValue, grValue, reValue, cctValue, brightValue;
+    if(this.props.config){
+      wwValue = this.props.config[0];
+      dbValue = this.props.config[1];
+      blValue = this.props.config[2];
+      grValue = this.props.config[3];
+      reValue = this.props.config[4];
+      cctValue = this.props.config[5];
+      brightValue = this.props.config[6];
+    }else{
+      wwValue = 0;
+      dbValue = 0;
+      blValue = 0;
+      grValue = 0;
+      reValue = 0;
+      cctValue = 0;
+      brightValue = 0;
+    }
 
     return (
       <div>
@@ -76,16 +131,32 @@ export default class ScheduleDetailConfig extends React.Component {
             </div>
           </div>
           <div className="col-md-4 col-sm-4 col-xs-4">
-            <Slider ref="colorSlider"  name="WW" defaultValue={1} description="WW" className="slider"/>
-            <Slider name="DB" defaultValue={1} description="DB" className="slider"/>
-            <Slider name="BL" defaultValue={1} description="BL" className="slider"/>
-            <Slider name="GR" defaultValue={1} description="GR" className="slider"/>
-            <Slider name="RE" defaultValue={1} description="RE" className="slider"/>
-            <Slider name="CCT" defaultValue={1} description="CCT" step="0.1" className="slider" onChange={this._cctChanged}/>
-            <Slider name="Bright" defaultValue={1} className="slider" description="Bright"/>
+            <Slider ref="WW" name="WW" defaultValue={0} max={1000} value={wwValue} description="WW" className="slider" onDragStop={this._saveConfig} onChange={this._wwChanged} />
+            <Slider ref="DB" name="DB" defaultValue={0} max={1000} value={dbValue} description="DB" className="slider" onDragStop={this._saveConfig} onChange={this._dbChanged} />
+            <Slider ref="BL" name="BL" defaultValue={0} max={1000} value={blValue} description="BL" className="slider" onDragStop={this._saveConfig} onChange={this._blChanged} />
+            <Slider ref="GR" name="GR" defaultValue={0} max={1000} value={grValue} description="GR" className="slider" onDragStop={this._saveConfig} onChange={this._grChanged} />
+            <Slider ref="RE" name="RE" defaultValue={0} max={1000} value={reValue} description="RE" className="slider" onDragStop={this._saveConfig} onChange={this._reChanged} />
+            <Slider ref="CCT" name="CCT" defaultValue={0} max={1000} value={cctValue} description="CCT" step="100" className="slider" onDragStop={this._saveConfig} onChange={this._cctChanged}/>
+            <Slider ref="Bright" name="Bright" defaultValue={0} className="slider" max={1000} value={brightValue} description="Bright" onDragStop={this._saveConfig} onChange={this._brightChanged}/>
           </div>
         </div>
       </div>
     );
   }
 }
+
+function _injectPropsFromStore(state) {
+  // let { login, isLoading } = state;
+  console.log("_injectPropsFromStore!!",state.scheduleDetailConfig.configData);
+  let config = state.scheduleDetailConfig.configData
+  return {
+    config
+  };
+}
+
+const _injectPropsFromActions = {
+  requestGetScheduleDetailConfig,
+  requestUpdateScheduleDetailConfig
+}
+
+export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleDetailConfig);
