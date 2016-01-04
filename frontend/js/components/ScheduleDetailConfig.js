@@ -57,56 +57,32 @@ export default class ScheduleDetailConfig extends React.Component {
           iconElementLeft={<IconButton><NavigationClose /></IconButton>}
           iconElementRight={<FlatButton label="Save" onTouchTap={this.backClick} />}
           onLeftIconButtonTouchTap={this.backClick} />
-        <div className="self-center" style={{width: '100%'}}>
-            <div className="col-md-6">
-              <div className="row">
-                <LineChart ref="chart" data={chartData} style={{
-                    margin: '5px',
-                    width: '100%',
-                    height: '200px'
-                    }} />
-              </div>
-              <div className="row smalllRaisedBnutton" style={{marginLeft:'30px'}}>
-                <RaisedButton label="全開" />
-                <RaisedButton label="6500K" />
-                <RaisedButton label="4600K" />
-                <RaisedButton label="2950K" />
-                <RaisedButton label="saving E" />
-                <RaisedButton label="B + R" />
-              </div>
+        <div className="self-center" style={{width: '100%', marginTop: '5px'}}>
+          <div className="col-md-8 col-sm-8 col-xs-8">
+            <div className="row">
+              <LineChart ref="chart" data={chartData} style={{
+                margin: '5px',
+                width: '100%',
+                height: '250px'
+                }} />
             </div>
-            <div className="col-md-6">
-              <div className="row">
-                <div className="col-md-6" style={{marginTop:'30px'}}>
-                  <Slider ref="colorSlider"  name="WW" defaultValue={1} description="WW" className="slider"/>
-                  <Slider name="DB" defaultValue={1} description="DB" className="slider"/>
-                  <Slider name="BL" defaultValue={1} description="BL" className="slider"/>
-                  <Slider name="GR" defaultValue={1} description="GR" className="slider"/>
-                  <Slider name="RE" defaultValue={1} description="RE" className="slider"/>
-                </div>
-                <div className="col-md-6" style={{marginTop:'30px'}}>
-                  <RadioButtonGroup name="shipSpeed" defaultSelected="ALL" className="selectGroup">
-                    <RadioButton
-                      value="ALL"
-                      label="ALL"
-                      style={{marginBottom:16}}/>
-                    <RadioButton
-                      value="GROUP"
-                      label="GROUP"
-                      style={{marginBottom:16}}/>
-                  </RadioButtonGroup>
-                </div>
-                <div>
-                  <DropDownMenu menuItems={menuItems} />
-                </div>
-                <div>
-                  <DropDownMenu menuItems={menuItems} />
-                </div>
-              </div>
-              <div className="row" style={{padding:'15px'}}>
-                <Slider name="CCT" defaultValue={1} description="CCT" step="0.1" className="slider" onChange={this._cctChanged}/>
-                <Slider name="Bright" defaultValue={1} className="slider" description="Bright"/>
-              </div>
+            <div className="row smalllRaisedBnutton" style={{marginLeft:'30px'}}>
+              <RaisedButton label="全開" />
+              <RaisedButton label="6500K" />
+              <RaisedButton label="4600K" />
+              <RaisedButton label="2950K" />
+              <RaisedButton label="saving E" />
+              <RaisedButton label="B + R" />
+            </div>
+          </div>
+          <div className="col-md-4 col-sm-4 col-xs-4">
+            <Slider ref="colorSlider"  name="WW" defaultValue={1} description="WW" className="slider"/>
+            <Slider name="DB" defaultValue={1} description="DB" className="slider"/>
+            <Slider name="BL" defaultValue={1} description="BL" className="slider"/>
+            <Slider name="GR" defaultValue={1} description="GR" className="slider"/>
+            <Slider name="RE" defaultValue={1} description="RE" className="slider"/>
+            <Slider name="CCT" defaultValue={1} description="CCT" step="0.1" className="slider" onChange={this._cctChanged}/>
+            <Slider name="Bright" defaultValue={1} className="slider" description="Bright"/>
           </div>
         </div>
       </div>

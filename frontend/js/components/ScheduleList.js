@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import { requestCreate, requestGetList} from '../actions/ScheduleListActions'
+import { requestScheduleCreate, requestGetScheduleList} from '../actions/ScheduleListActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -27,14 +27,14 @@ export default class ScheduleList extends React.Component {
   }
 
   componentDidMount () {
-    this.props.requestGetList();
+    this.props.requestGetScheduleList();
   }
 
   componentDidUpdate(prevProps, prevState) {
   }
 
   _addRow = (e) => {
-    this.props.requestCreate();
+    this.props.requestScheduleCreate();
   }
 
   render () {
@@ -82,8 +82,8 @@ function _injectPropsFromStore(state) {
 }
 
 const _injectPropsFromActions = {
-  requestGetList,
-  requestCreate
+  requestGetScheduleList,
+  requestScheduleCreate
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleList);
