@@ -173,7 +173,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port setLedBrigh", async done => {
+    it("serial Port setLedBrigh", async done => {
       // 設定DEMO時的LED燈亮度
       // 在Interact模式下才有效果
       // LedCH: All, LedCH1, LedCH2, LedCH3, LedCH4, LedCH5
@@ -210,6 +210,51 @@ describe("hme with seriel port", () => {
       }
 
     });
+
+    it.only("serial Port setDayTab", async done => {
+
+      try {
+        let DevID = 1;
+        let groupID = 1;
+        // [date1[year, month, day], ..., date6[...]]
+        let dayTab = [
+                   ...[2016, 2, 1],
+                   ...[2016, 2, 5],
+                   ...[2016, 2, 8],
+                   ...[2016, 2, 10],
+                   ...[2016, 3, 10],
+                   ...[2016, 6, 20]
+                 ];
+        let result = await services.hme.setDayTab(DevID, groupID, dayTab);
+        await services.hme.writeFlashMemory(DevID, groupID);  //寫入Flash
+        console.log('setDayTab result',result);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    // it("serial Port writeTimeTabToDevice", async done => {
+    //
+    //   try {
+    //     //將Device1的groupID設為6
+    //     let DevID = 1;
+    //     //TimeTabt
+    //     //共計7個日程時段
+    //     //一天12個設定點
+    //
+    //
+    //     let result = await services.hme.setGroupID(DevID, groupID);
+    //     console.log('setGroupID result',result);
+    //     result.should.be.true;
+    //     done();
+    //   } catch (e) {
+    //     done(e);
+    //   }
+    //
+    // });
 
 
   });

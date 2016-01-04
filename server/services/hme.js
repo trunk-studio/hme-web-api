@@ -96,7 +96,7 @@ export default class Hme {
                 clearInterval(T1id);
                 clearTimeout(T2id);
                 return resolve(results);
-              } else if (T1num > 2) {
+              } else if (T1num > 4) {
                 console.log('TimeOut!');
                 results = [];
                 clearInterval(T1id);
@@ -111,7 +111,7 @@ export default class Hme {
               } else {
 
               }
-            } ,2);
+            } ,4);
           });
         });
       });
@@ -443,7 +443,7 @@ export default class Hme {
       TxParams.Comm = this.encode.ClientOp(COpParams);
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
       if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
-        if (this.flashMemoryWrite(DevID,0)){
+        if (this.writeFlashMemory(DevID,0)){
           return (true);
         }else {
           return (false);
@@ -458,7 +458,7 @@ export default class Hme {
     }
   }
 
-  flashMemoryWrite = async (DevID, groupID) => {
+  writeFlashMemory = async (DevID, groupID) => {
     try {
         let COpParams = {
         u8DevID:DevID,
@@ -494,14 +494,79 @@ export default class Hme {
     }
   }
 
-  // deviceAccess = async ({DevID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum}) => {
+  setDayTab = async (DevID, groupID, dayTab) => {
+    try {
+        let COpParams = {
+        u8DevID:DevID,
+        groupID:groupID,
+        sFunc:'WordWt',
+        u8DataNum:18,
+        u8Addr_Arry:[1100],  //Addr 1100 = day table
+        u8DataIn_Arry:dayTab,
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:8
+      }
+      let DecodParams = {
+        FuncCT:49,
+        DevID:DevID,
+        u8RxDataArry:[]
+      }
+
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+        return (true);
+      } else {
+        return (false);
+      };
+
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
+
+  // writeTimeTab= async (DevID, groupID, timeTab) => {
+  //   try {
+  //         let COpParams = {
+  //           u8DevID:DevID,
+  //           groupID:groupID,
+  //           sFunc:'WordWt',
+  //           u8DataNum:1,
+  //           u8Addr_Arry:[1021],  //Addr 1021 = FMC Wr
+  //           u8DataIn_Arry:[1],
+  //           u8Mask_Arry:[],
+  //           RepeatNum:5
+  //         }
+  //
+  //
+  //         TxParams.Comm = this.encode.ClientOp(COpParams);
+  //         DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+  //         if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+  //           return (true);
+  //         } else {
+  //           return (false);
+  //         };
+  //   } catch (e) {
+  //     throw e;
+  //   }
+  // }
+
+
+
+  // accessDevice = async ({DevID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum}) => {
   //   try {
   //       let COpParams = {
   //       u8DevID:DevID,
   //       groupID:groupID,
   //       sFunc:sFunc,
   //       u8DataNum:dataNum,
-  //       u8Addr_Arry:addrArry,  //Addr 1021 = FMC Wr
+  //       u8Addr_Arry:addrArry,
   //       u8DataIn_Arry:dataInArry,
   //       u8Mask_Arry:maskArry,
   //       RepeatNum:repeatNum
