@@ -11,22 +11,12 @@ export function scanDevice(state = { }, action) {
         ...state,
         deviceList: action.data
       };
-    case :
+    case RECEIVED_DEVICEGROUP:
       return {
         ...state,
         groupList: action.data
       }
     default:
       return state
-  }
-}
-
-export function scanGroup(state = {}, action) {
-  switch (action.type) {
-    case RECEIVED_DEVICEGROUP:
-      
-      break;
-    default:
-
   }
 }
