@@ -113,69 +113,57 @@ describe("schedule", () => {
 
     it( "should be get currect json object" , async done => {
       try {
-
-      let config = [
-          {
+        let config = {
+          Device: 1,
+          Group: 0,
+          Schedules: [{
             StartDate: '2016-01-01',
             Days: 7,
-            Device: 1,
-            Group: 1,
-            ScheduleDetails: [
-              {
-                weight: 1,
-                StartTime: '01:00',
-                ScheduleDetailConfig: {
-                  WW: 10,
-                  DB: 10,
-                  BL: 10,
-                  GR: 10,
-                  RE: 10,
-                  CCT: 10,
-                  Bright: 10
-                }
-              },{
-                weight: 1,
-                StartTime: '02:00',
-                ScheduleDetailConfig: {
-                  WW: 10,
-                  DB: 10,
-                  BL: 10,
-                  GR: 10,
-                  RE: 10,
-                  CCT: 10,
-                  Bright: 10
-                }
-              },{
-                weight: 1,
-                StartTime: '04:00'
-              },{
-                weight: 1,
-                StartTime: '05:00'
+            Details: [{
+              weight: 1,
+              StartTime: '01:00',
+              Config: {
+                WW: 10,
+                DB: 10,
+                BL: 10,
+                GR: 10,
+                RE: 10,
+                CCT: 10,
+                Bright: 10
               }
-            ]
+            },{
+              weight: 1,
+              StartTime: '02:00',
+              Config: {
+                WW: 10,
+                DB: 10,
+                BL: 10,
+                GR: 10,
+                RE: 10,
+                CCT: 10,
+                Bright: 10
+              }
+            },{
+              weight: 1,
+              StartTime: '04:00'
+            },{
+              weight: 1,
+              StartTime: '05:00'
+            }]
           },{
             StartDate: '2016-01-08',
-            Device: 1,
-            Group: 1,
             Days: 7
           },{
             StartDate: '2016-01-15',
-            Device: 1,
-            Group: 1,
             Days: 7
           },{
             StartDate: '2016-01-22',
-            Device: 1,
-            Group: 1,
             Days: 7
           },{
             StartDate: '2016-01-29',
-            Device: 1,
-            Group: 1,
             Days: 7
-          }
-        ]
-
+          }]
+        }
         done();
       } catch (e) {
         done(e);
