@@ -74,7 +74,7 @@ circle.selected:hover {
 
 /* schedule detail Slider*/
 .slider {
-  height: 50px;
+  height: 40px;
 }
 
 .slider div{
@@ -90,8 +90,4 @@ circle.selected:hover {
   -webkit-transform: rotate(90deg);
   /* Chrome, Safari, Opera */
   transform: rotate(90deg);
-}
-
-#react-view {
-  overflow-x: hidden;
 }
