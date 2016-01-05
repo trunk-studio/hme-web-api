@@ -242,8 +242,12 @@ describe("hme with seriel port", () => {
     //     //將Device1的groupID設為6
     //     let DevID = 1;
     //     //TimeTabt
-    //     //共計7個日程時段
+    //     //共計5個日程時段
     //     //一天12個設定點
+    //     {
+    //
+    //       []
+    //     }
     //
     //
     //     let result = await services.hme.setGroupID(DevID, groupID);
