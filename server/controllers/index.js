@@ -60,7 +60,7 @@ export default class Routes {
         <body>
           <div id="react-view"></div>
           <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
-          <script type="text/javascript" src="http://mbostock.github.com/d3/d3.v2.js"></script>
+          <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.js"></script>
           <script type="text/javascript" src="assets/graph.js"></script>
           <script type="application/javascript" src="assets/bundle.js"></script>
           <!--<script>

@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import { requestCreate, requestGetList} from '../actions/ScheduleListActions'
+import { requestCreate, requestGetList } from '../actions/ScheduleListActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -74,7 +74,6 @@ export default class ScheduleList extends React.Component {
 
 function _injectPropsFromStore(state) {
   // let { login, isLoading } = state;
-  console.log("_injectPropsFromStore!!",state);
   let {schedule} = state;
   return {
     scheduleList: schedule.scheduleList
