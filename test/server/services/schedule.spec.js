@@ -102,7 +102,7 @@ describe("schedule", () => {
 
   });
 
-  describe("build to hardware time table config", async done => {
+  describe("models to hardware time table config", async done => {
     before( async done => {
       try {
         done();
