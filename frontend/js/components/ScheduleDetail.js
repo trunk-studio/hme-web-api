@@ -20,6 +20,9 @@ export default class ScheduleDetail extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      currentIndex: 0
+    }
   }
 
   componentDidMount () {
@@ -27,13 +30,13 @@ export default class ScheduleDetail extends React.Component {
   }
 
   _handleBtnClick(index) {
-    console.log(index);
-    this.props.getSliderValue(index);
+
+    if(index == this.state.currentIndex)
+      window.location.href = `/#config/1`;
+
+    this.setState({currentIndex: index});
     // TODO
-    // change color
     // highlight dot
-    // give slider value
-    // redirect
   }
 
   render () {
@@ -66,28 +69,15 @@ export default class ScheduleDetail extends React.Component {
       90: '90',
       100: '100'
     }
-    let chartData = {
-      labels: [
-        "0", "2", "4", "6", "8", "12", "14", "16", "18", "20", "22", "24"
-      ],
-      datasets: [
-        {
-          label: "My Second dataset",
-          scaleBeginAtZero: true,
-          responsive: true,
-          scaleFontSize: 10,
-          fillColor: "rgba(151,187,205,0.2)",
-          strokeColor: "rgba(151,187,205,1)",
-          pointColor: "rgba(151,187,205,1)",
-          pointStrokeColor: "#fff",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(151,187,205,1)",
-          data: [28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86]
-        }
-      ]
-    };
 
     console.log('prop', this.props);
+    let scheduleDetails = this.props.scheduleDetails;
+    let sliderTime = scheduleDetails.length? scheduleDetails[this.state.currentIndex].StartTimeInteger : 0;
+    let sliderWeight = scheduleDetails.length? scheduleDetails[this.state.currentIndex].weight : 0;
+    let sliderData = {
+      time: sliderTime,
+      weight: sliderWeight*100
+    };
 
     let dots = [{
       x: 0,
@@ -115,19 +105,25 @@ export default class ScheduleDetail extends React.Component {
         ButtonGroup2 = [];
     if(this.props.scheduleDetails.length) {
       for (let i=0; i<6; i++) {
+          let active = (i==this.state.currentIndex);
           ButtonGroup1.push(
             <div className="col-xs-2" key={i}>
               <RaisedButton onTouchTap={function(){this._handleBtnClick(i)}.bind(this)}
-                fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)} secondary={true} style={{marginLeft: '3px'}} />
+                fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
+                secondary={true} style={{marginLeft: '3px'}}
+                primary={active}/>
             </div>
           );
       }
 
       for (let i=6; i<12; i++) {
+        let active = (i==this.state.currentIndex);
         ButtonGroup2.push(
           <div className="col-xs-2" key={i}>
             <RaisedButton onTouchTap={function(){this._handleBtnClick(i)}.bind(this)}
-              fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)} secondary={true} style={{marginLeft: '3px'}} />
+              fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
+              secondary={true} style={{marginLeft: '3px'}}
+              primary={active} />
           </div>
         );
       }
@@ -158,7 +154,7 @@ export default class ScheduleDetail extends React.Component {
                   <VerticalSlider className="vertical-slider"
                     min={0} max={100} marks={percent_marks}
                     included={false} style={{float: 'right'}}
-                    />
+                    value={sliderData.weight} />
                 </div>
               </div>
             </div>
@@ -167,7 +163,7 @@ export default class ScheduleDetail extends React.Component {
                 width: '80%'
                 }} className="center-self">
                 <Slider min={0} max={1440} marks={marks} included={false}
-                  value={this.props.sliderData.time} disabled={false} allowCross={false} style={{width: '10%'}}
+                  value={sliderData.time} disabled={false} allowCross={false} style={{width: '10%'}}
                   />
               </div>
             </div>
@@ -215,19 +211,9 @@ function _injectPropsFromStore(state) {
       schedule.StartTimeInteger = _timeToInteger(schedule.StartTime);
     }
   }
-  let currentIndex = scheduleDetail.currentIndex || 0;
-  console.log(scheduleDetails, currentIndex);
-  let sliderTime = scheduleDetails.length? scheduleDetails[currentIndex].StartTimeInteger : 0;
-  let sliderWeight = scheduleDetails.length? scheduleDetails[currentIndex].weight : 0;
-  let sliderData = {
-    time: sliderTime,
-    weight: sliderWeight*100
-    // disable:
-  };
+
   return {
-    scheduleDetails: scheduleDetails,
-    currentIndex: scheduleDetail.currentIndex,
-    sliderData: sliderData
+    scheduleDetails: scheduleDetails
   };
 }
 
