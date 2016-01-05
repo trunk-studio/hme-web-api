@@ -118,6 +118,8 @@ describe("schedule", () => {
           {
             StartDate: '2016-01-01',
             Days: 7,
+            Device: 1,
+            Group: 1,
             ScheduleDetails: [
               {
                 weight: 1,
@@ -153,15 +155,23 @@ describe("schedule", () => {
             ]
           },{
             StartDate: '2016-01-08',
+            Device: 1,
+            Group: 1,
             Days: 7
           },{
             StartDate: '2016-01-15',
+            Device: 1,
+            Group: 1,
             Days: 7
           },{
             StartDate: '2016-01-22',
+            Device: 1,
+            Group: 1,
             Days: 7
           },{
             StartDate: '2016-01-29',
+            Device: 1,
+            Group: 1,
             Days: 7
           }
         ]
