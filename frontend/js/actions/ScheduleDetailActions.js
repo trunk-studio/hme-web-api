@@ -1,6 +1,8 @@
 import request from 'axios'
 
 export const RECEIVED_SCHEDULE_DETAIL = 'RECEIVED_SCHEDULE_DETAIL'
+export const SET_SLIDER_VALUE = 'SET_SLIDER_VALUE'
+
 
 
 export function requestGetScheduleDetail(scheduleID) {
@@ -17,5 +19,12 @@ export function receivedScheduleDetail(data) {
   return {
     type: RECEIVED_SCHEDULE_DETAIL,
     data
+  }
+}
+
+export function getSliderValue(schedlueIndex) {
+  return {
+    type: SET_SLIDER_VALUE,
+    index: schedlueIndex
   }
 }

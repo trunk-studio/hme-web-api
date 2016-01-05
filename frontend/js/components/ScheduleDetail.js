@@ -1,6 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {requestGetScheduleDetail} from '../actions/ScheduleDetailActions'
+import {
+  requestGetScheduleDetail,
+  getSliderValue
+
+} from '../actions/ScheduleDetailActions'
 import moment from 'moment'
 import {RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui';
 import numeral from 'numeral'
@@ -16,45 +20,37 @@ export default class ScheduleDetail extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      schedule: [
-        {
-          time: '1',
-          weight: 0.2
-        }, {
-          time: '2',
-          weight: 0.3
-        }, {
-          time: '3',
-          weight: 0.4
-        }
-      ]
-    }
   }
 
   componentDidMount () {
     this.props.requestGetScheduleDetail(this.props.params.scheduleID);
   }
 
-  handleBtnClick() {
-
+  _handleBtnClick(index) {
+    console.log(index);
+    this.props.getSliderValue(index);
+    // TODO
+    // change color
+    // highlight dot
+    // give slider value
+    // redirect
   }
 
   render () {
     const marks = {
-      0: '00:00',
-      10: '02:00',
-      20: '04:00',
-      30: '06:00',
-      40: '08:00',
-      50: '10:00',
-      60: '12:00',
-      70: '14:00',
-      80: '16:00',
-      90: '18:00',
-      100: '20:00',
-      110: '22:00',
-      120: '24:00'
+      0 : '00:00',
+      120: '02:00',
+      240: '04:00',
+      360: '06:00',
+      480: '08:00',
+      600: '10:00',
+      720: '12:00',
+      840: '14:00',
+      960: '16:00',
+      1080: '18:00',
+      1200: '20:00',
+      1320: '22:00',
+      1440: '24:00'
     };
 
     const percent_marks = {
@@ -91,8 +87,8 @@ export default class ScheduleDetail extends React.Component {
       ]
     };
 
-      console.log('prop', this.props.scheduleDetails);
-      // moment("123", "hmm").format("HH:mm") === "01:23"
+    console.log('prop', this.props);
+
     let dots = [{
       x: 0,
       y: 0
@@ -100,7 +96,7 @@ export default class ScheduleDetail extends React.Component {
 
     for (let dot of this.props.scheduleDetails) {
       dots.push({
-        x: dot.StartTime,
+        x: dot.StartTimeInteger,
         y: dot.weight
       })
     }
@@ -108,8 +104,6 @@ export default class ScheduleDetail extends React.Component {
       x: _timeToInteger('24:00:00'),
       y: 1
     });
-
-    console.log('dots',dots);
 
     let data = [{
       key: 'testLine',
@@ -120,11 +114,11 @@ export default class ScheduleDetail extends React.Component {
     let ButtonGroup1 = [],
         ButtonGroup2 = [];
     if(this.props.scheduleDetails.length) {
-      console.log('=============');
       for (let i=0; i<6; i++) {
           ButtonGroup1.push(
             <div className="col-xs-2" key={i}>
-              <RaisedButton fullWidth={true} onTouchTap={this._handleBtnClick } label={_formatMinutes(this.props.scheduleDetails[i].StartTime)} secondary={true} style={{marginLeft: '3px'}} />
+              <RaisedButton onTouchTap={function(){this._handleBtnClick(i)}.bind(this)}
+                fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)} secondary={true} style={{marginLeft: '3px'}} />
             </div>
           );
       }
@@ -132,7 +126,8 @@ export default class ScheduleDetail extends React.Component {
       for (let i=6; i<12; i++) {
         ButtonGroup2.push(
           <div className="col-xs-2" key={i}>
-            <RaisedButton fullWidth={true} onTouchTap={this._handleBtnClick } label={_formatMinutes(this.props.scheduleDetails[i].StartTime)} secondary={true} style={{marginLeft: '3px'}} />
+            <RaisedButton onTouchTap={function(){this._handleBtnClick(i)}.bind(this)}
+              fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)} secondary={true} style={{marginLeft: '3px'}} />
           </div>
         );
       }
@@ -147,7 +142,7 @@ export default class ScheduleDetail extends React.Component {
             <div className="row">
               <div className="center-self">
                 <div className="col-md-11 col-sm-11 col-xs-11 chart-container">
-                    <NVD3Chart
+                  <NVD3Chart
                     type="lineChart"
                     height={215}
                     datum={data}
@@ -156,14 +151,14 @@ export default class ScheduleDetail extends React.Component {
                     }}
                     yAxis={{
                       tickFormat: function(d) {return numeral(d).format('0%')}
-                    }}
-                    />
+                    }} />
                 </div>
                 <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '85px',
                   position: 'absolute', right: '-75px'}}>
                   <VerticalSlider className="vertical-slider"
                     min={0} max={100} marks={percent_marks}
-                    included={false} style={{float: 'right'}} />
+                    included={false} style={{float: 'right'}}
+                    />
                 </div>
               </div>
             </div>
@@ -171,7 +166,9 @@ export default class ScheduleDetail extends React.Component {
               <div style={{
                 width: '80%'
                 }} className="center-self">
-                <Slider min={0} max={120} marks={marks} included={false} defaultValue={20} allowCross={false} style={{width: '10%'}}/>
+                <Slider min={0} max={1440} marks={marks} included={false}
+                  value={this.props.sliderData.time} disabled={false} allowCross={false} style={{width: '10%'}}
+                  />
               </div>
             </div>
             <div className="row" style={{
@@ -200,20 +197,8 @@ function _formatMinutes(minutes) {
 function _timeToInteger(time) {
   let splitTime = time.split(':');
   let minutes = parseInt(splitTime[0])*60 + parseInt(splitTime[1]);
-  console.log('min',minutes);
+  // console.log('min',minutes);
   return minutes;
-}
-
-function _injectPropsFromStore(state) {
-  let { scheduleDetail } = state;
-  console.log('inject', scheduleDetail);
-  let scheduleDetails = scheduleDetail.dailySchedules? scheduleDetail.dailySchedules.ScheduleDetails : [];
-  for (let schedule of scheduleDetails) {
-    schedule.StartTime = _timeToInteger(schedule.StartTime);
-  }
-  return {
-    scheduleDetails: scheduleDetails,
-  };
 }
 
 function _pad(n, width, z) {
@@ -222,8 +207,33 @@ function _pad(n, width, z) {
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
+function _injectPropsFromStore(state) {
+  let { scheduleDetail } = state;
+  let scheduleDetails = scheduleDetail.dailySchedules? scheduleDetail.dailySchedules.ScheduleDetails : [];
+  if(scheduleDetails.length) {
+    for (let schedule of scheduleDetails) {
+      schedule.StartTimeInteger = _timeToInteger(schedule.StartTime);
+    }
+  }
+  let currentIndex = scheduleDetail.currentIndex || 0;
+  console.log(scheduleDetails, currentIndex);
+  let sliderTime = scheduleDetails.length? scheduleDetails[currentIndex].StartTimeInteger : 0;
+  let sliderWeight = scheduleDetails.length? scheduleDetails[currentIndex].weight : 0;
+  let sliderData = {
+    time: sliderTime,
+    weight: sliderWeight*100
+    // disable:
+  };
+  return {
+    scheduleDetails: scheduleDetails,
+    currentIndex: scheduleDetail.currentIndex,
+    sliderData: sliderData
+  };
+}
+
 const _injectPropsFromActions = {
-  requestGetScheduleDetail
+  requestGetScheduleDetail,
+  getSliderValue
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleDetail);
