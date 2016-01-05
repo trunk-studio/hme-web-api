@@ -1,136 +1,178 @@
+describe("schedule", () => {
 
-describe("Schedule", () => {
-
-  let newSchedule, scheduleDetail;
-  before( async done => {
-  try {
-    newSchedule = {
-      StartDate: moment('1900/11/10','YYYY/MM/DD'),
-      Days: 15
-    };
-    newSchedule = await models.Schedule.create(newSchedule);
-    let scheduleConfig = [];
-    for(let a = 0; a<24; a+=2){
-      scheduleConfig.push({
-        "weight": 1,
-        "StartTime": "00:"+ a +":00",
-        "ScheduleId": newSchedule.id
-      });
+  it("create", async(done) => {
+    try {
+      let newSchedule = {
+        StartDate: moment('2015/11/10','YYYY/MM/DD'),
+        Days: 15
+      };
+      let result = await services.schedule.create(newSchedule);
+      result.dataValues.should.have.any.keys('StartDate', 'Days');
+      done();
+    } catch (e) {
+      done(e);
     }
-    await models.ScheduleDetail.bulkCreate(scheduleConfig);
-    scheduleDetail = await models.ScheduleDetail.findOne({
-      where:{
-        ScheduleId: newSchedule.id
-      }
-    });
-    done();
-  } catch (e) {
-    done(e);
-  }
-});
-it("find", async (done) => {
-  try {
-    let result = await request.get('/rest/schedule/'+newSchedule.id);
-    result.body.id.should.be.equal(newSchedule.id);
-    result.body.ScheduleDetails.should.be.an.Array;
-    done();
-  } catch (e) {
-    done(e);
-  }
-});
 
-it("update day", async (done) => {
-  try {
-    let data = {
-      ScheduleId: newSchedule.id,
-      Days: 17
-    };
-    let result = await request.post('/rest/schedule/update/day').send(data);
-    result.body.Days.should.be.not.equal(newSchedule.Days);
-    done();
-  } catch (e) {
-    done(e);
-  }
-});
+  });
 
-it("update detail", async (done) => {
-  try {
-    let data = {
-      ScheduleDetailId: scheduleDetail.id,
-      weight: 100,
-      StartTime: '00:00:01'
-    };
-    let result = await request.post('/rest/schedule/update/detail').send(data);
-    result.body.weight.should.be.not.equal(scheduleDetail.weight);
-    result.body.StartTime.should.be.not.equal(scheduleDetail.StartTime);
-    done();
-  } catch (e) {
-    done(e);
-  }
-});
-
-  describe("Detail Config", () => {
-    let scheduleDetailConfig
-    before(async (done) => {
+  describe("query", async done => {
+    before( async done => {
       try {
-
-        let group = await models.Group.create();
-        let slaves = await models.Slave.create({
-          host: "hostName",
-          description: "描述",
-          apiVersion: "0.1.0",
-        });
-        let device = await models.Device.create({
-          uid: "1",
-          GroupId: group.id,
-          SlaveId: slaves.id
-        });
-        scheduleDetailConfig = await models.ScheduleDetailConfig.create({
-          WW: 100,
-          DB: 200,
-          BL: 300,
-          GR: 400,
-          RE: 500,
-          CCT: 600,
-          Bright: 700,
-          GroupId: group.id,
-          DeviceId: device.id
-        })
+        let newSchedule = {
+          StartDate: moment('1900/11/10','YYYY/MM/DD'),
+          Days: 15
+        };
+        await models.Schedule.create(newSchedule);
         done();
       } catch (e) {
-        done(e)
+        done(e);
       }
     });
 
-    it("update should success", async (done) => {
+    it( "All" , async done => {
+      try {
+        let result = await services.schedule.findAll();
+        result[0].dataValues.should.have.any.keys('StartDate', 'Days');
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+  });
+
+  describe("Schedule Detail", async done => {
+    let newSchedule, scheduleDetail;
+    before( async done => {
+      try {
+        newSchedule = {
+          StartDate: moment('1900/11/10','YYYY/MM/DD'),
+          Days: 15
+        };
+        newSchedule = await models.Schedule.create(newSchedule);
+        let scheduleConfig = [];
+        for(let a = 0; a<24; a+=2){
+          scheduleConfig.push({
+            "weight": 1,
+            "StartTime": "00:"+ a +":00",
+            "ScheduleId": newSchedule.id
+          });
+        }
+        await models.ScheduleDetail.bulkCreate(scheduleConfig);
+        scheduleDetail = await models.ScheduleDetail.findOne({
+          where:{
+            ScheduleId: newSchedule.id
+          }
+        });
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+    it( "update Schedule time" , async done => {
       try {
         let data = {
-          id: scheduleDetailConfig.id,
-          WW: 199,
-          DB: 299,
-          BL: 399,
-          GR: 499,
-          RE: 599,
-          CCT: 699,
-          Bright: 799,
-        }
-        let result = await request.post('/rest/schedule/config/update').send(data);
-        result.body.WW.should.be.not.equal(scheduleDetailConfig.WW);
+          ScheduleId: newSchedule.id,
+          Days: 17
+        };
+        let result = await services.schedule.updateDay(data);
+        result.Days.should.be.not.equal(newSchedule.Days);
         done();
       } catch (e) {
         done(e);
       }
     });
 
-    it("get config should success", async (done) => {
+    it( "update Schedule Detail" , async done => {
       try {
-        let result = await request.get('/rest/schedule/config/'+scheduleDetailConfig.id);
-        console.log(result.body);
-        result.body.datasets[0].data.should.be.Array;
+        let data = {
+          ScheduleDetailId: scheduleDetail.id,
+          weight: 100,
+          StartTime: '00:00:01'
+        };
+        let result = await services.schedule.updateScheduleDetail(data);
+        result.weight.should.be.not.equal(scheduleDetail.weight);
+        result.StartTime.should.be.not.equal(scheduleDetail.StartTime);
         done();
       } catch (e) {
         done(e);
       }
     });
+
   });
+
+  describe("build to hardware time table config", async done => {
+    before( async done => {
+      try {
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+    it( "should be get currect json object" , async done => {
+      try {
+
+      let config = [
+          {
+            StartDate: '2016-01-01',
+            Days: 7,
+            ScheduleDetails: [
+              {
+                weight: 1,
+                StartTime: '01:00',
+                ScheduleDetailConfig: {
+                  WW: 10,
+                  DB: 10,
+                  BL: 10,
+                  GR: 10,
+                  RE: 10,
+                  CCT: 10,
+                  Bright: 10
+                }
+              },{
+                weight: 1,
+                StartTime: '02:00',
+                ScheduleDetailConfig: {
+                  WW: 10,
+                  DB: 10,
+                  BL: 10,
+                  GR: 10,
+                  RE: 10,
+                  CCT: 10,
+                  Bright: 10
+                }
+              },{
+                weight: 1,
+                StartTime: '04:00'
+              },{
+                weight: 1,
+                StartTime: '05:00'
+              }
+            ]
+          },{
+            StartDate: '2016-01-08',
+            Days: 7
+          },{
+            StartDate: '2016-01-15',
+            Days: 7
+          },{
+            StartDate: '2016-01-22',
+            Days: 7
+          },{
+            StartDate: '2016-01-29',
+            Days: 7
+          }
+        ]
+
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+  });
+
+
 });
