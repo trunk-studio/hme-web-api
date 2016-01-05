@@ -4,8 +4,6 @@ export const REQUEST_LOGIN = 'REQUEST_LOGIN'
 export const RECEIVED_LOGIN = 'RECEIVED_LOGIN'
 
 export function requestLogin(loginData) {
-  console.log(loginData);
-  // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
       .post('/rest/hme/login', loginData)

@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {requestLogin} from '../actions/AuthActions'
+import { requestCreate, requestGetList} from '../actions/ScheduleListActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -24,50 +24,34 @@ export default class ScheduleList extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      schedule: [
-        {
-          startDate: '1/12/2015',
-          days: '1'
-        }, {
-          startDate: '2/12/2015',
-          days: '2'
-        }, {
-          startDate: '3/12/2015',
-          days: '3'
-        }
-      ]
-    }
   }
 
   componentDidMount () {
+    this.props.requestGetList();
+  }
 
+  componentDidUpdate(prevProps, prevState) {
   }
 
   _addRow = (e) => {
-    this.setState({
-      schedule: [
-        ...this.state.schedule, {
-          startDate: 'new',
-          days: 'new'
-        }
-      ]
-    })
+    this.props.requestCreate();
   }
 
   render () {
     let rows = [];
-    this.state.schedule.forEach((row,i) => {
-      rows.push(
-        <TableRow key={i}>
-          <TableRowColumn>
-            <RaisedButton label="EDIT" linkButton={true} href="#/schedule/edit"/>
-          </TableRowColumn>
-          <TableRowColumn>{row.startDate}</TableRowColumn>
-          <TableRowColumn>{row.days}</TableRowColumn>
-        </TableRow>
-      );
-    });
+    if(this.props.scheduleList){
+      this.props.scheduleList.forEach((row,i) => {
+        rows.push(
+          <TableRow key={row.id}>
+            <TableRowColumn>
+              <RaisedButton label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
+            </TableRowColumn>
+            <TableRowColumn>{row.startDate || 'new'}</TableRowColumn>
+            <TableRowColumn>{row.days || 'new'}</TableRowColumn>
+          </TableRow>
+        );
+      });
+    }
     return (
       <div className="self-center" style={{width: '100%'}}>
         <RaisedButton label="Add" onTouchTap={this._addRow} style={{marginLeft:'80%', marginTop: '15px'}} />
@@ -90,11 +74,16 @@ export default class ScheduleList extends React.Component {
 
 function _injectPropsFromStore(state) {
   // let { login, isLoading } = state;
-  return {};
+  console.log("_injectPropsFromStore!!",state);
+  let {schedule} = state;
+  return {
+    scheduleList: schedule.scheduleList
+  };
 }
 
-const _injectPropsFormActions = {
-  requestLogin
+const _injectPropsFromActions = {
+  requestGetList,
+  requestCreate
 }
 
-export default connect(_injectPropsFromStore, _injectPropsFormActions)(ScheduleList);
+export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleList);

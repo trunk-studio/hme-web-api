@@ -1,3 +1,11 @@
+build:
+  container_name: hmi-build
+  image: node:4
+  command: "/bin/bash -l -c 'npm i'"
+  working_dir: /app
+  volumes:
+    - ./:/app
+
 build-arm:
   container_name: hmi-web
   image: hypriot/rpi-node:4
@@ -6,7 +14,18 @@ build-arm:
   volumes:
     - ./:/app
 
-test:
+
+test-arm:
+  container_name: hmi-web
+  image: hypriot/rpi-node:4
+  command: "/bin/bash -l -c 'npm test'"
+  ports:
+    - "3000:3000"
+  working_dir: /app
+  volumes:
+    - ./:/app
+
+test-arm-usb:
   container_name: hmi-web
   image: hypriot/rpi-node:4
   command: "/bin/bash -l -c 'npm test'"
@@ -19,8 +38,50 @@ test:
     - /dev/ttyUSB0:/dev/ttyUSB0
   environment:
     SERIALPORT: '/dev/ttyUSB0'
+  restart: always
+
+test-arm-zero-usb:
+  container_name: hmi-web
+  image: hypriot/rpi-node:4
+  command: "/bin/bash -l -c 'npm test'"
+  ports:
+    - "3000:3000"
+  working_dir: /app
+  volumes:
+    - ./:/app
+  devices:
+    - /dev/ttyAMA0:/dev/ttyAMA0
+  environment:
+    SERIALPORT: '/dev/ttyAMA0'
+  restart: always
+
+
+web:
+  container_name: hmi-web
+  image: node:4
+  command: "/bin/bash -l -c 'npm start'"
+  ports:
+    - "3000:3000"
+  working_dir: /app
+  volumes:
+    - ./:/app
+  restart: always
 
 web-arm:
+  container_name: hmi-web
+  image: hypriot/rpi-node:4
+  command: "/bin/bash -l -c 'npm start'"
+  ports:
+    - "3000:3000"
+  working_dir: /app
+  volumes:
+    - ./:/app
+  environment:
+    NODE_ENV: 'prodcution'
+
+  restart: always
+
+web-arm-usb:
   container_name: hmi-web
   image: hypriot/rpi-node:4
   command: "/bin/bash -l -c 'npm start'"
@@ -33,33 +94,25 @@ web-arm:
     - /dev/ttyUSB0:/dev/ttyUSB0
   environment:
     SERIALPORT: '/dev/ttyUSB0'
-
+    NODE_ENV: 'prodcution'
   restart: always
 
-build:
-  container_name: hmi-build
-  image: node:4
-  command: "/bin/bash -l -c 'npm i'"
-  working_dir: /app
-  volumes:
-    - ./:/app
-
-web:
+web-arm-zero-usb:
   container_name: hmi-web
-  image: node:4
+  image: hypriot/rpi-node:4
   command: "/bin/bash -l -c 'npm start'"
   ports:
     - "3000:3000"
   working_dir: /app
   volumes:
     - ./:/app
-
   devices:
-    - /dev/ttyUSB0:/dev/ttyUSB0
+    - /dev/ttyAMA0:/dev/ttyAMA0
   environment:
-    SERIALPORT: '/dev/ttyUSB0'
-
+    SERIALPORT: '/dev/ttyAMA0'
+    NODE_ENV: 'prodcution'
   restart: always
+
 
 web-master:
   container_name: hme-master
@@ -84,9 +137,9 @@ web-master:
 
   restart: always
 
-web-slave-01:
+web-slave:
 
-  container_name: web-slave-01
+  container_name: web-slave
   image: node:4
   command: "/bin/bash -l -c 'npm start'"
 
@@ -108,8 +161,8 @@ web-slave-01:
 
   restart: always
 
-mysql:
-  container_name: mysql
+web-mysql:
+  container_name: web-mysql
   image: dgraziotin/mysql
   volumes:
     - ../database:/var/lib/mysql/
@@ -125,6 +178,75 @@ mysql:
     - "MYSQL_USER_DB=hme"
     - "CREATE_MYSQL_BASIC_USER_AND_DB=true"
     - "constraint:node==hme-master"
+
+  restart: always
+
+
+swarm-manager:
+  image: hypriot/rpi-swarm
+  ports:
+   - "3375:2375"
+  command: "manage consul://office.trunk-studio.com:8500/swarm"
+
+swarm-manager-slave:
+  image: "hypriot/rpi-swarm"
+  command: "join --addr=192.168.168.120:2375 consul://office.trunk-studio.com:8500/swarm"
+  restart: always
+
+swarm-manager-consul:
+  image: "hypriot/rpi-consul"
+  ports:
+   - "8500:8500"
+  command: "agent -server -data-dir /data -bootstrap-expect 1 -ui-dir /ui -client=0.0.0.0"
+  volumes:
+  - "/data"
+
+swarm-slave:
+  image: "hypriot/rpi-swarm"
+  command: "join --addr=192.168.168.134:2375 consul://office.trunk-studio.com:8500/swarm"
+  restart: always
+
+
+
+proxy-web_01:
+  container_name: hmi-web-01
+  image: node:4
+  command: "/bin/bash -l -c 'npm start'"
+  expose:
+    - "3000"
+  working_dir: /app
+  volumes:
+    - ./:/app
+
+  environment:
+    - "VIRTUAL_HOST=192.168.99.119"
+    - "APP_NAME=hmi-web-01"
+
+  restart: always
+
+proxy-web_02:
+  container_name: hmi-web-02
+  image: node:4
+  command: "/bin/bash -l -c 'npm start'"
+  expose:
+    - "3000"
+  working_dir: /app
+  volumes:
+    - ./:/app
+
+  environment:
+    - "VIRTUAL_HOST=192.168.99.119"
+    - "APP_NAME=hmi-web-02"
+
+  restart: always
+
+proxy-nginx:
+  container_name: nginx-proxy
+  image: jwilder/nginx-proxy
+  ports:
+    - "80:80"
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
 
   restart: always
 

@@ -94,7 +94,6 @@ export default class LoginPage extends React.Component {
 }
 
 function _injectPropsFromStore(state) {
-  console.log('inject',state);
   let { login, isLoading } = state;
   return {
     login: login,
@@ -102,9 +101,9 @@ function _injectPropsFromStore(state) {
   };
 }
 
-const _injectPropsFormActions = {
+const _injectPropsFromActions = {
   requestLogin
 }
 
 
-export default connect(_injectPropsFromStore, _injectPropsFormActions)(LoginPage);
+export default connect(_injectPropsFromStore, _injectPropsFromActions)(LoginPage);
