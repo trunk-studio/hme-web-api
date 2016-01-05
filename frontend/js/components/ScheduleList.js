@@ -4,6 +4,7 @@ import { requestScheduleCreate, requestGetScheduleList} from '../actions/Schedul
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
+const MenuItem = require('material-ui/lib/menus/menu-item');
 const TextField = require('material-ui/lib/text-field');
 const Tabs = require('material-ui/lib/tabs/tabs');
 const Tab = require('material-ui/lib/tabs/tab');
@@ -24,6 +25,9 @@ export default class ScheduleList extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      isSetBtnClose: true
+    };
   }
 
   componentDidMount () {
@@ -35,6 +39,31 @@ export default class ScheduleList extends React.Component {
 
   _addRow = (e) => {
     this.props.requestScheduleCreate();
+    this.setState({
+      isSetBtnClose: true
+    })
+  }
+
+  _saveScheduleList = (e) => {
+    this.setState({
+      isSetBtnClose: false
+    })
+  }
+
+  _setScheduleList = (e) => {
+    this.setState({
+      isSetBtnClose: true
+    })
+  }
+
+  _formatDate = (date) => {
+    console.log(date);
+    date = new Date(date);
+    let day = date.getDate();
+    let monthIndex = date.getMonth();
+    let year = date.getFullYear();
+    console.log("!!!!!!!",date,day,monthIndex,year);
+    return year + '/'+ monthIndex+1 +'/' + day;
   }
 
   render () {
@@ -46,21 +75,38 @@ export default class ScheduleList extends React.Component {
             <TableRowColumn>
               <RaisedButton label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
             </TableRowColumn>
-            <TableRowColumn>{row.startDate || 'new'}</TableRowColumn>
-            <TableRowColumn>{row.days || 'new'}</TableRowColumn>
+            <TableRowColumn>
+              <DatePicker
+              hintText="new"
+              autoOk={true}
+              formatDate={this._formatDate}
+              style={{width: '50px'}}/>
+            </TableRowColumn>
+            <TableRowColumn>
+              <TextField type="number" />
+            </TableRowColumn>
+            <TableRowColumn>
+              <SelectField autoWidth={true} fullWidth={true} menuItems={[{payload: 1, text: '1'}]}/>
+            </TableRowColumn>
           </TableRow>
         );
       });
     }
+    // let isAddOpen = rows.length >= 5 ? true: false;
     return (
       <div className="self-center" style={{width: '100%'}}>
-        <RaisedButton label="Add" onTouchTap={this._addRow} style={{marginLeft:'80%', marginTop: '15px'}} />
+        <div className="row" style={{marginLeft: '30px', marginTop: '15px'}}>
+          <RaisedButton ref="scheduleAddBtn" label="Add" disabled={false} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
+          <RaisedButton label="Save" onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} />
+          <RaisedButton ref="scheduleSetBtn" onTouchTap={this._setScheduleList} label="Set" disabled={this.state.isSetBtnClose} style={{marginLeft: '15px'}} />
+        </div>
         <Table>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
             <TableRow>
               <TableHeaderColumn >Edit</TableHeaderColumn>
               <TableHeaderColumn >Start Date</TableHeaderColumn>
               <TableHeaderColumn >Days</TableHeaderColumn>
+              <TableHeaderColumn >Grouping setting</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
