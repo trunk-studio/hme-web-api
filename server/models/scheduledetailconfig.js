@@ -40,8 +40,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     classMethods: {
       associate: (models) => {
-        ScheduleDetailConfig.belongsTo(models.Group);
-        ScheduleDetailConfig.belongsTo(models.Device);
       }
     }
   });

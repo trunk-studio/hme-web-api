@@ -14,6 +14,7 @@
   "dependencies": {
     "axios": "^0.8.1",
     "blocked": "^1.1.0",
+    "d3": "^3.5.12",
     "debug": "^2.2.0",
     "isomorphic-fetch": "^2.2.0",
     "koa": "^0.21.0",
@@ -26,11 +27,14 @@
     "material-ui": "0.14.0-rc1",
     "moment": "^2.10.6",
     "mysql": "^2.9.0",
-    "rc-slider": "^3.3.1",
-    "vertical-rc-slider": "https://github.com/kyoyadmoon/vertical-slider-tmp.git",
+    "numeral": "^1.5.3",
+    "rc-slider": "https://github.com/kyoyadmoon/rc-slider-tmp.git",
     "react": "^0.14.3",
     "react-chartjs": "https://github.com/jhudson8/react-chartjs.git#0.7.3",
+    "react-d3-components": "^0.6.0",
     "react-dom": "^0.14.3",
+    "react-google-charts": "^0.2.0",
+    "react-nvd3": "^0.4.1",
     "react-redux": "^4.0.0",
     "react-router": "^1.0.1",
     "react-tap-event-plugin": "^0.2.1",
@@ -39,7 +43,8 @@
     "redux-thunk": "^1.0.2",
     "sequelize": "^3.0.0",
     "serialport": "^2.0.5",
-    "sqlite3": "^3.0.8"
+    "sqlite3": "^3.0.8",
+    "vertical-rc-slider": "https://github.com/kyoyadmoon/vertical-slider-tmp.git"
   },
   "devDependencies": {
     "babel": "^5.5.8",
