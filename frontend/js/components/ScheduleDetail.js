@@ -105,12 +105,13 @@ export default class ScheduleDetail extends React.Component {
       weight: sliderWeight*100
     };
 
-    let dots=[];
+    let dots=[],tickMarks=[];
     for (let dot of this.props.scheduleDetails) {
       dots.push({
         x: dot.StartTimeInteger,
         y: dot.weight
-      })
+      });
+      tickMarks.push(dot.StartTimeInteger);
     }
 
     let data = [{
@@ -165,6 +166,7 @@ export default class ScheduleDetail extends React.Component {
                     height={215}
                     datum={data}
                     xAxis={{
+                      tickValues: tickMarks,
                       tickFormat: function(d) {return _formatMinutes(d);}
                     }}
                     yAxis={{
