@@ -211,7 +211,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port setDayTab", async done => {
+    it("serial Port setDayTab", async done => {
 
       try {
         let DevID = 1;
@@ -242,13 +242,290 @@ describe("hme with seriel port", () => {
     //     //將Device1的groupID設為6
     //     let DevID = 1;
     //     //TimeTabt
-    //     //共計5個日程時段
-    //     //一天12個設定點
-    //     {
-    //
-    //       []
-    //     }
-    //
+    //     //共計5個日程時段，一天12個設定點，每個設定點5(?)個通道
+    //     let config = [
+    //         {
+    //           StartDate: '2016-01-01',
+    //           Days: 7,
+    //           Device: 1,
+    //           Group: 1,
+    //           ScheduleDetails: [
+    //             {
+    //               weight: 1,
+    //               StartTime: '01:00',
+    //               ScheduleDetailConfig: {
+    //                 WW: 10,
+    //                 DB: 10,
+    //                 BL: 10,
+    //                 GR: 10,
+    //                 RE: 10,
+    //                 CCT: 10,
+    //                 Bright: 10
+    //               }
+    //             },{
+    //               weight: 1,
+    //               StartTime: '02:00',
+    //               ScheduleDetailConfig: {
+    //                 WW: 20,
+    //                 DB: 20,
+    //                 BL: 20,
+    //                 GR: 20,
+    //                 RE: 20,
+    //                 CCT: 20,
+    //                 Bright: 20
+    //               }
+    //             },{
+    //               weight: 1,
+    //               StartTime: '03:00'
+    //               WW: 30,
+    //               DB: 30,
+    //               BL: 30,
+    //               GR: 30,
+    //               RE: 30,
+    //               CCT: 30,
+    //               Bright: 30
+    //             },{
+    //               weight: 1,
+    //               StartTime: '04:00'
+    //               WW: 50,
+    //               DB: 50,
+    //               BL: 50,
+    //               GR: 50,
+    //               RE: 50,
+    //               CCT: 50,
+    //               Bright: 50
+    //             },{
+    //               weight: 1,
+    //               StartTime: '05:00',
+    //               ScheduleDetailConfig: {
+    //                 WW: 50,
+    //                 DB: 50,
+    //                 BL: 50,
+    //                 GR: 50,
+    //                 RE: 50,
+    //                 CCT: 50,
+    //                 Bright: 50
+    //               }
+    //             },{
+    //               weight: 1,
+    //               StartTime: '06:00',
+    //               ScheduleDetailConfig: {
+    //                 WW: 70,
+    //                 DB: 70,
+    //                 BL: 70,
+    //                 GR: 70,
+    //                 RE: 70,
+    //                 CCT: 70,
+    //                 Bright: 70
+    //               }
+    //             },{
+    //               weight: 1,
+    //               StartTime: '07:00'
+    //               WW: 85,
+    //               DB: 85,
+    //               BL: 85,
+    //               GR: 85,
+    //               RE: 85,
+    //               CCT: 85,
+    //               Bright: 85
+    //             },{
+    //               weight: 1,
+    //               StartTime: '08:00'
+    //               WW: 60,
+    //               DB: 60,
+    //               BL: 60,
+    //               GR: 60,
+    //               RE: 60,
+    //               CCT: 60,
+    //               Bright: 60
+    //             },{
+    //               weight: 1,
+    //               StartTime: '09:00',
+    //               ScheduleDetailConfig: {
+    //                 WW: 30,
+    //                 DB: 30,
+    //                 BL: 30,
+    //                 GR: 30,
+    //                 RE: 30,
+    //                 CCT: 30,
+    //                 Bright: 30
+    //               }
+    //             },{
+    //               weight: 1,
+    //               StartTime: '10:00',
+    //               ScheduleDetailConfig: {
+    //                 WW: 25,
+    //                 DB: 25,
+    //                 BL: 25,
+    //                 GR: 25,
+    //                 RE: 25,
+    //                 CCT: 25,
+    //                 Bright: 25
+    //               }
+    //             },{
+    //               weight: 1,
+    //               StartTime: '11:00'
+    //               WW: 15,
+    //               DB: 15,
+    //               BL: 15,
+    //               GR: 15,
+    //               RE: 15,
+    //               CCT: 15,
+    //               Bright: 15
+    //             },{
+    //               weight: 1,
+    //               StartTime: '12:00'
+    //               WW: 5,
+    //               DB: 5,
+    //               BL: 5,
+    //               GR: 5,
+    //               RE: 5,
+    //               CCT: 5,
+    //               Bright: 5
+    //             }
+    //           ]
+    //         },{
+    //           StartDate: '2016-01-08',
+    //           Days: 7,
+    //           Device: 1,
+    //           Group: 1,
+    //           ScheduleDetails: [
+    //             {
+    //               weight: 1,
+    //               StartTime: '01:00',
+    //               ScheduleDetailConfig: {
+    //                 WW: 10,
+    //                 DB: 10,
+    //                 BL: 10,
+    //                 GR: 10,
+    //                 RE: 10,
+    //                 CCT: 10,
+    //                 Bright: 10
+    //               }
+    //             },{
+    //               weight: 1,
+    //               StartTime: '02:00',
+    //               ScheduleDetailConfig: {
+    //                 WW: 20,
+    //                 DB: 20,
+    //                 BL: 20,
+    //                 GR: 20,
+    //                 RE: 20,
+    //                 CCT: 20,
+    //                 Bright: 20
+    //               }
+    //             },{
+    //               weight: 1,
+    //               StartTime: '03:00'
+    //               WW: 30,
+    //               DB: 30,
+    //               BL: 30,
+    //               GR: 30,
+    //               RE: 30,
+    //               CCT: 30,
+    //               Bright: 30
+    //             },{
+    //               weight: 1,
+    //               StartTime: '04:00'
+    //               WW: 50,
+    //               DB: 50,
+    //               BL: 50,
+    //               GR: 50,
+    //               RE: 50,
+    //               CCT: 50,
+    //               Bright: 50
+    //             },{
+    //               weight: 1,
+    //               StartTime: '05:00',
+    //               ScheduleDetailConfig: {
+    //                 WW: 50,
+    //                 DB: 50,
+    //                 BL: 50,
+    //                 GR: 50,
+    //                 RE: 50,
+    //                 CCT: 50,
+    //                 Bright: 50
+    //               }
+    //             },{
+    //               weight: 1,
+    //               StartTime: '06:00',
+    //               ScheduleDetailConfig: {
+    //                 WW: 70,
+    //                 DB: 70,
+    //                 BL: 70,
+    //                 GR: 70,
+    //                 RE: 70,
+    //                 CCT: 70,
+    //                 Bright: 70
+    //               }
+    //             },{
+    //               weight: 1,
+    //               StartTime: '07:00'
+    //               WW: 85,
+    //               DB: 85,
+    //               BL: 85,
+    //               GR: 85,
+    //               RE: 85,
+    //               CCT: 85,
+    //               Bright: 85
+    //             },{
+    //               weight: 1,
+    //               StartTime: '08:00'
+    //               WW: 60,
+    //               DB: 60,
+    //               BL: 60,
+    //               GR: 60,
+    //               RE: 60,
+    //               CCT: 60,
+    //               Bright: 60
+    //             },{
+    //               weight: 1,
+    //               StartTime: '09:00',
+    //               ScheduleDetailConfig: {
+    //                 WW: 30,
+    //                 DB: 30,
+    //                 BL: 30,
+    //                 GR: 30,
+    //                 RE: 30,
+    //                 CCT: 30,
+    //                 Bright: 30
+    //               }
+    //             },{
+    //               weight: 1,
+    //               StartTime: '10:00',
+    //               ScheduleDetailConfig: {
+    //                 WW: 25,
+    //                 DB: 25,
+    //                 BL: 25,
+    //                 GR: 25,
+    //                 RE: 25,
+    //                 CCT: 25,
+    //                 Bright: 25
+    //               }
+    //             },{
+    //               weight: 1,
+    //               StartTime: '11:00'
+    //               WW: 15,
+    //               DB: 15,
+    //               BL: 15,
+    //               GR: 15,
+    //               RE: 15,
+    //               CCT: 15,
+    //               Bright: 15
+    //             },{
+    //               weight: 1,
+    //               StartTime: '12:00'
+    //               WW: 5,
+    //               DB: 5,
+    //               BL: 5,
+    //               GR: 5,
+    //               RE: 5,
+    //               CCT: 5,
+    //               Bright: 5
+    //             }
+    //           ]
+    //         }
+    //       ]
     //
     //     let result = await services.hme.setGroupID(DevID, groupID);
     //     console.log('setGroupID result',result);

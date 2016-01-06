@@ -134,8 +134,6 @@ export default class Encode {
     //   RepeatNum:1
     // }
     //[ 128, 127, 31, 0, 0, 0, 0, 33, 5, 0, 0, 1, 0, 0, 69, 2, 0 ]
-
-
   }
 
   CopDiscWordRd = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry){
@@ -309,7 +307,6 @@ export default class Encode {
       data:[]
     }
 
-
     //分割資料段
     let u8RawHeader = u8RxDataArry[0];
     if (u8RawHeader != 0xC0) {
@@ -373,5 +370,45 @@ export default class Encode {
 
   }
 
+  configToTimeTabArry = function(config){
+
+
+
+
+    let dayTab = [];
+    let datLen = 0;
+    for (let i = 0; i < 6; i++) {
+      if (config[i] != undefined) {
+        datLen = config[i].Days;
+        var startDate = new Date(config[i].StartDate);
+        dayTab = [
+          ...dayTab,
+          startDate.getFullYear(),
+          startDate.getMonth() + 1,
+          startDate.getDate()
+        ];
+
+      } else {
+        let endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + (datLen - 1));
+        dayTab = [
+          ...dayTab,
+          endDate.getFullYear(),
+          endDate.getMonth() + 1,
+          endDate.getDate()
+        ]
+        console.log(startDate);
+      }
+    }
+
+
+
+
+
+
+    console.log(dayTab);
+  	return (0);
+
+  }
 
 }
