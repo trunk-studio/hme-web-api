@@ -96,7 +96,7 @@ describe("hme without seriel port", () => {
             ScheduleDetails: [
               {
                 weight: 1,
-                StartTime: '01:00',
+                StartTime: '1:00',
                 ScheduleDetailConfig: {
                   WW: 10,
                   DB: 10,
@@ -249,7 +249,7 @@ describe("hme without seriel port", () => {
         ScheduleDetails: [
           {
             weight: 1,
-            StartTime: '01:00',
+            StartTime: '01:10',
             ScheduleDetailConfig: {
               WW: 10,
               DB: 10,
@@ -261,7 +261,7 @@ describe("hme without seriel port", () => {
             }
           },{
             weight: 1,
-            StartTime: '02:00',
+            StartTime: '02:20',
             ScheduleDetailConfig: {
               WW: 20,
               DB: 20,
@@ -273,7 +273,7 @@ describe("hme without seriel port", () => {
             }
           },{
             weight: 1,
-            StartTime: '03:00',
+            StartTime: '03:30',
             ScheduleDetailConfig: {
             WW: 30,
             DB: 30,
@@ -285,7 +285,7 @@ describe("hme without seriel port", () => {
             }
           },{
             weight: 1,
-            StartTime: '04:00',
+            StartTime: '04:40',
             ScheduleDetailConfig: {
             WW: 50,
             DB: 50,
@@ -297,7 +297,7 @@ describe("hme without seriel port", () => {
             }
           },{
             weight: 1,
-            StartTime: '05:00',
+            StartTime: '05:50',
             ScheduleDetailConfig: {
               WW: 50,
               DB: 50,
@@ -309,7 +309,7 @@ describe("hme without seriel port", () => {
             }
           },{
             weight: 1,
-            StartTime: '06:00',
+            StartTime: '06:06',
             ScheduleDetailConfig: {
               WW: 70,
               DB: 70,
@@ -321,7 +321,7 @@ describe("hme without seriel port", () => {
             }
           },{
             weight: 1,
-            StartTime: '07:00',
+            StartTime: '07:07',
             ScheduleDetailConfig: {
             WW: 85,
             DB: 85,
@@ -333,7 +333,7 @@ describe("hme without seriel port", () => {
             }
           },{
             weight: 1,
-            StartTime: '08:00',
+            StartTime: '08:08',
             ScheduleDetailConfig: {
             WW: 60,
             DB: 60,
@@ -345,7 +345,7 @@ describe("hme without seriel port", () => {
             }
           },{
             weight: 1,
-            StartTime: '09:00',
+            StartTime: '09:09',
             ScheduleDetailConfig: {
               WW: 30,
               DB: 30,
@@ -357,7 +357,7 @@ describe("hme without seriel port", () => {
             }
           },{
             weight: 1,
-            StartTime: '10:00',
+            StartTime: '10:10',
             ScheduleDetailConfig: {
               WW: 25,
               DB: 25,
@@ -369,7 +369,7 @@ describe("hme without seriel port", () => {
             }
           },{
             weight: 1,
-            StartTime: '11:00',
+            StartTime: '11:11',
             ScheduleDetailConfig: {
             WW: 15,
             DB: 15,
@@ -381,7 +381,7 @@ describe("hme without seriel port", () => {
             }
           },{
             weight: 1,
-            StartTime: '12:00',
+            StartTime: '12:12',
             ScheduleDetailConfig: {
             WW: 5,
             DB: 5,

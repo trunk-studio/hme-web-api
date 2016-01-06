@@ -374,12 +374,17 @@ export default class Encode {
 
 
 
-
+    let ScheduleDetailsLen = 12;
     let dayTab = [];
-    let datLen = 0;
+    let dateLen = 0;
+    let timePwmTab = [];
+    let re = /(\d+):(\d+)/;
+    let strST = '';
+    let arrST = '';
     for (let i = 0; i < 6; i++) {
       if (config[i] != undefined) {
-        datLen = config[i].Days;
+        // Date-->
+        dateLen = config[i].Days;
         var startDate = new Date(config[i].StartDate);
         dayTab = [
           ...dayTab,
@@ -387,25 +392,50 @@ export default class Encode {
           startDate.getMonth() + 1,
           startDate.getDate()
         ];
+        // <--Date
+
+        for (var j = 0; j < ScheduleDetailsLen; j++) {
+          strST = config[i].ScheduleDetails[j].StartTime;
+          arrST = strST.match(re);
+          timePwmTab = [
+            ...timePwmTab,
+            parseInt(arrST[1], 10), //H
+            parseInt(arrST[2], 10), //M
+            0,  //S
+            config[i].ScheduleDetails[j].ScheduleDetailConfig.DB, //CH1
+            config[i].ScheduleDetails[j].ScheduleDetailConfig.BL, //CH2
+            config[i].ScheduleDetails[j].ScheduleDetailConfig.RE, //CH3
+            config[i].ScheduleDetails[j].ScheduleDetailConfig.GR, //CH4
+            config[i].ScheduleDetails[j].ScheduleDetailConfig.WW, //CH5
+          ];
+
+        }
+
+
 
       } else {
+        // Date-->
         let endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + (datLen - 1));
+        endDate.setDate(startDate.getDate() + (dateLen - 1));
         dayTab = [
           ...dayTab,
           endDate.getFullYear(),
           endDate.getMonth() + 1,
           endDate.getDate()
         ]
-        console.log(startDate);
+        // <--Date
+        for (let i = 0; i < ScheduleDetailsLen; i++) {
+          timePwmTab = [
+            ...timePwmTab,
+            ...[0, 0, 0],  //h,m,s
+            ...[0, 0, 0, 0, 0]  //CH1~CH5
+          ];
+        }
+
       }
     }
 
-
-
-
-
-
+    console.log(timePwmTab);
     console.log(dayTab);
   	return (0);
 
