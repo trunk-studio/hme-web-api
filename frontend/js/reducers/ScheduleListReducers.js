@@ -24,11 +24,19 @@ export function schedule(state = { }, action) {
       };
     case RECEIVED_UPDATE_SCHEDULE_DAY:
       let updateScheduleList = [...state.scheduleList]
-      updateScheduleList[action.index].Days = action.data;
-      let date = new Date(updateScheduleList[action.index].StartDate);
-      date.setDate(date.getDate() + parseInt(action.data,10));
-      date = date.getFullYear()+'/' + (date.getMonth()+1) + '/'+date.getDate();
-      updateScheduleList[action.index+1].StartDate = date;
+      if(action.data)
+        updateScheduleList[action.index].Days = action.data;
+      for(let i = 0 ; i < updateScheduleList.length-1; i++){
+        if(updateScheduleList[i].Days){
+          let date = new Date(updateScheduleList[i].StartDate);
+          date.setDate(date.getDate() + parseInt(updateScheduleList[i].Days,10));
+          let yyyy = date.getFullYear().toString();
+          let mm = (date.getMonth()+1).toString(); // getMonth() is zero-based
+          let dd  = date.getDate().toString();
+          date = yyyy +'/'+ (mm[1]?mm:"0"+mm[0]) +'/'+ dd; // padding
+          updateScheduleList[i+1].StartDate = date;
+        }
+      };
       return {
         ...state,
         scheduleList: updateScheduleList

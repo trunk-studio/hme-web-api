@@ -37,7 +37,6 @@ export default class ScheduleList extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log("###",this.props);
   }
 
   _addRow = (e) => {
@@ -48,7 +47,6 @@ export default class ScheduleList extends React.Component {
   }
 
   _saveScheduleList = (e) => {
-    console.log("!!!!!!",this.refs,this.state);
     this.setState({
       isSetBtnClose: false
     })
@@ -69,25 +67,29 @@ export default class ScheduleList extends React.Component {
   }
 
   _calculateDate = (i,e) => {
-    console.log("Days e",e.target.value);
-    console.log("Days i",i);
     this.props.updateScheduleDay(e.target.value,i)
+    this.setState({
+      isSetBtnClose: true
+    })
   }
 
   _handleDatePickChange = (event, date) => {
     this.props.updateScheduleFirstDate(date);
+    this.props.updateScheduleDay()
+    this.setState({
+      isSetBtnClose: true
+    })
   }
 
   render () {
     let rows = [];
     if(this.props.scheduleList){
-      console.log("!!!",this.props.scheduleList);
       this.props.scheduleList.forEach((row,i) => {
         if(i == 0){
           rows.push(
             <TableRow key={row.id}>
               <TableRowColumn>
-                <RaisedButton label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
+                <RaisedButton disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
               </TableRowColumn>
               <TableRowColumn>
                 <DatePicker
@@ -115,9 +117,9 @@ export default class ScheduleList extends React.Component {
           rows.push(
             <TableRow key={row.id}>
               <TableRowColumn>
-                <RaisedButton label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
+                <RaisedButton disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
               </TableRowColumn>
-              <TableRowColumn>{this.props.scheduleList[i].StartDate}</TableRowColumn>
+              <TableRowColumn style={{fontSize: '17px'}}>{this.props.scheduleList[i].StartDate}</TableRowColumn>
               <TableRowColumn>
                 <TextField
                   type="number"

@@ -43,7 +43,7 @@ export function updateScheduleDay(date,index) {
   return receivedUpdateScheduleDay(date,index);
 }
 
-export function receivedUpdateScheduleDay(data,index) {
+export function receivedUpdateScheduleDay(data = null,index = null) {
   return {
     type: RECEIVED_UPDATE_SCHEDULE_DAY,
     data,
