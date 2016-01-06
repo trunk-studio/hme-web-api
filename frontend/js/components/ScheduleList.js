@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import { requestScheduleCreate, requestGetScheduleList} from '../actions/ScheduleListActions'
+import { requestScheduleCreate, requestGetScheduleList,
+   updateScheduleFirstDate, updateScheduleDay} from '../actions/ScheduleListActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -26,7 +27,8 @@ export default class ScheduleList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSetBtnClose: true
+      isSetBtnClose: true,
+      scheduleDate: []
     };
   }
 
@@ -35,6 +37,7 @@ export default class ScheduleList extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    console.log("###",this.props);
   }
 
   _addRow = (e) => {
@@ -45,7 +48,7 @@ export default class ScheduleList extends React.Component {
   }
 
   _saveScheduleList = (e) => {
-    console.log("!!!!!!",this.refs);
+    console.log("!!!!!!",this.refs,this.state);
     this.setState({
       isSetBtnClose: false
     })
@@ -65,31 +68,20 @@ export default class ScheduleList extends React.Component {
     return year + '/'+ monthIndex+1 +'/' + day;
   }
 
-  _calculateDate = (e) => {
-    let firstDate;
-    let dateRefsArray = [];
-    let dayRefsArray = [];
-    for(let key in this.refs) {
-      if(key.indexOf('date[') != -1){
-        dateRefsArray.push(this.refs[key])
-      }
-      if(key.indexOf('day[') != -1){
-        dayRefsArray.push(this.refs[key])
-      }
-    }
-    // console.log("!!!",dateRefsArray,dayRefsArray);
-    dateRefsArray.forEach((ref, i) => {
-      if(i==0){
-        firstDate = ref.state.date;
-      }else{
+  _calculateDate = (i,e) => {
+    console.log("Days e",e.target.value);
+    console.log("Days i",i);
+    this.props.updateScheduleDay(e.target.value,i)
+  }
 
-      }
-    });
+  _handleDatePickChange = (event, date) => {
+    this.props.updateScheduleFirstDate(date);
   }
 
   render () {
     let rows = [];
     if(this.props.scheduleList){
+      console.log("!!!",this.props.scheduleList);
       this.props.scheduleList.forEach((row,i) => {
         if(i == 0){
           rows.push(
@@ -99,19 +91,19 @@ export default class ScheduleList extends React.Component {
               </TableRowColumn>
               <TableRowColumn>
                 <DatePicker
-                  defaultDate={'2016/01/13'}
-                  ref={`date[${i}]`}
+                  value={this.props.scheduleList[i].StartDate}
                   hintText="new"
                   autoOk={true}
                   mode="landscape"
                   formatDate={this._formatDate}
+                  onChange={this._handleDatePickChange}
                   style={{width: '50px'}}/>
               </TableRowColumn>
               <TableRowColumn>
                 <TextField
                   type="number"
-                  onChange={this._calculateDate}
-                  ref={`day[${i}]`}
+                  onChange={this._calculateDate.bind(this,i)}
+                  value={this.props.scheduleList[i].Days}
                 />
               </TableRowColumn>
               <TableRowColumn>
@@ -125,12 +117,12 @@ export default class ScheduleList extends React.Component {
               <TableRowColumn>
                 <RaisedButton label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
               </TableRowColumn>
-              <TableRowColumn ref={`date[${i}]`} value={row.startDate || 'new'} ></TableRowColumn>
+              <TableRowColumn>{this.props.scheduleList[i].StartDate}</TableRowColumn>
               <TableRowColumn>
                 <TextField
                   type="number"
-                  onChange={this._calculateDate}
-                  ref={`day[${i}]`}
+                  onChange={this._calculateDate.bind(this,i)}
+                  value={this.props.scheduleList[i].Days}
                 />
               </TableRowColumn>
               <TableRowColumn>
@@ -178,7 +170,9 @@ function _injectPropsFromStore(state) {
 
 const _injectPropsFromActions = {
   requestGetScheduleList,
-  requestScheduleCreate
+  requestScheduleCreate,
+  updateScheduleFirstDate,
+  updateScheduleDay
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleList);
