@@ -2,7 +2,8 @@ import request from 'axios'
 
 export const RECEIVED_SCHEDULE_DETAIL = 'RECEIVED_SCHEDULE_DETAIL'
 export const RECEIVED_UPDATED_SCHEDULE_DETAIL = 'RECEIVED_UPDATED_SCHEDULE_DETAIL'
-export const SET_SLIDER_VALUE = 'SET_SLIDER_VALUE'
+export const SET_SCHEDULE_TIME = 'SET_SCHEDULE_TIME'
+export const SET_SCHEDULE_WEIGHT = 'SET_SCHEDULE_WEIGHT'
 
 
 export function requestGetScheduleDetail(scheduleID) {
@@ -27,4 +28,12 @@ export function requestUpdateScheduleDetail(scheduleDetailData) {
       .post('/rest/schedule/update/detail', scheduleDetailData)
       .then(response => dispatch(receivedScheduleDetail(response.data)));
   };
+}
+
+export function setScheduleTime(data) {
+  console.log('asdfasdfasdfasdfasdfdsafdsajfdl;sajfkdls;a');
+  return {
+    type: SET_SCHEDULE_TIME,
+    data
+  }
 }

@@ -1,6 +1,7 @@
 import {
   RECEIVED_SCHEDULE_DETAIL,
-  SET_SLIDER_VALUE
+  RECEIVED_UPDATED_SCHEDULE_DETAIL,
+  SET_SCHEDULE_TIME
 } from '../actions/ScheduleDetailActions'
 
 export function scheduleDetail(state = { }, action) {
@@ -11,12 +12,21 @@ export function scheduleDetail(state = { }, action) {
         ...state,
         dailySchedules: action.data
       };
-    case SET_SLIDER_VALUE:
-      console.log('testestsetsestest');
+    case RECEIVED_UPDATED_SCHEDULE_DETAIL:
       return {
         ...state,
-        currentIndex: action.index
-      };
+        dailySchedules: action.data
+      }
+    case SET_SCHEDULE_TIME:
+      let dailySchedules = {};
+      dailySchedules = {...state.dailySchedules};
+      dailySchedules.ScheduleDetails[action.data.index].StartTimeInteger = action.data.value;
+      console.log('done',dailySchedules.ScheduleDetails[action.data.index].StartTimeInteger);
+      console.log('data',action.data.value);
+      return {
+        ...state,
+        dailySchedules: dailySchedules
+      }
     default:
       return state
   }

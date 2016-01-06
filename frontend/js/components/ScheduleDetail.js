@@ -2,8 +2,8 @@ import React from 'react';
 import {connect} from 'react-redux'
 import {
   requestGetScheduleDetail,
-  getSliderValue
-
+  requestUpdateScheduleDetail,
+  setScheduleTime
 } from '../actions/ScheduleDetailActions'
 import moment from 'moment'
 import {RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui';
@@ -21,7 +21,8 @@ export default class ScheduleDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentIndex: 0
+      currentIndex: 0,
+      scheduleDetails: []
     }
   }
 
@@ -31,15 +32,32 @@ export default class ScheduleDetail extends React.Component {
 
   _handleBtnClick(index) {
 
-    if(index == this.state.currentIndex)
-      window.location.href = `/#config/1`;
+    // if(index == this.state.currentIndex)
+      // window.location.href = `/#config/1`;
 
     this.setState({currentIndex: index});
     // TODO
     // highlight dot
   }
 
+  _handleWeightChanged = (val) => {
+     console.log(val);
+
+
+  }
+
+  _handleTimetChanged = (val) => {
+     console.log(val);
+     this.props.setScheduleTime({
+       index: this.state.currentIndex,
+       value: val
+     });
+  }
+
+
+
   render () {
+    console.log('state',this.state);
     const marks = {
       0 : '00:00',
       120: '02:00',
@@ -79,26 +97,22 @@ export default class ScheduleDetail extends React.Component {
       weight: sliderWeight*100
     };
 
-    let dots = [{
-      x: 0,
-      y: 0
-    }];
-
+    let dots=[];
     for (let dot of this.props.scheduleDetails) {
       dots.push({
         x: dot.StartTimeInteger,
         y: dot.weight
       })
     }
-    dots.push({
-      x: _timeToInteger('24:00:00'),
-      y: 1
-    });
 
     let data = [{
       key: 'testLine',
       color: '#2d7fe0',
-      values: dots
+      values: [
+        { x: 0, y: 0},
+        ...dots,
+        {x: _timeToInteger('24:00:00'), y: 0}
+      ]
     }];
 
     let ButtonGroup1 = [],
@@ -154,7 +168,9 @@ export default class ScheduleDetail extends React.Component {
                   <VerticalSlider className="vertical-slider"
                     min={0} max={100} marks={percent_marks}
                     included={false} style={{float: 'right'}}
-                    value={sliderData.weight} />
+                    value={sliderData.weight} onAfterChange={this._handleWeightChanged}
+                    tipFormatter={function(v){return v+'%';}}
+                    />
                 </div>
               </div>
             </div>
@@ -163,7 +179,10 @@ export default class ScheduleDetail extends React.Component {
                 width: '80%'
                 }} className="center-self">
                 <Slider min={0} max={1440} marks={marks} included={false}
-                  value={sliderData.time} disabled={false} allowCross={false} style={{width: '10%'}}
+                  value={sliderData.time} disabled={false}
+                  allowCross={false} style={{width: '10%'}}
+                  onAfterChange={this._handleTimetChanged}
+                  tipFormatter={function(v){return _formatMinutes(v);}}
                   />
               </div>
             </div>
@@ -219,7 +238,8 @@ function _injectPropsFromStore(state) {
 
 const _injectPropsFromActions = {
   requestGetScheduleDetail,
-  getSliderValue
+  requestUpdateScheduleDetail,
+  setScheduleTime
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleDetail);
