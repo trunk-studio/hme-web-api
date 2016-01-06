@@ -40,12 +40,13 @@ export default class ScheduleDetail extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('== did ==');
 
   }
+
   _handleWeightChanged = (val) => {
     let weight = val/100;
-    let dailySchedules = this.props.scheduleDetails;
+    let dailySchedules = [];
+    dailySchedules.push(...this.props.scheduleDetails);
     dailySchedules[this.state.currentIndex].weight = weight;
     this.props.modifySchedule({
       schedules: dailySchedules
@@ -54,7 +55,8 @@ export default class ScheduleDetail extends React.Component {
 
   _handleTimetChanged = (val) => {
      let time = _formatMinutes(val) + ':00';
-     let dailySchedules = this.props.scheduleDetails;
+     let dailySchedules = [];
+     dailySchedules.push(...this.props.scheduleDetails);
      dailySchedules[this.state.currentIndex].StartTime = time;
      this.props.modifySchedule({
        schedules: dailySchedules
@@ -180,10 +182,10 @@ export default class ScheduleDetail extends React.Component {
                 </div>
               </div>
             </div>
-            <div className='row' style={{marginTop: '0px'}}>
+            <div className='row' style={{marginTop: '0px', marginLeft: '45px'}}>
               <div style={{
-                width: '80%'
-                }} className="center-self">
+                width: '85%'
+              }} className="">
                 <Slider min={0} max={1440} marks={marks} included={false}
                   value={sliderData.time} disabled={false}
                   allowCross={false} style={{width: '10%'}}

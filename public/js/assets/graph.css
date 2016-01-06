@@ -98,6 +98,7 @@ circle.selected:hover {
 .chart-container .nv-chart {
   margin-bottom: -25px;
   margin-top: -20px;
+  margin-left: -15px;
 }
 
 .nv-legendWrap.nvd3-svg {
