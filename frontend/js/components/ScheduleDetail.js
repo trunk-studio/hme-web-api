@@ -26,7 +26,6 @@ export default class ScheduleDetail extends React.Component {
   }
 
   componentDidMount () {
-    console.log('didmount');
     this.props.requestGetScheduleDetail(this.props.params.scheduleID);
   }
 
@@ -65,7 +64,6 @@ export default class ScheduleDetail extends React.Component {
 
 
   render () {
-    console.log('state',this.state);
     const marks = {
       0 : '00:00',
       120: '02:00',
@@ -235,14 +233,11 @@ function _injectPropsFromStore(state) {
   console.log('inject');
   let { scheduleDetail } = state;
   let scheduleDetails = scheduleDetail.dailySchedules? scheduleDetail.dailySchedules.ScheduleDetails : [];
-  console.log(scheduleDetails);
   if(scheduleDetails.length) {
     for (let schedule of scheduleDetails) {
       schedule.StartTimeInteger = _timeToInteger(schedule.StartTime);
     }
   }
-  console.log('injectEnd');
-  console.log(scheduleDetails);
   return {
     scheduleDetails: scheduleDetails
   };
