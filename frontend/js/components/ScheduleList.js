@@ -45,6 +45,7 @@ export default class ScheduleList extends React.Component {
   }
 
   _saveScheduleList = (e) => {
+    console.log("!!!!!!",this.refs);
     this.setState({
       isSetBtnClose: false
     })
@@ -57,39 +58,87 @@ export default class ScheduleList extends React.Component {
   }
 
   _formatDate = (date) => {
-    console.log(date);
     date = new Date(date);
     let day = date.getDate();
     let monthIndex = date.getMonth();
     let year = date.getFullYear();
-    console.log("!!!!!!!",date,day,monthIndex,year);
     return year + '/'+ monthIndex+1 +'/' + day;
+  }
+
+  _calculateDate = (e) => {
+    let firstDate;
+    let dateRefsArray = [];
+    let dayRefsArray = [];
+    for(let key in this.refs) {
+      if(key.indexOf('date[') != -1){
+        dateRefsArray.push(this.refs[key])
+      }
+      if(key.indexOf('day[') != -1){
+        dayRefsArray.push(this.refs[key])
+      }
+    }
+    // console.log("!!!",dateRefsArray,dayRefsArray);
+    dateRefsArray.forEach((ref, i) => {
+      if(i==0){
+        firstDate = ref.state.date;
+      }else{
+
+      }
+    });
   }
 
   render () {
     let rows = [];
     if(this.props.scheduleList){
       this.props.scheduleList.forEach((row,i) => {
-        rows.push(
-          <TableRow key={row.id}>
-            <TableRowColumn>
-              <RaisedButton label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
-            </TableRowColumn>
-            <TableRowColumn>
-              <DatePicker
-              hintText="new"
-              autoOk={true}
-              formatDate={this._formatDate}
-              style={{width: '50px'}}/>
-            </TableRowColumn>
-            <TableRowColumn>
-              <TextField type="number" />
-            </TableRowColumn>
-            <TableRowColumn>
-              <SelectField autoWidth={true} fullWidth={true} menuItems={[{payload: 1, text: '1'}]}/>
-            </TableRowColumn>
-          </TableRow>
-        );
+        if(i == 0){
+          rows.push(
+            <TableRow key={row.id}>
+              <TableRowColumn>
+                <RaisedButton label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
+              </TableRowColumn>
+              <TableRowColumn>
+                <DatePicker
+                  defaultDate={'2016/01/13'}
+                  ref={`date[${i}]`}
+                  hintText="new"
+                  autoOk={true}
+                  mode="landscape"
+                  formatDate={this._formatDate}
+                  style={{width: '50px'}}/>
+              </TableRowColumn>
+              <TableRowColumn>
+                <TextField
+                  type="number"
+                  onChange={this._calculateDate}
+                  ref={`day[${i}]`}
+                />
+              </TableRowColumn>
+              <TableRowColumn>
+                <SelectField autoWidth={true} fullWidth={true} menuItems={[{payload: 1, text: '1'}]}/>
+              </TableRowColumn>
+            </TableRow>
+          );
+        }else{
+          rows.push(
+            <TableRow key={row.id}>
+              <TableRowColumn>
+                <RaisedButton label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
+              </TableRowColumn>
+              <TableRowColumn ref={`date[${i}]`} value={row.startDate || 'new'} ></TableRowColumn>
+              <TableRowColumn>
+                <TextField
+                  type="number"
+                  onChange={this._calculateDate}
+                  ref={`day[${i}]`}
+                />
+              </TableRowColumn>
+              <TableRowColumn>
+                <SelectField autoWidth={true} fullWidth={true} menuItems={[{payload: 1, text: '1'}]}/>
+              </TableRowColumn>
+            </TableRow>
+          );
+        }
       });
     }
     // let isAddOpen = rows.length >= 5 ? true: false;
@@ -100,7 +149,7 @@ export default class ScheduleList extends React.Component {
           <RaisedButton label="Save" onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} />
           <RaisedButton ref="scheduleSetBtn" onTouchTap={this._setScheduleList} label="Set" disabled={this.state.isSetBtnClose} style={{marginLeft: '15px'}} />
         </div>
-        <Table>
+        <Table selectable={false}>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
             <TableRow>
               <TableHeaderColumn >Edit</TableHeaderColumn>
