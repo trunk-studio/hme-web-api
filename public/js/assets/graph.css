@@ -67,7 +67,7 @@ circle.selected:hover {
   -webkit-transform: rotate(270deg);
   /* Chrome, Safari, Opera */
   transform: rotate(270deg);
-  width: 164px;
+  width: 150px;
   float: right;
   margin-right: 20px;
 }
@@ -90,4 +90,29 @@ circle.selected:hover {
   -webkit-transform: rotate(90deg);
   /* Chrome, Safari, Opera */
   transform: rotate(90deg);
+}
+
+#react-view {
+}
+
+.chart-container .nv-chart {
+  margin-bottom: -25px;
+  margin-top: -20px;
+  margin-left: -15px;
+}
+
+.nv-legendWrap.nvd3-svg {
+  display: none;
+}
+
+/*.nv-point {
+  stroke-opacity: 1 !important;
+  stroke-width: 10px;
+  fill-opacity: 1 !important;
+}*/
+
+.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
+    stroke-width: 5px !important;
+    fill-opacity: 1 !important;
+    stroke-opacity: 1 !important;
 }

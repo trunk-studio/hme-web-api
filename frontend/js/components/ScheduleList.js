@@ -74,7 +74,6 @@ export default class ScheduleList extends React.Component {
 
 function _injectPropsFromStore(state) {
   // let { login, isLoading } = state;
-  console.log("_injectPropsFromStore!!",state);
   let {schedule} = state;
   return {
     scheduleList: schedule.scheduleList

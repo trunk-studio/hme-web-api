@@ -21,8 +21,8 @@ export default class App extends React.Component {
         <Route path="/manage" component={ManagePage} />
         <Route path="/graph" component={SettingGraph} />
         <Route path="/schedule/list" component={ScheduleList} />
-        <Route path="/schedule/edit" component={ScheduleDetail} />
-        <Route path="/schedule/config/:id" component={ScheduleDetailConfig}/>
+        <Route path="/schedule/edit/:scheduleID" component={ScheduleDetail} />
+        <Route path="/schedule/config" component={ScheduleDetailConfig}/>
       </Router>
     );
   }
