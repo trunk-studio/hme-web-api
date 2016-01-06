@@ -1,7 +1,7 @@
 import {
   RECEIVED_SCHEDULE_DETAIL,
   RECEIVED_UPDATED_SCHEDULE_DETAIL,
-  SET_SCHEDULE_TIME
+  MODIFY_SCHEDULE
 } from '../actions/ScheduleDetailActions'
 
 export function scheduleDetail(state = { }, action) {
@@ -17,15 +17,20 @@ export function scheduleDetail(state = { }, action) {
         ...state,
         dailySchedules: action.data
       }
-    case SET_SCHEDULE_TIME:
-      let dailySchedules = {};
-      dailySchedules = {...state.dailySchedules};
-      dailySchedules.ScheduleDetails[action.data.index].StartTimeInteger = action.data.value;
-      console.log('done',dailySchedules.ScheduleDetails[action.data.index].StartTimeInteger);
-      console.log('data',action.data.value);
+    case MODIFY_SCHEDULE:
+      // let dailySchedules = {};
+      // dailySchedules = Object.assign({}, state.dailySchedules);
+      // console.log(dailySchedules);
+      // dailySchedules.ScheduleDetails[action.data.index].StartTime = action.data.time;
+      // console.log('done',dailySchedules.ScheduleDetails[action.data.index].StartTime);
+      // console.log(state.dailySchedules.ScheduleDetails);
+      // console.log('data',action.data.time);
       return {
         ...state,
-        dailySchedules: dailySchedules
+        dailySchedules: {
+          ...state.dailySchedules,
+          ScheduleDetails: action.data.schedules
+        }
       }
     default:
       return state

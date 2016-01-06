@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {
   requestGetScheduleDetail,
   requestUpdateScheduleDetail,
-  setScheduleTime
+  modifySchedule
 } from '../actions/ScheduleDetailActions'
 import moment from 'moment'
 import {RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui';
@@ -21,36 +21,44 @@ export default class ScheduleDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentIndex: 0,
-      scheduleDetails: []
+      currentIndex: 0
     }
   }
 
   componentDidMount () {
+    console.log('didmount');
     this.props.requestGetScheduleDetail(this.props.params.scheduleID);
   }
 
   _handleBtnClick(index) {
 
     // if(index == this.state.currentIndex)
-      // window.location.href = `/#config/1`;
+    //   window.location.href = `/#config/1`;
 
     this.setState({currentIndex: index});
     // TODO
     // highlight dot
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    console.log('== did ==');
+
+  }
   _handleWeightChanged = (val) => {
-     console.log(val);
-
-
+    let weight = val/100;
+    let dailySchedules = this.props.scheduleDetails;
+    dailySchedules[this.state.currentIndex].weight = weight;
+    this.props.modifySchedule({
+      schedules: dailySchedules
+    });
   }
 
   _handleTimetChanged = (val) => {
-     console.log(val);
-     this.props.setScheduleTime({
-       index: this.state.currentIndex,
-       value: val
+     let time = _formatMinutes(val) + ':00';
+     let dailySchedules = this.props.scheduleDetails;
+     dailySchedules[this.state.currentIndex].StartTime = time;
+     this.props.modifySchedule({
+       schedules: dailySchedules
      });
   }
 
@@ -223,14 +231,18 @@ function _pad(n, width, z) {
 }
 
 function _injectPropsFromStore(state) {
+
+  console.log('inject');
   let { scheduleDetail } = state;
   let scheduleDetails = scheduleDetail.dailySchedules? scheduleDetail.dailySchedules.ScheduleDetails : [];
+  console.log(scheduleDetails);
   if(scheduleDetails.length) {
     for (let schedule of scheduleDetails) {
       schedule.StartTimeInteger = _timeToInteger(schedule.StartTime);
     }
   }
-
+  console.log('injectEnd');
+  console.log(scheduleDetails);
   return {
     scheduleDetails: scheduleDetails
   };
@@ -239,7 +251,7 @@ function _injectPropsFromStore(state) {
 const _injectPropsFromActions = {
   requestGetScheduleDetail,
   requestUpdateScheduleDetail,
-  setScheduleTime
+  modifySchedule
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleDetail);

@@ -2,8 +2,9 @@ import request from 'axios'
 
 export const RECEIVED_SCHEDULE_DETAIL = 'RECEIVED_SCHEDULE_DETAIL'
 export const RECEIVED_UPDATED_SCHEDULE_DETAIL = 'RECEIVED_UPDATED_SCHEDULE_DETAIL'
-export const SET_SCHEDULE_TIME = 'SET_SCHEDULE_TIME'
-export const SET_SCHEDULE_WEIGHT = 'SET_SCHEDULE_WEIGHT'
+// export const SET_SCHEDULE_TIME = 'SET_SCHEDULE_TIME'
+// export const SET_SCHEDULE_WEIGHT = 'SET_SCHEDULE_WEIGHT'
+export const MODIFY_SCHEDULE = 'MODIFY_SCHEDULE'
 
 
 export function requestGetScheduleDetail(scheduleID) {
@@ -30,10 +31,10 @@ export function requestUpdateScheduleDetail(scheduleDetailData) {
   };
 }
 
-export function setScheduleTime(data) {
+export function modifySchedule(data) {
   console.log('asdfasdfasdfasdfasdfdsafdsajfdl;sajfkdls;a');
   return {
-    type: SET_SCHEDULE_TIME,
+    type: MODIFY_SCHEDULE,
     data
   }
 }
