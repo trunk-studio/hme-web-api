@@ -124,8 +124,7 @@ describe("Schedule", () => {
     it("get config should success", async(done) => {
       try {
         let result = await request.get('/rest/schedule/config/' + scheduleDetailConfig.id);
-        console.log(result.body);
-        result.body.datasets[0].data.should.be.Array;
+        result.body.should.be.Array;
         done();
       } catch (e) {
         done(e);

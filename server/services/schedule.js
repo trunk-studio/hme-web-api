@@ -1,9 +1,9 @@
 module.exports = {
-  create: async (data) => {
+  create: async(data) => {
     try {
       let schedule = await models.Schedule.create(data);
       let scheduleConfig = [];
-      for(let a = 0; a<24; a+=2){
+      for (let a = 0; a < 24; a += 2) {
         scheduleConfig.push({
           "weight": 1,
           "StartTime": a +":00:00",
@@ -11,16 +11,28 @@ module.exports = {
         });
       }
       await models.ScheduleDetail.bulkCreate(scheduleConfig);
+      let findScheduleConfig = await models.ScheduleDetail.findAll({
+        where:{
+          "ScheduleId": schedule.id
+        }
+      });
+      let scheduleConfigId = [];
+      findScheduleConfig.forEach(function(i){
+        scheduleConfigId.push({
+          "ScheduleDetailId": i.id,
+        });
+      });
+      await models.ScheduleDetailConfig.bulkCreate(scheduleConfigId);
       return schedule;
     } catch (e) {
       throw e;
     }
   },
 
-  find: async (id) => {
+  find: async(id) => {
     try {
       let schedule = await models.Schedule.findOne({
-        where:{
+        where: {
           id: id
         },
         include: models.ScheduleDetail
@@ -31,7 +43,7 @@ module.exports = {
     }
   },
 
-  findAll: async () => {
+  findAll: async() => {
     try {
       let schedule = await models.Schedule.findAll();
       return schedule;
@@ -40,7 +52,9 @@ module.exports = {
     }
   },
 
-  updateDay: async({ScheduleId, Days}) => {
+  updateDay: async({
+    ScheduleId, Days
+  }) => {
     try {
       let schedule = await models.Schedule.findById(ScheduleId);
       schedule.Days = Days;
@@ -51,7 +65,9 @@ module.exports = {
     }
   },
 
-  updateScheduleDetail: async({ScheduleDetailId, weight, StartTime}) => {
+  updateScheduleDetail: async({
+    ScheduleDetailId, weight, StartTime
+  }) => {
     try {
       let scheduleDetail = await models.ScheduleDetail.findById(ScheduleDetailId);
       scheduleDetail.weight = weight;

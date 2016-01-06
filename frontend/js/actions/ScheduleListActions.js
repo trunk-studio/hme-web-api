@@ -1,40 +1,40 @@
 import request from 'axios'
 
-export const REQUEST_CREATE = 'REQUEST_CREATE'
-export const RECEIVED_CREATE = 'RECEIVED_CREATE'
+export const REQUEST_CREATE_SCHEDULE = 'REQUEST_CREATE_SCHEDULE'
+export const RECEIVED_CREATE_SCHEDULE = 'RECEIVED_CREATE_SCHEDULE'
 
-export const REQUEST_LIST = 'REQUEST_LIST'
-export const RECEIVED_LIST = 'RECEIVED_LIST'
+export const REQUEST_SCHEDULE_LIST = 'REQUEST_SCHEDULE_LIST'
+export const RECEIVED_SCHEDULE_LIST = 'RECEIVED_SCHEDULE_LIST'
 
-export function requestCreate() {
+export function requestScheduleCreate() {
   // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
       .post('/rest/schedule/create')
-      .then(response => dispatch(receivedCreate(response.data)));
+      .then(response => dispatch(receivedScheduleCreate(response.data)));
   };
 }
 
-export function receivedCreate(data) {
+export function receivedScheduleCreate(data) {
   return {
-    type: RECEIVED_CREATE,
+    type: RECEIVED_CREATE_SCHEDULE,
     data
   }
 }
 
 
-export function requestGetList() {
+export function requestGetScheduleList() {
   // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
       .get('/rest/schedule/findAll')
-      .then(response => dispatch(receivedGetList(response.data)));
+      .then(response => dispatch(receivedGetScheduleList(response.data)));
   };
 }
 
-export function receivedGetList(data) {
+export function receivedGetScheduleList(data) {
   return {
-    type: RECEIVED_LIST,
+    type: RECEIVED_SCHEDULE_LIST,
     data
   }
 }
