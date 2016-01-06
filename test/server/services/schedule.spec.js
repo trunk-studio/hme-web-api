@@ -102,7 +102,7 @@ describe("schedule", () => {
 
   });
 
-  describe("build to hardware time table config", async done => {
+  describe("models to hardware time table config", async done => {
     before( async done => {
       try {
         done();
@@ -113,44 +113,43 @@ describe("schedule", () => {
 
     it( "should be get currect json object" , async done => {
       try {
-
-      let config = [
-          {
+        let config = {
+          Device: 1,
+          Group: 0,
+          Schedules: [{
             StartDate: '2016-01-01',
             Days: 7,
-            ScheduleDetails: [
-              {
-                weight: 1,
-                StartTime: '01:00',
-                ScheduleDetailConfig: {
-                  WW: 10,
-                  DB: 10,
-                  BL: 10,
-                  GR: 10,
-                  RE: 10,
-                  CCT: 10,
-                  Bright: 10
-                }
-              },{
-                weight: 1,
-                StartTime: '02:00',
-                ScheduleDetailConfig: {
-                  WW: 10,
-                  DB: 10,
-                  BL: 10,
-                  GR: 10,
-                  RE: 10,
-                  CCT: 10,
-                  Bright: 10
-                }
-              },{
-                weight: 1,
-                StartTime: '04:00'
-              },{
-                weight: 1,
-                StartTime: '05:00'
+            Details: [{
+              weight: 1,
+              StartTime: '01:00',
+              Config: {
+                WW: 10,
+                DB: 10,
+                BL: 10,
+                GR: 10,
+                RE: 10,
+                CCT: 10,
+                Bright: 10
               }
-            ]
+            },{
+              weight: 1,
+              StartTime: '02:00',
+              Config: {
+                WW: 10,
+                DB: 10,
+                BL: 10,
+                GR: 10,
+                RE: 10,
+                CCT: 10,
+                Bright: 10
+              }
+            },{
+              weight: 1,
+              StartTime: '04:00'
+            },{
+              weight: 1,
+              StartTime: '05:00'
+            }]
           },{
             StartDate: '2016-01-08',
             Days: 7
@@ -163,9 +162,8 @@ describe("schedule", () => {
           },{
             StartDate: '2016-01-29',
             Days: 7
-          }
-        ]
-
+          }]
+        }
         done();
       } catch (e) {
         done(e);

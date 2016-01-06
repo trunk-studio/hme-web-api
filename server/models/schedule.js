@@ -8,6 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     classMethods: {
       associate: (models) => {
         Schedule.hasMany(models.ScheduleDetail);
+        Schedule.belongsTo(models.Device);
+        Schedule.belongsTo(models.Group);
       }
     }
   });
