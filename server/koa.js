@@ -24,10 +24,10 @@ import webpackHotMiddleware from 'koa-webpack-hot-middleware';
 import moment from 'moment';
 global.moment = moment;
 
-const env = process.env.NODE_ENV || 'development';
+const env = 'production';//process.env.NODE_ENV || 'development';
 const app = koa();
 
-const compiler = webpack(webpackConfig);
+// const compiler = webpack(webpackConfig);
 
 
 app.use(koaBodyParser());
@@ -61,14 +61,17 @@ var controllers = new Controllers(app);
 controllers.setupPublicRoute()
 controllers.setupAppRoute()
 
-app.use(
-  webpackDevMiddleware(compiler, {
-    noInfo: true,
-    publicPath: webpackConfig.output.publicPath
-  })
-);
+if (env === 'development') {
+  app.use(
+    webpackDevMiddleware(compiler, {
+      noInfo: true,
+      publicPath: webpackConfig.output.publicPath
+    })
+  );
+  app.use(webpackHotMiddleware(compiler));
+}
 
-app.use(webpackHotMiddleware(compiler));
+
 // app.use(function* (next) {
 //   yield require("webpack-hot-middleware")(compiler).bind(null, this.req, this.res);
 //   yield next;

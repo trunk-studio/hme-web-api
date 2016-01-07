@@ -1,11 +1,11 @@
 var path = require('path');
 var webpack = require('webpack');
-var BowerWebpackPlugin = require("bower-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
   entry: [
     //js
+    'webpack-hot-middleware/client',
     './frontend/js/index.js'
     // backend_app: [path.resolve(__dirname, './assets/backend/js/app.js')],
 
@@ -22,11 +22,9 @@ module.exports = {
     //relative to output.path
     // new webpack.optimize.CommonsChunkPlugin('/js/chunk.js', []),
     new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
-    // new ExtractTextPlugin("public/assets/css/bundle.css"),
-    new BowerWebpackPlugin({
-      excludes: /.*\.less/
-    })
+    new ExtractTextPlugin("./css/app.css")
   ],
   module: {
     loaders: [
@@ -40,7 +38,7 @@ module.exports = {
         include: [path.resolve(__dirname, './frontend/js')],
         query: {
           'stage': 0,
-          // 'plugins': ['react-transform'],
+          'plugins': ['react-transform'],
           'extra': {
             'react-transform': {
               'transforms': [{
@@ -57,7 +55,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: "style!css"
+        loader: ExtractTextPlugin.extract("style-loader", "css-loader")
       },
       {
         test: /\.less$/,
@@ -69,10 +67,7 @@ module.exports = {
         loader: 'url-loader?limit=100000'
       },{
         test: /\.json$/,
-        loader: 'json'
-      },{
-        test: /aws-sdk/,
-        loaders: ["transform?brfs"]
+        loader: 'json-loader'
       }
     ]
   }

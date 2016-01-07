@@ -6,7 +6,8 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = {
   entry: [
     //js
-    './frontend/js/index.js'
+    './frontend/js/index.js',
+
     // backend_app: [path.resolve(__dirname, './assets/backend/js/app.js')],
 
     //css
@@ -23,9 +24,9 @@ module.exports = {
     // new webpack.optimize.CommonsChunkPlugin('/js/chunk.js', []),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
-    // new ExtractTextPlugin("public/assets/css/bundle.css"),
+    new ExtractTextPlugin("public/assets/css/bundle.css"),
     new BowerWebpackPlugin({
-      excludes: /.*\.less/
+      excludes:           /.*\.less/
     })
   ],
   module: {
@@ -40,7 +41,7 @@ module.exports = {
         include: [path.resolve(__dirname, './frontend/js')],
         query: {
           'stage': 0,
-          // 'plugins': ['react-transform'],
+          'plugins': ['react-transform'],
           'extra': {
             'react-transform': {
               'transforms': [{
@@ -57,7 +58,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: "style!css"
+        loader: ExtractTextPlugin.extract("style-loader", "css-loader")
       },
       {
         test: /\.less$/,
