@@ -24,10 +24,10 @@ import webpackHotMiddleware from 'koa-webpack-hot-middleware';
 import moment from 'moment';
 global.moment = moment;
 
-const env = 'production';//process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || 'development';
 const app = koa();
 
-// const compiler = webpack(webpackConfig);
+const compiler = webpack(webpackConfig);
 
 
 app.use(koaBodyParser());

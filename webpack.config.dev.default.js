@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var BowerWebpackPlugin = require("bower-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
@@ -24,12 +25,22 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
-    new ExtractTextPlugin("./css/app.css")
+    // new ExtractTextPlugin("./css/app.css"),
+    new webpack.ResolverPlugin(
+      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
+    ),
+    new BowerWebpackPlugin({
+      excludes: /.*\.less/
+    }),
+    new webpack.ProvidePlugin({
+      $:      "jquery",
+      jQuery: "jquery"
+    })
   ],
   module: {
     loaders: [
       //expose
-      { test: /jquery\.js$/, loader: 'expose?jQuery!expose?$' },
+      // { test: /jquery\.js$/, loader: 'expose?jQuery!expose?$' },
 
       //loaders
       {
@@ -55,19 +66,27 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract("style-loader", "css-loader")
+        loader: "style!css"
       },
       {
         test: /\.less$/,
         loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
       },
       // Version query for font-awesome special import url
+      // {
+      //   test: /.(png|woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      //   loader: 'url-loader?limit=100000'
+      // },
       {
-        test: /.(png|woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader?limit=100000'
-      },{
         test: /\.json$/,
         loader: 'json-loader'
+      },{
+        test: /aws-sdk/,
+        loaders: ["transform?brfs"]
+      },
+      {
+        test: /\.(woff|svg|ttf|eot)([\?]?.*)$/,
+        loader: "file-loader?name=[name].[ext]"
       }
     ]
   }

@@ -1,6 +1,8 @@
 require("jquery");
-require('bootstrap');
-
+require('../../../bower_components/bootstrap/dist/css/bootstrap.min.css');
+require('../../style/css/graph.css');
+require('../../style/css/nv.d3.css');
+require('../../style/css/slider.css');
 
 import React from 'react';
 import { Router, Route, Link } from 'react-router';

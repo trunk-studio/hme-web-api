@@ -6,6 +6,7 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = {
   entry: [
     //js
+    'webpack-hot-middleware/client',
     './frontend/js/index.js'
     // backend_app: [path.resolve(__dirname, './assets/backend/js/app.js')],
 
@@ -22,16 +23,24 @@ module.exports = {
     //relative to output.path
     // new webpack.optimize.CommonsChunkPlugin('/js/chunk.js', []),
     new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
-    // new ExtractTextPlugin("public/assets/css/bundle.css"),
+    // new ExtractTextPlugin("./css/app.css"),
+    new webpack.ResolverPlugin(
+      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
+    ),
     new BowerWebpackPlugin({
       excludes: /.*\.less/
+    }),
+    new webpack.ProvidePlugin({
+      $:      "jquery",
+      jQuery: "jquery"
     })
   ],
   module: {
     loaders: [
       //expose
-      { test: /jquery\.js$/, loader: 'expose?jQuery!expose?$' },
+      // { test: /jquery\.js$/, loader: 'expose?jQuery!expose?$' },
 
       //loaders
       {
@@ -40,7 +49,7 @@ module.exports = {
         include: [path.resolve(__dirname, './frontend/js')],
         query: {
           'stage': 0,
-          // 'plugins': ['react-transform'],
+          'plugins': ['react-transform'],
           'extra': {
             'react-transform': {
               'transforms': [{
@@ -64,15 +73,20 @@ module.exports = {
         loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
       },
       // Version query for font-awesome special import url
+      // {
+      //   test: /.(png|woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      //   loader: 'url-loader?limit=100000'
+      // },
       {
-        test: /.(png|woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader?limit=100000'
-      },{
         test: /\.json$/,
-        loader: 'json'
+        loader: 'json-loader'
       },{
         test: /aws-sdk/,
         loaders: ["transform?brfs"]
+      },
+      {
+        test: /\.(woff|svg|ttf|eot)([\?]?.*)$/,
+        loader: "file-loader?name=[name].[ext]"
       }
     ]
   }

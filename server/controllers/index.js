@@ -47,14 +47,11 @@ export default class Routes {
         <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Material UI</title>
-        <meta name="description" content="Google's material design UI components built with React.">
+        <title>HME</title>
+        <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="stylesheet">
-        <link rel=stylesheet type="text/css" href="css/graph.css">
-        <link rel=stylesheet type="text/css" href="css/nv.d3.css">
-        <link rel=stylesheet type="text/css" href="css/slider.css">
+        <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">-->
         </head>
         <body>
           <div id="react-view"></div>
