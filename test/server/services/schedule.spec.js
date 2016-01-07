@@ -105,7 +105,7 @@ describe("schedule", () => {
       }
     });
 
-    it.only( "update Schedule List" , async done => {
+    it( "update Schedule List" , async done => {
       try {
         let data = [{
           id: newSchedule.id,
