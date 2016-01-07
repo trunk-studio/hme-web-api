@@ -31,8 +31,8 @@ export default class ScheduleDetail extends React.Component {
 
   _handleBtnClick(index) {
 
-    // if(index == this.state.currentIndex)
-    //   window.location.href = `/#config/1`;
+    if(index == this.state.currentIndex)
+      window.location.href = `#/schedule/config/1`;
 
     this.setState({currentIndex: index});
     // TODO
