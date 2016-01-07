@@ -75,7 +75,7 @@ app.use(webpackHotMiddleware(compiler));
 // });
 
 
-app.use(mount('/', serve(path.join(__dirname, '../public/js'))));
+app.use(mount('/', serve(path.join(__dirname, '../public/assets'))));
 
 
 

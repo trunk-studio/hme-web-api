@@ -13,8 +13,8 @@ module.exports = {
     // app_entry: [path.resolve(__dirname, './assets/frontend/less/app_entry.js')]
   ],
   output: {
-    path: path.resolve(__dirname, './public/js/'),
-    filename: 'assets/bundle.js',
+    path: path.resolve(__dirname, './public/assets/'),
+    filename: 'js/bundle.js',
     //chunkFilename: '[chunkhash].js',
     publicPath: '/'
   },

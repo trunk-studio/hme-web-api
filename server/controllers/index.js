@@ -52,16 +52,16 @@ export default class Routes {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet">
-        <link rel=stylesheet type="text/css" href="assets/graph.css">
-        <link rel=stylesheet type="text/css" href="assets/nv.d3.css">
+        <link rel=stylesheet type="text/css" href="css/graph.css">
+        <link rel=stylesheet type="text/css" href="css/nv.d3.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-        <link rel=stylesheet type="text/css" href="assets/index.css">
+        <link rel=stylesheet type="text/css" href="css/index.css">
         </head>
         <body>
           <div id="react-view"></div>
           <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
-          <script type="text/javascript" src="assets/graph.js"></script>
-          <script type="application/javascript" src="assets/bundle.js"></script>
+          <script type="text/javascript" src="js/graph.js"></script>
+          <script type="application/javascript" src="js/bundle.js"></script>
           <!--<script>
             document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
           </script>-->
