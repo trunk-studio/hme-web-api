@@ -96,8 +96,17 @@ module.exports = {
 
   getCurrectSetting: async() => {
     try {
-      let schedule ;
-      return schedule ;
+      let schedules  = await models.Schedule.findAll({
+        include:[{
+          model: models.ScheduleDetail,
+          include:{
+            model: models.ScheduleDetailConfig
+          }
+        }]
+      });
+      let
+      console.log("getCurrectSetting",JSON.stringify(schedules,null,2));
+      return schedules ;
     } catch (e) {
       throw e;
     }
