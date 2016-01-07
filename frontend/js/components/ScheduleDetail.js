@@ -21,7 +21,8 @@ export default class ScheduleDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentIndex: 0
+      currentIndex: 0,
+
     }
   }
 
@@ -54,6 +55,20 @@ export default class ScheduleDetail extends React.Component {
   }
 
   _handleTimetChanged = (val) => {
+     let nextScheduleStartTimeInteger = this.props.scheduleDetails[(this.state.currentIndex + 1)%12].StartTimeInteger;
+     let prevScheduleStartTimeInteger = this.props.scheduleDetails[(this.state.currentIndex + 11)%12].StartTimeInteger;
+    //  console.log(prevScheduleStartTimeInteger);
+
+     if( val >= nextScheduleStartTimeInteger && this.state.currentIndex != 11) {
+       val = nextScheduleStartTimeInteger - 1;
+     }
+     if( val <= prevScheduleStartTimeInteger && this.state.currentIndex != 0) {
+       val = prevScheduleStartTimeInteger + 1;
+     }
+
+    //  val = val > 1440 ? 1440 : val;
+    //  val = val < 0 ? 0 : val;
+
      let time = _formatMinutes(val) + ':00';
      let dailySchedules = [];
      dailySchedules.push(...this.props.scheduleDetails);
@@ -63,6 +78,10 @@ export default class ScheduleDetail extends React.Component {
      });
   }
 
+  _limitSlider = (val) => {
+    if( val >= this.props.scheduleDetails[(this.state.currentIndex + 1)%12].StartTimeInteger)
+      this.setState({})
+  }
 
 
   render () {
