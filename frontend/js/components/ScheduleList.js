@@ -28,7 +28,7 @@ export default class ScheduleList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSetBtnClose: true,
+      isSetBtnClose: false,
       scheduleDate: []
     };
   }
