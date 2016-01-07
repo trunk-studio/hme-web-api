@@ -7,7 +7,7 @@ describe("hme", () => {
   });
 
 
-  it.only("SearchDevice", async(done) => {
+  it("SearchDevice", async(done) => {
     try {
       let result = await services.hme.SearchDevice();
       console.log('=== result ===', result);

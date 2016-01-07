@@ -14,18 +14,6 @@ exports.ping = function *() {
 
 exports.searchDevice = function *() {
   let result = yield services.hme.SearchDevice();
-  // let result = [
-  //   {
-  //     DevID: 8,
-  //     GroupID: 1
-  //   },{
-  //     DevID: 5,
-  //     GroupID: 1
-  //   },{
-  //     DevID: 7,
-  //     GroupID: 2
-  //   }
-  // ];
   console.log('controller',result);
   this.body = result
 };

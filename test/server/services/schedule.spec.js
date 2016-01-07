@@ -128,7 +128,7 @@ describe("schedule", () => {
       try {
         let data = {
           ScheduleDetailId: scheduleDetail.id,
-          weight: 100,
+          weight: 0.5,
           StartTime: '00:00:01'
         };
         let result = await services.schedule.updateScheduleDetail(data);
