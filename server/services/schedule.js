@@ -92,6 +92,15 @@ module.exports = {
     } catch (e) {
       throw e;
     }
+  },
+
+  getCurrectSetting: async() => {
+    try {
+      let schedule ;
+      return schedule ;
+    } catch (e) {
+      throw e;
+    }
   }
 
 }

@@ -142,9 +142,45 @@ describe("schedule", () => {
 
   });
 
-  describe("models to hardware time table config", async done => {
+  describe.only("models to hardware time table config", async done => {
+    let newSchedule, scheduleDetail;
     before( async done => {
       try {
+        let group = await models.Group.create();
+        let slaves = await models.Slave.create({
+          host: "hostName",
+          description: "描述",
+          apiVersion: "0.1.0",
+        });
+        let device = await models.Device.create({
+          uid: "1",
+          GroupId: group.id,
+          SlaveId: slaves.id
+        });
+
+        newSchedule = {
+          StartDate: moment('2016/1/7','YYYY/MM/DD'),
+          Days: 15,
+          GroupId: group.id,
+          DeviceId: device.id
+        };
+
+        newSchedule = await models.Schedule.create(newSchedule);
+        let scheduleConfig = [];
+        for(let a = 0; a<24; a+=2){
+          scheduleConfig.push({
+            "weight": 1,
+            "StartTime": "00:"+ a +":00",
+            "ScheduleId": newSchedule.id
+          });
+        }
+        await models.ScheduleDetail.bulkCreate(scheduleConfig);
+        scheduleDetail = await models.ScheduleDetail.findOne({
+          where:{
+            ScheduleId: newSchedule.id
+          }
+        });
+
         done();
       } catch (e) {
         done(e);
@@ -204,6 +240,7 @@ describe("schedule", () => {
             Days: 7
           }]
         }
+        let result = await services.schedule.getCurrectSetting();
         done();
       } catch (e) {
         done(e);

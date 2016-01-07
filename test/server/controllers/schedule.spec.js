@@ -92,8 +92,6 @@ describe("Schedule", () => {
           RE: 500,
           CCT: 600,
           Bright: 700,
-          GroupId: group.id,
-          DeviceId: device.id
         })
         done();
       } catch (e) {

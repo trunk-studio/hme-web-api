@@ -136,13 +136,13 @@ export default class ScheduleDetailConfig extends React.Component {
             </div>
           </div>
           <div className="col-md-4 col-sm-4 col-xs-4">
-            <Slider ref="WW" name="WW" defaultValue={0} max={1000} value={wwValue} description="WW" className="slider" onChange={this._wwChanged} />
-            <Slider ref="DB" name="DB" defaultValue={0} max={1000} value={dbValue} description="DB" className="slider" onChange={this._dbChanged} />
-            <Slider ref="BL" name="BL" defaultValue={0} max={1000} value={blValue} description="BL" className="slider" onChange={this._blChanged} />
-            <Slider ref="GR" name="GR" defaultValue={0} max={1000} value={grValue} description="GR" className="slider" onChange={this._grChanged} />
-            <Slider ref="RE" name="RE" defaultValue={0} max={1000} value={reValue} description="RE" className="slider" onChange={this._reChanged} />
-            <Slider ref="CCT" name="CCT" defaultValue={0} max={1000} value={cctValue} description="CCT" step="100" className="slider" onChange={this._cctChanged}/>
-            <Slider ref="Bright" name="Bright" defaultValue={0} className="slider" max={1000} value={brightValue} description="Bright" onChange={this._brightChanged}/>
+            <Slider ref="WW" name="WW" defaultValue={0} max={100} value={wwValue} description="WW" className="slider" onChange={this._wwChanged} />
+            <Slider ref="DB" name="DB" defaultValue={0} max={100} value={dbValue} description="DB" className="slider" onChange={this._dbChanged} />
+            <Slider ref="BL" name="BL" defaultValue={0} max={100} value={blValue} description="BL" className="slider" onChange={this._blChanged} />
+            <Slider ref="GR" name="GR" defaultValue={0} max={100} value={grValue} description="GR" className="slider" onChange={this._grChanged} />
+            <Slider ref="RE" name="RE" defaultValue={0} max={100} value={reValue} description="RE" className="slider" onChange={this._reChanged} />
+            <Slider ref="CCT" name="CCT" defaultValue={3000} max={16000} value={cctValue} description="CCT" step="10" className="slider" onChange={this._cctChanged}/>
+            <Slider ref="Bright" name="Bright" defaultValue={0} className="slider" max={100} value={brightValue} description="Bright" onChange={this._brightChanged}/>
           </div>
         </div>
       </div>
