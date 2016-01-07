@@ -32,10 +32,6 @@ export function schedule(state = { }, action) {
         if(updateScheduleList[i].Days){
           let date = new Date(updateScheduleList[i].StartDate);
           date.setDate(date.getDate() + parseInt(updateScheduleList[i].Days,10));
-          // let yyyy = date.getFullYear().toString();
-          // let mm = (date.getMonth()+1).toString();
-          // let dd  = date.getDate().toString();
-          // date = yyyy +'/'+ (mm[1]?mm:"0"+mm[0]) +'/'+ dd;
           updateScheduleList[i+1].StartDate = date;
         }
       };

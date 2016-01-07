@@ -15,10 +15,18 @@ export const RECEIVED_UPDATE_SCHEDULE_DAY = 'RECEIVED_UPDATE_SCHEDULE_DAY'
 export const REQUEST_UPDATE_SCHEDULE_LIST = 'REQUEST_UPDATE_SCHEDULE_LIST'
 export const RECEIVED_UPDATE_SCHEDULE_LIST = 'RECEIVED_UPDATE_SCHEDULE_LIST'
 
-export function requestScheduleCreate() {
+export function requestScheduleCreate(scheduleList) {
+  let data={};
+  if(scheduleList.length > 0){
+    let listLength = scheduleList.length-1;
+    let date = new Date(scheduleList[listLength].StartDate);
+    date.setDate(date.getDate() + parseInt(scheduleList[listLength].Days,10));
+    data.StartDate = date;
+    data.Days = 1;
+  }
   return (dispatch) => {
     return request
-      .post('/rest/schedule/create')
+      .post('/rest/schedule/create',data)
       .then(response => dispatch(receivedScheduleCreate(response.data)));
   };
 }

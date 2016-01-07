@@ -41,7 +41,7 @@ export default class ScheduleList extends React.Component {
   }
 
   _addRow = (e) => {
-    this.props.requestScheduleCreate();
+    this.props.requestScheduleCreate(this.props.scheduleList);
     this.setState({
       isSetBtnClose: true
     });
