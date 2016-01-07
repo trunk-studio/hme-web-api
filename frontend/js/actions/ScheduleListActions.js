@@ -12,8 +12,10 @@ export const RECEIVED_UPDATE_SCHEDULE_FIRSTDATE = 'RECEIVED_UPDATE_SCHEDULE_FIRS
 export const REQUEST_UPDATE_SCHEDULE_DAY = 'REQUEST_UPDATE_SCHEDULE_DAY'
 export const RECEIVED_UPDATE_SCHEDULE_DAY = 'RECEIVED_UPDATE_SCHEDULE_DAY'
 
+export const REQUEST_UPDATE_SCHEDULE_LIST = 'REQUEST_UPDATE_SCHEDULE_LIST'
+export const RECEIVED_UPDATE_SCHEDULE_LIST = 'RECEIVED_UPDATE_SCHEDULE_LIST'
+
 export function requestScheduleCreate() {
-  // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
       .post('/rest/schedule/create')
@@ -25,6 +27,22 @@ export function receivedScheduleCreate(data) {
   return {
     type: RECEIVED_CREATE_SCHEDULE,
     data
+  }
+}
+
+export function requestUpdateScheduleList(scheduleList) {
+  return (dispatch) => {
+    return request
+      .post('/rest/schedule/update/list',scheduleList)
+      .then(response => dispatch(receivedUpdateScheduleList(response.data)));
+  };
+}
+
+export function receivedUpdateScheduleList(data) {
+  let scheduleList = formatListDate(data);
+  return {
+    type: RECEIVED_UPDATE_SCHEDULE_LIST,
+    data: scheduleList
   }
 }
 
@@ -53,7 +71,6 @@ export function receivedUpdateScheduleDay(data = null,index = null) {
 
 
 export function requestGetScheduleList() {
-  // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
       .get('/rest/schedule/findAll')
@@ -62,8 +79,25 @@ export function requestGetScheduleList() {
 }
 
 export function receivedGetScheduleList(data) {
+  let scheduleList = formatListDate(data)
   return {
     type: RECEIVED_SCHEDULE_LIST,
-    data
+    data: scheduleList
   }
+}
+
+export function formatListDate(array){
+  let scheduleList = []
+  array.forEach((schedule, i) => {
+    if(schedule.StartDate){
+      if( i == 0){
+        schedule.StartDate = new Date(schedule.StartDate);
+      }else{
+        schedule.StartDate = schedule.StartDate.split("T")[0];
+        schedule.StartDate = schedule.StartDate.replace(/\-/g,"/");
+      }
+    }
+    scheduleList.push(schedule);
+  });
+  return scheduleList
 }

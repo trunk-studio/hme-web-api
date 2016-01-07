@@ -1,7 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import { requestScheduleCreate, requestGetScheduleList,
-   updateScheduleFirstDate, updateScheduleDay} from '../actions/ScheduleListActions'
+   updateScheduleFirstDate, updateScheduleDay,
+   requestUpdateScheduleList} from '../actions/ScheduleListActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -43,13 +44,14 @@ export default class ScheduleList extends React.Component {
     this.props.requestScheduleCreate();
     this.setState({
       isSetBtnClose: true
-    })
+    });
   }
 
   _saveScheduleList = (e) => {
+    this.props.requestUpdateScheduleList(this.props.scheduleList);
     this.setState({
       isSetBtnClose: false
-    })
+    });
   }
 
   _setScheduleList = (e) => {
@@ -173,7 +175,8 @@ const _injectPropsFromActions = {
   requestGetScheduleList,
   requestScheduleCreate,
   updateScheduleFirstDate,
-  updateScheduleDay
+  updateScheduleDay,
+  requestUpdateScheduleList
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleList);

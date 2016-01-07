@@ -1,5 +1,6 @@
 import { RECEIVED_CREATE_SCHEDULE, RECEIVED_SCHEDULE_LIST,
-  RECEIVED_UPDATE_SCHEDULE_FIRSTDATE, RECEIVED_UPDATE_SCHEDULE_DAY
+  RECEIVED_UPDATE_SCHEDULE_FIRSTDATE, RECEIVED_UPDATE_SCHEDULE_DAY,
+  RECEIVED_UPDATE_SCHEDULE_LIST
 } from '../actions/ScheduleListActions'
 
 export function schedule(state = { }, action) {
@@ -11,6 +12,7 @@ export function schedule(state = { }, action) {
         scheduleList: [...state.scheduleList,action.data]
       };
     case RECEIVED_SCHEDULE_LIST:
+    case RECEIVED_UPDATE_SCHEDULE_LIST:
       return {
         ...state,
         scheduleList: action.data

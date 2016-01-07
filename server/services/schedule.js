@@ -65,6 +65,23 @@ module.exports = {
     }
   },
 
+  updateScheduleList: async(scheduleArray) => {
+    try {
+      let newScheduleList =  await* scheduleArray.map( async (item) => {
+        console.log(item);
+        let schedule = await models.Schedule.findById(item.id);
+        console.log("!!!",schedule);
+        schedule.Days = item.Days || 0;
+        schedule.StartDate = item.StartDate;
+        schedule = await schedule.save();
+        return schedule;
+      });
+      return newScheduleList;
+    } catch (e) {
+      throw e;
+    }
+  },
+
   updateScheduleDetail: async({
     ScheduleDetailId, weight, StartTime
   }) => {
