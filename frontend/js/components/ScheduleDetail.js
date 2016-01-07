@@ -34,14 +34,14 @@ export default class ScheduleDetail extends React.Component {
 
     if(index == this.state.currentIndex)
       window.location.href = `#/schedule/config/1`;
-
     this.setState({currentIndex: index});
-    // TODO
-    // highlight dot
   }
 
   componentDidUpdate(prevProps, prevState) {
 
+    // modify color of current dot
+    $(`.nv-point-${prevState.currentIndex+1}`).attr('stroke', 'rgb(45, 127, 224)').attr('fill', 'rgb(45, 127, 224)');
+    $(`.nv-point-${this.state.currentIndex+1}`).attr('stroke', 'rgba(255, 55, 36, 0.82)').attr('fill', 'rgba(255, 55, 36, 0.82)');
   }
 
   _handleWeightChanged = (val) => {
