@@ -85,7 +85,7 @@ describe("hme without seriel port", () => {
     }
   });
 
-  it.only("configToTimeTabArry", done => {
+  it("configToTimeTabArry", done => {
     try {
       let config = [
           {

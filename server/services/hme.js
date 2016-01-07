@@ -351,7 +351,7 @@ export default class Hme {
     }
   }
 
-  setLedBrigh= async ({DevID, groupID, LedCH, BrighNum}) => {
+  setLedBrigh = async ({DevID, groupID, LedCH, BrighNum}) => {
     try {
       let COpParams = {
         u8DevID:DevID,
@@ -388,7 +388,6 @@ export default class Hme {
         default:
           console.log('setLedBrigh_LedCH_ERROR');
       }
-
       let TxParams = {
         Comm:[],
         RxLen:8
@@ -417,6 +416,24 @@ export default class Hme {
     }
   }
 
+  setLedDisplay = async ({DevID, groupID, WWBright, DBBright, BLBright, GRBright, REBright, Bright}) => {
+    try {
+
+        let setParams = {
+          DevID:DevID,
+          groupID:groupID,
+          Led1Bgt:DBBright * Bright,
+          Led2Bgt:BLBright * Bright,
+          Led3Bgt:GRBright * Bright,
+          Led4Bgt:REBright * Bright,
+          Led5Bgt:WWBright * Bright
+        }
+        let result = await this.setLedBrighter(setParams);
+        return (result);
+    } catch (e) {
+      throw e;
+    }
+  }
 
   setGroupID = async (DevID, groupID) => {
     try {

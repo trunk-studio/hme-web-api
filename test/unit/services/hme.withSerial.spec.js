@@ -195,6 +195,31 @@ describe("hme with seriel port", () => {
 
     });
 
+
+    it.only("serial Port setLedDisplay", async done => {
+      // 設定DEMO時的LED燈亮度
+      // 在Interact模式下才有效果
+      try {
+        let params = {
+                      DevID:1,
+                      groupID:0,
+                      WWBright:10,
+                      DBBright:30,
+                      BLBright:60,
+                      GRBright:80,
+                      REBright:100,
+                      Bright:50
+                    }
+        let result = await services.hme.setLedDisplay(params);
+        console.log('setLedDisplay result',result);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+
     it("serial Port setGroupID", async done => {
 
       try {
