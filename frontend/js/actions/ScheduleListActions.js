@@ -93,19 +93,3 @@ export function receivedGetScheduleList(data) {
     data
   }
 }
-
-export function formatListDate(array){
-  let scheduleList = []
-  array.forEach((schedule, i) => {
-    if(schedule.StartDate){
-      if( i == 0){
-        schedule.StartDate = new Date(schedule.StartDate);
-      }else{
-        schedule.StartDate = schedule.StartDate.split("T")[0];
-        schedule.StartDate = schedule.StartDate.replace(/\-/g,"/");
-      }
-    }
-    scheduleList.push(schedule);
-  });
-  return scheduleList
-}
