@@ -48,22 +48,15 @@ export default class Routes {
         <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Material UI</title>
-        <meta name="description" content="Google's material design UI components built with React.">
+        <title>HME</title>
+        <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="stylesheet">
-        <link rel=stylesheet type="text/css" href="assets/graph.css">
-        <link rel=stylesheet type="text/css" href="assets/nv.d3.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-        <link rel=stylesheet type="text/css" href="assets/index.css">
+        <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">-->
         </head>
         <body>
           <div id="react-view"></div>
-          <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
-          <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.js"></script>
-          <script type="text/javascript" src="assets/graph.js"></script>
-          <script type="application/javascript" src="assets/bundle.js"></script>
+          <script type="application/javascript" src="js/bundle.js"></script>
           <!--<script>
             document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
           </script>-->
