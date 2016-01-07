@@ -4,9 +4,11 @@ var BowerWebpackPlugin = require("bower-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
+  resolve: {
+    root: [path.join(__dirname, "bower_components")]
+  },
   entry: [
     //js
-    'webpack-hot-middleware/client',
     './frontend/js/index.js'
     // backend_app: [path.resolve(__dirname, './assets/backend/js/app.js')],
 
@@ -23,9 +25,8 @@ module.exports = {
     //relative to output.path
     // new webpack.optimize.CommonsChunkPlugin('/js/chunk.js', []),
     new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
-    // new ExtractTextPlugin("./css/app.css"),
+    // new ExtractTextPlugin("public/assets/css/bundle.css"),
     new webpack.ResolverPlugin(
       new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
     ),
@@ -35,7 +36,8 @@ module.exports = {
     new webpack.ProvidePlugin({
       $:      "jquery",
       jQuery: "jquery"
-    })
+    }),
+    new webpack.optimize.UglifyJsPlugin({minimize: true})
   ],
   module: {
     loaders: [
@@ -49,7 +51,7 @@ module.exports = {
         include: [path.resolve(__dirname, './frontend/js')],
         query: {
           'stage': 0,
-          'plugins': ['react-transform'],
+          // 'plugins': ['react-transform'],
           'extra': {
             'react-transform': {
               'transforms': [{
@@ -74,12 +76,12 @@ module.exports = {
       },
       // Version query for font-awesome special import url
       // {
-      //   test: /.(png|woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      //   loader: 'url-loader?limit=100000'
+        // test: /.(png|woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        // loader: 'url-loader?limit=100000'
       // },
       {
         test: /\.json$/,
-        loader: 'json-loader'
+        loader: 'json'
       },{
         test: /aws-sdk/,
         loaders: ["transform?brfs"]
