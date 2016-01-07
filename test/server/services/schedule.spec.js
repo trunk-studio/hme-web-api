@@ -142,7 +142,7 @@ describe("schedule", () => {
 
   });
 
-  describe.only("models to hardware time table config", async done => {
+  describe("models to hardware time table config", async done => {
     let newSchedule, scheduleDetail;
     before( async done => {
       try {
