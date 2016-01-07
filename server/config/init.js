@@ -5,6 +5,7 @@ let config;
 
 try {
   config = require(`./${env}`);
+  config.environment = env;
 }
 catch (error) {
   debug('dev')(`No specific configuration for env ${env}`);

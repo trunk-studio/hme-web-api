@@ -23,8 +23,10 @@ import webpackDevMiddleware from 'koa-webpack-dev-middleware';
 import webpackHotMiddleware from 'koa-webpack-hot-middleware';
 import moment from 'moment';
 global.moment = moment;
+global.appConfig = config;
 
-const env = process.env.NODE_ENV || 'development';
+
+const {environment} = appConfig;
 const app = koa();
 
 const compiler = webpack(webpackConfig);
@@ -40,15 +42,15 @@ app.use(responseTime());
 app.use(logger());
 
 
-if (env === 'production') {
-  // set debug env to `koa` only
+if (environment === 'production') {
+  // set debug environment to `koa` only
   // must be set programmaticaly for windows
   debug.enable('koa');
 
 }
 
-if (env === 'development') {
-  // set debug env, must be programmaticaly for windows
+if (environment === 'development') {
+  // set debug environment, must be programmaticaly for windows
   debug.enable('dev,koa');
   // log when process is blocked
   require('blocked')((ms) => debug('koa')(`blocked for ${ms}ms`));
@@ -61,7 +63,7 @@ var controllers = new Controllers(app);
 controllers.setupPublicRoute()
 controllers.setupAppRoute()
 
-if (env === 'development') {
+if (environment === 'development') {
   app.use(
     webpackDevMiddleware(compiler, {
       noInfo: true,
@@ -102,6 +104,6 @@ var liftApp = async () => {
 
 }
 
-if (env !== 'test') liftApp();
+if (environment !== 'test') liftApp();
 
 module.exports = liftApp
