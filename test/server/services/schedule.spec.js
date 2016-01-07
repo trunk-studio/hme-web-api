@@ -252,6 +252,20 @@ describe("schedule", () => {
         }
         let result = await services.schedule.getCurrectSetting();
         console.log("currect json !!! ",JSON.stringify(result,null,2));
+        result.Schedules.should.be.an.Array;
+        result.Schedules[0].should.have.property('StartDate');
+        result.Schedules[0].should.have.property('Days');
+        result.Schedules[0].Details.should.be.an.Array;
+        result.Schedules[0].Details[0].should.have.property('weight');
+        result.Schedules[0].Details[0].should.have.property('StartTime');
+        result.Schedules[0].Details[0].should.have.property('Config');
+        result.Schedules[0].Details[0].Config.should.have.property('WW');
+        result.Schedules[0].Details[0].Config.should.have.property('DB');
+        result.Schedules[0].Details[0].Config.should.have.property('BL');
+        result.Schedules[0].Details[0].Config.should.have.property('GR');
+        result.Schedules[0].Details[0].Config.should.have.property('RE');
+        result.Schedules[0].Details[0].Config.should.have.property('CCT');
+        result.Schedules[0].Details[0].Config.should.have.property('Bright');
         done();
       } catch (e) {
         done(e);
