@@ -1,9 +1,12 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import { requestScheduleCreate, requestGetScheduleList} from '../actions/ScheduleListActions'
+import { requestScheduleCreate, requestGetScheduleList,
+   updateScheduleFirstDate, updateScheduleDay,
+   requestUpdateScheduleList} from '../actions/ScheduleListActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
+const MenuItem = require('material-ui/lib/menus/menu-item');
 const TextField = require('material-ui/lib/text-field');
 const Tabs = require('material-ui/lib/tabs/tabs');
 const Tab = require('material-ui/lib/tabs/tab');
@@ -24,6 +27,10 @@ export default class ScheduleList extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      isSetBtnClose: false,
+      scheduleDate: []
+    };
   }
 
   componentDidMount () {
@@ -34,33 +41,128 @@ export default class ScheduleList extends React.Component {
   }
 
   _addRow = (e) => {
-    this.props.requestScheduleCreate();
+    this.props.requestScheduleCreate(this.props.scheduleList);
+    this.setState({
+      isSetBtnClose: true
+    });
+  }
+
+  _saveScheduleList = (e) => {
+    this.props.requestUpdateScheduleList(this.props.scheduleList);
+    this.setState({
+      isSetBtnClose: false
+    });
+  }
+
+  _setScheduleList = (e) => {
+    this.setState({
+      isSetBtnClose: true
+    })
+  }
+
+  _formatDate = (date) => {
+    date = new Date(date);
+    let day = date.getDate();
+    let monthIndex = date.getMonth();
+    let year = date.getFullYear();
+    return year + '/'+ monthIndex+1 +'/' + day;
+  }
+
+  _calculateDate = (i,e) => {
+    this.props.updateScheduleDay(e.target.value,i)
+    this.setState({
+      isSetBtnClose: true
+    })
+  }
+
+  _handleDatePickChange = (event, date) => {
+    this.props.updateScheduleFirstDate(date);
+    this.props.updateScheduleDay()
+    this.setState({
+      isSetBtnClose: true
+    })
   }
 
   render () {
     let rows = [];
     if(this.props.scheduleList){
       this.props.scheduleList.forEach((row,i) => {
-        rows.push(
-          <TableRow key={row.id}>
-            <TableRowColumn>
-              <RaisedButton label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
-            </TableRowColumn>
-            <TableRowColumn>{row.startDate || 'new'}</TableRowColumn>
-            <TableRowColumn>{row.days || 'new'}</TableRowColumn>
-          </TableRow>
-        );
+        if(i == 0){
+          let date
+          if(this.props.scheduleList[i].StartDate)
+            date = new Date(this.props.scheduleList[i].StartDate);
+          rows.push(
+            <TableRow key={row.id}>
+              <TableRowColumn>
+                <RaisedButton disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
+              </TableRowColumn>
+              <TableRowColumn>
+                <DatePicker
+                  value={date || ''}
+                  hintText="new"
+                  autoOk={true}
+                  mode="landscape"
+                  formatDate={this._formatDate}
+                  onChange={this._handleDatePickChange}
+                  style={{width: '50px'}}/>
+              </TableRowColumn>
+              <TableRowColumn>
+                <TextField
+                  type="number"
+                  onChange={this._calculateDate.bind(this,i)}
+                  value={this.props.scheduleList[i].Days}
+                />
+              </TableRowColumn>
+              <TableRowColumn>
+                <SelectField autoWidth={true} fullWidth={true} menuItems={[{payload: 1, text: '1'}]}/>
+              </TableRowColumn>
+            </TableRow>
+          );
+        }else{
+          let date;
+          if(this.props.scheduleList[i].StartDate){
+            date = new Date(this.props.scheduleList[i].StartDate);
+            let yyyy = date.getFullYear().toString();
+            let mm = (date.getMonth()+1).toString();
+            let dd  = date.getDate().toString();
+            date = yyyy +'/'+ (mm[1]?mm:"0"+mm[0]) +'/'+ dd;
+          }
+          rows.push(
+            <TableRow key={row.id}>
+              <TableRowColumn>
+                <RaisedButton disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
+              </TableRowColumn>
+              <TableRowColumn style={{fontSize: '17px'}}>{date || ''}</TableRowColumn>
+              <TableRowColumn>
+                <TextField
+                  type="number"
+                  onChange={this._calculateDate.bind(this,i)}
+                  value={this.props.scheduleList[i].Days}
+                />
+              </TableRowColumn>
+              <TableRowColumn>
+                <SelectField autoWidth={true} fullWidth={true} menuItems={[{payload: 1, text: '1'}]}/>
+              </TableRowColumn>
+            </TableRow>
+          );
+        }
       });
     }
+    // let isAddOpen = rows.length >= 5 ? true: false;
     return (
       <div className="self-center" style={{width: '100%'}}>
-        <RaisedButton label="Add" onTouchTap={this._addRow} style={{marginLeft:'80%', marginTop: '15px'}} />
-        <Table>
+        <div className="row" style={{marginLeft: '30px', marginTop: '15px'}}>
+          <RaisedButton ref="scheduleAddBtn" label="Add" disabled={false} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
+          <RaisedButton label="Save" onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} />
+          <RaisedButton ref="scheduleSetBtn" onTouchTap={this._setScheduleList} label="Set" disabled={this.state.isSetBtnClose} style={{marginLeft: '15px'}} />
+        </div>
+        <Table selectable={false}>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
             <TableRow>
               <TableHeaderColumn >Edit</TableHeaderColumn>
               <TableHeaderColumn >Start Date</TableHeaderColumn>
               <TableHeaderColumn >Days</TableHeaderColumn>
+              <TableHeaderColumn >Grouping setting</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
@@ -82,7 +184,10 @@ function _injectPropsFromStore(state) {
 
 const _injectPropsFromActions = {
   requestGetScheduleList,
-  requestScheduleCreate
+  requestScheduleCreate,
+  updateScheduleFirstDate,
+  updateScheduleDay,
+  requestUpdateScheduleList
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleList);

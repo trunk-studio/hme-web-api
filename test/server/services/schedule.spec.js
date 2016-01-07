@@ -42,7 +42,8 @@ describe("schedule", () => {
   });
 
   describe("Schedule Detail", async done => {
-    let newSchedule, scheduleDetail;
+    let newSchedule, scheduleDetail,
+    newSchedule2, scheduleDetail2;
     before( async done => {
       try {
         newSchedule = {
@@ -64,6 +65,26 @@ describe("schedule", () => {
             ScheduleId: newSchedule.id
           }
         });
+
+        newSchedule2 = {
+          StartDate: moment('1900/11/10','YYYY/MM/DD'),
+          Days: 15
+        };
+        newSchedule2 = await models.Schedule.create(newSchedule2);
+        let scheduleConfig2 = [];
+        for(let a = 0; a<24; a+=2){
+          scheduleConfig2.push({
+            "weight": 1,
+            "StartTime": "00:"+ a +":00",
+            "ScheduleId": newSchedule2.id
+          });
+        }
+        await models.ScheduleDetail.bulkCreate(scheduleConfig2);
+        scheduleDetail2 = await models.ScheduleDetail.findOne({
+          where:{
+            ScheduleId: newSchedule2.id
+          }
+        });
         done();
       } catch (e) {
         done(e);
@@ -78,6 +99,25 @@ describe("schedule", () => {
         };
         let result = await services.schedule.updateDay(data);
         result.Days.should.be.not.equal(newSchedule.Days);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+    it( "update Schedule List" , async done => {
+      try {
+        let data = [{
+          id: newSchedule.id,
+          Days: 1,
+          StartDate: '2016/01/11'
+        },{
+          id: newSchedule2.id,
+          Days: 2,
+          StartDate: '2016/01/12'
+        }];
+        let result = await services.schedule.updateScheduleList(data);
+        result[0].Days.should.be.not.equal(newSchedule2.Days);
         done();
       } catch (e) {
         done(e);

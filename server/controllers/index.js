@@ -35,6 +35,7 @@ export default class Routes {
     publicRoute.get('/rest/schedule/findAll', ScheduleController.getAllSchedule);
     publicRoute.get('/rest/schedule/:id', ScheduleController.getOneSchedule);
     publicRoute.post('/rest/schedule/update/day', ScheduleController.updateScheduleDay);
+    publicRoute.post('/rest/schedule/update/list', ScheduleController.updateScheduleList);
     publicRoute.post('/rest/schedule/update/detail', ScheduleController.updateScheduleDetail);
 
     publicRoute.post('/rest/schedule/config/update', ScheduleController.configUpdate);
