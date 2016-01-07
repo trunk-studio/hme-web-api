@@ -170,16 +170,26 @@ describe("schedule", () => {
         for(let a = 0; a<24; a+=2){
           scheduleConfig.push({
             "weight": 1,
-            "StartTime": "00:"+ a +":00",
+            "StartTime": a +":00:00",
             "ScheduleId": newSchedule.id
           });
         }
         await models.ScheduleDetail.bulkCreate(scheduleConfig);
-        scheduleDetail = await models.ScheduleDetail.findOne({
+        scheduleDetail = await models.ScheduleDetail.findAll({
           where:{
             ScheduleId: newSchedule.id
           }
         });
+        console.log("scheduleDetail",scheduleDetail);
+
+        let scheduleConfigId = [];
+        scheduleDetail.forEach(function(i){
+          console.log(i);
+          scheduleConfigId.push({
+            "ScheduleDetailId": i.id,
+          });
+        });
+        await models.ScheduleDetailConfig.bulkCreate(scheduleConfigId);
 
         done();
       } catch (e) {
@@ -241,6 +251,7 @@ describe("schedule", () => {
           }]
         }
         let result = await services.schedule.getCurrectSetting();
+        console.log("currect json !!! ",JSON.stringify(result,null,2));
         done();
       } catch (e) {
         done(e);

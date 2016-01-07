@@ -96,7 +96,7 @@ module.exports = {
 
   getCurrectSetting: async() => {
     try {
-      let schedules  = await models.Schedule.findAll({
+      let basicSchedules  = await models.Schedule.findAll({
         include:[{
           model: models.ScheduleDetail,
           include:{
@@ -104,9 +104,29 @@ module.exports = {
           }
         }]
       });
-      let
-      console.log("getCurrectSetting",JSON.stringify(schedules,null,2));
-      return schedules ;
+      let Schedules = basicSchedules.map((schedule)=>{
+        let format = {};
+        format.StartDate = moment(schedule.StartDate).format('YYYY-MM-DD');
+        format.Days = schedule.Days;
+        format.Details = [];
+        format.Details = schedule.ScheduleDetails.map((detail) => {
+          let detailFormat = {};
+          detailFormat.weight = detail.weight;
+          let StartTime = detail.StartTime.split(":")
+          detailFormat.StartTime = StartTime[0] +":"+ StartTime[1];
+          detailFormat.Config = {};
+          detailFormat.Config.WW = detail.ScheduleDetailConfigs[0].WW;
+          detailFormat.Config.DB = detail.ScheduleDetailConfigs[0].DB;
+          detailFormat.Config.BL = detail.ScheduleDetailConfigs[0].BL;
+          detailFormat.Config.GR = detail.ScheduleDetailConfigs[0].GR;
+          detailFormat.Config.RE = detail.ScheduleDetailConfigs[0].RE;
+          detailFormat.Config.CCT = detail.ScheduleDetailConfigs[0].CCT;
+          detailFormat.Config.Bright = detail.ScheduleDetailConfigs[0].Bright;
+          return detailFormat;
+        })
+        return format
+      })
+      return {Schedules} ;
     } catch (e) {
       throw e;
     }
