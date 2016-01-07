@@ -39,10 +39,10 @@ export function requestUpdateScheduleList(scheduleList) {
 }
 
 export function receivedUpdateScheduleList(data) {
-  let scheduleList = formatListDate(data);
+  // let scheduleList = formatListDate(data);
   return {
     type: RECEIVED_UPDATE_SCHEDULE_LIST,
-    data: scheduleList
+    data
   }
 }
 
@@ -79,10 +79,10 @@ export function requestGetScheduleList() {
 }
 
 export function receivedGetScheduleList(data) {
-  let scheduleList = formatListDate(data)
+  // let scheduleList = formatListDate(data)
   return {
     type: RECEIVED_SCHEDULE_LIST,
-    data: scheduleList
+    data
   }
 }
 

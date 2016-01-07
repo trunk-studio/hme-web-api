@@ -88,6 +88,7 @@ export default class ScheduleList extends React.Component {
     if(this.props.scheduleList){
       this.props.scheduleList.forEach((row,i) => {
         if(i == 0){
+          let date = new Date(this.props.scheduleList[i].StartDate);
           rows.push(
             <TableRow key={row.id}>
               <TableRowColumn>
@@ -95,7 +96,7 @@ export default class ScheduleList extends React.Component {
               </TableRowColumn>
               <TableRowColumn>
                 <DatePicker
-                  value={this.props.scheduleList[i].StartDate}
+                  value={date}
                   hintText="new"
                   autoOk={true}
                   mode="landscape"
@@ -116,12 +117,20 @@ export default class ScheduleList extends React.Component {
             </TableRow>
           );
         }else{
+          let date = ""
+          if( i < this.props.scheduleList.length){
+            date = new Date(this.props.scheduleList[i].StartDate);
+            let yyyy = date.getFullYear().toString();
+            let mm = (date.getMonth()+1).toString();
+            let dd  = date.getDate().toString();
+            date = yyyy +'/'+ (mm[1]?mm:"0"+mm[0]) +'/'+ dd;
+          }
           rows.push(
             <TableRow key={row.id}>
               <TableRowColumn>
                 <RaisedButton disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
               </TableRowColumn>
-              <TableRowColumn style={{fontSize: '17px'}}>{this.props.scheduleList[i].StartDate}</TableRowColumn>
+              <TableRowColumn style={{fontSize: '17px'}}>{date}</TableRowColumn>
               <TableRowColumn>
                 <TextField
                   type="number"
