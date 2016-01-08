@@ -82,3 +82,9 @@
     fill-opacity: 1 !important;
     stroke-opacity: 1 !important;
 }
+
+.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point:first-child,
+.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point:last-child {
+  fill-opacity: 0 !important;
+  stroke-opacity: 0 !important;
+}
