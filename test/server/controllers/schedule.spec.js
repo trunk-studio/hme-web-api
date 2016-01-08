@@ -59,7 +59,13 @@ describe("Schedule", () => {
         weight: 100,
         StartTime: '00:01:00'
       };
+      console.log("API:/rest/schedule/update/detail");
+      console.log("input:",data);
+      
       let result = await request.post('/rest/schedule/update/detail').send(data);
+
+      console.log("output:",result);
+
       result.body.weight.should.be.not.equal(scheduleDetail.weight);
       result.body.StartTime.should.be.not.equal(scheduleDetail.StartTime);
       done();

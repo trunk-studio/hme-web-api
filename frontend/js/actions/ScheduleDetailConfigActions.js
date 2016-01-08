@@ -7,7 +7,6 @@ export const REQUEST_UPDATE_SCHEDULE_DETAIL_CONFIG = 'REQUEST_UPDATE_SCHEDULE_DE
 export const RECEIVED_UPDATE_SCHEDULE_DETAIL_CONFIG = 'RECEIVED_UPDATE_SCHEDULE_DETAIL_CONFIG'
 
 export function requestGetScheduleDetailConfig(id) {
-  // dispatch(function() {return {type: REQUEST_LOGIN});
   console.log(id);
   return (dispatch) => {
     return request
@@ -15,7 +14,6 @@ export function requestGetScheduleDetailConfig(id) {
       .then(response => dispatch(receivedGetScheduleDetailConfig(response.data)));
   };
 }
-
 export function receivedGetScheduleDetailConfig(data) {
   return {
     type: RECEIVED_GET_SCHEDULE_DETAIL_CONFIG,
@@ -23,18 +21,26 @@ export function receivedGetScheduleDetailConfig(data) {
   }
 }
 
-
 export function requestUpdateScheduleDetailConfig(updateData) {
-  // dispatch(function() {return {type: REQUEST_LOGIN});
+  console.log("$$$$$$$$$$$",updateData);
+  let data = [
+    updateData.WW,
+    updateData.DB,
+    updateData.BL,
+    updateData.GR,
+    updateData.RE,
+    updateData.CCT,
+    updateData.Bright
+  ]
   return (dispatch) => {
     return request
       .post('/rest/schedule/config/update',updateData)
-      .then(response => dispatch(receivedUpdateScheduleDetailConfig()));
+      .then(response => dispatch(receivedUpdateScheduleDetailConfig(data)));
   };
 }
-
-export function receivedUpdateScheduleDetailConfig() {
+export function receivedUpdateScheduleDetailConfig(data) {
   return {
-    type: RECEIVED_UPDATE_SCHEDULE_DETAIL_CONFIG
+    type: RECEIVED_UPDATE_SCHEDULE_DETAIL_CONFIG,
+    data
   }
 }
