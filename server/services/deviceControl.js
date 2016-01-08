@@ -19,5 +19,14 @@ module.exports = {
     } catch (e) {
       throw e;
     }
+  },
+
+  syncDevice: async() => {
+    try {
+      let deviceArray =  await services.hme.SearchDevice();
+      await services.deviceControl.saveDevice(deviceArray);
+    } catch (e) {
+      throw e;
+    }
   }
 }

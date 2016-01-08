@@ -18,13 +18,13 @@ export default class ScheduleDetailConfig extends React.Component {
       RE: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.001011122, 0.002022245, 0.003033367, 0.007077856, 0.012133468, 0.022244692, 0.03437816, 0.052578362, 0.076845298, 0.110212336, 0.144590495, 0.164812942, 0.174924166, 0.157735086, 0.161779575, 0.188068756, 0.233569262, 0.299292214, 0.382204247, 0.481294237, 0.563195147, 0.584428716, 0.537917088, 0.336703741, 0.193124368, 0.098078868, 0.041456016, 0.012133468, 0.003033367, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       WW: [0, 0, 0, 0, 0, 0, 0.001011122, 0.003033367, 0.006066734, 0.01314459, 0.026289181, 0.04752275, 0.077856421, 0.119312437, 0.176946411, 0.240647118, 0.256825076, 0.242669363, 0.196157735, 0.159757331, 0.131445905, 0.108190091, 0.094034378, 0.083923155, 0.077856421, 0.075834176, 0.077856421, 0.083923155, 0.093023256, 0.106167846, 0.121334681, 0.140546006, 0.161779575, 0.184024267, 0.205257836, 0.227502528, 0.251769464, 0.277047523, 0.302325581, 0.324570273, 0.346814965, 0.368048534, 0.386248736, 0.404448938, 0.420626896, 0.438827098, 0.459049545, 0.481294237, 0.507583418, 0.534883721, 0.562184024, 0.585439838, 0.609706775, 0.633973711, 0.656218402, 0.675429727, 0.688574317, 0.691607685, 0.68958544, 0.682507583, 0.67239636, 0.65520728, 0.635995956, 0.609706775, 0.584428716, 0.55611729, 0.526794742, 0.496461072, 0.466127401, 0.436804853, 0.406471183, 0.378159757, 0.348837209, 0.321536906, 0.295247725, 0.270980789, 0.247724975, 0.225480283, 0.205257836, 0.186046512, 0.168857432, 0.152679474, 0.138523761, 0.125379171, 0.113245703, 0.102123357, 0.093023256, 0.083923155, 0.075834176, 0.067745197, 0.059656218, 0.05156724, 0.042467139, 0.032355915, 0.025278059, 0.019211325, 0.014155713, 0.010111223, 0.007077856, 0.005055612, 0.003033367],
       SUM:[],
-      wwValue: 100,
-      dbValue: 100,
-      blValue: 100,
-      grValue: 100,
-      reValue: 100,
-      cctValue: 100,
-      brightValue: 100
+      wwValue: 0,
+      dbValue: 0,
+      blValue: 0,
+      grValue: 0,
+      reValue: 0,
+      cctValue: 0,
+      brightValue: 0
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -49,82 +49,22 @@ export default class ScheduleDetailConfig extends React.Component {
   }
 
   _wwChanged = (e, value) => {
-    // this.refs.chart.state.chart.datasets[0].points[0].value = value;
-    console.log(this.state);
-    let newSUM = [];
-    this.state.DB.forEach((data,i) => {
-      newSUM.push(this.state.DB[i] * (this.state.dbValue * 0.01)+
-      this.state.BL[i] * (this.state.blValue * 0.01)+
-      this.state.GR[i] * (this.state.grValue * 0.01)+
-      this.state.RE[i] * (this.state.reValue * 0.01)+
-      this.state.WW[i] * (value * 0.01));
-    });
-    this.setState({
-      SUM: newSUM,
-    })
     this.state.wwValue = value;
     this._saveConfig();
   }
   _dbChanged = (e, value) => {
-    console.log(value);
-    let newSUM = [];
-    this.state.DB.forEach((data,i) => {
-      newSUM.push(this.state.DB[i]* (value * 0.01)+
-      this.state.BL[i] * (this.state.blValue * 0.01)+
-      this.state.GR[i] * (this.state.grValue * 0.01)+
-      this.state.RE[i] * (this.state.reValue * 0.01)+
-      this.state.WW[i] * (this.state.wwValue * 0.01));
-    });
-    this.setState({
-      SUM: newSUM
-    })
     this.state.dbValue = value;
     this._saveConfig();
   }
   _blChanged = (e, value) => {
-    console.log(value);
-    let newSUM = [];
-    this.state.DB.forEach((data,i) => {
-      newSUM.push(this.state.DB[i] * (this.state.dbValue * 0.01)+
-      this.state.BL[i]* (value * 0.01)+
-      this.state.GR[i] * (this.state.grValue * 0.01)+
-      this.state.RE[i] * (this.state.reValue * 0.01)+
-      this.state.WW[i] * (this.state.wwValue * 0.01));
-    });
-    this.setState({
-      SUM: newSUM
-    })
     this.state.blValue = value;
     this._saveConfig();
   }
   _grChanged = (e, value) => {
-    console.log(value);
-    let newSUM = [];
-    this.state.DB.forEach((data,i) => {
-      newSUM.push(this.state.DB[i] * (this.state.dbValue * 0.01)+
-      this.state.BL[i] * (this.state.blValue * 0.01)+
-      this.state.GR[i] * (value * 0.01)+
-      this.state.RE[i] * (this.state.reValue * 0.01)+
-      this.state.WW[i] * (this.state.wwValue * 0.01));
-    });
-    this.setState({
-      SUM: newSUM
-    })
     this.state.grValue = value;
     this._saveConfig();
   }
   _reChanged = (e, value) => {
-    let newSUM = [];
-    this.state.DB.forEach((data,i) => {
-      newSUM.push(this.state.DB[i] * (this.state.dbValue * 0.01)+
-      this.state.BL[i] * (this.state.blValue * 0.01)+
-      this.state.GR[i] * (this.state.grValue * 0.01)+
-      this.state.RE[i] * (value * 0.01)+
-      this.state.WW[i] * (this.state.wwValue * 0.01));
-    });
-    this.setState({
-      SUM: newSUM
-    })
     this.state.reValue = value;
     this._saveConfig();
   }
@@ -140,7 +80,6 @@ export default class ScheduleDetailConfig extends React.Component {
   }
 
   _saveConfig = (e) => {
-    console.log("!!!!!!!!!",this.state);
     this.props.requestUpdateScheduleDetailConfig({
       id: this.props.params.id,
       WW: this.state.wwValue,
@@ -158,6 +97,26 @@ export default class ScheduleDetailConfig extends React.Component {
 
 
   render() {
+    if(this.props.config){
+      this.state.wwValue = this.props.config[0];
+      this.state.dbValue = this.props.config[1];
+      this.state.blValue = this.props.config[2];
+      this.state.grValue = this.props.config[3];
+      this.state.reValue = this.props.config[4];
+      this.state.cctValue = this.props.config[5];
+      this.state.brightValue = this.props.config[6];
+
+      let newSUM = [];
+      this.state.DB.forEach((data,i) => {
+        newSUM.push(this.state.DB[i]* (this.state.dbValue * 0.01)+
+        this.state.BL[i] * (this.state.blValue * 0.01)+
+        this.state.GR[i] * (this.state.grValue * 0.01)+
+        this.state.RE[i] * (this.state.reValue * 0.01)+
+        this.state.WW[i] * (this.state.wwValue * 0.01));
+      });
+      this.state.SUM = newSUM;
+    }
+
     let menuItems = [
        { payload: '1', text: 'Never' },
        { payload: '2', text: 'Every Night' },
@@ -183,18 +142,9 @@ export default class ScheduleDetailConfig extends React.Component {
     let chartOptions = {
       pointDot: false,
       scaleShowVerticalLines: false,
-      datasetStroke: false
+      datasetStroke: false,
+      pointHitDetectionRadius: 0
     }
-    if(this.props.config){
-      this.state.wwValue = this.props.config[0];
-      this.state.dbValue = this.props.config[1];
-      this.state.blValue = this.props.config[2];
-      this.state.grValue = this.props.config[3];
-      this.state.reValue = this.props.config[4];
-      this.state.cctValue = this.props.config[5];
-      this.state.brightValue = this.props.config[6];
-    }
-
     return (
       <div>
         <AppBar
