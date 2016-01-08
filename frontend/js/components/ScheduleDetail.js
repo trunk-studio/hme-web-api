@@ -1,238 +1,239 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {requestLogin} from '../actions/AuthActions'
-
-import {RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui';
-const VerticalSlider = require('vertical-rc-slider');
-const Slider = require('rc-slider');
+import {
+  requestGetScheduleDetail,
+  requestUpdateScheduleDetail,
+  modifySchedule
+} from '../actions/ScheduleDetailActions'
+import moment from 'moment'
+import {
+  RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow
+} from 'material-ui';
+import numeral from 'numeral'
+import NVD3Chart from 'react-nvd3';
+import VerticalSlider from'vertical-rc-slider';
+import Slider from 'rc-slider';
 const style = {
   width: 400,
   margin: 50
 };
-const LineChart = require("react-chartjs").Line;
 
+const SCHEDULE_DETAILS_AMOUNT = 12,
+      MAX_TIME_INTEGER = 1440,
+      SLIDER_TIME_MARKS = {
+        0 : '00:00',
+        120: '02:00',
+        240: '04:00',
+        360: '06:00',
+        480: '08:00',
+        600: '10:00',
+        720: '12:00',
+        840: '14:00',
+        960: '16:00',
+        1080: '18:00',
+        1200: '20:00',
+        1320: '22:00',
+        1440: '24:00'
+      },
+      SLIDER_WEIGHT_MARKS = {
+        0: '0',
+        10: '10',
+        20: '20',
+        30: '30',
+        40: '40',
+        50: '50',
+        60: '60',
+        70: '70',
+        80: '80',
+        90: '90',
+        100: '100'
+      };
 export default class ScheduleDetail extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      schedule: [
-        {
-          time: '1',
-          weight: 0.2
-        }, {
-          time: '2',
-          weight: 0.3
-        }, {
-          time: '3',
-          weight: 0.4
-        }
-      ]
+      currentIndex: 0,
     }
   }
 
-  componentDidMount () {}
+  componentDidMount () {
+    this.props.requestGetScheduleDetail(this.props.params.scheduleID);
+  }
 
-  _addRow = (e) => {
-    this.setState({
-      schedule: [
-        ...this.state.schedule, {
-          time: 'new',
-          weight: 0.5
-        }
-      ]
-    })
+  _handleBtnClick(index) {
+
+    if(index == this.state.currentIndex)
+      window.location.href = `#/schedule/config/1`;
+    this.setState({currentIndex: index});
   }
-  _slide = (e, value) => {
-    console.log(value);
+
+  componentDidUpdate(prevProps, prevState) {
+
+    // modify color of current dot
+    $(`.nv-point-${prevState.currentIndex+1}`).attr('stroke', 'rgb(45, 127, 224)').attr('fill', 'rgb(45, 127, 224)');
+    $(`.nv-point-${this.state.currentIndex+1}`).attr('stroke', 'rgba(255, 55, 36, 0.82)').attr('fill', 'rgba(255, 55, 36, 0.82)');
   }
+
+  _handleWeightChanged = (val) => {
+    let weight = val/100;
+    let dailySchedules = [];
+    dailySchedules.push(...this.props.scheduleDetails);
+    dailySchedules[this.state.currentIndex].weight = weight;
+    this.props.modifySchedule({
+      schedules: dailySchedules
+    });
+  }
+
+  _handleTimetChanged = (val) => {
+     let nextScheduleStartTimeInteger = this.props.scheduleDetails[(this.state.currentIndex + 1)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger;
+     let prevScheduleStartTimeInteger = this.props.scheduleDetails[(this.state.currentIndex + 11)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger;
+    //  console.log(prevScheduleStartTimeInteger);
+
+     if( val >= nextScheduleStartTimeInteger && this.state.currentIndex != SCHEDULE_DETAILS_AMOUNT-1) {
+       val = nextScheduleStartTimeInteger - 1;
+     }
+     if( val <= prevScheduleStartTimeInteger && this.state.currentIndex != 0) {
+       val = prevScheduleStartTimeInteger + 1;
+     }
+
+     let time = _formatMinutes(val) + ':00';
+     let dailySchedules = [];
+     dailySchedules.push(...this.props.scheduleDetails);
+     dailySchedules[this.state.currentIndex].StartTime = time;
+     this.props.modifySchedule({
+       schedules: dailySchedules
+     });
+  }
+
+  _limitSlider = (val) => {
+    if( val >= this.props.scheduleDetails[(this.state.currentIndex + 1)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger)
+      this.setState({})
+  }
+
 
   render () {
-    const marks = {
-      0: '00:00',
-      10: '02:00',
-      20: '04:00',
-      30: '06:00',
-      40: '08:00',
-      50: '10:00',
-      60: '12:00',
-      70: '14:00',
-      80: '16:00',
-      90: '18:00',
-      100: '20:00',
-      110: '22:00',
-      120: '24:00'
-    };
 
-    const percent_marks = {
-      0: '0',
-      10: '10',
-      20: '20',
-      30: '30',
-      40: '40',
-      50: '50',
-      60: '60',
-      70: '70',
-      80: '80',
-      90: '90',
-      100: '100'
+    console.log('prop', this.props);
+    let scheduleDetails = this.props.scheduleDetails,
+        currentIndex = this.state.currentIndex;
+    let firstScheduleDetail = scheduleDetails[0],
+        lastScheduleDetail = scheduleDetails[SCHEDULE_DETAILS_AMOUNT-1],
+        currentScheduleDetail = scheduleDetails[currentIndex],
+        sliderTime = scheduleDetails.length? currentScheduleDetail.StartTimeInteger : 0,
+        sliderWeight = scheduleDetails.length? currentScheduleDetail.weight : 0,
+        sliderData = {
+          time: sliderTime,
+          weight: sliderWeight*100
+        };
+
+    let dots=[],tickMarks=[];
+    for (let dot of this.props.scheduleDetails) {
+      dots.push({
+        x: dot.StartTimeInteger,
+        y: dot.weight
+      });
+      tickMarks.push(dot.StartTimeInteger);
     }
-    let chartData = {
-      labels: [
-        "0", "2", "4", "6", "8", "12", "14", "16", "18", "20", "22", "24"
-      ],
-      datasets: [
-        {
-          label: "My Second dataset",
-          scaleBeginAtZero: true,
-          responsive: true,
-          scaleFontSize: 10,
-          fillColor: "rgba(151,187,205,0.2)",
-          strokeColor: "rgba(151,187,205,1)",
-          pointColor: "rgba(151,187,205,1)",
-          pointStrokeColor: "#fff",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(151,187,205,1)",
-          data: [28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86]
-        }
+
+    let timeDuration = scheduleDetails.length? MAX_TIME_INTEGER - scheduleDetails[SCHEDULE_DETAILS_AMOUNT-1].StartTimeInteger + firstScheduleDetail.StartTimeInteger : 0;
+    let weightDiff = scheduleDetails.length? firstScheduleDetail.weight - lastScheduleDetail.weight : 0;
+    let rate = weightDiff/timeDuration;
+    let midWeight = scheduleDetails.length? lastScheduleDetail.weight + (MAX_TIME_INTEGER - lastScheduleDetail.StartTimeInteger)*rate : 0;
+    let data = [{
+      key: 'testLine',
+      color: '#2d7fe0',
+      values: [
+        { x: 0, y: midWeight},
+        ...dots,
+        { x: _timeToInteger('24:00:00'), y: midWeight}
       ]
-    };
-    let rows = [];
-    this.state.schedule.forEach((row, i) => {
-      rows.push(
-        <TableRow key={i}>
-          <TableRowColumn className="col-xs-2">
-            {row.time}
-          </TableRowColumn>
-          <TableRowColumn className="col-xs-6">
-            {/*<Slider name={`slider${i}`} value={row.weight}/>*/}
-          </TableRowColumn>
-        </TableRow>
-      );
-    });
+    }];
+
+    let ButtonGroup1 = [],
+        ButtonGroup2 = [];
+    if(scheduleDetails.length) {
+      for (let i=0; i<6; i++) {
+          let active = (i==this.state.currentIndex);
+          ButtonGroup1.push(
+            <div className="col-xs-2" key={i}>
+              <RaisedButton onTouchTap={function(){this._handleBtnClick(i)}.bind(this)}
+                fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
+                secondary={true} style={{marginLeft: '3px'}}
+                primary={active}/>
+            </div>
+          );
+      }
+
+      for (let i=6; i<12; i++) {
+        let active = (i==this.state.currentIndex);
+        ButtonGroup2.push(
+          <div className="col-xs-2" key={i}>
+            <RaisedButton onTouchTap={function(){this._handleBtnClick(i)}.bind(this)}
+              fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
+              secondary={true} style={{marginLeft: '3px'}}
+              primary={active} />
+          </div>
+        );
+      }
+    }
+
     return (
-      <Tabs>
-        <Tab label="Schedule Detail">
+      <Tabs style={{overflowX: 'hidden'}}>
+        <Tab label="Schedule Detail" >
           <div className="self-center" style={{
           width: '100%'
           }}>
-            {/*}
-            <div className="row" style={{
-            padding: '15px'
-            }}>
-              <div className="col-md-offset-2 col-xs-offset-2 col-md-4 col-sm-4 col-xs-4">
-                <DatePicker floatingLabelText="日期" textFieldStyle={{
-                width: '100%'
-                }}/>
-              </div>
-              <div className="col-md-4 col-sm-4 col-xs-4">
-                <TextField floatingLabelText="Days" type="number" style={{
-                width: '100%'
-                }}/>
-              </div>
-            </div>
-            <div className="row">
-              <RaisedButton label="維護燈具參數" style={{
-              float: 'right', margin: '15px', marginRight: '10%'
-              }} linkButton={true} href="#/schedule/config"/>
-            </div>
-            */}
             <div className="row">
               <div className="center-self">
-                <div className="col-md-11 col-sm-11 col-xs-11">
-                  <LineChart ref="chart" data={chartData} style={{
-                    marginLeft: '5px',
-                    width: '100%',
-                    height: '200px'
-                    }} className=""/>
+                <div className="col-md-11 col-sm-11 col-xs-11 chart-container">
+                  <NVD3Chart
+                    type="lineChart"
+                    height={215}
+                    datum={data}
+                    xAxis={{
+                      tickValues: tickMarks,
+                      tickFormat: function(d) {return _formatMinutes(d);}
+                    }}
+                    yAxis={{
+                      tickFormat: function(d) {return numeral(d).format('0%')}
+                    }} />
                 </div>
-                <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '93px',
-                  position: 'absolute', right: '-84px'}}>
+                <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '85px',
+                  position: 'absolute', right: '-75px'}}>
                   <VerticalSlider className="vertical-slider"
-                    min={0} max={100} marks={percent_marks}
-                    included={false} style={{float: 'right'}} />
+                    min={0} max={100} marks={SLIDER_WEIGHT_MARKS}
+                    included={false} style={{float: 'right'}}
+                    value={sliderData.weight} onAfterChange={this._handleWeightChanged}
+                    tipFormatter={function(v){return v+'%';}}
+                    />
                 </div>
               </div>
-              {/*<div className="col-xs-2" style={{padding: '0px'}}>
-                <Slider name="test" value={0.5} className="straight-slider"/>
-              </div>*/}
             </div>
-            <div className='row' style={{marginTop: '0px'}}>
+            <div className='row' style={{marginTop: '0px', marginLeft: '45px'}}>
               <div style={{
-                width: '83%'
-                }} className="center-self">
-                <Slider min={0} max={120} marks={marks} included={false} defaultValue={20} allowCross={false} style={{width: '100%'}}/>
+                width: '85%'
+              }} className="">
+                <Slider min={0} max={MAX_TIME_INTEGER} marks={SLIDER_TIME_MARKS} included={false}
+                  value={sliderData.time} disabled={false}
+                  allowCross={false} style={{width: '10%'}}
+                  onAfterChange={this._handleTimetChanged}
+                  tipFormatter={function(v){return _formatMinutes(v);}}
+                  />
               </div>
             </div>
-            {/*
-            <div className='row' style={{marginTop: '25px'}}>
-              <div style={{
-                width: '83%'
-                }} className="center-self">
-                <Slider min={0} max={120} step={10} marks={marks} included={false} defaultValue={20} style={{width: '100%'}}/>
-              </div>
-            </div>
-            */}
             <div className="row" style={{
               marginTop: '23px'
               }}>
               <div className="center-self" style={{width:'100%'}}>
-                {/*
-                <div className="col-xs-1"><button fullWidth={true} label="00:00" secondary={true} style={{marginLeft: '3px'}}>22:00</button></div>
-                <div className="col-xs-1"><button fullWidth={true} label="02:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
-                <div className="col-xs-1"><button fullWidth={true} label="04:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
-                <div className="col-xs-1"><button fullWidth={true} label="06:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
-                <div className="col-xs-1"><button fullWidth={true} label="08:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
-                <div className="col-xs-1"><button fullWidth={true} label="10:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
-                <div className="col-xs-1"><button fullWidth={true} label="12:00" secondary={true} style={{marginLeft: '3px'}}>22:00</button></div>
-                <div className="col-xs-1"><button fullWidth={true} label="14:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
-                <div className="col-xs-1"><button fullWidth={true} label="16:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
-                <div className="col-xs-1"><button fullWidth={true} label="18:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
-                <div className="col-xs-1"><button fullWidth={true} label="20:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
-                <div className="col-xs-1"><button fullWidth={true} label="22:00" secondary={true} style={{marginLeft: '3px'}} >22:00</button></div>
-*/}
-                <div className="col-xs-2"><RaisedButton fullWidth={true} label="00:00" secondary={true} style={{marginLeft: '3px'}}/></div>
-                <div className="col-xs-2"><RaisedButton fullWidth={true} label="02:00" secondary={true} style={{marginLeft: '3px'}} /></div>
-                <div className="col-xs-2"><RaisedButton fullWidth={true} label="04:00" secondary={true} style={{marginLeft: '3px'}} /></div>
-                <div className="col-xs-2"><RaisedButton fullWidth={true} label="06:00" secondary={true} style={{marginLeft: '3px'}} /></div>
-                <div className="col-xs-2"><RaisedButton fullWidth={true} label="08:00" secondary={true} style={{marginLeft: '3px'}} /></div>
-                <div className="col-xs-2"><RaisedButton fullWidth={true} label="10:00" secondary={true} style={{marginLeft: '3px'}} /></div>
+                {ButtonGroup1}
               </div>
             </div>
             <div className="row" style={{
                   marginTop: '5px'
                   }}>
-
-              <div className="center-self" style={{width:'100%'}}>
-                <div className="col-xs-2"><RaisedButton fullWidth={true} label="12:00" secondary={true} style={{marginLeft: '3px'}}/></div>
-                <div className="col-xs-2"><RaisedButton fullWidth={true} label="14:00" secondary={true} style={{marginLeft: '3px'}} /></div>
-                <div className="col-xs-2"><RaisedButton fullWidth={true} label="16:00" secondary={true} style={{marginLeft: '3px'}} /></div>
-                <div className="col-xs-2"><RaisedButton fullWidth={true} label="18:00" secondary={true} style={{marginLeft: '3px'}} /></div>
-                <div className="col-xs-2"><RaisedButton fullWidth={true} label="20:00" secondary={true} style={{marginLeft: '3px'}} /></div>
-                <div className="col-xs-2"><RaisedButton fullWidth={true} label="22:00" secondary={true} style={{marginLeft: '3px'}} /></div>
-              </div>
-
+              {ButtonGroup2}
             </div>
-            <div className="row">
-            </div>
-            {/*}<div className="row" style={{height: '200px', width: '600px'}}>
-              <Slider min={0} marks={marks} included={false} defaultValue={20}/>
-            </div>*/}
-            {/*<div className="row">
-              <div className="center-self" style={{
-              width: '80%', paddingLeft: '28px'
-              }}>
-                <Slider ref="timeSlider" name="test" value={0.5} className="center-self" onChange={this._slide}/>
-              </div>
-            </div>
-            */}
-            {/*
-            <div className="row">
-              <RaisedButton label="Add" onTouchTap={this._addRow} style={{
-              float: 'right', margin: '15px', marginRight: '10%'
-              }}/>
-            </div>
-            */}
           </div>
         </Tab>
       </Tabs>
@@ -240,13 +241,42 @@ export default class ScheduleDetail extends React.Component {
   }
 }
 
+function _formatMinutes(minutes) {
+  return (_pad(Math.floor(minutes/60),2) + ':' + _pad(minutes%60,2));
+}
+
+function _timeToInteger(time) {
+  let splitTime = time.split(':');
+  let minutes = parseInt(splitTime[0])*60 + parseInt(splitTime[1]);
+  // console.log('min',minutes);
+  return minutes;
+}
+
+function _pad(n, width, z) {
+  z = z || '0';
+  n = n + '';
+  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
 function _injectPropsFromStore(state) {
-  // let { login, isLoading } = state;
-  return {};
+
+  console.log('inject');
+  let { scheduleDetail } = state;
+  let scheduleDetails = scheduleDetail.dailySchedules? scheduleDetail.dailySchedules.ScheduleDetails : [];
+  if(scheduleDetails.length) {
+    for (let schedule of scheduleDetails) {
+      schedule.StartTimeInteger = _timeToInteger(schedule.StartTime);
+    }
+  }
+  return {
+    scheduleDetails: scheduleDetails
+  };
 }
 
-const _injectPropsFormActions = {
-  requestLogin
+const _injectPropsFromActions = {
+  requestGetScheduleDetail,
+  requestUpdateScheduleDetail,
+  modifySchedule
 }
 
-export default connect(_injectPropsFromStore, _injectPropsFormActions)(ScheduleDetail);
+export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleDetail);

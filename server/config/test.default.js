@@ -1,5 +1,6 @@
 export default {
   'port': 3001,
+  'serialport':  process.env.SERIALPORT || '',
   'connection': {
     'dialect': 'sqlite',
     'storage': './db.development.sqlite',

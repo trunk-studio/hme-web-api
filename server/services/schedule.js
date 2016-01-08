@@ -6,7 +6,7 @@ module.exports = {
       for (let a = 0; a < 24; a += 2) {
         scheduleConfig.push({
           "weight": 1,
-          "StartTime": "00:" + a + ":00",
+          "StartTime": a +":00:00",
           "ScheduleId": schedule.id
         });
       }
@@ -60,6 +60,21 @@ module.exports = {
       schedule.Days = Days;
       await schedule.save();
       return schedule;
+    } catch (e) {
+      throw e;
+    }
+  },
+
+  updateScheduleList: async(scheduleArray) => {
+    try {
+      let newScheduleList =  await* scheduleArray.map( async (item) => {
+        let schedule = await models.Schedule.findById(item.id);
+        schedule.Days = item.Days || 0;
+        schedule.StartDate = item.StartDate;
+        schedule = await schedule.save();
+        return schedule;
+      });
+      return newScheduleList;
     } catch (e) {
       throw e;
     }

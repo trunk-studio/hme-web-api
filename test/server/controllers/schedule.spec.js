@@ -12,7 +12,7 @@ describe("Schedule", () => {
       for (let a = 0; a < 24; a += 2) {
         scheduleConfig.push({
           "weight": 1,
-          "StartTime": "00:" + a + ":00",
+          "StartTime": a + ":00:00",
           "ScheduleId": newSchedule.id
         });
       }
@@ -57,7 +57,7 @@ describe("Schedule", () => {
       let data = {
         ScheduleDetailId: scheduleDetail.id,
         weight: 100,
-        StartTime: '00:00:01'
+        StartTime: '00:01:00'
       };
       let result = await request.post('/rest/schedule/update/detail').send(data);
       result.body.weight.should.be.not.equal(scheduleDetail.weight);
