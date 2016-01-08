@@ -1,5 +1,5 @@
 export default {
-  'port': 3000,
+  'port': 80,
   'domain': 'localhost',
   'serialport':  process.env.SERIALPORT || '',
   'connection': {
