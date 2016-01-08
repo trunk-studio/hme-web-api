@@ -22,7 +22,6 @@ export function receivedGetScheduleDetailConfig(data) {
 }
 
 export function requestUpdateScheduleDetailConfig(updateData) {
-  console.log("$$$$$$$$$$$",updateData);
   let data = [
     updateData.WW,
     updateData.DB,
@@ -32,6 +31,7 @@ export function requestUpdateScheduleDetailConfig(updateData) {
     updateData.CCT,
     updateData.Bright
   ]
+  // return receivedUpdateScheduleDetailConfig(updateData);
   return (dispatch) => {
     return request
       .post('/rest/schedule/config/update',updateData)

@@ -40,7 +40,7 @@
 
 /* schedule detail Slider*/
 .slider {
-  height: 40px;
+  height: 50px;
 }
 
 .slider div{
@@ -48,7 +48,7 @@
 }
 
 .smalllRaisedBnutton > div {
-  min-width: 40px !important;
+  min-width: 30px !important;
 }
 
 .vertical-slider .rc-slider-mark-text {
