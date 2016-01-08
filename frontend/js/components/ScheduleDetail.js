@@ -6,22 +6,54 @@ import {
   modifySchedule
 } from '../actions/ScheduleDetailActions'
 import moment from 'moment'
-import {RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui';
+import {
+  RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow
+} from 'material-ui';
 import numeral from 'numeral'
-const VerticalSlider = require('vertical-rc-slider');
-const Slider = require('rc-slider');
+import NVD3Chart from 'react-nvd3';
+import VerticalSlider from'vertical-rc-slider';
+import Slider from 'rc-slider';
 const style = {
   width: 400,
   margin: 50
 };
-let NVD3Chart = require('react-nvd3');
 
+const SCHEDULE_DETAILS_AMOUNT = 12,
+      MAX_TIME_INTEGER = 1440,
+      SLIDER_TIME_MARKS = {
+        0 : '00:00',
+        120: '02:00',
+        240: '04:00',
+        360: '06:00',
+        480: '08:00',
+        600: '10:00',
+        720: '12:00',
+        840: '14:00',
+        960: '16:00',
+        1080: '18:00',
+        1200: '20:00',
+        1320: '22:00',
+        1440: '24:00'
+      },
+      SLIDER_WEIGHT_MARKS = {
+        0: '0',
+        10: '10',
+        20: '20',
+        30: '30',
+        40: '40',
+        50: '50',
+        60: '60',
+        70: '70',
+        80: '80',
+        90: '90',
+        100: '100'
+      };
 export default class ScheduleDetail extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      currentIndex: 0
+      currentIndex: 0,
     }
   }
 
@@ -33,14 +65,14 @@ export default class ScheduleDetail extends React.Component {
 
     if(index == this.state.currentIndex)
       window.location.href = `#/schedule/config/1`;
-
     this.setState({currentIndex: index});
-    // TODO
-    // highlight dot
   }
 
   componentDidUpdate(prevProps, prevState) {
 
+    // modify color of current dot
+    $(`.nv-point-${prevState.currentIndex+1}`).attr('stroke', 'rgb(45, 127, 224)').attr('fill', 'rgb(45, 127, 224)');
+    $(`.nv-point-${this.state.currentIndex+1}`).attr('stroke', 'rgba(255, 55, 36, 0.82)').attr('fill', 'rgba(255, 55, 36, 0.82)');
   }
 
   _handleWeightChanged = (val) => {
@@ -54,6 +86,17 @@ export default class ScheduleDetail extends React.Component {
   }
 
   _handleTimetChanged = (val) => {
+     let nextScheduleStartTimeInteger = this.props.scheduleDetails[(this.state.currentIndex + 1)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger;
+     let prevScheduleStartTimeInteger = this.props.scheduleDetails[(this.state.currentIndex + 11)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger;
+    //  console.log(prevScheduleStartTimeInteger);
+
+     if( val >= nextScheduleStartTimeInteger && this.state.currentIndex != SCHEDULE_DETAILS_AMOUNT-1) {
+       val = nextScheduleStartTimeInteger - 1;
+     }
+     if( val <= prevScheduleStartTimeInteger && this.state.currentIndex != 0) {
+       val = prevScheduleStartTimeInteger + 1;
+     }
+
      let time = _formatMinutes(val) + ':00';
      let dailySchedules = [];
      dailySchedules.push(...this.props.scheduleDetails);
@@ -63,47 +106,26 @@ export default class ScheduleDetail extends React.Component {
      });
   }
 
+  _limitSlider = (val) => {
+    if( val >= this.props.scheduleDetails[(this.state.currentIndex + 1)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger)
+      this.setState({})
+  }
 
 
   render () {
-    const marks = {
-      0 : '00:00',
-      120: '02:00',
-      240: '04:00',
-      360: '06:00',
-      480: '08:00',
-      600: '10:00',
-      720: '12:00',
-      840: '14:00',
-      960: '16:00',
-      1080: '18:00',
-      1200: '20:00',
-      1320: '22:00',
-      1440: '24:00'
-    };
-
-    const percent_marks = {
-      0: '0',
-      10: '10',
-      20: '20',
-      30: '30',
-      40: '40',
-      50: '50',
-      60: '60',
-      70: '70',
-      80: '80',
-      90: '90',
-      100: '100'
-    }
 
     console.log('prop', this.props);
-    let scheduleDetails = this.props.scheduleDetails;
-    let sliderTime = scheduleDetails.length? scheduleDetails[this.state.currentIndex].StartTimeInteger : 0;
-    let sliderWeight = scheduleDetails.length? scheduleDetails[this.state.currentIndex].weight : 0;
-    let sliderData = {
-      time: sliderTime,
-      weight: sliderWeight*100
-    };
+    let scheduleDetails = this.props.scheduleDetails,
+        currentIndex = this.state.currentIndex;
+    let firstScheduleDetail = scheduleDetails[0],
+        lastScheduleDetail = scheduleDetails[SCHEDULE_DETAILS_AMOUNT-1],
+        currentScheduleDetail = scheduleDetails[currentIndex],
+        sliderTime = scheduleDetails.length? currentScheduleDetail.StartTimeInteger : 0,
+        sliderWeight = scheduleDetails.length? currentScheduleDetail.weight : 0,
+        sliderData = {
+          time: sliderTime,
+          weight: sliderWeight*100
+        };
 
     let dots=[],tickMarks=[];
     for (let dot of this.props.scheduleDetails) {
@@ -114,19 +136,23 @@ export default class ScheduleDetail extends React.Component {
       tickMarks.push(dot.StartTimeInteger);
     }
 
+    let timeDuration = scheduleDetails.length? MAX_TIME_INTEGER - scheduleDetails[SCHEDULE_DETAILS_AMOUNT-1].StartTimeInteger + firstScheduleDetail.StartTimeInteger : 0;
+    let weightDiff = scheduleDetails.length? firstScheduleDetail.weight - lastScheduleDetail.weight : 0;
+    let rate = weightDiff/timeDuration;
+    let midWeight = scheduleDetails.length? lastScheduleDetail.weight + (MAX_TIME_INTEGER - lastScheduleDetail.StartTimeInteger)*rate : 0;
     let data = [{
       key: 'testLine',
       color: '#2d7fe0',
       values: [
-        { x: 0, y: 0},
+        { x: 0, y: midWeight},
         ...dots,
-        {x: _timeToInteger('24:00:00'), y: 0}
+        { x: _timeToInteger('24:00:00'), y: midWeight}
       ]
     }];
 
     let ButtonGroup1 = [],
         ButtonGroup2 = [];
-    if(this.props.scheduleDetails.length) {
+    if(scheduleDetails.length) {
       for (let i=0; i<6; i++) {
           let active = (i==this.state.currentIndex);
           ButtonGroup1.push(
@@ -176,7 +202,7 @@ export default class ScheduleDetail extends React.Component {
                 <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '85px',
                   position: 'absolute', right: '-75px'}}>
                   <VerticalSlider className="vertical-slider"
-                    min={0} max={100} marks={percent_marks}
+                    min={0} max={100} marks={SLIDER_WEIGHT_MARKS}
                     included={false} style={{float: 'right'}}
                     value={sliderData.weight} onAfterChange={this._handleWeightChanged}
                     tipFormatter={function(v){return v+'%';}}
@@ -188,7 +214,7 @@ export default class ScheduleDetail extends React.Component {
               <div style={{
                 width: '85%'
               }} className="">
-                <Slider min={0} max={1440} marks={marks} included={false}
+                <Slider min={0} max={MAX_TIME_INTEGER} marks={SLIDER_TIME_MARKS} included={false}
                   value={sliderData.time} disabled={false}
                   allowCross={false} style={{width: '10%'}}
                   onAfterChange={this._handleTimetChanged}
