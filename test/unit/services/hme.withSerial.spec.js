@@ -197,8 +197,8 @@ describe("hme with seriel port", () => {
 
 
     it.only("serial Port setLedDisplay", async done => {
-      // 設定DEMO時的LED燈亮度
-      // 在Interact模式下才有效果
+      // 即時改變LED燈亮度
+      // 同時設定為Interact模式
       try {
         let params = {
                       DevID:1,

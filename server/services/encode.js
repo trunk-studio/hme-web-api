@@ -301,11 +301,6 @@ export default class Encode {
 
   RxDecode = function({FuncCT, DevID, u8RxDataArry}){
     //檢查接收的資料並解碼
-    Resp = {
-      devID,
-      comm,
-      data:[]
-    }
 
     //分割資料段
     let u8RawHeader = u8RxDataArry[0];

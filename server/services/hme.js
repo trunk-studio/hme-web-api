@@ -428,7 +428,13 @@ export default class Hme {
           Led4Bgt:REBright * Bright,
           Led5Bgt:WWBright * Bright
         }
-        let result = await this.setLedBrighter(setParams);
+
+        let result = await this.setLedCtrlMode(DevID, groupID, 'Interact');
+        if (result == false) {
+            return (result);
+        }
+        
+        result = await this.setLedBrighter(setParams);
         return (result);
     } catch (e) {
       throw e;
