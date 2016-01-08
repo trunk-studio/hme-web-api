@@ -208,7 +208,7 @@ describe("hme with seriel port", () => {
                       BLBright:60,
                       GRBright:80,
                       REBright:100,
-                      Bright:50
+                      Bright:5
                     }
         let result = await services.hme.setLedDisplay(params);
         console.log('setLedDisplay result',result);
