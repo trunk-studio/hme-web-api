@@ -5,6 +5,23 @@ export const RECEIVED_SCAN = 'RECEIVED_SCAN'
 export const REQUEST_DEVICEGROUP = 'REQUEST_DEVICEGROUP'
 export const RECEIVED_DEVICEGROUP = 'RECEIVED_DEVICEGROUP'
 
+export const RECEIVED_TEST_SET_LED_DISPLAY = 'RECEIVED_TEST_SET_LED_DISPLAY'
+
+export function requestTestSetLedDisplay(data) {
+  return (dispatch) => {
+    return request
+      .post('/rest/slave/test/setLedDisplay',data)
+      .then(response => dispatch(receivedTestSetLedDisplay(response.data)));
+  };
+}
+
+export function receivedTestSetLedDisplay(data) {
+  return {
+    type: RECEIVED_TEST_SET_LED_DISPLAY,
+    data
+  }
+}
+
 export function requestScan() {
   // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {

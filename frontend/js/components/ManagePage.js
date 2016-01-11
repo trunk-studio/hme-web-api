@@ -1,6 +1,7 @@
 import React                from 'react';
 import { connect } from 'react-redux'
-import { requestScan, requestDeviceGroup } from '../actions/TestActions'
+import { requestScan, requestDeviceGroup,
+requestTestSetLedDisplay } from '../actions/TestActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -23,13 +24,13 @@ export default class ManagePage extends React.Component {
       RE: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.001011122, 0.002022245, 0.003033367, 0.007077856, 0.012133468, 0.022244692, 0.03437816, 0.052578362, 0.076845298, 0.110212336, 0.144590495, 0.164812942, 0.174924166, 0.157735086, 0.161779575, 0.188068756, 0.233569262, 0.299292214, 0.382204247, 0.481294237, 0.563195147, 0.584428716, 0.537917088, 0.336703741, 0.193124368, 0.098078868, 0.041456016, 0.012133468, 0.003033367, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       WW: [0, 0, 0, 0, 0, 0, 0.001011122, 0.003033367, 0.006066734, 0.01314459, 0.026289181, 0.04752275, 0.077856421, 0.119312437, 0.176946411, 0.240647118, 0.256825076, 0.242669363, 0.196157735, 0.159757331, 0.131445905, 0.108190091, 0.094034378, 0.083923155, 0.077856421, 0.075834176, 0.077856421, 0.083923155, 0.093023256, 0.106167846, 0.121334681, 0.140546006, 0.161779575, 0.184024267, 0.205257836, 0.227502528, 0.251769464, 0.277047523, 0.302325581, 0.324570273, 0.346814965, 0.368048534, 0.386248736, 0.404448938, 0.420626896, 0.438827098, 0.459049545, 0.481294237, 0.507583418, 0.534883721, 0.562184024, 0.585439838, 0.609706775, 0.633973711, 0.656218402, 0.675429727, 0.688574317, 0.691607685, 0.68958544, 0.682507583, 0.67239636, 0.65520728, 0.635995956, 0.609706775, 0.584428716, 0.55611729, 0.526794742, 0.496461072, 0.466127401, 0.436804853, 0.406471183, 0.378159757, 0.348837209, 0.321536906, 0.295247725, 0.270980789, 0.247724975, 0.225480283, 0.205257836, 0.186046512, 0.168857432, 0.152679474, 0.138523761, 0.125379171, 0.113245703, 0.102123357, 0.093023256, 0.083923155, 0.075834176, 0.067745197, 0.059656218, 0.05156724, 0.042467139, 0.032355915, 0.025278059, 0.019211325, 0.014155713, 0.010111223, 0.007077856, 0.005055612, 0.003033367],
       SUM:[],
-      wwValue: 0,
-      dbValue: 0,
-      blValue: 0,
-      grValue: 0,
-      reValue: 0,
-      cctValue: 0,
-      brightValue: 0
+      wwValue: 100,
+      dbValue: 100,
+      blValue: 100,
+      grValue: 100,
+      reValue: 100,
+      cctValue: 100,
+      brightValue: 100
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -55,6 +56,62 @@ export default class ManagePage extends React.Component {
     this.props.requestDeviceGroup();
   }
   componentDidUpdate(prevProps, prevState) {
+  }
+
+  _wwChanged = (e, value) => {
+    this.setState({
+      wwValue: value
+    })
+    this._updateChart();
+  }
+  _dbChanged = (e, value) => {
+    this.setState({
+      dbValue: value
+    })
+    this._updateChart();
+  }
+  _blChanged = (e, value) => {
+    this.setState({
+      blValue: value
+    })
+    this._updateChart();
+  }
+  _grChanged = (e, value) => {
+    this.setState({
+      grValue: value
+    })
+    this._updateChart();
+  }
+  _reChanged = (e, value) => {
+    this.setState({
+      reValue: value
+    })
+    this._updateChart();
+  }
+
+  _updateChart = (e) => {
+    let newSUM = [];
+    this.state.DB.forEach((data,i) => {
+      newSUM.push(this.state.DB[i]* (this.state.dbValue * 0.01)+
+      this.state.BL[i] * (this.state.blValue * 0.01)+
+      this.state.GR[i] * (this.state.grValue * 0.01)+
+      this.state.RE[i] * (this.state.reValue * 0.01)+
+      this.state.WW[i] * (this.state.wwValue * 0.01));
+    });
+
+    this.setState({
+      SUM: newSUM
+    });
+    this.props.requestTestSetLedDisplay({
+      DevID:1,
+      groupID:1,
+      WWBright: this.state.wwValue,
+      DBBright: this.state.dbValue,
+      BLBright: this.state.blValue,
+      GRBright: this.state.grValue,
+      REBright: this.state.reValue,
+      Bright:1
+    })
   }
 
   render() {
@@ -103,6 +160,12 @@ export default class ManagePage extends React.Component {
           </div>
         </Tab>
         <Tab label="Group Test">
+          <div style={{display: 'table-caption'}}>
+            <div style={{display: 'inline-flex'}}>
+              <SelectField menuItems={this.props.deviceList}/>
+              <RaisedButton label="TEST" />
+            </div>
+          </div>
           <div className="self-center" style={{width: '100%', marginTop: '5px'}}>
             <div className="col-md-8 col-sm-8 col-xs-8">
               <div className="row">
@@ -176,7 +239,8 @@ function _injectPropsFromStore(state) {
 
 const _injectPropsFromActions = {
   requestScan,
-  requestDeviceGroup
+  requestDeviceGroup,
+  requestTestSetLedDisplay
 }
 
 

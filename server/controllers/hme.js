@@ -33,3 +33,10 @@ exports.findAllDeviceGroups = function *() {
   ];
   this.body = result
 }
+
+exports.setLedDisplay = function *() {
+  let data = this.request.body;
+  console.log('setLedDisplay',data);
+  let result = yield services.hme.setLedDisplay(data);
+  this.body = result
+};
