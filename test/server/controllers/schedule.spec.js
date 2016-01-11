@@ -74,7 +74,7 @@ describe("Schedule", () => {
     }
   });
 
-  it.only("update details", async(done) => {
+  it("update details", async(done) => {
     try {
       let scheduleDetails = await services.schedule.find(newSchedule.id);
       let newScheduleDetails = [];
