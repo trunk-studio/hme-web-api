@@ -1,14 +1,10 @@
 import React                from 'react';
 import { connect } from 'react-redux'
-<<<<<<< HEAD
-import { requestScan, requestDeviceGroup,
-requestTestSetLedDisplay } from '../actions/TestActions'
-=======
 import {
   requestScan, requestDeviceGroup, requestTestOneDevice,
-  requestTestGroupDevices, requestTestAllDevices
+  requestTestGroupDevices, requestTestAllDevices,
+  requestTestSetLedDisplay
 } from '../actions/TestActions'
->>>>>>> master/master
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -20,7 +16,6 @@ const LineChart = require("react-chartjs").Line;
 import { Slider} from 'material-ui';
 
 
-<<<<<<< HEAD
 export default class ManagePage extends React.Component {
   constructor(props) {
     super(props);
@@ -38,7 +33,9 @@ export default class ManagePage extends React.Component {
       grValue: 100,
       reValue: 100,
       cctValue: 100,
-      brightValue: 100
+      brightValue: 100,
+      groupID: 1,
+      deviceID: 1
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -54,14 +51,6 @@ export default class ManagePage extends React.Component {
       this.state.WW.length,
       this.state.SUM.length,
       this.state.SUM);
-=======
-  constructor(props) {
-    super(props);
-    this.state = {
-      groupID: 1,
-      deviceID: 1
-    }
->>>>>>> master/master
   }
 
   _handleScan = (e) => {
@@ -140,9 +129,10 @@ export default class ManagePage extends React.Component {
     this.setState({
       SUM: newSUM
     });
+    console.log("!!!!!!!!!",this.state.groupID,this.state.groupID);
     this.props.requestTestSetLedDisplay({
-      DevID:1,
-      groupID:1,
+      DevID:this.state.deviceID,
+      groupID:this.state.groupID,
       WWBright: this.state.wwValue,
       DBBright: this.state.dbValue,
       BLBright: this.state.blValue,
