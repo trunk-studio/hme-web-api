@@ -42,7 +42,6 @@ export default class Hme {
         console.log('=== connectSerialPort without serialPortName ===');
       }
     } catch (e) {
-      return false;
       throw e;
     }
   }
@@ -435,7 +434,7 @@ export default class Hme {
         if (result == false) {
             return (result);
         }
-        
+
         result = await this.setLedBrighter(setParams);
         return (result);
     } catch (e) {
