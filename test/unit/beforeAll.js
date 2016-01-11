@@ -1,4 +1,6 @@
 import Services from '../../server/services'
+import config from '../../server/config/init';
+global.appConfig = config;
 
 var chai = require('chai');
 chai.should();
