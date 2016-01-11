@@ -134,8 +134,6 @@ export default class Encode {
     //   RepeatNum:1
     // }
     //[ 128, 127, 31, 0, 0, 0, 0, 33, 5, 0, 0, 1, 0, 0, 69, 2, 0 ]
-
-
   }
 
   CopDiscWordRd = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry){
@@ -305,12 +303,13 @@ export default class Encode {
     //檢查接收的資料並解碼
 
     //分割資料段
-    var u8RawHeader = u8RxDataArry[0];
+    let u8RawHeader = u8RxDataArry[0];
     if (u8RawHeader != 0xC0) {
       console.log('HeaderErr')
       return([]);
     }
     var u8RawIdArry = u8RxDataArry.slice(1,4);
+
     if(u8RxDataArry.length > 8){
       //沒有回傳記憶體資料時，封包標準長度為8Byte
       var u8RawDataArry = u8RxDataArry.slice(5,u8RxDataArry.length-3);
@@ -366,5 +365,75 @@ export default class Encode {
 
   }
 
+  configToTimeTabArry = function(config){
+
+
+
+    let ScheduleDetailsLen = 12;
+    let dayTab = [];
+    let dateLen = 0;
+    let timePwmTab = [];
+    let re = /(\d+):(\d+)/;
+    let strST = '';
+    let arrST = '';
+    for (let i = 0; i < 6; i++) {
+      if (config[i] != undefined) {
+        // Date-->
+        dateLen = config[i].Days;
+        var startDate = new Date(config[i].StartDate);
+        dayTab = [
+          ...dayTab,
+          startDate.getFullYear(),
+          startDate.getMonth() + 1,
+          startDate.getDate()
+        ];
+        // <--Date
+
+        for (var j = 0; j < ScheduleDetailsLen; j++) {
+          strST = config[i].ScheduleDetails[j].StartTime;
+          arrST = strST.match(re);
+          timePwmTab = [
+            ...timePwmTab,
+            parseInt(arrST[1], 10), //H
+            parseInt(arrST[2], 10), //M
+            0,  //S
+            config[i].ScheduleDetails[j].ScheduleDetailConfig.DB, //CH1
+            config[i].ScheduleDetails[j].ScheduleDetailConfig.BL, //CH2
+            config[i].ScheduleDetails[j].ScheduleDetailConfig.RE, //CH3
+            config[i].ScheduleDetails[j].ScheduleDetailConfig.GR, //CH4
+            config[i].ScheduleDetails[j].ScheduleDetailConfig.WW, //CH5
+          ];
+
+        }
+
+
+
+      } else {
+        // Date-->
+        let endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + (dateLen - 1));
+        dayTab = [
+          ...dayTab,
+          endDate.getFullYear(),
+          endDate.getMonth() + 1,
+          endDate.getDate()
+        ]
+        // <--Date
+        for (let i = 0; i < ScheduleDetailsLen; i++) {
+          timePwmTab = [
+            ...timePwmTab,
+            ...[0, 0, 0],  //h,m,s
+            ...[0, 0, 0, 0, 0]  //CH1~CH5
+          ];
+        }
+
+      }
+    }
+
+    console.log(timePwmTab);
+    console.log(dayTab);
+  	return (0);
+
+  }
 
 }

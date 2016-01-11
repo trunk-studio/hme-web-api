@@ -23,6 +23,8 @@ import webpackDevMiddleware from 'koa-webpack-dev-middleware';
 import webpackHotMiddleware from 'koa-webpack-hot-middleware';
 import moment from 'moment';
 global.moment = moment;
+import sinon from 'sinon';
+global.sinon = sinon;
 global.appConfig = config;
 
 
