@@ -8,7 +8,7 @@ import deviceControl from './deviceControl';
 export default class Services {
 
     constructor () {
-      this.hme = new HmeService(process.env.SERIALPORT);
+      this.hme = new HmeService(appConfig.serialport);
       this.schedule = schedule
       this.deviceControl = deviceControl;
     }
