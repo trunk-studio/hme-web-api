@@ -40,3 +40,20 @@ exports.setLedDisplay = function *() {
   let result = yield services.hme.setLedDisplay(data);
   this.body = result
 };
+
+exports.testAllDevices = function *() {
+  let result = yield services.hme.testAll();
+  this.body = result
+}
+
+exports.testDeviceByID = function *() {
+  let devID = this.params.id;
+  let result = yield services.hme.testDevID(devID);
+  this.body = result
+}
+
+exports.testGruopByID = function *() {
+  let groupID = this.params.id;
+  let result = yield services.hme.testGroup(groupID);
+  this.body = result
+}

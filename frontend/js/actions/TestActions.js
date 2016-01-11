@@ -53,3 +53,24 @@ export function receivedDeviceGroup(data) {
     data
   }
 }
+
+export function requestTestOneDevice(deviceID) {
+  return (dispatch) => {
+    return request
+      .get(`/rest/hme/device/test/one/${deviceID}`)
+  };
+}
+
+export function requestTestAllDevices() {
+  return (dispatch) => {
+    return request
+      .get(`/rest/hme/device/test/all`)
+  };
+}
+
+export function requestTestGroupDevices(groupID) {
+  return (dispatch) => {
+    return request
+      .get(`/rest/hme/device/test/group/${groupID}`)
+  };
+}
