@@ -269,7 +269,7 @@ function _injectPropsFromStore(state) {
 const _injectPropsFromActions = {
   requestScan,
   requestDeviceGroup,
-  requestTestSetLedDisplay
+  requestTestSetLedDisplay,
   requestTestGroupDevices,
   requestTestAllDevices,
   requestTestOneDevice
