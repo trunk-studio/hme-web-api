@@ -35,9 +35,10 @@ export default class Hme {
         });
 
         console.log('=== openSerialPort ===', this.serialPortIsOpen);
-
         this._eventsSetup();
+        return true;
       } else {
+        return false;
         console.log('=== connectSerialPort without serialPortName ===');
       }
     } catch (e) {
@@ -433,7 +434,7 @@ export default class Hme {
         if (result == false) {
             return (result);
         }
-        
+
         result = await this.setLedBrighter(setParams);
         return (result);
     } catch (e) {

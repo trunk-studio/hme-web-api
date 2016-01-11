@@ -128,7 +128,7 @@ describe("schedule", () => {
       try {
         let data = {
           ScheduleDetailId: scheduleDetail.id,
-          weight: 100,
+          weight: 0.5,
           StartTime: '00:00:01'
         };
         let result = await services.schedule.updateScheduleDetail(data);
@@ -143,15 +143,61 @@ describe("schedule", () => {
   });
 
   describe("models to hardware time table config", async done => {
+    let newSchedule, scheduleDetail;
     before( async done => {
       try {
+        let group = await models.Group.create();
+        let slaves = await models.Slave.create({
+          host: "hostName",
+          description: "描述",
+          apiVersion: "0.1.0",
+        });
+        let device = await models.Device.create({
+          uid: "1",
+          GroupId: group.id,
+          SlaveId: slaves.id
+        });
+
+        newSchedule = {
+          StartDate: moment('2016/1/7','YYYY/MM/DD'),
+          Days: 15,
+          GroupId: group.id,
+          DeviceId: device.id
+        };
+
+        newSchedule = await models.Schedule.create(newSchedule);
+        let scheduleConfig = [];
+        for(let a = 0; a<24; a+=2){
+          scheduleConfig.push({
+            "weight": 1,
+            "StartTime": a +":00:00",
+            "ScheduleId": newSchedule.id
+          });
+        }
+        await models.ScheduleDetail.bulkCreate(scheduleConfig);
+        scheduleDetail = await models.ScheduleDetail.findAll({
+          where:{
+            ScheduleId: newSchedule.id
+          }
+        });
+        console.log("scheduleDetail",scheduleDetail);
+
+        let scheduleConfigId = [];
+        scheduleDetail.forEach(function(i){
+          console.log(i);
+          scheduleConfigId.push({
+            "ScheduleDetailId": i.id,
+          });
+        });
+        await models.ScheduleDetailConfig.bulkCreate(scheduleConfigId);
+
         done();
       } catch (e) {
         done(e);
       }
     });
 
-    it( "should be get currect json object" , async done => {
+    it.only( "should be get currect json object" , async done => {
       try {
         let config = {
           Device: 1,
@@ -204,6 +250,22 @@ describe("schedule", () => {
             Days: 7
           }]
         }
+        let result = await services.schedule.getCurrectSetting();
+        console.log("currect json !!! ",JSON.stringify(result,null,2));
+        result.Schedules.should.be.an.Array;
+        result.Schedules[0].should.have.property('StartDate');
+        result.Schedules[0].should.have.property('Days');
+        result.Schedules[0].Details.should.be.an.Array;
+        result.Schedules[0].Details[0].should.have.property('weight');
+        result.Schedules[0].Details[0].should.have.property('StartTime');
+        result.Schedules[0].Details[0].should.have.property('Config');
+        result.Schedules[0].Details[0].Config.should.have.property('WW');
+        result.Schedules[0].Details[0].Config.should.have.property('DB');
+        result.Schedules[0].Details[0].Config.should.have.property('BL');
+        result.Schedules[0].Details[0].Config.should.have.property('GR');
+        result.Schedules[0].Details[0].Config.should.have.property('RE');
+        result.Schedules[0].Details[0].Config.should.have.property('CCT');
+        result.Schedules[0].Details[0].Config.should.have.property('Bright');
         done();
       } catch (e) {
         done(e);
