@@ -17,8 +17,8 @@ export default class ManagePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      groupID: 0,
-      deviceID: 0
+      groupID: 1,
+      deviceID: 1
     }
   }
 
