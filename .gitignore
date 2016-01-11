@@ -8,7 +8,7 @@ dist
 .sass-cache
 .env
 .c9
-public/js/bundle.js
+public/assets
 db.development.sqlite
 server/config/development.js
 server/config/test.js
