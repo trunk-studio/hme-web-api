@@ -85,7 +85,7 @@ export default class Hme {
           var T2id = setTimeout(function(){
             console.log('drain eer' );
             return reject(results);
-          },2500);
+          },1000);
 
           serialPort.drain(function (error) {
             console.log('UART drain');
@@ -96,7 +96,7 @@ export default class Hme {
                 clearInterval(T1id);
                 clearTimeout(T2id);
                 return resolve(results);
-              } else if (T1num > 200) {
+              } else if (T1num > 20) {
                 console.log('TimeOut!');
                 results = [];
                 clearInterval(T1id);
@@ -111,7 +111,7 @@ export default class Hme {
               } else {
 
               }
-            } ,10);
+            } ,4);
           });
         });
       });
@@ -575,11 +575,11 @@ export default class Hme {
         DevID:devID,
         u8RxDataArry:[]
       }
-      console.log(timeTab);
+
       let index = 0;
       while (timeTab.length >  index) {
-        if ((timeTab.length - index) > 100) {
-          COpParams.u8DataNum = 100;
+        if ((timeTab.length - index) > 50) {
+          COpParams.u8DataNum = 50;
           COpParams.u8Addr_Arry = [(1200 + index)];
           COpParams.u8DataIn_Arry = timeTab.slice(index, index + COpParams.u8DataNum);
           index += COpParams.u8DataNum;
@@ -591,11 +591,10 @@ export default class Hme {
         }
         console.log('COpParams', COpParams);
         TxParams.Comm = this.encode.ClientOp(COpParams);
-        // DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-        // if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) != devID){
-        //   return (false);
-        // }
-        console.log(index);
+        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) != devID){
+          return (false);
+        }
       }
       return (true);
 

@@ -445,43 +445,43 @@ describe("hme with seriel port", () => {
                           GR: 20,
                           RE: 20,
                           CCT: 20,
-                          Bright: 20
+                          Bright: 10
                         }
                       },{
                         weight: 1,
                         StartTime: '04:33',
                         ScheduleDetailConfig: {
-                        WW: 30,
-                        DB: 30,
-                        BL: 30,
-                        GR: 30,
-                        RE: 30,
-                        CCT: 30,
-                        Bright: 30
+                        WW: 100,
+                        DB: 100,
+                        BL: 100,
+                        GR: 100,
+                        RE: 100,
+                        CCT: 100,
+                        Bright: 100
                         }
                       },{
                         weight: 1,
                         StartTime: '05:44',
                         ScheduleDetailConfig: {
-                        WW: 50,
-                        DB: 50,
-                        BL: 50,
-                        GR: 50,
-                        RE: 50,
-                        CCT: 50,
-                        Bright: 50
+                        WW: 100,
+                        DB: 100,
+                        BL: 100,
+                        GR: 100,
+                        RE: 100,
+                        CCT: 100,
+                        Bright: 100
                         }
                       },{
                         weight: 1,
                         StartTime: '06:55',
                         ScheduleDetailConfig: {
-                          WW: 50,
-                          DB: 50,
-                          BL: 50,
-                          GR: 50,
-                          RE: 50,
-                          CCT: 50,
-                          Bright: 50
+                          WW: 5,
+                          DB: 5,
+                          BL: 5,
+                          GR: 5,
+                          RE: 5,
+                          CCT: 5,
+                          Bright: 5
                         }
                       },{
                         weight: 1,

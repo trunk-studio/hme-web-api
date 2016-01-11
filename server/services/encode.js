@@ -375,9 +375,6 @@ export default class Encode {
     let arrST = '';
 
 
-    dayTab = [
-      ...dayTab,
-    ];
     for (let i = 0; i < ScheduleDetailsLen; i++) {
       timePwmTab = [
         ...timePwmTab,
@@ -418,14 +415,31 @@ export default class Encode {
       } else {
         // Date-->
         let endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + (dateLen - 1));
+        endDate.setDate(startDate.getDate() + dateLen);
         dayTab = [
-          ...dayTab,
-          endDate.getFullYear(),
-          endDate.getMonth() + 1,
-          endDate.getDate()
-        ]
+            ...dayTab,
+            endDate.getFullYear(),
+            endDate.getMonth() + 1,
+            endDate.getDate()
+          ]
+        // if (config.Schedules[i - 1] != undefined) {
+        //   dayTab = [
+        //     ...dayTab,
+        //     endDate.getFullYear(),
+        //     endDate.getMonth() + 1,
+        //     endDate.getDate()
+        //   ]
+        // } else {
+        //   dayTab = [
+        //     ...dayTab,
+        //     endDate.getFullYear(),
+        //     endDate.getMonth() + 1,
+        //     endDate.getDate() + 1
+        //   ]
+        // }
         // <--Date
+
+        //-->undefine timetab set 0
         for (let i = 0; i < ScheduleDetailsLen; i++) {
           timePwmTab = [
             ...timePwmTab,
