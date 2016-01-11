@@ -41,6 +41,13 @@ export default class Routes {
     publicRoute.post('/rest/schedule/config/update', ScheduleController.configUpdate);
     publicRoute.get('/rest/schedule/config/:id', ScheduleController.getConfigDetail);
 
+    //  Test Device
+    publicRoute.get('/rest/hme/device/test/all', HmeController.testAllDevices);
+    publicRoute.get('/rest/hme/device/test/one/:id', HmeController.testDeviceByID);
+    publicRoute.get('/rest/hme/device/test/group/id', HmeController.testGruopByID);
+
+
+
     publicRoute.get('/', function *() {
       const HTML = `
       <!DOCTYPE html>

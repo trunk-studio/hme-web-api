@@ -1,6 +1,9 @@
 import React                from 'react';
 import { connect } from 'react-redux'
-import { requestScan, requestDeviceGroup } from '../actions/TestActions'
+import {
+  requestScan, requestDeviceGroup, requestTestOneDevice,
+  requestTestGroupDevices, requestTestAllDevices
+} from '../actions/TestActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -11,14 +14,43 @@ const ScheduleList = require('./ScheduleList');
 
 export default class ManagePage extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      groupID: 0,
+      deviceID: 0
+    }
+  }
 
   _handleScan = (e) => {
     this.props.requestScan();
   }
+
+  _testOneDevice = (e) => {
+    this.props.requestTestOneDevice(this.state.deviceID);
+  }
+
+  _testGroupDevice = (e) => {
+    this.props.requestTestGroupDevices(this.state.groupID);
+  }
+
+  _deviceMenuIndexChanged = (e, value) => {
+    this.setState({
+      deviceID: value
+    })
+  }
+
+  _gruopMenuIndexChanged = (e, value) => {
+    this.setState({
+      groupID: value
+    })
+  }
+
   componentDidMount() {
     this.props.requestScan();
     this.props.requestDeviceGroup();
   }
+
   componentDidUpdate(prevProps, prevState) {
   }
 
@@ -33,12 +65,13 @@ export default class ManagePage extends React.Component {
                 <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField menuItems={this.props.deviceList}/>
-                <RaisedButton label="TEST" />
+                <SelectField onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={this.props.deviceList}/>
+                <RaisedButton label="TEST" onTouchTap={this._testOneDevice}/>
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField menuItems={this.props.groupList}/>
-                <RaisedButton label="Grouping" />
+                <SelectField onChange={this._deviceMenuIndexChanged}
+                  ref="groupMenu" menuItems={this.props.groupList}/>
+                <RaisedButton label="Grouping" onTouchTap={this._testGroupDevice}/>
               </div>
             </div>
           </div>
@@ -94,7 +127,10 @@ function _injectPropsFromStore(state) {
 
 const _injectPropsFromActions = {
   requestScan,
-  requestDeviceGroup
+  requestDeviceGroup,
+  requestTestGroupDevices,
+  requestTestAllDevices,
+  requestTestOneDevice
 }
 
 
