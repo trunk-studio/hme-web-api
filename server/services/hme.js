@@ -35,9 +35,10 @@ export default class Hme {
         });
 
         console.log('=== openSerialPort ===', this.serialPortIsOpen);
-
         this._eventsSetup();
+        return true;
       } else {
+        return false;
         console.log('=== connectSerialPort without serialPortName ===');
       }
     } catch (e) {
@@ -96,7 +97,7 @@ export default class Hme {
                 clearInterval(T1id);
                 clearTimeout(T2id);
                 return resolve(results);
-              } else if (T1num > 2) {
+              } else if (T1num > 4) {
                 console.log('TimeOut!');
                 results = [];
                 clearInterval(T1id);
@@ -111,7 +112,7 @@ export default class Hme {
               } else {
 
               }
-            } ,2);
+            } ,4);
           });
         });
       });
@@ -349,11 +350,96 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
+  }
 
+  setLedBrigh = async ({DevID, groupID, LedCH, BrighNum}) => {
+    try {
+      let COpParams = {
+        u8DevID:DevID,
+        groupID:groupID,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[],
+        u8DataIn_Arry:[BrighNum],
+        u8Mask_Arry:[],
+        RepeatNum:1
+      }
 
+      switch (LedCH) {
+        case 'All':
+          COpParams.u8DataNum = 5;
+          COpParams.u8Addr_Arry = [90];
+          COpParams.u8DataIn_Arry = [BrighNum, BrighNum, BrighNum, BrighNum, BrighNum];
+          break;
+        case 'LedCH1':
+          COpParams.u8Addr_Arry = [90];
+          break;
+        case 'LedCH2':
+          COpParams.u8Addr_Arry = [91];
+          break;
+        case 'LedCH3':
+          COpParams.u8Addr_Arry = [92];
+          break;
+        case 'LedCH4':
+          COpParams.u8Addr_Arry = [93];
+          break;
+        case 'LedCH5':
+          COpParams.u8Addr_Arry = [94];
+          break;
+        default:
+          console.log('setLedBrigh_LedCH_ERROR');
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:8
+      }
+      let DecodParams = {
+        FuncCT:49,
+        DevID:DevID,
+        u8RxDataArry:[]
+      }
+      console.log('setLedBrighter,COpParams:',COpParams);
+      console.log('setLedBrighter,DevID:',DevID,'groupID:',groupID);
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID || DevID == 0){
+        //await this.setLedCtrlMode(DevID, groupID,'Interact');
+        if ( await this.setLedCtrlMode(DevID, groupID, 'Interact') == false){
+          return (false);
+        }
+        return (true);
+      } else {
+        return (false);
+      };
 
+    } catch (e) {
+      throw e;
+    }
+  }
 
+  setLedDisplay = async ({DevID, groupID, WWBright, DBBright, BLBright, GRBright, REBright, Bright}) => {
+    try {
 
+        let setParams = {
+          DevID:DevID,
+          groupID:groupID,
+          Led1Bgt:DBBright * Bright,
+          Led2Bgt:BLBright * Bright,
+          Led3Bgt:GRBright * Bright,
+          Led4Bgt:REBright * Bright,
+          Led5Bgt:WWBright * Bright
+        }
+
+        let result = await this.setLedCtrlMode(DevID, groupID, 'Interact');
+        if (result == false) {
+            return (result);
+        }
+
+        result = await this.setLedBrighter(setParams);
+        return (result);
+    } catch (e) {
+      throw e;
+    }
   }
 
   setGroupID = async (DevID, groupID) => {
@@ -381,7 +467,7 @@ export default class Hme {
       TxParams.Comm = this.encode.ClientOp(COpParams);
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
       if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
-        if (this.flashMemoryWrite(DevID,0)){
+        if (this.writeFlashMemory(DevID,0)){
           return (true);
         }else {
           return (false);
@@ -396,7 +482,7 @@ export default class Hme {
     }
   }
 
-  flashMemoryWrite = async (DevID, groupID) => {
+  writeFlashMemory = async (DevID, groupID) => {
     try {
         let COpParams = {
         u8DevID:DevID,
@@ -432,6 +518,119 @@ export default class Hme {
     }
   }
 
+  setDayTab = async (DevID, groupID, dayTab) => {
+    try {
+        let COpParams = {
+        u8DevID:DevID,
+        groupID:groupID,
+        sFunc:'WordWt',
+        u8DataNum:18,
+        u8Addr_Arry:[1100],  //Addr 1100 = day table
+        u8DataIn_Arry:dayTab,
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:8
+      }
+      let DecodParams = {
+        FuncCT:49,
+        DevID:DevID,
+        u8RxDataArry:[]
+      }
+
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+        return (true);
+      } else {
+        return (false);
+      };
+
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
+
+  // writeTimeTab= async (DevID, groupID, timeTab) => {
+  //   try {
+  //         let COpParams = {
+  //           u8DevID:DevID,
+  //           groupID:groupID,
+  //           sFunc:'WordWt',
+  //           u8DataNum:1,
+  //           u8Addr_Arry:[1021],  //Addr 1021 = FMC Wr
+  //           u8DataIn_Arry:[1],
+  //           u8Mask_Arry:[],
+  //           RepeatNum:5
+  //         }
+  //
+  //
+  //         TxParams.Comm = this.encode.ClientOp(COpParams);
+  //         DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+  //         if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+  //           return (true);
+  //         } else {
+  //           return (false);
+  //         };
+  //   } catch (e) {
+  //     throw e;
+  //   }
+  // }
+
+
+
+  // accessDevice = async ({DevID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum}) => {
+  //   try {
+  //       let COpParams = {
+  //       u8DevID:DevID,
+  //       groupID:groupID,
+  //       sFunc:sFunc,
+  //       u8DataNum:dataNum,
+  //       u8Addr_Arry:addrArry,
+  //       u8DataIn_Arry:dataInArry,
+  //       u8Mask_Arry:maskArry,
+  //       RepeatNum:repeatNum
+  //     }
+  //
+  //     let TxParams = {
+  //       Comm:[],
+  //       RxLen:undefined
+  //     }
+  //
+  //     let FuncCommTable = {'Inital':0, 'Close':0, 'BitModify':17, 'BitInv':18, 'WordRd':33, 'DiscWordRd':34,
+  //   					'WordWt':49, 'DiscWordWt':50};
+  //
+  //     if (sFunc == 'WordRd' || sFunc == 'DiscWordRd') {
+  //       TxParams.RxLen = 8 + (dataNum * 3);
+  //     } else {
+  //       TxParams.RxLen = 8;
+  //     }
+  //
+  //     TxParams.Comm = this.encode.ClientOp(COpParams);
+  //
+  //     let DecodParams = {
+  //       FuncCT:(FuncCommTable[sFunc] & 0x7f),
+  //       DevID:DevID,
+  //       u8RxDataArry:[]
+  //     }
+  //
+  //     TxParams.Comm = this.encode.ClientOp(COpParams);
+  //     DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+  //     if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+  //       return (true);
+  //     } else {
+  //       return (false);
+  //     };
+  //
+  //
+  //   } catch (e) {
+  //     throw e;
+  //   }
+  // }
 
 
 

@@ -10,7 +10,8 @@ export function scheduleDetailConfig(state = { }, action) {
       };
     case RECEIVED_UPDATE_SCHEDULE_DETAIL_CONFIG:
       return {
-        ...state
+        ...state,
+        configData: action.data
       };
     default:
       return state
