@@ -60,14 +60,39 @@ describe("Schedule", () => {
         StartTime: '00:01:00'
       };
       console.log("API:/rest/schedule/update/detail");
-      console.log("input:",data);
-      
+      console.log("input:", data);
+
       let result = await request.post('/rest/schedule/update/detail').send(data);
 
-      console.log("output:",result);
+      console.log("output:", result);
 
       result.body.weight.should.be.not.equal(scheduleDetail.weight);
       result.body.StartTime.should.be.not.equal(scheduleDetail.StartTime);
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
+
+  it.only("update details", async(done) => {
+    try {
+      let scheduleDetails = await services.schedule.find(newSchedule.id);
+      let newScheduleDetails = [];
+      for (let detail of scheduleDetails.ScheduleDetails) {
+        newScheduleDetails.push({
+          id: detail.id,
+          weight: 0.9,
+          StartTime: '01:02:03'
+        });
+      }
+      let result = await request.post('/rest/schedule/update/details').send({scheduleDetails: newScheduleDetails});
+
+      console.log("output:",JSON.stringify(result.body, null, 4));
+
+      for (let i=0; i<12; i++) {
+        result.body[i].weight.should.be.equal(0.9);
+        result.body[i].StartTime.should.be.equal('01:02:03');
+      }
       done();
     } catch (e) {
       done(e);

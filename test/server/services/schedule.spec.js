@@ -124,7 +124,7 @@ describe("schedule", () => {
       }
     });
 
-    it( "update Schedule Detail" , async done => {
+    it( "update one Schedule Detail" , async done => {
       try {
         let data = {
           ScheduleDetailId: scheduleDetail.id,
@@ -197,7 +197,7 @@ describe("schedule", () => {
       }
     });
 
-    it.only( "should be get currect json object" , async done => {
+    it( "should be get currect json object" , async done => {
       try {
         let config = {
           Device: 1,

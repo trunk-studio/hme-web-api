@@ -196,7 +196,7 @@ describe("hme with seriel port", () => {
     });
 
 
-    it.only("serial Port setLedDisplay", async done => {
+    it("serial Port setLedDisplay", async done => {
       // 即時改變LED燈亮度
       // 同時設定為Interact模式
       try {
