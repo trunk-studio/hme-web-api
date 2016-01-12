@@ -376,7 +376,454 @@ describe("hme without seriel port", () => {
                       }
                     },{
                       weight: 1,
-                      StartTime: '12:00',
+                      StartTime: '22:00',
+                      ScheduleDetailConfig: {
+                      WW: 5,
+                      DB: 5,
+                      BL: 5,
+                      GR: 5,
+                      RE: 5,
+                      CCT: 5,
+                      Bright: 5
+                    }
+                }]
+        },
+        {
+          StartDate: '2016-01-18',
+          Days: 3,
+          Details: [{
+                      weight: 1,
+                      StartTime: '02:11',
+                      ScheduleDetailConfig: {
+                        WW: 0,
+                        DB: 0,
+                        BL: 0,
+                        GR: 0,
+                        RE: 0,
+                        CCT: 0,
+                        Bright: 0
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '03:22',
+                      ScheduleDetailConfig: {
+                        WW: 10,
+                        DB: 10,
+                        BL: 10,
+                        GR: 10,
+                        RE: 10,
+                        CCT: 10,
+                        Bright: 10
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '04:33',
+                      ScheduleDetailConfig: {
+                      WW: 30,
+                      DB: 30,
+                      BL: 30,
+                      GR: 30,
+                      RE: 30,
+                      CCT: 30,
+                      Bright: 30
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '05:44',
+                      ScheduleDetailConfig: {
+                      WW: 50,
+                      DB: 50,
+                      BL: 50,
+                      GR: 50,
+                      RE: 50,
+                      CCT: 50,
+                      Bright: 50
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '06:55',
+                      ScheduleDetailConfig: {
+                        WW: 50,
+                        DB: 50,
+                        BL: 50,
+                        GR: 50,
+                        RE: 50,
+                        CCT: 50,
+                        Bright: 50
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '07:10',
+                      ScheduleDetailConfig: {
+                        WW: 100,
+                        DB: 100,
+                        BL: 100,
+                        GR: 100,
+                        RE: 100,
+                        CCT: 100,
+                        Bright: 100
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '08:20',
+                      ScheduleDetailConfig: {
+                      WW: 100,
+                      DB: 100,
+                      BL: 100,
+                      GR: 100,
+                      RE: 100,
+                      CCT: 100,
+                      Bright: 100
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '09:30',
+                      ScheduleDetailConfig: {
+                      WW: 60,
+                      DB: 60,
+                      BL: 60,
+                      GR: 60,
+                      RE: 60,
+                      CCT: 60,
+                      Bright: 60
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '10:40',
+                      ScheduleDetailConfig: {
+                        WW: 30,
+                        DB: 30,
+                        BL: 30,
+                        GR: 30,
+                        RE: 30,
+                        CCT: 30,
+                        Bright: 30
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '11:50',
+                      ScheduleDetailConfig: {
+                        WW: 25,
+                        DB: 25,
+                        BL: 25,
+                        GR: 25,
+                        RE: 25,
+                        CCT: 25,
+                        Bright: 25
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '12:12',
+                      ScheduleDetailConfig: {
+                      WW: 15,
+                      DB: 15,
+                      BL: 15,
+                      GR: 15,
+                      RE: 15,
+                      CCT: 15,
+                      Bright: 15
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '22:00',
+                      ScheduleDetailConfig: {
+                      WW: 5,
+                      DB: 5,
+                      BL: 5,
+                      GR: 5,
+                      RE: 5,
+                      CCT: 5,
+                      Bright: 5
+                    }
+                }]
+        },
+        {
+          StartDate: '2016-01-20',
+          Days: 2,
+          Details: [{
+                      weight: 1,
+                      StartTime: '02:11',
+                      ScheduleDetailConfig: {
+                        WW: 10,
+                        DB: 10,
+                        BL: 10,
+                        GR: 10,
+                        RE: 10,
+                        CCT: 10,
+                        Bright: 10
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '03:22',
+                      ScheduleDetailConfig: {
+                        WW: 20,
+                        DB: 20,
+                        BL: 20,
+                        GR: 20,
+                        RE: 20,
+                        CCT: 20,
+                        Bright: 20
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '04:33',
+                      ScheduleDetailConfig: {
+                      WW: 30,
+                      DB: 30,
+                      BL: 30,
+                      GR: 30,
+                      RE: 30,
+                      CCT: 30,
+                      Bright: 30
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '05:44',
+                      ScheduleDetailConfig: {
+                      WW: 50,
+                      DB: 50,
+                      BL: 50,
+                      GR: 50,
+                      RE: 50,
+                      CCT: 50,
+                      Bright: 50
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '06:55',
+                      ScheduleDetailConfig: {
+                        WW: 50,
+                        DB: 50,
+                        BL: 50,
+                        GR: 50,
+                        RE: 50,
+                        CCT: 50,
+                        Bright: 50
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '07:10',
+                      ScheduleDetailConfig: {
+                        WW: 70,
+                        DB: 70,
+                        BL: 70,
+                        GR: 70,
+                        RE: 70,
+                        CCT: 70,
+                        Bright: 70
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '08:20',
+                      ScheduleDetailConfig: {
+                      WW: 85,
+                      DB: 85,
+                      BL: 85,
+                      GR: 85,
+                      RE: 85,
+                      CCT: 85,
+                      Bright: 85
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '09:30',
+                      ScheduleDetailConfig: {
+                      WW: 60,
+                      DB: 60,
+                      BL: 60,
+                      GR: 60,
+                      RE: 60,
+                      CCT: 60,
+                      Bright: 60
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '10:40',
+                      ScheduleDetailConfig: {
+                        WW: 30,
+                        DB: 30,
+                        BL: 30,
+                        GR: 30,
+                        RE: 30,
+                        CCT: 30,
+                        Bright: 30
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '11:50',
+                      ScheduleDetailConfig: {
+                        WW: 25,
+                        DB: 25,
+                        BL: 25,
+                        GR: 25,
+                        RE: 25,
+                        CCT: 25,
+                        Bright: 25
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '12:12',
+                      ScheduleDetailConfig: {
+                      WW: 15,
+                      DB: 15,
+                      BL: 15,
+                      GR: 15,
+                      RE: 15,
+                      CCT: 15,
+                      Bright: 15
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '22:00',
+                      ScheduleDetailConfig: {
+                      WW: 5,
+                      DB: 5,
+                      BL: 5,
+                      GR: 5,
+                      RE: 5,
+                      CCT: 5,
+                      Bright: 5
+                    }
+                }]
+        },
+        {
+          StartDate: '2016-01-22',
+          Days: 999,
+          Details: [{
+                      weight: 1,
+                      StartTime: '02:11',
+                      ScheduleDetailConfig: {
+                        WW: 10,
+                        DB: 10,
+                        BL: 10,
+                        GR: 10,
+                        RE: 10,
+                        CCT: 10,
+                        Bright: 10
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '03:22',
+                      ScheduleDetailConfig: {
+                        WW: 20,
+                        DB: 20,
+                        BL: 20,
+                        GR: 20,
+                        RE: 20,
+                        CCT: 20,
+                        Bright: 20
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '04:33',
+                      ScheduleDetailConfig: {
+                      WW: 30,
+                      DB: 30,
+                      BL: 30,
+                      GR: 30,
+                      RE: 30,
+                      CCT: 30,
+                      Bright: 30
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '05:44',
+                      ScheduleDetailConfig: {
+                      WW: 50,
+                      DB: 50,
+                      BL: 50,
+                      GR: 50,
+                      RE: 50,
+                      CCT: 50,
+                      Bright: 50
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '06:55',
+                      ScheduleDetailConfig: {
+                        WW: 50,
+                        DB: 50,
+                        BL: 50,
+                        GR: 50,
+                        RE: 50,
+                        CCT: 50,
+                        Bright: 50
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '07:10',
+                      ScheduleDetailConfig: {
+                        WW: 70,
+                        DB: 70,
+                        BL: 70,
+                        GR: 70,
+                        RE: 70,
+                        CCT: 70,
+                        Bright: 70
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '08:20',
+                      ScheduleDetailConfig: {
+                      WW: 85,
+                      DB: 85,
+                      BL: 85,
+                      GR: 85,
+                      RE: 85,
+                      CCT: 85,
+                      Bright: 85
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '09:30',
+                      ScheduleDetailConfig: {
+                      WW: 60,
+                      DB: 60,
+                      BL: 60,
+                      GR: 60,
+                      RE: 60,
+                      CCT: 60,
+                      Bright: 60
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '10:40',
+                      ScheduleDetailConfig: {
+                        WW: 30,
+                        DB: 30,
+                        BL: 30,
+                        GR: 30,
+                        RE: 30,
+                        CCT: 30,
+                        Bright: 30
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '11:50',
+                      ScheduleDetailConfig: {
+                        WW: 25,
+                        DB: 25,
+                        BL: 25,
+                        GR: 25,
+                        RE: 25,
+                        CCT: 25,
+                        Bright: 25
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '12:12',
+                      ScheduleDetailConfig: {
+                      WW: 15,
+                      DB: 15,
+                      BL: 15,
+                      GR: 15,
+                      RE: 15,
+                      CCT: 15,
+                      Bright: 15
+                      }
+                    },{
+                      weight: 1,
+                      StartTime: '22:00',
                       ScheduleDetailConfig: {
                       WW: 5,
                       DB: 5,
