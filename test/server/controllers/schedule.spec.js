@@ -74,7 +74,7 @@ describe("Schedule", () => {
     }
   });
 
-  it("update details", async(done) => {
+  it.only("update details", async(done) => {
     try {
       let scheduleDetails = await services.schedule.find(newSchedule.id);
       let newScheduleDetails = [];
@@ -85,7 +85,7 @@ describe("Schedule", () => {
           StartTime: '01:02:03'
         });
       }
-      let result = await request.post('/rest/schedule/update/details').send({scheduleDetails: newScheduleDetails});
+      let result = await request.post('/rest/schedule/update/details').send(newScheduleDetails);
 
       console.log("output:",JSON.stringify(result.body, null, 4));
 

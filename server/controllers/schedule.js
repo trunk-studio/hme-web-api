@@ -110,7 +110,7 @@ exports.updateScheduleDetail = function *() {
 exports.updateScheduleDetails = function *() {
   try {
     console.log("==== updateDay ===");
-    let scheduleDetails = this.request.body.scheduleDetails;
+    let scheduleDetails = this.request.body;
     let newScheduleDetails = [];
     for(let detail of scheduleDetails) {
       let result = yield services.schedule.updateScheduleDetail({
