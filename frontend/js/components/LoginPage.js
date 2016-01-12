@@ -2,12 +2,9 @@ import React                from 'react';
 import { connect } from 'react-redux'
 import { requestLogin } from '../actions/AuthActions'
 
-const RaisedButton = require('material-ui/lib/raised-button');
-const SelectField = require('material-ui/lib/select-field');
-const TextField = require('material-ui/lib/text-field');
-const Tabs = require('material-ui/lib/tabs/tabs');
-const Tab = require('material-ui/lib/tabs/tab');
-const RefreshIndicator = require('material-ui/lib/refresh-indicator');
+import {
+  MenuItem, RaisedButton, SelectField, TextField, Tabs, Tab, RefreshIndicator
+} from 'material-ui';
 
 export default class LoginPage extends React.Component {
 
@@ -62,15 +59,20 @@ export default class LoginPage extends React.Component {
        { payload: 'admin', text: '主控者' },
        { payload: 'user', text: '操作人員' }
     ];
+    let menuItems = [];
+    for (let i=0;i<roles.length;i++) {
+      menuItems.push(<MenuItem key={i} value={roles[i].payload} primaryText={roles[i].text} />);
+    }
     const {loadingStatus} = this.props;
     return (
       <Tabs>
         <Tab label="Login">
           <div className="self-center" style={{width: "210px"}}>
             <div className="row">
-              <SelectField
-                onChange={this._handleRoleChanged}
-                menuItems={roles}/>
+              <SelectField value={this.state.role}
+                onChange={this._handleRoleChanged} >
+                {menuItems}
+              </SelectField>
             </div>
             <div className="row">
               <TextField
