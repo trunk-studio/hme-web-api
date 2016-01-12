@@ -2,12 +2,12 @@ import React from 'react';
 import {connect} from 'react-redux'
 import {
   requestGetScheduleDetail,
-  requestUpdateScheduleDetail,
+  requestUpdateScheduleDetails,
   modifySchedule
 } from '../actions/ScheduleDetailActions'
 import moment from 'moment'
 import {
-  RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow
+  AppBar, TimePicker, Dialog, IconButton, NavigationClose, FlatButton, RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow
 } from 'material-ui';
 import numeral from 'numeral'
 import NVD3Chart from 'react-nvd3';
@@ -54,6 +54,7 @@ export default class ScheduleDetail extends React.Component {
     super(props);
     this.state = {
       currentIndex: 0,
+      dialogIsOpen: false
     }
   }
 
@@ -61,7 +62,7 @@ export default class ScheduleDetail extends React.Component {
     this.props.requestGetScheduleDetail(this.props.params.scheduleID);
   }
 
-  _handleBtnClick(index) {
+  _handleTimeBtnClick(index) {
 
     if(index == this.state.currentIndex)
       window.location.href = `#/schedule/config/1`;
@@ -106,11 +107,41 @@ export default class ScheduleDetail extends React.Component {
      });
   }
 
-  _limitSlider = (val) => {
-    if( val >= this.props.scheduleDetails[(this.state.currentIndex + 1)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger)
-      this.setState({})
+  // _limitSlider = (val) => {
+  //   if( val >= this.props.scheduleDetails[(this.state.currentIndex + 1)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger)
+  //     this.setState({})
+  // }
+
+  _saveScheduleDetails = (e) => {
+    // console.log('save',this.props.scheduleDetails);
+    this.props.requestUpdateScheduleDetails(this.props.scheduleDetails);
   }
 
+  _handleDialogOpen = (e) => {
+    this.setState({dialogIsOpen: true});
+  }
+
+  _handleDialogClose = (e) => {
+    console.log('test');
+    this.setState({dialogIsOpen: false});
+  }
+
+  _resetScheduleDetailsTime = (startTime, endTime) => {
+    let dis = _timeToInteger(endTime) - _timeToInteger(startTime);
+    let inteval = Math.floor(dis/11);
+    console.log('inteval', inteval);
+    let dailySchedules = [];
+    dailySchedules.push(...this.props.scheduleDetails);
+    for (let i=0;i<12;i++) {
+      let time = _formatMinutes(_timeToInteger(startTime) + (inteval*i));
+      dailySchedules[i].StartTime = time;
+    }
+
+    this.props.modifySchedule({
+      schedules: dailySchedules
+    });
+    this._handleDialogClose();
+  }
 
   render () {
 
@@ -154,89 +185,122 @@ export default class ScheduleDetail extends React.Component {
         ButtonGroup2 = [];
     if(scheduleDetails.length) {
       for (let i=0; i<6; i++) {
-          let active = (i==this.state.currentIndex);
-          ButtonGroup1.push(
-            <div className="col-xs-2" key={i}>
-              <RaisedButton onTouchTap={function(){this._handleBtnClick(i)}.bind(this)}
-                fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
-                secondary={true} style={{marginLeft: '3px'}}
-                primary={active}/>
-            </div>
-          );
+        let active = (i==this.state.currentIndex);
+        ButtonGroup1.push(
+          <div className="col-xs-2" key={i}>
+            <RaisedButton onTouchTap={function(){this._handleTimeBtnClick(i)}.bind(this)}
+              fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
+              secondary={true} style={{marginLeft: '3px'}}
+              primary={active}/>
+          </div>);
       }
 
       for (let i=6; i<12; i++) {
         let active = (i==this.state.currentIndex);
         ButtonGroup2.push(
           <div className="col-xs-2" key={i}>
-            <RaisedButton onTouchTap={function(){this._handleBtnClick(i)}.bind(this)}
+            <RaisedButton onTouchTap={function(){this._handleTimeBtnClick(i)}.bind(this)}
               fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
               secondary={true} style={{marginLeft: '3px'}}
               primary={active} />
-          </div>
-        );
+          </div>);
       }
     }
 
+    let dialogActions = [
+      <FlatButton
+        label="Cancel"
+        secondary={true}
+        onTouchTap={this._handleDialogClose} />,
+      <FlatButton
+        label="Reset"
+        primary={true}
+        onTouchTap={function() {
+            this._resetScheduleDetailsTime('02:00','20:00')}.bind(this)
+        } />
+    ];
     return (
-      <Tabs style={{overflowX: 'hidden'}}>
-        <Tab label="Schedule Detail" >
-          <div className="self-center" style={{
-          width: '100%'
-          }}>
-            <div className="row">
-              <div className="center-self">
-                <div className="col-md-11 col-sm-11 col-xs-11 chart-container">
-                  <NVD3Chart
-                    type="lineChart"
-                    height={215}
-                    datum={data}
-                    xAxis={{
-                      tickValues: tickMarks,
-                      tickFormat: function(d) {return _formatMinutes(d);}
-                    }}
-                    yAxis={{
-                      tickFormat: function(d) {return numeral(d).format('0%')}
-                    }} />
-                </div>
-                <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '85px',
-                  position: 'absolute', right: '-75px'}}>
-                  <VerticalSlider className="vertical-slider"
-                    min={0} max={100} marks={SLIDER_WEIGHT_MARKS}
-                    included={false} style={{float: 'right'}}
-                    value={sliderData.weight} onAfterChange={this._handleWeightChanged}
-                    tipFormatter={function(v){return v+'%';}}
-                    />
-                </div>
+      <div>
+        <AppBar title="Schedule Detail"
+          iconElementRight={
+            <FlatButton label="Save" onTouchTap={this._saveScheduleDetails}/>
+          }
+          onLeftIconButtonTouchTap={function(){console.log('leftNav');}}
+        />
+        <div className="self-center" style={{
+        width: '100%',
+        overflowX: 'hidden'
+        }}>
+          <div className="row">
+            <div className="center-self">
+              <div className="col-md-11 col-sm-11 col-xs-11 chart-container">
+                <NVD3Chart
+                  type="lineChart"
+                  height={215}
+                  datum={data}
+                  xAxis={{
+                    tickValues: tickMarks,
+                    tickFormat: function(d) {return _formatMinutes(d);}
+                  }}
+                  yAxis={{
+                    tickFormat: function(d) {return numeral(d).format('0%')}
+                  }} />
               </div>
-            </div>
-            <div className='row' style={{marginTop: '0px', marginLeft: '45px'}}>
-              <div style={{
-                width: '85%'
-              }} className="">
-                <Slider min={0} max={MAX_TIME_INTEGER} marks={SLIDER_TIME_MARKS} included={false}
-                  value={sliderData.time} disabled={false}
-                  allowCross={false} style={{width: '10%'}}
-                  onAfterChange={this._handleTimetChanged}
-                  tipFormatter={function(v){return _formatMinutes(v);}}
+              <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '85px',
+                position: 'absolute', right: '-75px'}}>
+                <VerticalSlider className="vertical-slider"
+                  min={0} max={100} marks={SLIDER_WEIGHT_MARKS}
+                  included={false} style={{float: 'right'}}
+                  value={sliderData.weight} onAfterChange={this._handleWeightChanged}
+                  tipFormatter={function(v){return v+'%';}}
                   />
               </div>
             </div>
-            <div className="row" style={{
-              marginTop: '23px'
-              }}>
-              <div className="center-self" style={{width:'100%'}}>
-                {ButtonGroup1}
-              </div>
-            </div>
-            <div className="row" style={{
-                  marginTop: '5px'
-                  }}>
-              {ButtonGroup2}
+          </div>
+          <div className='row' style={{marginTop: '0px', marginLeft: '45px'}}>
+            <div style={{
+              width: '85%'
+            }} className="">
+              <Slider min={0} max={MAX_TIME_INTEGER} marks={SLIDER_TIME_MARKS} included={false}
+                value={sliderData.time} disabled={false}
+                allowCross={false} style={{width: '10%'}}
+                onAfterChange={this._handleTimetChanged}
+                tipFormatter={function(v){return _formatMinutes(v);}}
+                />
             </div>
           </div>
-        </Tab>
-      </Tabs>
+          <div className="row" style={{
+            marginTop: '23px'
+            }}>
+            <div className="center-self" style={{width:'100%'}}>
+              {ButtonGroup1}
+            </div>
+          </div>
+          <div className="row" style={{
+                marginTop: '5px'
+                }}>
+            {ButtonGroup2}
+          </div>
+        </div>
+        <div className="center-self" style={{width:"88px", marginTop: '5px', marginBottom: '5px'}}>
+          <RaisedButton label="Reset" primary={true} onTouchTap={this._handleDialogOpen}/>
+        </div>
+        <Dialog
+          title="Reset Time"
+          modal={false}
+          actions={dialogActions}
+          open={this.state.dialogIsOpen}
+          onRequestClose={this._handleDialogClose}>
+          <div>
+            <TimePicker
+              format="24hr"
+              hintText="StartTime" />
+            <TimePicker
+              format="24hr"
+              hintText="EndTime" />
+          </div>
+        </Dialog>
+      </div>
     );
   }
 }
@@ -275,7 +339,7 @@ function _injectPropsFromStore(state) {
 
 const _injectPropsFromActions = {
   requestGetScheduleDetail,
-  requestUpdateScheduleDetail,
+  requestUpdateScheduleDetails,
   modifySchedule
 }
 
