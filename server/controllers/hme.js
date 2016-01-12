@@ -13,19 +13,7 @@ exports.ping = function *() {
 
 
 exports.searchDevice = function *() {
-  // let result = yield services.hme.SearchDevice();
-  let result = [
-    {
-      DevID: 8,
-      GroupID: 1
-    },{
-      DevID: 5,
-      GroupID: 1
-    },{
-      DevID: 7,
-      GroupID: 2
-    }
-  ];
+  let result = yield services.hme.SearchDevice();
   console.log('controller',result);
   this.body = result
 };
@@ -43,5 +31,29 @@ exports.findAllDeviceGroups = function *() {
       id: 3
     }
   ];
+  this.body = result
+}
+
+exports.setLedDisplay = function *() {
+  let data = this.request.body;
+  console.log('setLedDisplay',data);
+  let result = yield services.hme.setLedDisplay(data);
+  this.body = result
+};
+
+exports.testAllDevices = function *() {
+  let result = yield services.hme.testAll();
+  this.body = result
+}
+
+exports.testDeviceByID = function *() {
+  let devID = this.params.id;
+  let result = yield services.hme.testDevID(devID);
+  this.body = result
+}
+
+exports.testGruopByID = function *() {
+  let groupID = this.params.id;
+  let result = yield services.hme.testGroup(groupID);
   this.body = result
 }

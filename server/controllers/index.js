@@ -30,6 +30,8 @@ export default class Routes {
     publicRoute.get('/rest/hme/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/hme/deviceGroup/findAll', HmeController.findAllDeviceGroups);
 
+    publicRoute.post('/rest/slave/test/setLedDisplay', HmeController.setLedDisplay);
+
     publicRoute.post('/rest/hme/login', UserController.login);
     publicRoute.post('/rest/schedule/create', ScheduleController.createSchedule);
     publicRoute.get('/rest/schedule/findAll', ScheduleController.getAllSchedule);
@@ -40,6 +42,13 @@ export default class Routes {
 
     publicRoute.post('/rest/schedule/config/update', ScheduleController.configUpdate);
     publicRoute.get('/rest/schedule/config/:id', ScheduleController.getConfigDetail);
+
+    //  Test Device
+    publicRoute.get('/rest/hme/device/test/all', HmeController.testAllDevices);
+    publicRoute.get('/rest/hme/device/test/one/:id', HmeController.testDeviceByID);
+    publicRoute.get('/rest/hme/device/test/group/id', HmeController.testGruopByID);
+
+
 
     publicRoute.get('/', function *() {
       const HTML = `
