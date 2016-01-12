@@ -634,6 +634,48 @@ export default class Hme {
     }
   }
 
+  setLedDisplayMode = async ({devID, groupID, mode}) => {
+    try {
+        let modeIndex = {'cycle': 0, 'fullPower': 1, '6500k': 2, '4600k': 3,
+                '2950k': 4, 'savingE': 5, 'blueRed': 6}
+        let COpParams = {
+        u8DevID:devID,
+        groupID:0,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[1010], //Device group
+        u8DataIn_Arry:[modeIndex[mode]],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:8
+      }
+      let DecodParams = {
+        FuncCT:49,
+        DevID:devID,
+        u8RxDataArry:[]
+      }
+
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
+        if (this.writeFlashMemory(devID, 0)){
+          return (true);
+        }else {
+          return (false);
+        }
+      } else {
+        return (false);
+      };
+
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
 
 
   // accessDevice = async ({DevID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum}) => {

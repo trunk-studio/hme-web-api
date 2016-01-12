@@ -422,21 +422,6 @@ export default class Encode {
             endDate.getMonth() + 1,
             endDate.getDate()
           ]
-        // if (config.Schedules[i - 1] != undefined) {
-        //   dayTab = [
-        //     ...dayTab,
-        //     endDate.getFullYear(),
-        //     endDate.getMonth() + 1,
-        //     endDate.getDate()
-        //   ]
-        // } else {
-        //   dayTab = [
-        //     ...dayTab,
-        //     endDate.getFullYear(),
-        //     endDate.getMonth() + 1,
-        //     endDate.getDate() + 1
-        //   ]
-        // }
         // <--Date
 
         //-->undefine timetab set 0
