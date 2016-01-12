@@ -129,7 +129,8 @@ export default class ScheduleDetailConfig extends React.Component {
     this.state.blValue = Math.round(bl * 100);
     this.state.grValue = Math.round(gr * 100);
     this.state.reValue = Math.round(re * 100);
-    this.state.cctValue = cct;
+    if(cct)
+      this.state.cctValue = cct;
     this._saveConfig();
   }
   _brightChanged = (e, value) => {
@@ -156,6 +157,26 @@ export default class ScheduleDetailConfig extends React.Component {
   backClick = () => {
   }
 
+  _AllOpen = (e) => {
+    this._setAll(1,1,1,1,1);
+  }
+
+  _6500k = (e) => {
+    this._setAll(0.85, 0.9, 0.8, 0.85, 0.25);
+  }
+
+  _4600k = (e) => {
+    this._setAll(1, 0.67, 0.61, 0.67, 0.59);
+  }
+  _2950k = (e) => {
+    this._setAll(1, 0, 0.25, 0.29, 1);
+  }
+  _saving = (e) => {
+    this._setAll(1, 1, 0.5, 0, 1);
+  }
+  _BR = (e) => {
+    this._setAll(0, 1, 1, 0, 1);
+  }
 
   render() {
     if(this.props.config){
@@ -224,12 +245,12 @@ export default class ScheduleDetailConfig extends React.Component {
                 options={chartOptions} />
             </div>
             <div className="row smalllRaisedBnutton" style={{marginLeft:'30px'}}>
-              <RaisedButton label="全開" />
-              <RaisedButton label="6500K" />
-              <RaisedButton label="4600K" />
-              <RaisedButton label="2950K" />
-              <RaisedButton label="saving E" />
-              <RaisedButton label="B + R" />
+              <RaisedButton label="全開"  onTouchTap={this._AllOpen}/>
+              <RaisedButton label="6500K" onTouchTap={this._6500k}/>
+              <RaisedButton label="4600K" onTouchTap={this._4600k}/>
+              <RaisedButton label="2950K" onTouchTap={this._2950k}/>
+              <RaisedButton label="saving E" onTouchTap={this._saving}/>
+              <RaisedButton label="B + R" onTouchTap={this._BR}/>
             </div>
           </div>
           <div className="col-md-4 col-sm-4 col-xs-4">
