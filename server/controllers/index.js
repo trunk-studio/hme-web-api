@@ -30,6 +30,8 @@ export default class Routes {
     publicRoute.get('/rest/hme/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/hme/deviceGroup/findAll', HmeController.findAllDeviceGroups);
 
+    publicRoute.post('/rest/slave/test/setLedDisplay', HmeController.setLedDisplay);
+
     publicRoute.post('/rest/hme/login', UserController.login);
     publicRoute.post('/rest/schedule/create', ScheduleController.createSchedule);
     publicRoute.get('/rest/schedule/findAll', ScheduleController.getAllSchedule);

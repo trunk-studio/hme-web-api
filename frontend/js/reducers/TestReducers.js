@@ -1,6 +1,7 @@
 import {
   RECEIVED_SCAN,
-  RECEIVED_DEVICEGROUP
+  RECEIVED_DEVICEGROUP,
+  RECEIVED_TEST_SET_LED_DISPLAY
 } from '../actions/TestActions'
 
 export function scanDevice(state = { }, action) {
@@ -14,6 +15,11 @@ export function scanDevice(state = { }, action) {
       return {
         ...state,
         groupList: action.data
+      }
+    case RECEIVED_TEST_SET_LED_DISPLAY:
+      return {
+        ...state,
+        testSetLedDispla: action.data
       }
     default:
       return state
