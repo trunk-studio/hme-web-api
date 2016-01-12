@@ -290,13 +290,28 @@ export default class ScheduleDetail extends React.Component {
           modal={false}
           actions={dialogActions}
           open={this.state.dialogIsOpen}
-          onRequestClose={this._handleDialogClose}>
+          onRequestClose={this._handleDialogClose}
+          contentStyle={{
+            width: '80%'
+          }} >
           <div>
             <TimePicker
               format="24hr"
-              hintText="StartTime" />
+              autoOk={true}
+              hintText="StartTime"
+              style={{
+                display: 'inline-block',
+                width: '50%'
+              }}
+              textFieldStyle={{width: '100px'}} />
             <TimePicker
               format="24hr"
+              autoOk={true}
+              style={{
+                display: 'inline-block',
+                width: '50%'
+              }}
+              textFieldStyle={{width: '100px'}}
               hintText="EndTime" />
           </div>
         </Dialog>
