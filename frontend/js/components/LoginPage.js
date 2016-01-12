@@ -2,10 +2,12 @@ import React                from 'react';
 import { connect } from 'react-redux'
 import { requestLogin } from '../actions/AuthActions'
 
-import {
-  MenuItem, RaisedButton, SelectField, TextField,
-  Tabs, Tab, RefreshIndicator
-} from 'material-ui';
+const RaisedButton = require('material-ui/lib/raised-button');
+const SelectField = require('material-ui/lib/select-field');
+const TextField = require('material-ui/lib/text-field');
+const Tabs = require('material-ui/lib/tabs/tabs');
+const Tab = require('material-ui/lib/tabs/tab');
+const RefreshIndicator = require('material-ui/lib/refresh-indicator');
 
 export default class LoginPage extends React.Component {
 
@@ -13,8 +15,7 @@ export default class LoginPage extends React.Component {
     super(props);
     this.state = {
       loadingStatus: 'ready',
-      role: 'engineer',
-      passwordErrorText: ''
+      role: 'engineer'
     }
   }
 
@@ -35,8 +36,10 @@ export default class LoginPage extends React.Component {
       });
     }
     else {
-      this.setState({passwordErrorText: 'Please fill the password field.'});
+      Password.clearValue();
       Password.focus();
+      Password.setErrorText('Please fill the password field.');
+      // alert('Please fill the password field.');
     }
   }
 
@@ -48,7 +51,7 @@ export default class LoginPage extends React.Component {
       else {
         let Password = this.refs.password;
         Password.focus();
-        this.setState({passwordErrorText: 'Wrong Password.'});
+        Password.setErrorText('Wrong Password');
       }
     }
   }
@@ -59,26 +62,20 @@ export default class LoginPage extends React.Component {
        { payload: 'admin', text: '主控者' },
        { payload: 'user', text: '操作人員' }
     ];
-    let menuItems = [];
-    for (let i=0;i<roles.length;i++) {
-      menuItems.push(<MenuItem key={i} value={roles[i].payload} primaryText={roles[i].text} />);
-    }
     const {loadingStatus} = this.props;
     return (
       <Tabs>
         <Tab label="Login">
           <div className="self-center" style={{width: "210px"}}>
             <div className="row">
-              <SelectField value={this.state.role}
-                onChange={this._handleRoleChanged} >
-                {menuItems}
-              </SelectField>
+              <SelectField
+                onChange={this._handleRoleChanged}
+                menuItems={roles}/>
             </div>
             <div className="row">
               <TextField
                 ref="password"
                 hintText="Password Field"
-                errorText={this.state.passwordErrorText}
                 type="password"
                 onEnterKeyDown={this._login}/>
             </div>
