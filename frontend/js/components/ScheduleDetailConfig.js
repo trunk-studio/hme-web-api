@@ -24,7 +24,7 @@ export default class ScheduleDetailConfig extends React.Component {
       grValue: 0,
       reValue: 0,
       cctValue: 3000,
-      brightValue: 0
+      brightValue: 100
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -133,8 +133,7 @@ export default class ScheduleDetailConfig extends React.Component {
     this._saveConfig();
   }
   _brightChanged = (e, value) => {
-    this.refs.chart.state.chart.datasets[0].points[6].value = value;
-    this.refs.chart.state.chart.update();
+    this.state.brightValue = value;
     this._saveConfig();
   }
 
@@ -236,8 +235,8 @@ export default class ScheduleDetailConfig extends React.Component {
             <Slider ref="BL" name="BL" defaultValue={0} max={100} step={1} value={this.state.blValue} description={`BL ${this.state.blValue}`} className="slider" onChange={this._blChanged} />
             <Slider ref="GR" name="GR" defaultValue={0} max={100} step={1} value={this.state.grValue} description={`GR ${this.state.grValue}`} className="slider" onChange={this._grChanged} />
             <Slider ref="RE" name="RE" defaultValue={0} max={100} step={1} value={this.state.reValue} description={`RE ${this.state.reValue}`} className="slider" onChange={this._reChanged} />
-            <Slider ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} description="CCT" step={10} className="slider" onDragStop={this._cctChanged}/>
-            <Slider ref="Bright" name="Bright" defaultValue={0} className="slider" max={100} value={this.state.brightValue} description="Bright" onChange={this._brightChanged}/>
+            <Slider ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} description={`${this.state.cctValue}k`} step={10} className="slider" onDragStop={this._cctChanged}/>
+            <Slider ref="Bright" name="Bright" defaultValue={100} className="slider" max={100} value={this.state.brightValue} description="Bright" onChange={this._brightChanged}/>
           </div>
         </div>
       </div>

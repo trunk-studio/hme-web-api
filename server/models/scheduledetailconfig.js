@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     Bright:{
       type: DataTypes.INTEGER,
-      defaultValue: 0,
+      defaultValue: 100,
       allowNull: false
     }
   }, {
