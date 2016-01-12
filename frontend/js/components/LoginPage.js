@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { requestLogin } from '../actions/AuthActions'
 
 import {
-  MenuItem, RaisedButton, SelectField, TextField, Tabs, Tab, RefreshIndicator
+  MenuItem, RaisedButton, SelectField, TextField,
+  Tabs, Tab, RefreshIndicator
 } from 'material-ui';
 
 export default class LoginPage extends React.Component {
@@ -12,7 +13,8 @@ export default class LoginPage extends React.Component {
     super(props);
     this.state = {
       loadingStatus: 'ready',
-      role: 'engineer'
+      role: 'engineer',
+      passwordErrorText: ''
     }
   }
 
@@ -33,10 +35,8 @@ export default class LoginPage extends React.Component {
       });
     }
     else {
-      Password.clearValue();
+      this.setState({passwordErrorText: 'Please fill the password field.'});
       Password.focus();
-      Password.setErrorText('Please fill the password field.');
-      // alert('Please fill the password field.');
     }
   }
 
@@ -48,7 +48,7 @@ export default class LoginPage extends React.Component {
       else {
         let Password = this.refs.password;
         Password.focus();
-        Password.setErrorText('Wrong Password');
+        this.setState({passwordErrorText: 'Wrong Password.'});
       }
     }
   }
@@ -78,6 +78,7 @@ export default class LoginPage extends React.Component {
               <TextField
                 ref="password"
                 hintText="Password Field"
+                errorText={this.state.passwordErrorText}
                 type="password"
                 onEnterKeyDown={this._login}/>
             </div>
