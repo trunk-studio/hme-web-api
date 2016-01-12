@@ -143,6 +143,27 @@ export default class ScheduleDetail extends React.Component {
     this._handleDialogClose();
   }
 
+  _dialogActionReset = (e) => {
+    let InputStartTime = this.refs.inputStartTime,
+        InputEndTime = this.refs.inputEndTime,
+        startTime = InputStartTime.getValue(),
+        endTime = InputEndTime.getValue(),
+        regex = /^[0-9]{2}[:][0-9]{2}$/g;
+
+
+    if(startTime.match(regex) == null) {
+      InputStartTime.focus();
+      return ;
+    }
+
+    if(endTime.match(regex) == null) {
+      InputEndTime.focus();
+      return ;
+    }
+
+    this._resetScheduleDetailsTime(StartTime.getValue(), EndTime.getValue());
+  }
+
   render () {
 
     console.log('prop', this.props);
@@ -215,9 +236,7 @@ export default class ScheduleDetail extends React.Component {
       <FlatButton
         label="Reset"
         primary={true}
-        onTouchTap={function() {
-            this._resetScheduleDetailsTime('02:00','20:00')}.bind(this)
-        } />
+        onTouchTap={this._dialogActionReset} />
     ];
     return (
       <div>
@@ -295,24 +314,22 @@ export default class ScheduleDetail extends React.Component {
             width: '80%'
           }} >
           <div>
-            <TimePicker
-              format="24hr"
-              autoOk={true}
-              hintText="StartTime"
+            <TextField
+              ref="inputStartTime"
+              hintText="08:15"
+              floatingLabelText="StartTime"
               style={{
                 display: 'inline-block',
                 width: '50%'
-              }}
-              textFieldStyle={{width: '100px'}} />
-            <TimePicker
-              format="24hr"
-              autoOk={true}
+              }}/>
+            <TextField
+              ref="inputEndTime"
+              hintText="20:12"
+              floatingLabelText="EndTime"
               style={{
                 display: 'inline-block',
                 width: '50%'
-              }}
-              textFieldStyle={{width: '100px'}}
-              hintText="EndTime" />
+              }} />
           </div>
         </Dialog>
       </div>
