@@ -29,7 +29,7 @@ describe("Schedule", () => {
   });
   it("find", async(done) => {
     try {
-      let result = await request.get('/rest/schedule/' + newSchedule.id);
+      let result = await request.get('/rest/master/schedule/' + newSchedule.id);
       result.body.id.should.be.equal(newSchedule.id);
       result.body.ScheduleDetails.should.be.an.Array;
       done();
@@ -44,7 +44,7 @@ describe("Schedule", () => {
         ScheduleId: newSchedule.id,
         Days: 17
       };
-      let result = await request.post('/rest/schedule/update/day').send(data);
+      let result = await request.post('/rest/master/schedule/update/day').send(data);
       result.body.Days.should.be.not.equal(newSchedule.Days);
       done();
     } catch (e) {
@@ -59,10 +59,10 @@ describe("Schedule", () => {
         weight: 100,
         StartTime: '00:01:00'
       };
-      console.log("API:/rest/schedule/update/detail");
+      console.log("API:/rest/master/schedule/update/detail");
       console.log("input:", data);
 
-      let result = await request.post('/rest/schedule/update/detail').send(data);
+      let result = await request.post('/rest/master/schedule/update/detail').send(data);
 
       console.log("output:", result);
 
@@ -85,7 +85,7 @@ describe("Schedule", () => {
           StartTime: '01:02:03'
         });
       }
-      let result = await request.post('/rest/schedule/update/details').send(newScheduleDetails);
+      let result = await request.post('/rest/master/schedule/update/details').send(newScheduleDetails);
 
       console.log("output:",JSON.stringify(result.body, null, 4));
 
@@ -142,7 +142,7 @@ describe("Schedule", () => {
           CCT: 699,
           Bright: 799,
         }
-        let result = await request.post('/rest/schedule/config/update').send(data);
+        let result = await request.post('/rest/master/schedule/config/update').send(data);
         result.body.WW.should.be.not.equal(scheduleDetailConfig.WW);
         done();
       } catch (e) {
@@ -152,7 +152,7 @@ describe("Schedule", () => {
 
     it("get config should success", async(done) => {
       try {
-        let result = await request.get('/rest/schedule/config/' + scheduleDetailConfig.id);
+        let result = await request.get('/rest/master/schedule/config/' + scheduleDetailConfig.id);
         result.body.should.be.Array;
         done();
       } catch (e) {

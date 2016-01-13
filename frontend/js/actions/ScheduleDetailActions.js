@@ -11,7 +11,7 @@ export const MODIFY_SCHEDULE = 'MODIFY_SCHEDULE'
 export function requestGetScheduleDetail(scheduleID) {
   return (dispatch) => {
     return request
-      .get(`/rest/schedule/${scheduleID}`)
+      .get(`/rest/master/schedule/${scheduleID}`)
       .then(response => dispatch(receivedScheduleDetail(response.data)));
   };
 }
@@ -35,7 +35,7 @@ export function modifySchedule(data) {
 export function requestUpdateScheduleDetails(scheduleDetailsData) {
   return (dispatch) => {
     return request
-      .post('/rest/schedule/update/details', scheduleDetailsData)
+      .post('/rest/master/schedule/update/details', scheduleDetailsData)
       .then(response => dispatch(receivedUpdateScheduleDetails(response.data)));
   };
 }

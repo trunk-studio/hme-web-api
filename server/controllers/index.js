@@ -24,30 +24,32 @@ export default class Routes {
       this.body = {APP_NAME}
     })
 
-    publicRoute.get('/rest/user/', UserController.index);
+    // Test Raspberry Pi connect
     publicRoute.get('/rest/hme/hello/', HmeController.hello);
     publicRoute.get('/rest/hme/ping/', HmeController.ping);
-    publicRoute.get('/rest/hme/searchDevice', HmeController.searchDevice);
-    publicRoute.get('/rest/hme/deviceGroup/findAll', HmeController.findAllDeviceGroups);
 
+    // master
+    publicRoute.get('/rest/master/user/', UserController.index);
+    publicRoute.post('/rest/master/login', UserController.login);
+    publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
+    publicRoute.get('/rest/master/schedule/findAll', ScheduleController.getAllSchedule);
+    publicRoute.get('/rest/master/schedule/:id', ScheduleController.getOneSchedule);
+    publicRoute.post('/rest/master/schedule/update/day', ScheduleController.updateScheduleDay);
+    publicRoute.post('/rest/master/schedule/update/list', ScheduleController.updateScheduleList);
+    publicRoute.post('/rest/master/schedule/update/detail', ScheduleController.updateScheduleDetail);
+    publicRoute.post('/rest/master/schedule/update/details', ScheduleController.updateScheduleDetails);
+    publicRoute.post('/rest/master/schedule/config/update', ScheduleController.configUpdate);
+    publicRoute.get('/rest/master/schedule/config/:id', ScheduleController.getConfigDetail);
+
+    // find slave Device & Groups
+    publicRoute.get('/rest/slave/searchDevice', HmeController.searchDevice);
+    publicRoute.get('/rest/slave/findAllDeviceGroups', HmeController.findAllDeviceGroups);
+
+    //  Test slave Device
+    publicRoute.get('/rest/slave/test/all', HmeController.testAllDevices);
+    publicRoute.get('/rest/slave/test/one/:id', HmeController.testDeviceByID);
+    publicRoute.get('/rest/slave/test/group/id', HmeController.testGruopByID);
     publicRoute.post('/rest/slave/test/setLedDisplay', HmeController.setLedDisplay);
-
-    publicRoute.post('/rest/hme/login', UserController.login);
-    publicRoute.post('/rest/schedule/create', ScheduleController.createSchedule);
-    publicRoute.get('/rest/schedule/findAll', ScheduleController.getAllSchedule);
-    publicRoute.get('/rest/schedule/:id', ScheduleController.getOneSchedule);
-    publicRoute.post('/rest/schedule/update/day', ScheduleController.updateScheduleDay);
-    publicRoute.post('/rest/schedule/update/list', ScheduleController.updateScheduleList);
-    publicRoute.post('/rest/schedule/update/detail', ScheduleController.updateScheduleDetail);
-    publicRoute.post('/rest/schedule/update/details', ScheduleController.updateScheduleDetails);
-
-    publicRoute.post('/rest/schedule/config/update', ScheduleController.configUpdate);
-    publicRoute.get('/rest/schedule/config/:id', ScheduleController.getConfigDetail);
-
-    //  Test Device
-    publicRoute.get('/rest/hme/device/test/all', HmeController.testAllDevices);
-    publicRoute.get('/rest/hme/device/test/one/:id', HmeController.testDeviceByID);
-    publicRoute.get('/rest/hme/device/test/group/id', HmeController.testGruopByID);
 
 
 
