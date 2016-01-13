@@ -366,9 +366,6 @@ export default class Encode {
   }
 
   configToTimeTabArry = function(config){
-
-
-
     let ScheduleDetailsLen = 12;
     let dayTab = [];
     let dateLen = 0;
@@ -376,49 +373,58 @@ export default class Encode {
     let re = /(\d+):(\d+)/;
     let strST = '';
     let arrST = '';
+
+
+    for (let i = 0; i < ScheduleDetailsLen; i++) {
+      timePwmTab = [
+        ...timePwmTab,
+        ...[0, 0, 0],  //h,m,s
+        ...[0, 0, 0, 0, 0]  //CH1~CH5
+      ];
+    }
+
     for (let i = 0; i < 6; i++) {
-      if (config[i] != undefined) {
+      if (config.Schedules[i] != undefined) {
         // Date-->
-        dateLen = config[i].Days;
-        var startDate = new Date(config[i].StartDate);
+        dateLen = config.Schedules[i].Days;
+        var startDate = new Date(config.Schedules[i].StartDate);
         dayTab = [
           ...dayTab,
           startDate.getFullYear(),
-          startDate.getMonth() + 1,
+          startDate.getMonth() + 1, //0~11
           startDate.getDate()
         ];
         // <--Date
 
         for (var j = 0; j < ScheduleDetailsLen; j++) {
-          strST = config[i].ScheduleDetails[j].StartTime;
+          strST = config.Schedules[i].Details[j].StartTime;
           arrST = strST.match(re);
+          let Bright = config.Schedules[i].Details[j].ScheduleDetailConfig.Bright
           timePwmTab = [
             ...timePwmTab,
             parseInt(arrST[1], 10), //H
             parseInt(arrST[2], 10), //M
             0,  //S
-            config[i].ScheduleDetails[j].ScheduleDetailConfig.DB, //CH1
-            config[i].ScheduleDetails[j].ScheduleDetailConfig.BL, //CH2
-            config[i].ScheduleDetails[j].ScheduleDetailConfig.RE, //CH3
-            config[i].ScheduleDetails[j].ScheduleDetailConfig.GR, //CH4
-            config[i].ScheduleDetails[j].ScheduleDetailConfig.WW, //CH5
+            config.Schedules[i].Details[j].ScheduleDetailConfig.DB * Bright, //CH1
+            config.Schedules[i].Details[j].ScheduleDetailConfig.BL * Bright, //CH2
+            config.Schedules[i].Details[j].ScheduleDetailConfig.RE * Bright, //CH3
+            config.Schedules[i].Details[j].ScheduleDetailConfig.GR * Bright, //CH4
+            config.Schedules[i].Details[j].ScheduleDetailConfig.WW * Bright, //CH5
           ];
-
         }
-
-
-
       } else {
         // Date-->
         let endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + (dateLen - 1));
+        endDate.setDate(startDate.getDate() + dateLen);
         dayTab = [
-          ...dayTab,
-          endDate.getFullYear(),
-          endDate.getMonth() + 1,
-          endDate.getDate()
-        ]
+            ...dayTab,
+            endDate.getFullYear(),
+            endDate.getMonth() + 1,
+            endDate.getDate()
+          ]
         // <--Date
+
+        //-->undefine timetab set 0
         for (let i = 0; i < ScheduleDetailsLen; i++) {
           timePwmTab = [
             ...timePwmTab,
@@ -430,9 +436,11 @@ export default class Encode {
       }
     }
 
-    console.log(timePwmTab);
-    console.log(dayTab);
-  	return (0);
+    let result = {
+      timePwmTab,
+      dayTab
+    }
+  	return (result);
 
   }
 
