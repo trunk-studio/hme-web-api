@@ -26,7 +26,7 @@ export function requestScheduleCreate(scheduleList) {
   }
   return (dispatch) => {
     return request
-      .post('/rest/schedule/create',data)
+      .post('/rest/master/schedule/create',data)
       .then(response => dispatch(receivedScheduleCreate(response.data)));
   };
 }
@@ -41,7 +41,7 @@ export function receivedScheduleCreate(data) {
 export function requestUpdateScheduleList(scheduleList) {
   return (dispatch) => {
     return request
-      .post('/rest/schedule/update/list',scheduleList)
+      .post('/rest/master/schedule/update/list',scheduleList)
       .then(response => dispatch(receivedUpdateScheduleList(response.data)));
   };
 }
@@ -81,7 +81,7 @@ export function receivedUpdateScheduleDay(data = null,index = null) {
 export function requestGetScheduleList() {
   return (dispatch) => {
     return request
-      .get('/rest/schedule/findAll')
+      .get('/rest/master/schedule/findAll')
       .then(response => dispatch(receivedGetScheduleList(response.data)));
   };
 }

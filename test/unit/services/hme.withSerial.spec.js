@@ -149,6 +149,29 @@ describe("hme with seriel port", () => {
 
     });
 
+    it("serial Port setLedDisplayMode", async done => {
+      //設定燈具固定顯示特定色光
+      // cycle:預設模式, 根據Schedule設定顯示燈光
+      // fullPower, 6500k...blueRed:燈具固定顯示特定色光, 持續不變
+      //進入Schedule頁面時,務必重設'cycle'模式
+      try {
+        let params = {
+          devID: 1,
+          groupID: 1,
+          mode: '6500k'
+        }
+        //mode: cycle, fullPower, 6500k, 4600k, 2950k, savingE, blueRed
+
+        let result = await services.hme.setLedDisplayMode(params);
+        console.log('setLedDisplayMode result',result);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
 
     it("serial Port setLedBrighter", async done => {
       // 設定DEMO時的LED燈亮度
@@ -261,7 +284,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port writeTimeTabToDevice", async done => {
+    it("serial Port writeTimeTabToDevice", async done => {
 
       try {
         // writeTimeTabToDevice

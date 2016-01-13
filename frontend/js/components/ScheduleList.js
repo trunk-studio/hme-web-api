@@ -22,6 +22,7 @@ const TableHeader = require('material-ui/lib/table/table-header');
 const TableHeaderColumn = require('material-ui/lib/table/table-header-column');
 const TableRow = require('material-ui/lib/table/table-row');
 const TableRowColumn = require('material-ui/lib/table/table-row-column');
+const Snackbar = require('material-ui/lib/snackbar');
 
 export default class ScheduleList extends React.Component {
 
@@ -45,6 +46,7 @@ export default class ScheduleList extends React.Component {
     this.setState({
       isSetBtnClose: true
     });
+    this.refs.snackbar.setState({open: true});
   }
 
   _saveScheduleList = (e) => {
@@ -52,12 +54,14 @@ export default class ScheduleList extends React.Component {
     this.setState({
       isSetBtnClose: false
     });
+    this.refs.snackbar.setState({open: false});
   }
 
   _setScheduleList = (e) => {
     this.setState({
       isSetBtnClose: true
-    })
+    });
+    this.refs.snackbar.setState({open: true});
   }
 
   _formatDate = (date) => {
@@ -69,10 +73,14 @@ export default class ScheduleList extends React.Component {
   }
 
   _calculateDate = (i,e) => {
-    this.props.updateScheduleDay(e.target.value,i)
+    let value = e.target.value;
+    if(parseInt(value, 10) > 9999)
+      value = 9999;
+    this.props.updateScheduleDay(value,i)
     this.setState({
       isSetBtnClose: true
     })
+    this.refs.snackbar.setState({open: true});
   }
 
   _handleDatePickChange = (event, date) => {
@@ -81,7 +89,12 @@ export default class ScheduleList extends React.Component {
     this.setState({
       isSetBtnClose: true
     })
+    this.refs.snackbar.setState({open: true});
   }
+
+  _handleRequestClose = (e) => {
+    this.refs.snackbar.setState({open: false});
+  };
 
   render () {
     let rows = [];
@@ -132,7 +145,7 @@ export default class ScheduleList extends React.Component {
               <TableRowColumn>
                 <RaisedButton disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
               </TableRowColumn>
-              <TableRowColumn style={{fontSize: '17px'}}>{date || ''}</TableRowColumn>
+              <TableRowColumn style={{fontSize: '17px', color: '#AAA'}}>{date || ''}</TableRowColumn>
               <TableRowColumn>
                 <TextField
                   type="number"
@@ -152,8 +165,8 @@ export default class ScheduleList extends React.Component {
     return (
       <div className="self-center" style={{width: '100%'}}>
         <div className="row" style={{marginLeft: '30px', marginTop: '15px'}}>
-          <RaisedButton ref="scheduleAddBtn" label="Add" disabled={false} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
-          <RaisedButton label="Save" onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} />
+          <RaisedButton ref="scheduleAddBtn" primary={true} label="Add" disabled={false} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
+          <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} />
           <RaisedButton ref="scheduleSetBtn" onTouchTap={this._setScheduleList} label="Set" disabled={this.state.isSetBtnClose} style={{marginLeft: '15px'}} />
         </div>
         <Table selectable={false}>
@@ -169,6 +182,13 @@ export default class ScheduleList extends React.Component {
             {rows}
           </TableBody>
         </Table>
+        <Snackbar
+          ref="snackbar"
+          open={false}
+          onRequestClose={this._handleRequestClose}
+          message={"已更改, 需要儲存"}
+          autoHideDuration={3000}
+        />
       </div>
     );
   }

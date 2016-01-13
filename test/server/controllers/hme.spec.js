@@ -47,7 +47,7 @@ describe("hme", () => {
 
     it("SearchDevice", async(done) => {
       try {
-        let result = await request.get("/rest/hme/searchDevice");
+        let result = await request.get("/rest/slave/searchDevice");
         result.status.should.be.equal(200);
         result.body.should.be.Array;
         result.body[0].should.have.any.keys('DevID', 'DevGroup');
@@ -59,7 +59,7 @@ describe("hme", () => {
 
     it("allGroup", async(done) => {
       try {
-        let result = await request.get('/rest/hme/deviceGroup/findAll');
+        let result = await request.get('/rest/slave/findAllDeviceGroups');
         console.log('group list');
         console.log(result.body);
         result.status.should.be.equal(200);

@@ -26,7 +26,7 @@ export function requestScan() {
   // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
-      .get('/rest/hme/searchDevice')
+      .get('/rest/slave/searchDevice')
       .then(response => dispatch(receivedScan(response.data)));
   };
 }
@@ -42,7 +42,7 @@ export function requestDeviceGroup() {
   // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
-      .get('/rest/hme/deviceGroup/findAll')
+      .get('/rest/slave/findAllDeviceGroups')
       .then(response => dispatch(receivedDeviceGroup(response.data)));
   };
 }
@@ -57,20 +57,20 @@ export function receivedDeviceGroup(data) {
 export function requestTestOneDevice(deviceID) {
   return (dispatch) => {
     return request
-      .get(`/rest/hme/device/test/one/${deviceID}`)
+      .get(`/rest/slave/test/one/${deviceID}`)
   };
 }
 
 export function requestTestAllDevices() {
   return (dispatch) => {
     return request
-      .get(`/rest/hme/device/test/all`)
+      .get(`/rest/slave/test/all`)
   };
 }
 
 export function requestTestGroupDevices(groupID) {
   return (dispatch) => {
     return request
-      .get(`/rest/hme/device/test/group/${groupID}`)
+      .get(`/rest/slave/test/group/${groupID}`)
   };
 }
