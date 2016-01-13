@@ -106,3 +106,22 @@ exports.updateScheduleDetail = function *() {
     console.error("delete user error", e);
   }
 }
+
+exports.updateScheduleDetails = function *() {
+  try {
+    console.log("==== updateDay ===");
+    let scheduleDetails = this.request.body;
+    let newScheduleDetails = [];
+    for(let detail of scheduleDetails) {
+      let result = yield services.schedule.updateScheduleDetail({
+        ScheduleDetailId: detail.id,
+        weight: detail.weight,
+        StartTime: detail.StartTime
+      });
+      newScheduleDetails.push(result);
+    }
+    this.body = newScheduleDetails;
+  } catch(e) {
+    console.error("delete user error", e);
+  }
+}
