@@ -149,7 +149,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port setLedDisplayMode", async done => {
+    it("serial Port setLedDisplayMode", async done => {
       //設定燈具固定顯示特定色光
       // cycle:預設模式, 根據Schedule設定顯示燈光
       // fullPower, 6500k...blueRed:燈具固定顯示特定色光, 持續不變
