@@ -77,7 +77,7 @@ describe("Schedule", () => {
     }
   });
 
-  it("update detail", async(done) => {
+  it.skip("update detail", async(done) => {
     try {
       let data = {
         ScheduleDetailId: scheduleDetail.id,
