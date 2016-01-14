@@ -126,7 +126,7 @@ exports.updateScheduleDetails = function *() {
   }
 }
 
-exports.setSchedulesToDevice = function *() {
+exports.setScheduleToDevice = function *() {
   try {
 
     let scheduleID = this.request.body.scheduleID;
@@ -136,9 +136,7 @@ exports.setSchedulesToDevice = function *() {
       Days: scheduleData.Days,
       Details: []
     }];
-    console.log(JSON.stringify(scheduleData,null,4));
     for(let scheduleDetail of scheduleData.ScheduleDetails) {
-      console.log(JSON.stringify(scheduleDetail,null,4));
       let detailConfig = yield models.ScheduleDetailConfig.findById(scheduleDetail.id);
       let chartData = {
         WW: detailConfig.WW,
