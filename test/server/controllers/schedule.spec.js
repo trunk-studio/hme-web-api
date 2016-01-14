@@ -1,25 +1,24 @@
 describe("Schedule", () => {
 
-  let newSchedule, scheduleDetail;
+  let newSchedule, scheduleDetail,testDevice,testGroup;
   before( async done => {
     try {
-      let group = await models.Group.create();
+      testGroup = await models.Group.create();
       let slaves = await models.Slave.create({
         host: "hostName",
         description: "描述",
         apiVersion: "0.1.0",
       });
-      let device = await models.Device.create({
-        uid: "1",
-        GroupId: group.id,
+      testDevice = await models.Device.create({
+        GroupId: testGroup.id,
         SlaveId: slaves.id
       });
 
       newSchedule = {
         StartDate: moment('2016/1/7','YYYY/MM/DD'),
         Days: 15,
-        GroupId: group.id,
-        DeviceId: device.id
+        GroupId: testGroup.id,
+        DeviceId: testDevice.id
       };
 
       newSchedule = await models.Schedule.create(newSchedule);
@@ -37,11 +36,9 @@ describe("Schedule", () => {
           ScheduleId: newSchedule.id
         }
       });
-      console.log("scheduleDetail",scheduleDetail);
 
       let scheduleConfigId = [];
       scheduleDetail.forEach(function(i){
-        console.log(i);
         scheduleConfigId.push({
           "ScheduleDetailId": i.id,
         });
@@ -50,9 +47,11 @@ describe("Schedule", () => {
 
       done();
     } catch (e) {
+      console.log(e);
       done(e);
     }
   });
+
   it("find", async(done) => {
     try {
       let result = await request.get('/rest/master/schedule/' + newSchedule.id);
@@ -125,9 +124,15 @@ describe("Schedule", () => {
     }
   });
 
-  it("write saved schedules to device", async done => {
+  it.only("write saved schedules to device", async done => {
     try {
-      let result = await request.post('/rest/slave/schedule/setOnDevice').send([newSchedule.id]);
+      console.log('testDevice',JSON.stringify(testDevice,null,4));
+      console.log('testGroup',JSON.stringify(testGroup,null,4));
+      let result = await request.post('/rest/slave/schedule/setOnDevice').send({
+        groupID: testGroup.id,
+        deviceID: testDevice.id,
+        scheduleIDs:  [newSchedule.id]
+      });
       result.should.be.true;
       done();
     } catch (e) {
