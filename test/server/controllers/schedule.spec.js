@@ -1,27 +1,53 @@
 describe("Schedule", () => {
 
   let newSchedule, scheduleDetail;
-  before(async done => {
+  before( async done => {
     try {
+      let group = await models.Group.create();
+      let slaves = await models.Slave.create({
+        host: "hostName",
+        description: "描述",
+        apiVersion: "0.1.0",
+      });
+      let device = await models.Device.create({
+        uid: "1",
+        GroupId: group.id,
+        SlaveId: slaves.id
+      });
+
       newSchedule = {
-        StartDate: moment('1900/11/10', 'YYYY/MM/DD'),
-        Days: 15
+        StartDate: moment('2016/1/7','YYYY/MM/DD'),
+        Days: 15,
+        GroupId: group.id,
+        DeviceId: device.id
       };
+
       newSchedule = await models.Schedule.create(newSchedule);
       let scheduleConfig = [];
-      for (let a = 0; a < 24; a += 2) {
+      for(let a = 0; a<24; a+=2){
         scheduleConfig.push({
           "weight": 1,
-          "StartTime": a + ":00:00",
+          "StartTime": a +":00:00",
           "ScheduleId": newSchedule.id
         });
       }
       await models.ScheduleDetail.bulkCreate(scheduleConfig);
-      scheduleDetail = await models.ScheduleDetail.findOne({
-        where: {
+      scheduleDetail = await models.ScheduleDetail.findAll({
+        where:{
           ScheduleId: newSchedule.id
         }
       });
+      console.log("scheduleDetail",scheduleDetail);
+
+      let scheduleConfigId = [];
+      scheduleDetail.forEach(function(i){
+        console.log(i);
+        scheduleConfigId.push({
+          "ScheduleDetailId": i.id,
+        });
+      });
+      await models.ScheduleDetailConfig.bulkCreate(scheduleConfigId);
+
       done();
     } catch (e) {
       done(e);
@@ -93,6 +119,16 @@ describe("Schedule", () => {
         result.body[i].weight.should.be.equal(0.9);
         result.body[i].StartTime.should.be.equal('01:02:03');
       }
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
+
+  it.only("write saved schedules to device", async done => {
+    try {
+      let result = await request.post('/rest/master/schedule/setOnDevice').send({scheduleID: newSchedule.id});
+      result.should.be.true;
       done();
     } catch (e) {
       done(e);

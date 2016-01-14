@@ -40,6 +40,7 @@ export default class Routes {
     publicRoute.post('/rest/master/schedule/update/details', ScheduleController.updateScheduleDetails);
     publicRoute.post('/rest/master/schedule/config/update', ScheduleController.configUpdate);
     publicRoute.get('/rest/master/schedule/config/:id', ScheduleController.getConfigDetail);
+    publicRoute.post('/rest/master/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
 
     // find slave Device & Groups
     publicRoute.get('/rest/slave/searchDevice', HmeController.searchDevice);
