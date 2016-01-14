@@ -44,6 +44,7 @@ export default class Routes {
     // find slave Device & Groups
     publicRoute.get('/rest/slave/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/slave/findAllDeviceGroups', HmeController.findAllDeviceGroups);
+    publicRoute.get('/rest/slave/getCachedDeviceList', HmeController.getCachedDeviceList);
 
     //  Test slave Device
     publicRoute.get('/rest/slave/test/all', HmeController.testAllDevices);

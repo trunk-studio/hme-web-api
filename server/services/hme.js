@@ -175,6 +175,15 @@ export default class Hme {
     }
   }
 
+  getCachedDeviceList = async () => {
+    try {
+      let result = models.Device.findAll();
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  }
+
   testAll = async () => {
     try {
       await this.testGroup(0, 0)
