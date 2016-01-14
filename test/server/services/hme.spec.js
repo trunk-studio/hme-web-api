@@ -19,7 +19,7 @@ describe("hme", () => {
 
   });
 
-  it.only("Get Device Cache", async done => {
+  it("Get Device Cache", async done => {
     try {
       let result = await services.hme.getCachedDeviceList();
       console.log('device list === ', result);
