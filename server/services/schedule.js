@@ -130,6 +130,30 @@ module.exports = {
     } catch (e) {
       throw e;
     }
+  },
+
+  exportJsonConfig: async({id, name, description}) => {
+    try {
+      console.log(id, name, description);
+      fs.outputJson(`./scheduleconfig/${name}`, {name: 'JP'}, function (err) {
+        if(err) throw new Error(err);
+      })
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
+  },
+
+  readJson: async({name}) => {
+    try {
+      fs.readJson(`./scheduleconfig/${name}`, function(err, data) {
+        if(err) throw new Error(err);
+        console.log("?????",data.name);
+      })
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
   }
 
 }
