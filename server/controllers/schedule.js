@@ -126,36 +126,39 @@ exports.updateScheduleDetails = function *() {
   }
 }
 
-exports.setScheduleToDevice = function *() {
+exports.setSchedulesToDevice = function *() {
   try {
-
-    let scheduleID = this.request.body.scheduleID;
-    let scheduleData = yield services.schedule.find(scheduleID);
-    let config = [{
-      StartDate: moment(scheduleData.StartDate).format('YYYY-MM-DD'),
-      Days: scheduleData.Days,
-      Details: []
-    }];
-    for(let scheduleDetail of scheduleData.ScheduleDetails) {
-      let detailConfig = yield models.ScheduleDetailConfig.findById(scheduleDetail.id);
-      let chartData = {
-        WW: detailConfig.WW,
-        DB: detailConfig.DB,
-        BL: detailConfig.BL,
-        GR: detailConfig.GR,
-        RE: detailConfig.RE,
-        CCT: detailConfig.CCT,
-        Bright: detailConfig.Bright
+    let scheduleConfigs = [];
+    for(let scheduleID of this.request.body) {
+      let scheduleData = yield services.schedule.find(scheduleID);
+      let config = {
+        StartDate: moment(scheduleData.StartDate).format('YYYY-MM-DD'),
+        Days: scheduleData.Days,
+        Details: []
       };
+      for(let scheduleDetail of scheduleData.ScheduleDetails) {
+        let detailConfig = yield models.ScheduleDetailConfig.findById(scheduleDetail.id);
+        let chartData = {
+          WW: detailConfig.WW,
+          DB: detailConfig.DB,
+          BL: detailConfig.BL,
+          GR: detailConfig.GR,
+          RE: detailConfig.RE,
+          CCT: detailConfig.CCT,
+          Bright: detailConfig.Bright
+        };
 
-      config[0].Details.push({
-        weight: scheduleDetail.weight,
-        StartTime: scheduleDetail.StartTime.slice(0,5),
-        ScheduleDetailConfig: chartData
-      });
+        config.Details.push({
+          weight: scheduleDetail.weight,
+          // '12:15:00' -> '12:15'
+          StartTime: scheduleDetail.StartTime.slice(0,5),
+          ScheduleDetailConfig: chartData
+        });
+      }
+      scheduleConfigs.push(config);
     }
-
-    let result = yield services.hme.writeTimeTabToDevice(config);
+    console.log(JSON.stringify(scheduleConfigs,null,4));
+    let result = yield services.hme.writeTimeTabToDevice(scheduleConfigs);
     this.body = result;
     done();
   } catch (e) {

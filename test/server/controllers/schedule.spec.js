@@ -127,7 +127,7 @@ describe("Schedule", () => {
 
   it.only("write saved schedules to device", async done => {
     try {
-      let result = await request.post('/rest/master/schedule/setOnDevice').send({scheduleID: newSchedule.id});
+      let result = await request.post('/rest/slave/schedule/setOnDevice').send([newSchedule.id]);
       result.should.be.true;
       done();
     } catch (e) {
