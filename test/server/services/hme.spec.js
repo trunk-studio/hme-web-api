@@ -19,5 +19,18 @@ describe("hme", () => {
 
   });
 
+  it("Get Device Cache", async done => {
+    try {
+      let result = await models.Device.findAll();
+      console.log('device list === ', JSON.stringify(result,null, 4));
+      console.log(result[0]);
+      result.should.be.Array;
+      result[0].dataValues.should.have.any.keys('id','uid','GroupId','SlaveId');
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
+
 
 });
