@@ -133,7 +133,7 @@ describe("Schedule", () => {
         deviceID: testDevice.id,
         scheduleIDs:  [newSchedule.id]
       });
-      result.should.be.true;
+      result.body.should.be.true;
       done();
     } catch (e) {
       done(e);
