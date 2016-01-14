@@ -19,11 +19,11 @@ describe("hme", () => {
 
   });
 
-  it("Get Device Cache", async done => {
+  it.only("Get Device Cache", async done => {
     try {
-      let result = await models.Device.findAll();
-      console.log('device list === ', JSON.stringify(result,null, 4));
-      console.log(result[0]);
+      let result = await services.hme.getCachedDeviceList();
+      console.log('device list === ', result);
+      // console.log(result[0]);
       result.should.be.Array;
       result[0].dataValues.should.have.any.keys('id','uid','GroupId','SlaveId');
       done();

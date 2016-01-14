@@ -57,3 +57,13 @@ exports.testGruopByID = function *() {
   let result = yield services.hme.testGroup(groupID);
   this.body = result
 }
+
+exports.getCachedDeviceList = function *() {
+  try {
+    let result = yield services.hme.getCachedDeviceList();
+    this.body = result;
+    done();
+  } catch (e) {
+    done(e);
+  }
+}
