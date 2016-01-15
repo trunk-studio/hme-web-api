@@ -15,6 +15,19 @@ export default class Routes {
 
   }
 
+  getSlaveHostRoute(){
+    var app = this.app;
+    var getSlaveRoute = new Router()
+
+    app.use(function *(next){
+      if(/slave/g.test(this.req.url)){
+        this.req.url = this.req.header.host + this.req.url;
+      }
+      // console.log(this.request,this.req.header.host);
+      yield next;
+    });
+  }
+
   setupPublicRoute() {
     var app = this.app;
     var publicRoute = new Router()

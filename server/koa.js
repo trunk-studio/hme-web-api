@@ -63,6 +63,7 @@ if (environment === 'development') {
 global.services = new Services();
 
 var controllers = new Controllers(app);
+controllers.getSlaveHostRoute()
 controllers.setupPublicRoute()
 controllers.setupAppRoute()
 
