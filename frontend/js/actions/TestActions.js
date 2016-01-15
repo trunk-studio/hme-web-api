@@ -74,3 +74,11 @@ export function requestTestGroupDevices(groupID) {
       .get(`/rest/slave/test/group/${groupID}`)
   };
 }
+
+export function requestGetCachedDeviceList() {
+  return (dispatch) => {
+    return request
+      .get(`/rest/slave/getCachedDeviceList`)
+      .then(response => dispatch(receivedScan(response.data)));
+  }
+}

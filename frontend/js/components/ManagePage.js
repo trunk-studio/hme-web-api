@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import {
   requestScan, requestDeviceGroup, requestTestOneDevice,
   requestTestGroupDevices, requestTestAllDevices,
-  requestTestSetLedDisplay
+  requestTestSetLedDisplay, requestGetCachedDeviceList
 } from '../actions/TestActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
@@ -44,13 +44,6 @@ export default class ManagePage extends React.Component {
       this.state.RE[i]+
       this.state.WW[i])
     });
-    console.log(this.state.DB.length,
-      this.state.BL.length,
-      this.state.GR.length,
-      this.state.RE.length,
-      this.state.WW.length,
-      this.state.SUM.length,
-      this.state.SUM);
   }
 
   _handleScan = (e) => {
@@ -78,7 +71,8 @@ export default class ManagePage extends React.Component {
   }
 
   componentDidMount() {
-    this.props.requestScan();
+    // this.props.requestScan();
+    this.props.requestGetCachedDeviceList();
     this.props.requestDeviceGroup();
   }
 
@@ -365,7 +359,8 @@ const _injectPropsFromActions = {
   requestTestSetLedDisplay,
   requestTestGroupDevices,
   requestTestAllDevices,
-  requestTestOneDevice
+  requestTestOneDevice,
+  requestGetCachedDeviceList
 }
 
 
