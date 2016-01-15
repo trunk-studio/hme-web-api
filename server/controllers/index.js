@@ -52,6 +52,8 @@ export default class Routes {
     publicRoute.get('/rest/slave/test/group/id', HmeController.testGruopByID);
     publicRoute.post('/rest/slave/test/setLedDisplay', HmeController.setLedDisplay);
 
+    publicRoute.post('/rest/slave/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
+
 
 
     publicRoute.get('/', function *() {

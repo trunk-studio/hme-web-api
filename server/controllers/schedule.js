@@ -125,3 +125,65 @@ exports.updateScheduleDetails = function *() {
     console.error("delete user error", e);
   }
 }
+
+exports.setSchedulesToDevice = function *() {
+  try {
+
+    let schedules = [];
+    let scheduleIDs = this.request.body.scheduleIDs;
+    // let schedulesData = yield services.schedule.findWithScheduleDetail(scheduleIDs);
+
+    let schedulesData = yield models.Schedule.findAll({
+      where: {
+        id: scheduleIDs
+      },
+      include: {
+        model: models.ScheduleDetail,
+        include: models.ScheduleDetailConfig
+      }
+    });
+
+    for(let schedule of schedulesData) {
+      let details = [];
+
+      for(let scheduleDetail of schedule.ScheduleDetails) {
+        let scheduleDetailConfigs = scheduleDetail.ScheduleDetailConfigs[0];
+        let chartData = {
+          WW: scheduleDetailConfigs.WW,
+          DB: scheduleDetailConfigs.DB,
+          BL: scheduleDetailConfigs.BL,
+          GR: scheduleDetailConfigs.GR,
+          RE: scheduleDetailConfigs.RE,
+          CCT: scheduleDetailConfigs.CCT,
+          Bright: scheduleDetailConfigs.Bright
+        };
+
+        details.push({
+          weight: scheduleDetail.weight,
+          // '12:15:00' -> '12:15'
+          StartTime: scheduleDetail.StartTime.slice(0,5),
+          ScheduleDetailConfig: chartData
+        });
+      }
+
+      schedules.push({
+        StartDate: schedule.StartDate,
+        Days: schedule.Days,
+        Details: details
+      });
+    }
+
+
+    let scheduleConfigs = {
+      Device: this.body.deviceID,
+      Group: this.body.groupID,
+      Schedules: schedules
+    };
+
+    let result = yield services.hme.writeTimeTabToDevice(scheduleConfigs);
+    this.body = result;
+    done();
+  } catch (e) {
+    done(e);
+  }
+}
