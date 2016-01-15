@@ -67,7 +67,7 @@ export default class Hme {
     }
   }
 
-  roundPing = async () => {
+  pingAllSlave = async () => {
     try {
 
       let hosts = [];
@@ -78,7 +78,6 @@ export default class Hme {
       hosts.push(`hmepi010.local`);
 
       for(let host of hosts) {
-        console.log(host);
         let exist = await new Promise((done) => {
           ping.sys.probe(host, function (res) {
             done(res);
@@ -87,12 +86,12 @@ export default class Hme {
         if(exist) {
           slaves.push({
             host: host,
-            description: description,
-            apiVersion : apiVersion
+            description: '',
+            apiVersion : ''
           });
         }
       }
-      let result = await services.hme.createSlave(slaves);
+      let result = await services.hme.bulkCreateSlave(slaves);
 
       return result;
     } catch (e) {

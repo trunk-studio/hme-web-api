@@ -32,17 +32,17 @@ describe("hme", () => {
     }
   });
 
-  it("roundPing", async done => {
+  it("ping all slaves", async done => {
     try {
-      let result = await services.hme.roundPing();
-      console.log('result', JSON.stringify(result, null, 4));
+      let result = await services.hme.pingAllSlave();
+      result[0].dataValues.should.have.any.keys('host', 'description', 'apiVersion');
       done();
     } catch (e) {
       done(e);
     }
   })
 
-  it.only("bulkCreateSlave", async done => {
+  it("bulkCreateSlave", async done => {
     try {
       let newSlaves = [{
         host: 'test host1',
