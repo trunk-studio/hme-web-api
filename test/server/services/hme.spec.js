@@ -42,18 +42,22 @@ describe("hme", () => {
     }
   })
 
-  it.only("createSlave", async done => {
+  it.only("bulkCreateSlave", async done => {
     try {
-      let newSlave = {
-        host: 'test host',
-        description: 'test desc',
-        apiVersion: 'test version'
-      };
-      let result = await services.hme.createSlave(newSlave);
+      let newSlaves = [{
+        host: 'test host1',
+        description: 'test desc1',
+        apiVersion: 'test version1'
+      },{
+        host: 'test host2',
+        description: 'test desc2',
+        apiVersion: 'test version2'
+      }];
+      let result = await services.hme.bulkCreateSlave(newSlaves);
 
-      result.host.should.be.equal(newSlave.host);
-      result.description.should.be.equal(newSlave.description);
-      result.apiVersion.should.be.equal(newSlave.apiVersion);
+      result[0].host.should.be.equal(newSlaves[0].host);
+      result[0].description.should.be.equal(newSlaves[0].description);
+      result[0].apiVersion.should.be.equal(newSlaves[0].apiVersion);
 
       done();
     } catch (e) {
