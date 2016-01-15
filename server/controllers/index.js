@@ -56,7 +56,7 @@ export default class Routes {
 
 
 
-    publicRoute.get('/', function *() {
+    publicRoute.get('/', function(ctx, next) {
       const HTML = `
       <!DOCTYPE html>
       <html>
@@ -71,27 +71,27 @@ export default class Routes {
         </head>
         <body>
           <div id="react-view"></div>
-          <script type="application/javascript" src="js/bundle.js"></script>
+          <script type="application/javascript" src="/public/assets/js/bundle.js"></script>
           <!--<script>
             document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
           </script>-->
         </body>
       </html>
       `;
-      this.body = HTML
+      ctx.body = HTML
     })
     // publicRoute.get('/', MainController.index);
     app.use(publicRoute.middleware())
 
 
-    app.use(function *(next) {
-
-      if (true || services.user.isAuthenticated(this)) {
-        yield next
-      } else {
-        this.redirect('/auth/login')
-      }
-    })
+    // app.use(function *(next) {
+    //
+    //   if (true || services.user.isAuthenticated(this)) {
+    //     yield next
+    //   } else {
+    //     this.redirect('/auth/login')
+    //   }
+    // })
 
   }
 

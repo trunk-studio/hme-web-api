@@ -2,7 +2,7 @@ module.exports = {
 
   saveDevice: async(data) => {
     try {
-      let deviceList = await* data.map( async (device) => {
+      let deviceList = await Promise.all(data.map( async (device) => {
         let newDevice = {
           uid: device.DevID,
           GroupId: device.GroupID
@@ -14,7 +14,7 @@ module.exports = {
           defaults: newDevice
         });
         return newDevice;
-      });
+      }));
       return deviceList;
     } catch (e) {
       throw e;
