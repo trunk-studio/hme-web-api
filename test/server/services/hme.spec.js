@@ -32,5 +32,32 @@ describe("hme", () => {
     }
   });
 
+  it("roundPing", async done => {
+    try {
+      let result = await services.hme.roundPing();
+      console.log('result', JSON.stringify(result, null, 4));
+      done();
+    } catch (e) {
+      done(e);
+    }
+  })
 
+  it.only("createSlave", async done => {
+    try {
+      let newSlave = {
+        host: 'test host',
+        description: 'test desc',
+        apiVersion: 'test version'
+      };
+      let result = await services.hme.createSlave(newSlave);
+
+      result.host.should.be.equal(newSlave.host);
+      result.description.should.be.equal(newSlave.description);
+      result.apiVersion.should.be.equal(newSlave.apiVersion);
+
+      done();
+    } catch (e) {
+      done(e);
+    }
+  })
 });
