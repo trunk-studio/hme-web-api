@@ -32,5 +32,36 @@ describe("hme", () => {
     }
   });
 
+  it("ping all slaves", async done => {
+    try {
+      let result = await services.hme.pingAllSlave();
+      result[0].dataValues.should.have.any.keys('host', 'description', 'apiVersion');
+      done();
+    } catch (e) {
+      done(e);
+    }
+  })
 
+  it("bulkCreateSlave", async done => {
+    try {
+      let newSlaves = [{
+        host: 'test host1',
+        description: 'test desc1',
+        apiVersion: 'test version1'
+      },{
+        host: 'test host2',
+        description: 'test desc2',
+        apiVersion: 'test version2'
+      }];
+      let result = await services.hme.bulkCreateSlave(newSlaves);
+
+      result[0].host.should.be.equal(newSlaves[0].host);
+      result[0].description.should.be.equal(newSlaves[0].description);
+      result[0].apiVersion.should.be.equal(newSlaves[0].apiVersion);
+
+      done();
+    } catch (e) {
+      done(e);
+    }
+  })
 });

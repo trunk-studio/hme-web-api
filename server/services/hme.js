@@ -1,5 +1,6 @@
 let SerialPort = require("serialport").SerialPort;
 let Encode = require("./encode");
+let ping = require('ping');
 
 export default class Hme {
   constructor (serialPortName) {
@@ -66,7 +67,37 @@ export default class Hme {
     }
   }
 
+  pingAllSlave = async () => {
+    try {
 
+      let hosts = [];
+      let slaves = [];
+      for(let i=1;i<10;i++) {
+        hosts.push(`hmepi00${i}.local`);
+      }
+      hosts.push(`hmepi010.local`);
+
+      for(let host of hosts) {
+        let exist = await new Promise((done) => {
+          ping.sys.probe(host, function (res) {
+            done(res);
+          });
+        });
+        if(exist) {
+          slaves.push({
+            host: host,
+            description: '',
+            apiVersion : ''
+          });
+        }
+      }
+      let result = await services.hme.bulkCreateSlave(slaves);
+
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  }
 
 
 
@@ -736,10 +767,6 @@ export default class Hme {
   //   }
   // }
 
-
-
-
-
   _eventsSetup = () => {
     let serialPort = this.serialPort;
     let RxBufArry = this.RxBufArry
@@ -757,4 +784,14 @@ export default class Hme {
     });
 
   }
+
+  bulkCreateSlave = async (newSlaves) => {
+    try {
+      let result = await models.Slave.bulkCreate(newSlaves);
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  }
+
 }
