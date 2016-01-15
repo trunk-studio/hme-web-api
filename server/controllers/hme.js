@@ -1,11 +1,9 @@
 exports.hello = function *() {
   console.log('=== services ===', services);
-  console.log("!!!!!!!!!!!",this.request);
   let result = yield services.hme.hello()
 
   this.body = {result}
 };
-
 
 exports.ping = function *() {
   let result = yield services.hme.ping();
