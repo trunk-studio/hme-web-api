@@ -19,9 +19,9 @@ export default class Routes {
     var app = this.app;
     var publicRoute = new Router()
 
-    publicRoute.get('/rest/info/', function *() {
+    publicRoute.get('/rest/info/', async function(ctx) {
       let {APP_NAME} = process.env
-      this.body = {APP_NAME}
+      ctx.body = {APP_NAME}
     })
 
     // Test Raspberry Pi connect
@@ -84,14 +84,14 @@ export default class Routes {
     app.use(publicRoute.middleware())
 
 
-    // app.use(function *(next) {
-    //
-    //   if (true || services.user.isAuthenticated(this)) {
-    //     yield next
-    //   } else {
-    //     this.redirect('/auth/login')
-    //   }
-    // })
+    app.use(async function (ctx, next) {
+
+      if (true || services.user.isAuthenticated(ctx)) {
+        await next();
+      } else {
+        ctx.redirect('/auth/login')
+      }
+    })
 
   }
 
