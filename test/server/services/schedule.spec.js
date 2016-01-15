@@ -275,4 +275,85 @@ describe("schedule", () => {
   });
 
 
+  describe.only("export Json Config", async done => {
+    let newSchedule, scheduleDetail;
+    before( async done => {
+      try {
+        let group = await models.Group.create();
+        let slaves = await models.Slave.create({
+          host: "hostName",
+          description: "描述",
+          apiVersion: "0.1.0",
+        });
+        let device = await models.Device.create({
+          uid: "1",
+          GroupId: group.id,
+          SlaveId: slaves.id
+        });
+
+        newSchedule = {
+          StartDate: moment('2016/1/7','YYYY/MM/DD'),
+          Days: 15,
+          GroupId: group.id,
+          DeviceId: device.id
+        };
+
+        newSchedule = await models.Schedule.create(newSchedule);
+        let scheduleConfig = [];
+        for(let a = 0; a<24; a+=2){
+          scheduleConfig.push({
+            "weight": 1,
+            "StartTime": a +":00:00",
+            "ScheduleId": newSchedule.id
+          });
+        }
+        await models.ScheduleDetail.bulkCreate(scheduleConfig);
+        scheduleDetail = await models.ScheduleDetail.findAll({
+          where:{
+            ScheduleId: newSchedule.id
+          }
+        });
+
+        let scheduleConfigId = [];
+        scheduleDetail.forEach(function(i){
+          scheduleConfigId.push({
+            "ScheduleDetailId": i.id,
+          });
+        });
+        await models.ScheduleDetailConfig.bulkCreate(scheduleConfigId);
+
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+    it( "exoprt" , async done => {
+      try {
+        let data = {
+          id: newSchedule.id,
+          name: "testExport",
+          description: "test"
+        };
+        let result = await services.schedule.exportJsonConfig(data);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+    it("read", async done => {
+      try {
+        let data = {
+          name: "testExport"
+        };
+        await services.schedule.readJson(data);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+  });
+
 });

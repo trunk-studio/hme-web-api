@@ -26,7 +26,8 @@ global.moment = moment;
 import sinon from 'sinon';
 global.sinon = sinon;
 global.appConfig = config;
-
+import fs from 'fs-extra';
+global.fs = fs;
 
 const {environment} = appConfig;
 const app = koa();

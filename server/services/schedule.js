@@ -130,6 +130,52 @@ module.exports = {
     } catch (e) {
       throw e;
     }
+  },
+
+  exportJsonConfig: async({id, name, description}) => {
+    try {
+      console.log(id, name, description);
+
+      let getScheduleConfig = await models.ScheduleDetail.findAll({
+        where:{
+          ScheduleId: id
+        },
+        include:{
+          model: models.ScheduleDetailConfig,
+          attributes: { exclude: ['id','createdAt','updatedAt','ScheduleDetailId'] }
+        },
+        attributes: { exclude: ['id','createdAt','updatedAt','ScheduleId'] }
+      })
+      delete getScheduleConfig.id
+      let data = {
+        name,
+        description,
+        dateCreated: 'JS_DATE_FORMAT',
+        lastUpdated: 'JS_DATE_FORMAT',
+        version: '1.0.0',
+        parameters: getScheduleConfig
+      }
+
+      fs.outputJson(`./scheduleconfig/${name}`, data, function (err) {
+        if(err) throw new Error(err);
+      })
+      return 'ok';
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
+  },
+
+  readJson: async({name}) => {
+    try {
+      fs.readJson(`./scheduleconfig/${name}`, function(err, data) {
+        if(err) throw new Error(err);
+        return data
+      })
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
   }
 
 }
