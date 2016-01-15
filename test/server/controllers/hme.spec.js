@@ -65,7 +65,7 @@ describe("hme", () => {
       }
     });
 
-    it.only("get cache deviceList", async done => {
+    it("get cache deviceList", async done => {
       try {
         let result = await request.get("/rest/slave/getCachedDeviceList");
         result.body.should.be.Array;
