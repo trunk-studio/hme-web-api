@@ -275,7 +275,7 @@ describe("schedule", () => {
   });
 
 
-  describe.only("export Json Config", async done => {
+  describe("export Json Config", async done => {
     let newSchedule, scheduleDetail;
     before( async done => {
       try {

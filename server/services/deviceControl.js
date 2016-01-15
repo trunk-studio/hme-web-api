@@ -28,5 +28,19 @@ module.exports = {
     } catch (e) {
       throw e;
     }
+  },
+
+  getSlaveHost: async(id) => {
+    try {
+      let slave = await models.Slave.findOne({
+        where:{
+          id: id
+        },
+        attributes: { exclude: ['createdAt','updatedAt'] }
+      });
+      return slave
+    } catch (e) {
+      throw e;
+    }
   }
 }
