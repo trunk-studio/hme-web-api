@@ -66,6 +66,7 @@ export default class Routes {
         <title>HME</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="images/HME.ico" type="image/x-icon" />
         <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet">-->
         </head>
