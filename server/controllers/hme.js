@@ -62,8 +62,7 @@ exports.getCachedDeviceList = function *() {
   try {
     let result = yield services.hme.getCachedDeviceList();
     this.body = result;
-    done();
   } catch (e) {
-    done(e);
+    throw e;
   }
 }

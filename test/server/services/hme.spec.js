@@ -37,7 +37,7 @@ describe("hme", () => {
 
   });
 
-  it.only("Get Device CachedList", async done => {
+  it("Get Device CachedList", async done => {
     try {
       let result = await services.hme.getCachedDeviceList();
       // console.log(result[0]);
