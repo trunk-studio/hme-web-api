@@ -208,7 +208,15 @@ export default class Hme {
 
   getCachedDeviceList = async () => {
     try {
-      let result = models.Device.findAll();
+      let deviceList = await models.Device.findAll();
+      let result = [];
+      for(let device of deviceList) {
+        result.push({
+          DevID: device.uid
+        });
+      }
+      console.log(JSON.stringify(result,null, 4));
+
       return result;
     } catch (e) {
       throw e;
