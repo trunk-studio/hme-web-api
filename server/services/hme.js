@@ -149,7 +149,7 @@ export default class Hme {
         u8RxDataArry:[]
       }
 
-      for (let i = 1; i < 300; i++) {
+      for (let i = 1; i < 50; i++) {
         params.u8DevID = i;
         console.log('Search DevID:',params.u8DevID);
         params2.Comm = this.encode.ClientOp(params);
@@ -315,10 +315,10 @@ export default class Hme {
     }
   }
 
-  setLedBrighter = async ({DevID, groupID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt}) => {
+  setLedBrighter = async ({devID, groupID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt}) => {
     try {
       let COpParams = {
-        u8DevID:DevID,
+        u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
         u8DataNum:5,
@@ -421,16 +421,16 @@ export default class Hme {
     try {
 
         let setParams = {
-          DevID:DevID,
+          devID:devID,
           groupID:groupID,
-          Led1Bgt:DBBright * Bright,
-          Led2Bgt:BLBright * Bright,
-          Led3Bgt:GRBright * Bright,
-          Led4Bgt:REBright * Bright,
-          Led5Bgt:WWBright * Bright
+          Led1Bgt: DB * Bright,
+          Led2Bgt: BL * Bright,
+          Led3Bgt: GR * Bright,
+          Led4Bgt: RE * Bright,
+          Led5Bgt: WW * Bright
         }
 
-        let result = await this.setLedCtrlMode(DevID, groupID, 'Interact');
+        let result = await this.setLedCtrlMode(devID, groupID, 'Interact');
         if (result == false) {
             return (result);
         }
@@ -640,10 +640,10 @@ export default class Hme {
                 '2950k': 4, 'savingE': 5, 'blueRed': 6}
         let COpParams = {
         u8DevID:devID,
-        groupID:0,
+        groupID:groupID,
         sFunc:'WordWt',
         u8DataNum:1,
-        u8Addr_Arry:[1010], //Device group
+        u8Addr_Arry:[103], //Normal control index
         u8DataIn_Arry:[modeIndex[mode]],
         u8Mask_Arry:[],
         RepeatNum:5
@@ -669,6 +669,161 @@ export default class Hme {
       } else {
         return (false);
       };
+
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  setSimRtc = async ({devID, groupID, year, month, day, hour, min, sec}) => {
+    try {
+        let COpParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordWt',
+          u8DataNum:6,
+          u8Addr_Arry:[70],  //Addr 70 = RTC simulate set value
+          u8DataIn_Arry:[year, month, day, hour, min, sec],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+        let TxParams = {
+          Comm:[],
+          RxLen:8
+        }
+        let DecodParams = {
+          FuncCT:49,
+          DevID:devID,
+          u8RxDataArry:[]
+        }
+
+        TxParams.Comm = this.encode.ClientOp(COpParams);
+        console.log('setDayTab.COpParams =', COpParams);
+        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
+          return (true);
+        } else {
+          return (false);
+        };
+
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  getSimRtc = async (devID, groupID) => {
+    try {
+        let COpParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordRd',
+          u8DataNum:6,
+          u8Addr_Arry:[70],  //Addr 70 = RTC simulate set value
+          u8DataIn_Arry:[],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+        let TxParams = {
+          Comm:[],
+          RxLen:26
+        }
+        let DecodParams = {
+          FuncCT:33,
+          DevID:devID,
+          u8RxDataArry:[]
+        }
+
+        TxParams.Comm = this.encode.ClientOp(COpParams);
+        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+        console.log('u3ByteToWord=', DecodParams.u8RxDataArry);
+        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
+          let time = [];
+          for (let i = 5; i < 23; i+=3) {
+            time = [
+              ...time,
+              this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(i,i + 3))
+            ];
+          }
+          return (time);
+        } else {
+          return (false);
+        };
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  setSimRtcFunc = async (devID, groupID, func) => {
+    try {
+        let funcIndex = {inti: 0, run: 1, stop: 2}
+        let COpParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordWt',
+          u8DataNum:1,
+          u8Addr_Arry:[60],  //Addr 60 = RTC simulate function
+          u8DataIn_Arry:[funcIndex[func]],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+        let TxParams = {
+          Comm:[],
+          RxLen:8
+        }
+        let DecodParams = {
+          FuncCT:49,
+          DevID:devID,
+          u8RxDataArry:[]
+        }
+
+        TxParams.Comm = this.encode.ClientOp(COpParams);
+        console.log('setDayTab.COpParams =', COpParams);
+        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
+          return (true);
+        } else {
+          return (false);
+        };
+
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  setSimRtcFastForward = async (devID, groupID, rate) => {
+    try {
+        //rate:0~2000
+        let COpParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordWt',
+          u8DataNum:1,
+          u8Addr_Arry:[61],  //Addr 60 = RTC simulate frequency divider (data: 0~2000 -> 2000Hz~1Hz)
+          u8DataIn_Arry:[(2000 - rate)],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+        let TxParams = {
+          Comm:[],
+          RxLen:8
+        }
+        let DecodParams = {
+          FuncCT:49,
+          DevID:devID,
+          u8RxDataArry:[]
+        }
+
+        TxParams.Comm = this.encode.ClientOp(COpParams);
+        console.log('setDayTab.COpParams =', COpParams);
+        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
+          return (true);
+        } else {
+          return (false);
+        };
 
 
     } catch (e) {

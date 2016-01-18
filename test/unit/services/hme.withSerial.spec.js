@@ -136,9 +136,9 @@ describe("hme with seriel port", () => {
       // 一開機是進入Normal
       // 燈具維護這類使用者可以直接操作UI讓燈具產生反應的模式是Interact
       try {
-        let DevID = 0;
+        let DevID = 1;
         let groupID = 1;
-        let CtrlMode = 'Interact';
+        let CtrlMode = 'Normal';
         let result = await services.hme.setLedCtrlMode(DevID, groupID, CtrlMode);
         console.log('setLedCtrlMode result',result);
         result.should.be.true;
@@ -149,16 +149,17 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port setLedDisplayMode", async done => {
+    it("serial Port setLedDisplayMode", async done => {
       //設定燈具固定顯示特定色光
       // cycle:預設模式, 根據Schedule設定顯示燈光
       // fullPower, 6500k...blueRed:燈具固定顯示特定色光, 持續不變
+      // 固定顯示特定色光時，不接受使用者即時改變燈光
       //進入Schedule頁面時,務必重設'cycle'模式
       try {
         let params = {
           devID: 1,
           groupID: 1,
-          mode: '6500k'
+          mode: '2950k'
         }
         //mode: cycle, fullPower, 6500k, 4600k, 2950k, savingE, blueRed
 
@@ -178,7 +179,7 @@ describe("hme with seriel port", () => {
       // 在Interact模式下才有效果
       try {
         let params = {
-          DevID:0,
+          DevID:1,
           groupID:1,
           Led1Bgt:1000,
           Led2Bgt:500,
@@ -217,6 +218,73 @@ describe("hme with seriel port", () => {
       }
 
     });
+
+
+    it("serial Port setSimRtc", async done => {
+      try {
+        let params = {
+          devID: 1,
+          groupID: 1,
+          year: 2017,
+          month: 1,
+          day: 5,
+          hour: 6,
+          min: 11,
+          sec: 0
+        }
+        let result = await services.hme.setSimRtc(params);
+        console.log('setSimRtc result',result);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port getSimRtc", async done => {
+      try {
+        let devID = 1;
+        let groupID = 1;
+        let params = {
+          devID: 1,
+          groupID: 1,
+          year: 2017,
+          month: 1,
+          day: 5,
+          hour: 6,
+          min: 11,
+          sec: 5
+        }
+        await services.hme.setSimRtc(params);
+        let result = await services.hme.getSimRtc(devID, groupID);
+        console.log('getSimRtc result',result);
+        //result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port setSimRtcFunc", async done => {
+      try {
+        let devID = 1;
+        let groupID = 1;
+        let func = 'inti'
+        // func = 'inti', 'run', 'stop'
+
+        let result = await services.hme.setSimRtcFunc(devID, groupID, func);
+        console.log('setSimRtc result',result);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+
 
 
     it("serial Port setLedDisplay", async done => {
