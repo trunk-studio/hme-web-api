@@ -19,9 +19,9 @@ export default class Routes {
     var app = this.app;
     var publicRoute = new Router()
 
-    publicRoute.get('/rest/info/', function *() {
+    publicRoute.get('/rest/info/', async function(ctx) {
       let {APP_NAME} = process.env
-      this.body = {APP_NAME}
+      ctx.body = {APP_NAME}
     })
 
     // Test Raspberry Pi connect
@@ -56,7 +56,7 @@ export default class Routes {
 
 
 
-    publicRoute.get('/', function *() {
+    publicRoute.get('/', function(ctx, next) {
       const HTML = `
       <!DOCTYPE html>
       <html>
@@ -72,25 +72,25 @@ export default class Routes {
         </head>
         <body>
           <div id="react-view"></div>
-          <script type="application/javascript" src="js/bundle.js"></script>
+          <script type="application/javascript" src="/public/assets/js/bundle.js"></script>
           <!--<script>
             document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
           </script>-->
         </body>
       </html>
       `;
-      this.body = HTML
+      ctx.body = HTML
     })
     // publicRoute.get('/', MainController.index);
     app.use(publicRoute.middleware())
 
 
-    app.use(function *(next) {
+    app.use(async function (ctx, next) {
 
-      if (true || services.user.isAuthenticated(this)) {
-        yield next
+      if (true || services.user.isAuthenticated(ctx)) {
+        await next();
       } else {
-        this.redirect('/auth/login')
+        ctx.redirect('/auth/login')
       }
     })
 

@@ -28,12 +28,12 @@ export default class Encode {
     //console.log(u8Byte3buf);
     // [FEAB]=>[2B, 7D, 03]
     return(u8ByteArry);
-  }
+  };
 
   u3ByteToWord = function (u3Byte) {
   	//將經編碼之3Byte資料解碼為1Word
   	return(u3Byte[0] + ((u3Byte[1]<<7)&0xff) + (((u3Byte[1]>>1) + (u3Byte[2]<<6))* 0x100));
-  }
+  };
 
   WordListToAdd3ByteList = function({Data_list, WordDatat_list}) {
   	//用於將WordTypeList編碼為3Byte,並加入3ByteTypeList中
@@ -41,7 +41,7 @@ export default class Encode {
   		Data_list = Data_list.concat(this.WordTo3Byte(WordDatat_list[i]));
     } ;
   	return(Data_list);
-  }
+  };
   //?未測試
   DataListToChkSum3ByteList = function(Data_Arry) {
   	let u16ChkSum = 0;
@@ -51,7 +51,7 @@ export default class Encode {
   	u16ChkSum = u16ChkSum & 0xffff;
     console.log('u16ChkSum='+u16ChkSum);
   	return(this.WordTo3Byte(u16ChkSum));
-  }
+  };
 
 
   CopBitModify = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry){
@@ -82,7 +82,7 @@ export default class Encode {
 
     //this.CopBitModify(1, 17, 2, [1,235], [2,253], [233,222])
     //[128,1,0,0,17,2,0,0,1,0,0,107,1,0,2,0,0,125,1,0,105,1,0,94,1,0,74,4,0]
-  }
+  };
 
 
   CopBitInv = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8Mask_Arry){
@@ -105,7 +105,7 @@ export default class Encode {
     u8DataOut_arry = this.WordListToAdd3ByteList(maskParams);
   	u8DataOut_arry = u8DataOut_arry.concat(this.DataListToChkSum3ByteList(u8DataOut_arry));
   	return (u8DataOut_arry);
-  }
+  };
 
   CopWordRd = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry){
     let u8DataOut_arry =[
@@ -134,7 +134,7 @@ export default class Encode {
     //   RepeatNum:1
     // }
     //[ 128, 127, 31, 0, 0, 0, 0, 33, 5, 0, 0, 1, 0, 0, 69, 2, 0 ]
-  }
+  };
 
   CopDiscWordRd = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry){
     let u8DataOut_arry =[
@@ -164,7 +164,7 @@ export default class Encode {
     // }
     // [ 128,127,31,0,0,0,0,34,5,0,0,1,0,0,127,31,0,35,2,0,85,10,0,83,30,0,89,5,0 ]
 
-  }
+  };
 
 
   CopDiscWordWt = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
@@ -199,7 +199,7 @@ export default class Encode {
     // }
     //[ 128,127,11,0,0,0,0,50,5,0,0,1,0,0,127,31,0,35,2,0,85,10,0,83,30,0,99,31,0,117,29,0,51,20,0,99,10,0,18,20,0,67,9,0 ]
 
-  }
+  };
 
 
   CopWordWt = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
@@ -241,7 +241,7 @@ export default class Encode {
     // let resu
     // [ 128,127,11,0,0,0,0,49,5,0,0,1,0,0,99,31,0,117,29,0,51,20,0,99,10,0,18,20,0,47,6,0 ]
 
-  }
+  };
   //未測試
   ClientOp = function({u8DevID, groupID, sFunc, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry, RepeatNum}){
   	//用於進行通訊,讀寫操作燈具裝置之記憶體
@@ -291,7 +291,7 @@ export default class Encode {
   	// //透過串列通訊寫入(u16DataWt_arry)並回傳回饋資料(u16ReData_list)
   	// return(SerialWR(u8DevID, u16DataWt_arry, sFunc, u8DataNum, RepeatNum))
     return(u16DataWt_arry);
-  }
+  };
 
 
 
@@ -363,7 +363,7 @@ export default class Encode {
       return([])
     }
 
-  }
+  };
 
   configToTimeTabArry = function(config){
     let ScheduleDetailsLen = 12;
@@ -442,6 +442,6 @@ export default class Encode {
     }
   	return (result);
 
-  }
+  };
 
 }

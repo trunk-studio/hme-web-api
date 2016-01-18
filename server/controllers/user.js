@@ -1,58 +1,58 @@
 
 
-exports.index = function *() {
+exports.index = async function(ctx) {
 
-  let users = yield models.User.findAll()
+  let users = await models.User.findAll()
 
-  this.body = {users}
+  ctx.body = {users}
 };
 
-exports.get = function *() {
+exports.get = async function(ctx) {
 
-  let userId = this.params.id;
+  let userId = ctx.params.id;
 
-  let user = yield models.User.findById(userId);
+  let user = await models.User.findById(userId);
 
-  this.body = {user}
+  ctx.body = {user}
 };
 
 
-exports.create = function *() {
+exports.create = async function(ctx) {
 
-  let newUser = this.request.body;
+  let newUser = ctx.request.body;
 
   let result = null;
 
   try {
-    result = yield models.User.create(newUser);
+    result = await models.User.create(newUser);
   } catch (e) {
     console.error("create user error", e);
   }
 
   let user = result;
 
-  this.body = {user}
+  ctx.body = {user}
 };
 
 
-exports.delete = function *() {
+exports.delete = async function(ctx) {
 
-  let userId = this.params.id;
+  let userId = ctx.params.id;
 
   let result = null;
 
   try {
-    let user = yield models.User.findById(userId);
+    let user = await models.User.findById(userId);
 
     result = user.destroy()
   } catch (e) {
     console.error("delete user error", e);
   }
 
-  this.body = {result}
+  ctx.body = {result}
 };
 
-exports.login = function *() {
+exports.login = async function (ctx, next) {
   let success = false;
   try {
     let userData = {
@@ -61,13 +61,13 @@ exports.login = function *() {
       user: 'user'
     };
     let pass = false;
-    let role = this.request.body.role;
-    let password = this.request.body.password;
+    let role = ctx.request.body.role;
+    let password = ctx.request.body.password;
 
     if(userData[role] == password)
       success = true;
 
-    this.body = { success }
+    ctx.body = { success }
   } catch(e) {
     console.error("delete user error", e);
   }

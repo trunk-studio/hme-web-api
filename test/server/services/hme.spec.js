@@ -19,6 +19,7 @@ describe("hme", () => {
   });
 
   it("service hello", (done) => {
+    console.log("=== service hello ===");
     let result = services.hme.hello();
     console.log('=== result ===', result);
     done();
