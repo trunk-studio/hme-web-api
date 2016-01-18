@@ -122,7 +122,6 @@ export default class ScheduleDetail extends React.Component {
   }
 
   _handleDialogClose = (e) => {
-    console.log('test');
     this.setState({dialogIsOpen: false});
   }
 
@@ -161,7 +160,7 @@ export default class ScheduleDetail extends React.Component {
       return ;
     }
 
-    this._resetScheduleDetailsTime(StartTime.getValue(), EndTime.getValue());
+    this._resetScheduleDetailsTime(startTime, endTime);
   }
 
   render () {
@@ -230,10 +229,12 @@ export default class ScheduleDetail extends React.Component {
 
     let dialogActions = [
       <FlatButton
+        key={'cancelButton'}
         label="Cancel"
         secondary={true}
         onTouchTap={this._handleDialogClose} />,
       <FlatButton
+        key={'resetButton'}
         label="Reset"
         primary={true}
         onTouchTap={this._dialogActionReset} />
@@ -258,12 +259,14 @@ export default class ScheduleDetail extends React.Component {
                   height={215}
                   datum={data}
                   xAxis={{
-                    tickValues: tickMarks,
+                    /*tickValues: tickMarks,*/
                     tickFormat: function(d) {return _formatMinutes(d);}
                   }}
+                  forceX={[0,1440]}
                   yAxis={{
                     tickFormat: function(d) {return numeral(d).format('0%')}
-                  }} />
+                  }}
+                  forceY={[0,1]} />
               </div>
               <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '85px',
                 position: 'absolute', right: '-60px'}}>
