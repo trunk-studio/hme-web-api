@@ -26,6 +26,8 @@ const ScheduleDetailConfig = require('../components/ScheduleDetailConfig');
 //   render () { return null; }
 // }
 
+
+
 export default class App extends React.Component {
   render() {
     return (
@@ -35,7 +37,7 @@ export default class App extends React.Component {
         <Route path="/graph" component={SettingGraph} />
         <Route path="/schedule/list" component={ScheduleList} />
         <Route path="/schedule/edit/:scheduleID" component={ScheduleDetail} />
-        <Route path="/schedule/config/:id" component={ScheduleDetailConfig}/>
+        <Route path="/schedule/config/:id" component={ScheduleDetailConfig} />
       </Router>
     );
   }
