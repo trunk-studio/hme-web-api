@@ -7,8 +7,10 @@ import {
 } from '../actions/ScheduleDetailActions'
 import moment from 'moment'
 import {
-  AppBar, TimePicker, Dialog, IconButton, NavigationClose, FlatButton, RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow
+  AppBar, TimePicker, FontIcon, Dialog, IconButton, FlatButton, RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow
 } from 'material-ui';
+const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
+
 import numeral from 'numeral'
 import NVD3Chart from 'react-nvd3';
 import VerticalSlider from'vertical-rc-slider';
@@ -242,10 +244,15 @@ export default class ScheduleDetail extends React.Component {
     return (
       <div>
         <AppBar title="Schedule Detail"
+          iconElementLeft={
+            <IconButton onTouchTap={function() {window.location.href = '#/manage/3';}} >
+              <NavigationClose />
+            </IconButton>
+          }
           iconElementRight={
             <FlatButton label="Save" onTouchTap={this._saveScheduleDetails}/>
           }
-          onLeftIconButtonTouchTap={function(){console.log('leftNav');}}
+          onLeftIconButtonTouchTap={function(){ console.log('aaa'); }}
         />
         <div className="self-center" style={{
         width: '100%',
