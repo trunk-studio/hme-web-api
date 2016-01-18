@@ -1,3 +1,5 @@
 -t 500000
 --recursive test/unit/beforeAll.js
+--require babel-core/register
+--require babel-polyfill
 --reporter spec

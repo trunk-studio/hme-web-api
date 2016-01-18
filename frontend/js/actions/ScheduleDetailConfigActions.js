@@ -10,7 +10,7 @@ export function requestGetScheduleDetailConfig(id) {
   console.log(id);
   return (dispatch) => {
     return request
-      .get(`/rest/schedule/config/${id}`)
+      .get(`/rest/master/schedule/config/${id}`)
       .then(response => dispatch(receivedGetScheduleDetailConfig(response.data)));
   };
 }
@@ -34,7 +34,7 @@ export function requestUpdateScheduleDetailConfig(updateData) {
   // return receivedUpdateScheduleDetailConfig(updateData);
   return (dispatch) => {
     return request
-      .post('/rest/schedule/config/update',updateData)
+      .post('/rest/master/schedule/config/update',updateData)
       .then(response => dispatch(receivedUpdateScheduleDetailConfig(data)));
   };
 }

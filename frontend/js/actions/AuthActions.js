@@ -6,7 +6,7 @@ export const RECEIVED_LOGIN = 'RECEIVED_LOGIN'
 export function requestLogin(loginData) {
   return (dispatch) => {
     return request
-      .post('/rest/hme/login', loginData)
+      .post('/rest/master/login', loginData)
       .then(response => dispatch(receivedLogin(response.data)));
   };
 }

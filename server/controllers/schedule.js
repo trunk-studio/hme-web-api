@@ -1,8 +1,8 @@
-exports.configUpdate = function *() {
+exports.configUpdate = async function(ctx) {
   try {
-    console.log("==== getConfigDetail ===",this.request.body);
-    let data = this.request.body;
-    let config = yield models.ScheduleDetailConfig.findById(data.id);
+    console.log("==== getConfigDetail ===",ctx.request.body);
+    let data = ctx.request.body;
+    let config = await models.ScheduleDetailConfig.findById(data.id);
     config.WW= data.WW;
     config.DB= data.DB;
     config.BL= data.BL;
@@ -10,19 +10,19 @@ exports.configUpdate = function *() {
     config.RE= data.RE;
     config.CCT= data.CCT;
     config.Bright = data.Bright;
-    config = yield config.save();
-    this.body = config ;
+    config = await config.save();
+    ctx.body = config ;
   } catch(e) {
     console.error("delete user error", e);
   }
 
 },
 
-exports.getConfigDetail = function *() {
+exports.getConfigDetail = async function(ctx) {
   try {
-    console.log("==== getConfigDetail ===",this.params.id);
-    let id = this.params.id;
-    let config = yield models.ScheduleDetailConfig.findById(id);
+    console.log("==== getConfigDetail ===",ctx.params.id);
+    let id = ctx.params.id;
+    let config = await models.ScheduleDetailConfig.findById(id);
 
     let chartData = [
       config.WW,
@@ -33,7 +33,7 @@ exports.getConfigDetail = function *() {
       config.CCT,
       config.Bright
     ];
-    this.body =  chartData;
+    ctx.body =  chartData;
   } catch(e) {
     console.error("delete user error", e);
   }
@@ -41,68 +41,149 @@ exports.getConfigDetail = function *() {
 }
 
 
-exports.createSchedule = function *() {
+exports.createSchedule = async function(ctx) {
   try {
     console.log("==== createSchedule ===");
-    let newSchedule = this.request.body;
-    let result = yield services.schedule.create(newSchedule);
-    this.body =  result;
+    let newSchedule = ctx.request.body;
+    let result = await services.schedule.create(newSchedule);
+    ctx.body =  result;
   } catch(e) {
     console.error("delete user error", e);
   }
 
 }
 
-exports.getOneSchedule = function *() {
+exports.getOneSchedule = async function(ctx) {
   try {
     console.log("==== getOneSchedule ===");
-    let id = this.params.id;
-    let result = yield services.schedule.find(id);
-    this.body =  result;
+    let id = ctx.params.id;
+    let result = await services.schedule.find(id);
+    ctx.body =  result;
   } catch(e) {
     console.error("delete user error", e);
   }
 }
 
-exports.getAllSchedule = function *() {
+exports.getAllSchedule = async function(ctx) {
   try {
     console.log("==== getAllSchedule ===");
-    let result = yield services.schedule.findAll();
-    this.body =  result;
+    let result = await services.schedule.findAll();
+    ctx.body =  result;
   } catch(e) {
     console.error("delete user error", e);
   }
 }
 
-exports.updateScheduleDay = function *() {
+exports.updateScheduleDay = async function(ctx) {
   try {
     console.log("==== updateDay ===");
-    let data = this.request.body;
-    let result = yield services.schedule.updateDay(data);
-    this.body =  result;
+    let data = ctx.request.body;
+    let result = await services.schedule.updateDay(data);
+    ctx.body =  result;
   } catch(e) {
     console.error("delete user error", e);
   }
 }
 
-exports.updateScheduleList = function *() {
+exports.updateScheduleList = async function(ctx) {
   try {
     console.log("==== updateScheduleList ===");
-    let data = this.request.body;
-    let result = yield services.schedule.updateScheduleList(data);
-    this.body =  result;
+    let data = ctx.request.body;
+    let result = await services.schedule.updateScheduleList(data);
+    ctx.body =  result;
   } catch(e) {
     console.error("delete user error", e);
   }
 }
 
-exports.updateScheduleDetail = function *() {
+exports.updateScheduleDetail = async function(ctx) {
   try {
     console.log("==== updateDay ===");
-    let data = this.request.body;
-    let result = yield services.schedule.updateScheduleDetail(data);
-    this.body =  result;
+    let data = ctx.request.body;
+    let result = await services.schedule.updateScheduleDetail(data);
+    ctx.body =  result;
   } catch(e) {
     console.error("delete user error", e);
+  }
+}
+
+exports.updateScheduleDetails = async function(ctx) {
+  try {
+    console.log("==== updateDay ===");
+    let scheduleDetails = ctx.request.body;
+    let newScheduleDetails = [];
+    for(let detail of scheduleDetails) {
+      let result = await services.schedule.updateScheduleDetail({
+        ScheduleDetailId: detail.id,
+        weight: detail.weight,
+        StartTime: detail.StartTime
+      });
+      newScheduleDetails.push(result);
+    }
+    ctx.body = newScheduleDetails;
+  } catch(e) {
+    console.error("delete user error", e);
+  }
+}
+
+exports.setSchedulesToDevice = async function(ctx) {
+  try {
+
+    let schedules = [];
+    let scheduleIDs = ctx.request.body.scheduleIDs;
+    // let schedulesData = await services.schedule.findWithScheduleDetail(scheduleIDs);
+
+    let schedulesData = await models.Schedule.findAll({
+      where: {
+        id: scheduleIDs
+      },
+      include: {
+        model: models.ScheduleDetail,
+        include: models.ScheduleDetailConfig
+      }
+    });
+
+    for(let schedule of schedulesData) {
+      let details = [];
+
+      for(let scheduleDetail of schedule.ScheduleDetails) {
+        let scheduleDetailConfigs = scheduleDetail.ScheduleDetailConfigs[0];
+        let chartData = {
+          WW: scheduleDetailConfigs.WW,
+          DB: scheduleDetailConfigs.DB,
+          BL: scheduleDetailConfigs.BL,
+          GR: scheduleDetailConfigs.GR,
+          RE: scheduleDetailConfigs.RE,
+          CCT: scheduleDetailConfigs.CCT,
+          Bright: scheduleDetailConfigs.Bright
+        };
+
+        details.push({
+          weight: scheduleDetail.weight,
+          // '12:15:00' -> '12:15'
+          StartTime: scheduleDetail.StartTime.slice(0,5),
+          ScheduleDetailConfig: chartData
+        });
+      }
+
+      schedules.push({
+        StartDate: schedule.StartDate,
+        Days: schedule.Days,
+        Details: details
+      });
+    }
+
+
+    let scheduleConfigs = {
+      Device: ctx.body.deviceID,
+      Group: ctx.body.groupID,
+      Schedules: schedules
+    };
+
+    let result = await services.hme.writeTimeTabToDevice(scheduleConfigs);
+    ctx.body = result;
+    done();
+  } catch (e) {
+    done(e);
   }
 }
