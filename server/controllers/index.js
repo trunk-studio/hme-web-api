@@ -78,6 +78,8 @@ export default class Routes {
 
     // find slave Device & Groups
     publicRoute.get('/rest/slave/searchDevice', HmeController.searchDevice);
+    publicRoute.get('/rest/slave/findAllDeviceGroups', HmeController.findAllDeviceGroups);
+    publicRoute.get('/rest/slave/getCachedDeviceList', HmeController.getCachedDeviceList);
     publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
     publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceList);
 
@@ -87,6 +89,7 @@ export default class Routes {
     publicRoute.get('/rest/slave/test/group/id', HmeController.testGruopByID);
     publicRoute.post('/rest/slave/test/setLedDisplay', HmeController.setLedDisplay);
 
+    publicRoute.post('/rest/slave/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
     publicRoute.post('/rest/slave/:slaveId/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
 
 
