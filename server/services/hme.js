@@ -1,5 +1,8 @@
-let SerialPort = require("serialport").SerialPort;
-let Encode = require("./encode");
+import {SerialPort as serialPort} from "serialport";
+import Encode from "./encode";
+
+
+let ping = require('ping');
 
 export default class Hme {
   constructor (serialPortName) {
@@ -13,13 +16,13 @@ export default class Hme {
 
   sleep = function(ms = 0){
     return new Promise(r => setTimeout(r, ms));
-  }
+  };
 
 
   hello = (app) => {
     let hello = 'yes!';
     return {hello};
-  }
+  };
 
   connectSerialPort = async () => {
     try {
@@ -44,7 +47,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   ping = async () => {
     try {
@@ -64,9 +67,39 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
+  pingAllSlave = async () => {
+    try {
 
+      let hosts = [];
+      let slaves = [];
+      for(let i=1;i<10;i++) {
+        hosts.push(`hmepi00${i}.local`);
+      }
+      hosts.push(`hmepi010.local`);
+
+      for(let host of hosts) {
+        let exist = await new Promise((done) => {
+          ping.sys.probe(host, function (res) {
+            done(res);
+          });
+        });
+        if(exist) {
+          slaves.push({
+            host: host,
+            description: '',
+            apiVersion : ''
+          });
+        }
+      }
+      let result = await services.hme.bulkCreateSlave(slaves);
+
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  };
 
 
 
@@ -122,7 +155,7 @@ export default class Hme {
       console.log('ERROR!!');
       throw e;
     }
-  }
+  };
 
 
 
@@ -174,7 +207,16 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
+
+  getCachedDeviceList = async () => {
+    try {
+      let result = models.Device.findAll();
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  };
 
   testAll = async () => {
     try {
@@ -183,7 +225,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   testDevID = async (devID) => {
     try {
@@ -192,7 +234,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   testGroup = async (groupID) => {
     try {
@@ -241,7 +283,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   testDevice = async (devID, groupID) => {
     try {
@@ -286,7 +328,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
 
   setLedCtrlMode = async (devID, groupID, CtrlMode) => {
@@ -324,7 +366,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   setLedBrighter = async ({devID, groupID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt}) => {
     try {
@@ -361,7 +403,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   setLedBrigh = async ({devID, groupID, LedCH, BrighNum}) => {
     try {
@@ -426,9 +468,9 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
-  setLedDisplay = async ({devID, groupID, WW, DB, BL, GR, RE, Bright}) => {
+  setLedDisplay = async ({DevID, groupID, WWBright, DBBright, BLBright, GRBright, REBright, Bright}) => {
     try {
 
         let setParams = {
@@ -451,7 +493,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   setGroupID = async (DevID, groupID) => {
     try {
@@ -491,7 +533,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   writeFlashMemory = async (DevID, groupID) => {
     try {
@@ -527,7 +569,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   setDayTab = async (devID, groupID, dayTab) => {
     try {
@@ -564,7 +606,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   setTimeTab = async (devID, groupID, timeTab) => {
     try {
@@ -613,7 +655,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
 
   writeTimeTabToDevice= async (config) => {
@@ -643,7 +685,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   setLedDisplayMode = async ({devID, groupID, mode}) => {
     try {
@@ -685,7 +727,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   setSimRtc = async ({devID, groupID, year, month, day, hour, min, sec}) => {
     try {
@@ -893,10 +935,6 @@ export default class Hme {
   //   }
   // }
 
-
-
-
-
   _eventsSetup = () => {
     let serialPort = this.serialPort;
     let RxBufArry = this.RxBufArry
@@ -913,5 +951,15 @@ export default class Hme {
       }
     });
 
-  }
+  };
+
+  bulkCreateSlave = async (newSlaves) => {
+    try {
+      let result = await models.Slave.bulkCreate(newSlaves);
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  };
+
 }

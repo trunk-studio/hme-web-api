@@ -67,13 +67,13 @@ module.exports = {
 
   updateScheduleList: async(scheduleArray) => {
     try {
-      let newScheduleList =  await* scheduleArray.map( async (item) => {
+      let newScheduleList =  await Promise.all(scheduleArray.map( async (item) => {
         let schedule = await models.Schedule.findById(item.id);
         schedule.Days = item.Days || 0;
         schedule.StartDate = item.StartDate;
         schedule = await schedule.save();
         return schedule;
-      });
+      }));
       return newScheduleList;
     } catch (e) {
       throw e;
@@ -129,6 +129,52 @@ module.exports = {
       return {Schedules} ;
     } catch (e) {
       throw e;
+    }
+  },
+
+  exportJsonConfig: async({id, name, description}) => {
+    try {
+      console.log(id, name, description);
+
+      let getScheduleConfig = await models.ScheduleDetail.findAll({
+        where:{
+          ScheduleId: id
+        },
+        include:{
+          model: models.ScheduleDetailConfig,
+          attributes: { exclude: ['id','createdAt','updatedAt','ScheduleDetailId'] }
+        },
+        attributes: { exclude: ['id','createdAt','updatedAt','ScheduleId'] }
+      })
+      delete getScheduleConfig.id
+      let data = {
+        name,
+        description,
+        dateCreated: 'JS_DATE_FORMAT',
+        lastUpdated: 'JS_DATE_FORMAT',
+        version: '1.0.0',
+        parameters: getScheduleConfig
+      }
+
+      fs.outputJson(`./scheduleconfig/${name}`, data, function (err) {
+        if(err) throw new Error(err);
+      })
+      return 'ok';
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
+  },
+
+  readJson: async({name}) => {
+    try {
+      fs.readJson(`./scheduleconfig/${name}`, function(err, data) {
+        if(err) throw new Error(err);
+        return data
+      })
+    } catch (e) {
+      console.log(e);
+      throw e
     }
   }
 

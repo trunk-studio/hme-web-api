@@ -1,6 +1,6 @@
 import {
   RECEIVED_SCHEDULE_DETAIL,
-  RECEIVED_UPDATED_SCHEDULE_DETAIL,
+  RECEIVED_UPDATED_SCHEDULE_DETAILS,
   MODIFY_SCHEDULE
 } from '../actions/ScheduleDetailActions'
 
@@ -11,10 +11,9 @@ export function scheduleDetail(state = { }, action) {
         ...state,
         dailySchedules: action.data
       };
-    case RECEIVED_UPDATED_SCHEDULE_DETAIL:
+    case RECEIVED_UPDATED_SCHEDULE_DETAILS:
       return {
-        ...state,
-        dailySchedules: action.data
+        ...state
       }
     case MODIFY_SCHEDULE:
       return {

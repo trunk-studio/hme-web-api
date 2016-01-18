@@ -12,4 +12,5 @@ db.development.sqlite
 server/config/development.js
 server/config/test.js
 server/config/production.js
+scheduleconfig/*
 bower_components

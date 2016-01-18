@@ -3,7 +3,7 @@ describe("User", () => {
 
   it("index all user", (done) => {
 
-    request.get("/rest/user/")
+    request.get("/rest/master/user/")
     .expect(200)
     .end((error, res) => {
       res.body.users.should.be.Array;
@@ -15,7 +15,7 @@ describe("User", () => {
 
   it("login success test", async (done) => {
     try {
-      let result = await request.post('/rest/hme/login')
+      let result = await request.post('/rest/master/login')
         .send({
           role:'admin',
           password: 'admin'
@@ -29,7 +29,7 @@ describe("User", () => {
 
   it("login failed test", async (done) => {
     try {
-      let result = await request.post('/rest/hme/login')
+      let result = await request.post('/rest/master/login')
         .send({
           role:'admin',
           password: '123'

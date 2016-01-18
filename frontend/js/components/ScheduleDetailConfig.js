@@ -23,8 +23,8 @@ export default class ScheduleDetailConfig extends React.Component {
       blValue: 0,
       grValue: 0,
       reValue: 0,
-      cctValue: 0,
-      brightValue: 0
+      cctValue: 3000,
+      brightValue: 100
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -48,35 +48,97 @@ export default class ScheduleDetailConfig extends React.Component {
   componentDidUpdate(prevProps, prevState) {
   }
 
-  _wwChanged = (e, value) => {
-    this.state.wwValue = value;
+  _wwChanged = () => {
+    this.state.wwValue = this.refs.WW.state.value;
     this._saveConfig();
   }
-  _dbChanged = (e, value) => {
-    this.state.dbValue = value;
+  _dbChanged = () => {
+    this.state.dbValue = this.refs.DB.state.value;
     this._saveConfig();
   }
-  _blChanged = (e, value) => {
-    this.state.blValue = value;
+  _blChanged = () => {
+    this.state.blValue = this.refs.BL.state.value;
     this._saveConfig();
   }
-  _grChanged = (e, value) => {
-    this.state.grValue = value;
+  _grChanged = () => {
+    this.state.grValue = this.refs.GR.state.value;
     this._saveConfig();
   }
-  _reChanged = (e, value) => {
-    this.state.reValue = value;
+  _reChanged = () => {
+    this.state.reValue = this.refs.RE.state.value;
     this._saveConfig();
   }
-  _cctChanged = (e, value) => {
-    this.refs.chart.state.chart.datasets[0].points[5].value = value;
-    this.refs.chart.state.chart.update();
+  _cctChanged = () => {
+    let value = this.refs.CCT.state.value;
+    if(value >= 3000 && value < 4000){
+      console.log("3");
+      this._setAll(
+        1 ,
+        0.6  * ((value - 3000) / (4000 - 3000)),
+        0.25 + (0.47 - 0.25) * ((value - 3000) / (4000 - 3000)),
+        0.3  + (0.53 - 0.3 ) * ((value - 3000) / (4000 - 3000)),
+        1    + (0.74 - 1   ) * ((value - 3000) / (4000 - 3000)),
+        value
+      );
+    }else if(value >= 4000 && value < 5000){
+      console.log("4");
+      this._setAll(
+        1 ,
+        0.6  + (0.8 - 0.6)  * ((value - 4000) / (5000 - 4000)),
+        0.47 + (0.68 - 0.47) * ((value - 4000) / (5000 - 4000)),
+        0.53 + (0.75 - 0.53) * ((value - 4000) / (5000 - 4000)),
+        0.74 + (0.47 - 0.74) * ((value - 4000) / (5000 - 4000)),
+        value
+      );
+    }else if(value >= 5000 && value < 6500){
+      console.log("5");
+      this._setAll(
+        1    + (0.8  - 1   ) * ((value - 5000) / (6500 - 5000)),
+        0.8  + (1    - 0.8 ) * ((value - 5000) / (6500 - 5000)),
+        0.68 + (0.9  - 0.68) * ((value - 5000) / (6500 - 5000)),
+        0.75 + (1    - 0.75) * ((value - 5000) / (6500 - 5000)),
+        0.47 + (0.2  - 0.47) * ((value - 5000) / (6500 - 5000)),
+        value
+      );
+    }else if(value >= 6500 && value < 10000){
+      console.log("6.5");
+      this._setAll(
+        0.8 + (0.6 - 0.8) * ((value - 6500) / (10000 - 6500)),
+        1,
+        0.9 + (1   - 0.9) * ((value - 6500) / (10000 - 6500)),
+        1   + (0.7 - 1  ) * ((value - 6500) / (10000 - 6500)),
+        0.2 + (0.1 - 0.2) * ((value - 6500) / (10000 - 6500)),
+        value
+      );
+    }else if(value >= 10000 && value < 16000){
+      console.log("10");
+      this._setAll(
+        0.6 + (0.4 - 0.6) * ((value - 10000) / (16000 - 10000)),
+        1,
+        1,
+        0.7 + (0.5 - 0.7) * ((value - 10000) / (16000 - 10000)),
+        0.1 * ((value - 10000) / (16000 - 10000)),
+        value
+      );
+    }
+  }
+  _setAll = (ww, db, bl, gr, re, cct) =>{
+    console.log(ww, db, bl, gr, re);
+    this.state.wwValue = Math.round(ww * 100);
+    this.state.dbValue = Math.round(db * 100);
+    this.state.blValue = Math.round(bl * 100);
+    this.state.grValue = Math.round(gr * 100);
+    this.state.reValue = Math.round(re * 100);
+    if(cct)
+      this.state.cctValue = cct;
     this._saveConfig();
   }
   _brightChanged = (e, value) => {
-    this.refs.chart.state.chart.datasets[0].points[6].value = value;
-    this.refs.chart.state.chart.update();
-    this._saveConfig();
+    // this.state.brightValue = value;
+    this.setState({
+      brightValue: this.refs.Bright.state.value
+    })
+    // this._saveConfig();
   }
 
   _saveConfig = (e) => {
@@ -95,20 +157,40 @@ export default class ScheduleDetailConfig extends React.Component {
   backClick = () => {
   }
 
+  _AllOpen = (e) => {
+    this._setAll(1,1,1,1,1);
+  }
+
+  _6500k = (e) => {
+    this._setAll(0.85, 0.9, 0.8, 0.85, 0.25);
+  }
+
+  _4600k = (e) => {
+    this._setAll(1, 0.67, 0.61, 0.67, 0.59);
+  }
+  _2950k = (e) => {
+    this._setAll(1, 0, 0.25, 0.29, 1);
+  }
+  _saving = (e) => {
+    this._setAll(1, 1, 0.5, 0, 1);
+  }
+  _BR = (e) => {
+    this._setAll(0, 1, 1, 0, 1);
+  }
 
   render() {
     if(this.props.config){
-      this.state.wwValue = this.props.config[0];
-      this.state.dbValue = this.props.config[1];
-      this.state.blValue = this.props.config[2];
-      this.state.grValue = this.props.config[3];
-      this.state.reValue = this.props.config[4];
+      this.state.wwValue = Math.round(this.props.config[0] * (this.state.brightValue * 0.01));
+      this.state.dbValue = Math.round(this.props.config[1] * (this.state.brightValue * 0.01));
+      this.state.blValue = Math.round(this.props.config[2] * (this.state.brightValue * 0.01));
+      this.state.grValue = Math.round(this.props.config[3] * (this.state.brightValue * 0.01));
+      this.state.reValue = Math.round(this.props.config[4] * (this.state.brightValue * 0.01));
       this.state.cctValue = this.props.config[5];
       this.state.brightValue = this.props.config[6];
 
       let newSUM = [];
       this.state.DB.forEach((data,i) => {
-        newSUM.push(this.state.DB[i]* (this.state.dbValue * 0.01)+
+        newSUM.push(this.state.DB[i]* (this.state.dbValue * 0.01) +
         this.state.BL[i] * (this.state.blValue * 0.01)+
         this.state.GR[i] * (this.state.grValue * 0.01)+
         this.state.RE[i] * (this.state.reValue * 0.01)+
@@ -163,22 +245,22 @@ export default class ScheduleDetailConfig extends React.Component {
                 options={chartOptions} />
             </div>
             <div className="row smalllRaisedBnutton" style={{marginLeft:'30px'}}>
-              <RaisedButton label="全開" />
-              <RaisedButton label="6500K" />
-              <RaisedButton label="4600K" />
-              <RaisedButton label="2950K" />
-              <RaisedButton label="saving E" />
-              <RaisedButton label="B + R" />
+              <RaisedButton label="全開"  onTouchTap={this._AllOpen}/>
+              <RaisedButton label="6500K" onTouchTap={this._6500k}/>
+              <RaisedButton label="4600K" onTouchTap={this._4600k}/>
+              <RaisedButton label="2950K" onTouchTap={this._2950k}/>
+              <RaisedButton label="saving E" onTouchTap={this._saving}/>
+              <RaisedButton label="B + R" onTouchTap={this._BR}/>
             </div>
           </div>
           <div className="col-md-4 col-sm-4 col-xs-4">
-            <Slider ref="WW" name="WW" defaultValue={100} max={100} step={1} value={this.state.wwValue} description={`WW ${this.state.wwValue}`} className="slider" onChange={this._wwChanged} />
-            <Slider ref="DB" name="DB" defaultValue={100} max={100} step={1} value={this.state.dbValue} description={`DB ${this.state.dbValue}`} className="slider" onChange={this._dbChanged} />
-            <Slider ref="BL" name="BL" defaultValue={100} max={100} step={1} value={this.state.blValue} description={`BL ${this.state.blValue}`} className="slider" onChange={this._blChanged} />
-            <Slider ref="GR" name="GR" defaultValue={100} max={100} step={1} value={this.state.grValue} description={`GR ${this.state.grValue}`} className="slider" onChange={this._grChanged} />
-            <Slider ref="RE" name="RE" defaultValue={100} max={100} step={1} value={this.state.reValue} description={`RE ${this.state.reValue}`} className="slider" onChange={this._reChanged} />
-            <Slider ref="CCT" name="CCT" defaultValue={3000} max={16000} value={this.state.cctValue} description="CCT" step="10" className="slider" onChange={this._cctChanged}/>
-            <Slider ref="Bright" name="Bright" defaultValue={100} className="slider" max={100} value={this.state.brightValue} description="Bright" onChange={this._brightChanged}/>
+            <Slider ref="WW" name="WW" defaultValue={0} max={100} step={1} value={this.state.wwValue} description={`WW ${this.state.wwValue}`} className="slider" onDragStop={this._wwChanged} />
+            <Slider ref="DB" name="DB" defaultValue={0} max={100} step={1} value={this.state.dbValue} description={`DB ${this.state.dbValue}`} className="slider" onDragStop={this._dbChanged} />
+            <Slider ref="BL" name="BL" defaultValue={0} max={100} step={1} value={this.state.blValue} description={`BL ${this.state.blValue}`} className="slider" onDragStop={this._blChanged} />
+            <Slider ref="GR" name="GR" defaultValue={0} max={100} step={1} value={this.state.grValue} description={`GR ${this.state.grValue}`} className="slider" onDragStop={this._grChanged} />
+            <Slider ref="RE" name="RE" defaultValue={0} max={100} step={1} value={this.state.reValue} description={`RE ${this.state.reValue}`} className="slider" onDragStop={this._reChanged} />
+            <Slider ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} description={`${this.state.cctValue}k`} step={10} className="slider" onDragStop={this._cctChanged}/>
+            <Slider ref="Bright" name="Bright" defaultValue={100} className="slider" max={100} step={1} value={this.state.brightValue} description={`Bright ${this.state.brightValue}`} onChange={this._brightChanged}/>
           </div>
         </div>
       </div>
