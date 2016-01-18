@@ -254,23 +254,18 @@ export default class ManagePage extends React.Component {
     return (
       <Tabs>
         <Tab label="TEST">
-          <div className="self-center" style={{width: '350px'}}>
+          <div className="self-center" style={{width: '315px', marginTop: '15px'}}>
             <div style={{display: 'table-caption'}}>
               <div style={{display: 'inline-flex'}}>
                 <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={this.props.deviceList}/>
-                <RaisedButton label="TEST" onTouchTap={this._testOneDevice}/>
+                <SelectField labelMember="primary" menuItems={this.props.groupList} style={{width: '200px'}}/>
+                <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px'}}></RaisedButton>
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField onChange={this._deviceMenuIndexChanged}
-                  ref="groupMenu" menuItems={this.props.groupList}/>
-                <RaisedButton label="Grouping" onTouchTap={this._testGroupDevice}/>
-              </div>
-              <div style={{display: 'inline-flex'}}>
-                <SelectField menuItems={this.props.groupList}/>
-                <RaisedButton label="TEST" />
+                <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={this.props.deviceList} style={{width: '200px'}}/>
+                <RaisedButton label="Test" secondary={true} style={{marginLeft:'15px', width: '100px'}} onTouchTap={this._testOneDevice}></RaisedButton>
               </div>
             </div>
           </div>
@@ -338,13 +333,21 @@ function _injectPropsFromStore(state) {
       groupList = [];
   if(scanDevice.deviceList) {
     for(let device of scanDevice.deviceList) {
-      scanResult.push({payload: device.DevID, text: device.DevID});
+      scanResult.push({
+        payload: device.DevID,
+        primary: `DeviceID: ${device.DevID}`,
+        text: device.DevID
+      });
     }
   }
 
   if(scanDevice.groupList) {
     for(let group of scanDevice.groupList) {
-      groupList.push({payload: group.id, text: group.id});
+      groupList.push({
+        payload: group.id,
+        primary: `SlaveID: ${group.id}`,
+        text: group.id,
+      });
     }
   }
   return {
