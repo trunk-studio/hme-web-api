@@ -83,8 +83,8 @@ describe("hme with seriel port", () => {
 
       try {
         //測試特定DevID之燈具
-        let DevID = 1;
-        let result = await services.hme.testDevID(DevID);
+        let devID = 1;
+        let result = await services.hme.testDevID(devID);
         console.log('testDevID result',result);
         result.should.be.true;
         done();
@@ -116,9 +116,9 @@ describe("hme with seriel port", () => {
       try {
         // 當DevID != 0，groupID設定無效
         // DevID == 0 && groupID == 0，測試全部裝置
-        let DevID = 1;
+        let devID = 1;
         let groupID = 1;
-        let result = await services.hme.testDevice(DevID, groupID);
+        let result = await services.hme.testDevice(devID, groupID);
         console.log('TestDevice result',result);
         result.should.be.true;
         done();
@@ -136,10 +136,10 @@ describe("hme with seriel port", () => {
       // 一開機是進入Normal
       // 燈具維護這類使用者可以直接操作UI讓燈具產生反應的模式是Interact
       try {
-        let DevID = 1;
+        let devID = 1;
         let groupID = 1;
         let CtrlMode = 'Normal';
-        let result = await services.hme.setLedCtrlMode(DevID, groupID, CtrlMode);
+        let result = await services.hme.setLedCtrlMode(devID, groupID, CtrlMode);
         console.log('setLedCtrlMode result',result);
         result.should.be.true;
         done();
@@ -179,7 +179,7 @@ describe("hme with seriel port", () => {
       // 在Interact模式下才有效果
       try {
         let params = {
-          DevID:1,
+          devID:1,
           groupID:1,
           Led1Bgt:1000,
           Led2Bgt:500,
@@ -204,7 +204,7 @@ describe("hme with seriel port", () => {
       // BrighNum: 1~10000
       try {
         let params = {
-          DevID:1,
+          devID:1,
           groupID:1,
           LedCH:'LedCH2',
           BrighNum:800
