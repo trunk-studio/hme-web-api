@@ -7,8 +7,10 @@ import {
 } from '../actions/ScheduleDetailActions'
 import moment from 'moment'
 import {
-  AppBar, TimePicker, Dialog, IconButton, NavigationClose, FlatButton, RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow
+  AppBar, TimePicker, FontIcon, Dialog, IconButton, FlatButton, RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow
 } from 'material-ui';
+const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
+
 import numeral from 'numeral'
 import NVD3Chart from 'react-nvd3';
 import VerticalSlider from'vertical-rc-slider';
@@ -63,11 +65,10 @@ export default class ScheduleDetail extends React.Component {
   }
 
   _handleTimeBtnClick(index) {
-
     if(index == this.state.currentIndex)
-      window.location.href = `#/schedule/config/1`;
+      window.location.href = `#/schedule/config/${this.props.scheduleDetails[index].id}`;
     this.setState({currentIndex: index});
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
 
@@ -84,7 +85,7 @@ export default class ScheduleDetail extends React.Component {
     this.props.modifySchedule({
       schedules: dailySchedules
     });
-  }
+  };
 
   _handleTimetChanged = (val) => {
      let nextScheduleStartTimeInteger = this.props.scheduleDetails[(this.state.currentIndex + 1)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger;
@@ -105,7 +106,7 @@ export default class ScheduleDetail extends React.Component {
      this.props.modifySchedule({
        schedules: dailySchedules
      });
-  }
+  };
 
   // _limitSlider = (val) => {
   //   if( val >= this.props.scheduleDetails[(this.state.currentIndex + 1)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger)
@@ -115,16 +116,15 @@ export default class ScheduleDetail extends React.Component {
   _saveScheduleDetails = (e) => {
     // console.log('save',this.props.scheduleDetails);
     this.props.requestUpdateScheduleDetails(this.props.scheduleDetails);
-  }
+  };
 
   _handleDialogOpen = (e) => {
     this.setState({dialogIsOpen: true});
-  }
+  };
 
   _handleDialogClose = (e) => {
-    console.log('test');
     this.setState({dialogIsOpen: false});
-  }
+  };
 
   _resetScheduleDetailsTime = (startTime, endTime) => {
     let dis = _timeToInteger(endTime) - _timeToInteger(startTime);
@@ -141,7 +141,7 @@ export default class ScheduleDetail extends React.Component {
       schedules: dailySchedules
     });
     this._handleDialogClose();
-  }
+  };
 
   _dialogActionReset = (e) => {
     let InputStartTime = this.refs.inputStartTime,
@@ -161,8 +161,8 @@ export default class ScheduleDetail extends React.Component {
       return ;
     }
 
-    this._resetScheduleDetailsTime(StartTime.getValue(), EndTime.getValue());
-  }
+    this._resetScheduleDetailsTime(startTime, endTime);
+  };
 
   render () {
 
@@ -230,10 +230,12 @@ export default class ScheduleDetail extends React.Component {
 
     let dialogActions = [
       <FlatButton
+        key={'cancelButton'}
         label="Cancel"
         secondary={true}
         onTouchTap={this._handleDialogClose} />,
       <FlatButton
+        key={'resetButton'}
         label="Reset"
         primary={true}
         onTouchTap={this._dialogActionReset} />
@@ -241,10 +243,14 @@ export default class ScheduleDetail extends React.Component {
     return (
       <div>
         <AppBar title="Schedule Detail"
+          iconElementLeft={
+            <IconButton onTouchTap={function() {window.location.href = '#/manage/3';}} >
+              <NavigationClose />
+            </IconButton>
+          }
           iconElementRight={
             <FlatButton label="Save" onTouchTap={this._saveScheduleDetails}/>
           }
-          onLeftIconButtonTouchTap={function(){console.log('leftNav');}}
         />
         <div className="self-center" style={{
         width: '100%',
@@ -261,9 +267,11 @@ export default class ScheduleDetail extends React.Component {
                     tickValues: tickMarks,
                     tickFormat: function(d) {return _formatMinutes(d);}
                   }}
+                  forceX={[0,1440]}
                   yAxis={{
                     tickFormat: function(d) {return numeral(d).format('0%')}
-                  }} />
+                  }}
+                  forceY={[0,1]} />
               </div>
               <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '85px',
                 position: 'absolute', right: '-60px'}}>
