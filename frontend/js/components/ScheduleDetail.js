@@ -68,7 +68,7 @@ export default class ScheduleDetail extends React.Component {
     if(index == this.state.currentIndex)
       window.location.href = `#/schedule/config/${this.props.scheduleDetails[index].id}`;
     this.setState({currentIndex: index});
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
 
@@ -85,7 +85,7 @@ export default class ScheduleDetail extends React.Component {
     this.props.modifySchedule({
       schedules: dailySchedules
     });
-  }
+  };
 
   _handleTimetChanged = (val) => {
      let nextScheduleStartTimeInteger = this.props.scheduleDetails[(this.state.currentIndex + 1)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger;
@@ -106,7 +106,7 @@ export default class ScheduleDetail extends React.Component {
      this.props.modifySchedule({
        schedules: dailySchedules
      });
-  }
+  };
 
   // _limitSlider = (val) => {
   //   if( val >= this.props.scheduleDetails[(this.state.currentIndex + 1)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger)
@@ -116,15 +116,15 @@ export default class ScheduleDetail extends React.Component {
   _saveScheduleDetails = (e) => {
     // console.log('save',this.props.scheduleDetails);
     this.props.requestUpdateScheduleDetails(this.props.scheduleDetails);
-  }
+  };
 
   _handleDialogOpen = (e) => {
     this.setState({dialogIsOpen: true});
-  }
+  };
 
   _handleDialogClose = (e) => {
     this.setState({dialogIsOpen: false});
-  }
+  };
 
   _resetScheduleDetailsTime = (startTime, endTime) => {
     let dis = _timeToInteger(endTime) - _timeToInteger(startTime);
@@ -141,7 +141,7 @@ export default class ScheduleDetail extends React.Component {
       schedules: dailySchedules
     });
     this._handleDialogClose();
-  }
+  };
 
   _dialogActionReset = (e) => {
     let InputStartTime = this.refs.inputStartTime,
@@ -162,7 +162,7 @@ export default class ScheduleDetail extends React.Component {
     }
 
     this._resetScheduleDetailsTime(startTime, endTime);
-  }
+  };
 
   render () {
 
