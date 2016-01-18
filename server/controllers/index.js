@@ -28,7 +28,7 @@ export default class Routes {
       ],
       async function (ctx, next){
         try {
-          
+
           let slaveId =  ctx.params.slaveId;
           let slave = await services.deviceControl.getSlaveHost(slaveId);
 
@@ -37,7 +37,7 @@ export default class Routes {
           }else{
             request({
               method: ctx.request.method,
-              url: 'http:/'+ slave.host + ctx.request.url,
+              url: 'http://'+ slave.host + ctx.request.url,
               data: ctx.request.body || {}
             })
           }
