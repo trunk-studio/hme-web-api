@@ -49,27 +49,27 @@ export default class ManagePage extends React.Component {
 
   _handleScan = (e) => {
     this.props.requestScan();
-  }
+  };
 
   _testOneDevice = (e) => {
     this.props.requestTestOneDevice(this.state.deviceID);
-  }
+  };
 
   _testGroupDevice = (e) => {
     this.props.requestTestGroupDevices(this.state.groupID);
-  }
+  };
 
   _deviceMenuIndexChanged = (e, value) => {
     this.setState({
       deviceID: value
     })
-  }
+  };
 
   _gruopMenuIndexChanged = (e, value) => {
     this.setState({
       groupID: value
     })
-  }
+  };
 
   componentDidMount() {
     // this.props.requestScan();
@@ -85,31 +85,31 @@ export default class ManagePage extends React.Component {
       wwValue: value
     })
     this._updateChart();
-  }
+  };
   _dbChanged = (e, value) => {
     this.setState({
       dbValue: value
     })
     this._updateChart();
-  }
+  };
   _blChanged = (e, value) => {
     this.setState({
       blValue: value
     })
     this._updateChart();
-  }
+  };
   _grChanged = (e, value) => {
     this.setState({
       grValue: value
     })
     this._updateChart();
-  }
+  };
   _reChanged = (e, value) => {
     this.setState({
       reValue: value
     })
     this._updateChart();
-  }
+  };
   _cctChanged = () => {
     let value = this.refs.CCT.state.value;
     if(value >= 3000 && value < 4000){
@@ -163,7 +163,7 @@ export default class ManagePage extends React.Component {
         value
       );
     }
-  }
+  };
 
   _updateChart = (e) => {
     let newSUM = [];
@@ -189,7 +189,7 @@ export default class ManagePage extends React.Component {
       REBright: this.state.reValue,
       Bright: this.state.brightValue
     })
-  }
+  };
 
   _setAll = (ww, db, bl, gr, re, cct) =>{
     console.log(ww, db, bl, gr, re);
@@ -201,34 +201,34 @@ export default class ManagePage extends React.Component {
     if(cct)
       this.state.cctValue = cct;
     this._updateChart();
-  }
+  };
   _brightChanged = (e, value) => {
     this.setState({
       brightValue: this.refs.Bright.state.value
     })
     this._updateChart();
-  }
+  };
 
   _AllOpen = (e) => {
     this._setAll(1,1,1,1,1);
-  }
+  };
 
   _6500k = (e) => {
     this._setAll(0.85, 0.9, 0.8, 0.85, 0.25);
-  }
+  };
 
   _4600k = (e) => {
     this._setAll(1, 0.67, 0.61, 0.67, 0.59);
-  }
+  };
   _2950k = (e) => {
     this._setAll(1, 0, 0.25, 0.29, 1);
-  }
+  };
   _saving = (e) => {
     this._setAll(1, 1, 0.5, 0, 1);
-  }
+  };
   _BR = (e) => {
     this._setAll(0, 1, 1, 0, 1);
-  }
+  };
 
   render() {
     let chartData = {
