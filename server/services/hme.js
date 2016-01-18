@@ -86,7 +86,7 @@ export default class Hme {
           var T2id = setTimeout(function(){
             console.log('drain eer' );
             return reject(results);
-          },1000);
+          },1200);
 
           serialPort.drain(function (error) {
             console.log('UART drain');
@@ -97,7 +97,7 @@ export default class Hme {
                 clearInterval(T1id);
                 clearTimeout(T2id);
                 return resolve(results);
-              } else if (T1num > 20) {
+              } else if (T1num > 60) {
                 console.log('TimeOut!');
                 results = [];
                 clearInterval(T1id);
@@ -112,7 +112,7 @@ export default class Hme {
               } else {
 
               }
-            } ,5);
+            } ,15);
           });
         });
       });

@@ -51,19 +51,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it("serial Port SearchDevice", async done => {
 
-      try {
-        let result = await services.hme.SearchDevice();
-        console.log('SearchDevice result',result);
-        result.should.be.Array;
-        result[0].should.have.any.keys('DevID', 'DevGroup');
-        done();
-      } catch (e) {
-        done(e);
-      }
-
-    });
 
     it("serial Port testAll", async done => {
 
@@ -345,6 +333,20 @@ describe("hme with seriel port", () => {
         await services.hme.writeFlashMemory(devID, groupID);  //寫入Flash
         console.log('setDayTab result',result);
         result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port SearchDevice", async done => {
+
+      try {
+        let result = await services.hme.SearchDevice();
+        console.log('SearchDevice result',result);
+        result.should.be.Array;
+        result[0].should.have.any.keys('DevID', 'DevGroup');
         done();
       } catch (e) {
         done(e);
