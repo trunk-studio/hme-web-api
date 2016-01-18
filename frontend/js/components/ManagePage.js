@@ -34,8 +34,9 @@ export default class ManagePage extends React.Component {
       reValue: 100,
       cctValue: 100,
       brightValue: 100,
-      groupID: 1,
-      deviceID: 1
+      groupID: 0,
+      deviceID: 0,
+      tabIndex: 0
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -251,8 +252,26 @@ export default class ManagePage extends React.Component {
       datasetStroke: false,
       pointHitDetectionRadius: 0
     }
+
+    let deviceList = [{
+      payload: 0,
+      primary: 'Select Device',
+      text: 'Select Device'
+    }];
+
+    let slaveList = [{
+      payload: 0,
+      primary: 'Select Slave',
+      text: 'Select Slave'
+    }]
+
+    deviceList.push(this.props.deviceList);
+    // slaveList.push(this.props.slaveList);
+
+    let tabIndex = parseInt(this.props.params.tabIndex);
+
     return (
-      <Tabs>
+      <Tabs initialSelectedIndex={tabIndex}>
         <Tab label="TEST">
           <div className="self-center" style={{width: '315px', marginTop: '15px'}}>
             <div style={{display: 'table-caption'}}>
@@ -264,7 +283,7 @@ export default class ManagePage extends React.Component {
                 <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px'}}></RaisedButton>
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={this.props.deviceList} style={{width: '200px'}}/>
+                <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '200px'}}/>
                 <RaisedButton label="Test" secondary={true} style={{marginLeft:'15px', width: '100px'}} onTouchTap={this._testOneDevice}></RaisedButton>
               </div>
             </div>
@@ -302,7 +321,7 @@ export default class ManagePage extends React.Component {
               <Slider ref="BL" name="BL" defaultValue={100} max={100} step={1} value={this.state.blValue} description={`BL ${this.state.blValue}`} className="slider" onChange={this._blChanged} />
               <Slider ref="GR" name="GR" defaultValue={100} max={100} step={1} value={this.state.grValue} description={`GR ${this.state.grValue}`} className="slider" onChange={this._grChanged} />
               <Slider ref="RE" name="RE" defaultValue={100} max={100} step={1} value={this.state.reValue} description={`RE ${this.state.reValue}`} className="slider" onChange={this._reChanged} />
-              <Slider ref="CCT" name="CCT" defaultValue={3000} max={16000} value={this.state.cctValue} description="CCT" step="10" className="slider" onChange={this._cctChanged}/>
+              <Slider ref="CCT" name="CCT" defaultValue={3000} max={16000} value={this.state.cctValue} description="CCT" step={10} className="slider" onChange={this._cctChanged}/>
               <Slider ref="Bright" name="Bright" defaultValue={100} className="slider" max={100} value={this.state.brightValue} description="Bright" onChange={this._brightChanged}/>
             </div>
           </div>
