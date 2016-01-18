@@ -148,7 +148,7 @@ describe("schedule", () => {
       try {
         let group = await models.Group.create();
         let slaves = await models.Slave.create({
-          host: "hostName",
+          host: "127.0.0.1",
           description: "描述",
           apiVersion: "0.1.0",
         });
@@ -281,7 +281,7 @@ describe("schedule", () => {
       try {
         let group = await models.Group.create();
         let slaves = await models.Slave.create({
-          host: "hostName",
+          host: "127.0.0.1",
           description: "描述",
           apiVersion: "0.1.0",
         });

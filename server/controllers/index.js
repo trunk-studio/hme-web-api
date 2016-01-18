@@ -5,6 +5,7 @@ import ScheduleController from './schedule'
 import Router from 'koa-router';
 import fs from 'fs';
 import path from 'path';
+import request from 'axios'
 
 export default class Routes {
 
@@ -22,13 +23,26 @@ export default class Routes {
     getSlaveRoute.all([
       '/rest/slave/:slaveId/getCachedDeviceList',
       '/rest/slave/:slaveId/findAllDeviceGroups',
-      '/rest/slave/:slaveId/test/setLedDisplay'
+      '/rest/slave/:slaveId/test/setLedDisplay',
+      '/rest/slave/:slaveId/schedule/setOnDevice'
       ],
       async function (ctx, next){
-        let slaveId =  ctx.params.slaveId;
-        let slave = await services.deviceControl.getSlaveHost(slaveId);
-        ctx.request.url = 'http://' + slave.host + ctx.req.url;
-        await next();
+        try {
+          let slaveId =  ctx.params.slaveId;
+          let slave = await services.deviceControl.getSlaveHost(slaveId);
+          if(ctx.request.header.host.indexOf(slave.host) != -1){
+            await next();
+          }else{
+            request({
+              method: ctx.request.method,
+              url: 'http:/'+ slave.host + ctx.request.url,
+              data: ctx.request.body || {}
+            })
+          }
+        } catch (e) {
+          console.log(e);
+          throw e
+        }
       }
     );
 
@@ -72,7 +86,7 @@ export default class Routes {
     publicRoute.get('/rest/slave/test/group/id', HmeController.testGruopByID);
     publicRoute.post('/rest/slave/test/setLedDisplay', HmeController.setLedDisplay);
 
-    publicRoute.post('/rest/slave/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
+    publicRoute.post('/rest/slave/:slaveId/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
 
 
 

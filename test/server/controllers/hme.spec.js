@@ -71,7 +71,7 @@ describe("hme", () => {
       }
     });
 
-    it.only("allGroup", async(done) => {
+    it("allGroup", async(done) => {
       try {
         let result = await request.get(`/rest/slave/${slave.id}/findAllDeviceGroups`);
         console.log('group list');
