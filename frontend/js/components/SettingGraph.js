@@ -35,7 +35,7 @@ export default class SettingGraph extends React.Component {
       "title": "Light Schedule",
       "xlabel": "Time", "ylabel": "%"
     });
-  }
+  };
 
   render () {
     let testData = [
@@ -99,16 +99,16 @@ export default class SettingGraph extends React.Component {
         </Tab>
       </Tabs>
     );
-  }
+  };
 }
 
 function _injectPropsFromStore(state) {
   // let { login, isLoading } = state;
   return {};
-}
+};
 
 const _injectPropsFormActions = {
   requestLogin
-}
+};
 
 export default connect(_injectPropsFromStore, _injectPropsFormActions)(SettingGraph);
