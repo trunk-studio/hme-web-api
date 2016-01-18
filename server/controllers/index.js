@@ -28,9 +28,11 @@ export default class Routes {
       ],
       async function (ctx, next){
         try {
+          
           let slaveId =  ctx.params.slaveId;
           let slave = await services.deviceControl.getSlaveHost(slaveId);
-          if(ctx.request.header.host.indexOf(slave.host) != -1){
+
+          if(ctx.request.header.host.indexOf(slave.host) != -1 ){
             await next();
           }else{
             request({
@@ -40,8 +42,7 @@ export default class Routes {
             })
           }
         } catch (e) {
-          console.log(e);
-          throw e
+          await next();
         }
       }
     );
