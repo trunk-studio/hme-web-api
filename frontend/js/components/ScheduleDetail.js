@@ -251,7 +251,6 @@ export default class ScheduleDetail extends React.Component {
           iconElementRight={
             <FlatButton label="Save" onTouchTap={this._saveScheduleDetails}/>
           }
-          onLeftIconButtonTouchTap={function(){ console.log('aaa'); }}
         />
         <div className="self-center" style={{
         width: '100%',
@@ -265,7 +264,7 @@ export default class ScheduleDetail extends React.Component {
                   height={215}
                   datum={data}
                   xAxis={{
-                    /*tickValues: tickMarks,*/
+                    tickValues: tickMarks,
                     tickFormat: function(d) {return _formatMinutes(d);}
                   }}
                   forceX={[0,1440]}
