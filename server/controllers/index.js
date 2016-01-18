@@ -19,12 +19,13 @@ export default class Routes {
     var app = this.app;
     var getSlaveRoute = new Router()
 
-    app.use(function *(next){
-      if(/slave/g.test(this.req.url)){
-        this.req.url = this.req.header.host + this.req.url;
-      }
-      // console.log(this.request,this.req.header.host);
-      yield next;
+    app.use(async function (ctx, next){
+      // if(/\/rest\/slave\//g.test(ctx.req.url)){
+      //   ctx.req.url = ctx.req.header.host + ctx.req.url;
+      // }
+
+      console.log(ctx);
+      await next();
     });
   }
 
@@ -32,9 +33,9 @@ export default class Routes {
     var app = this.app;
     var publicRoute = new Router()
 
-    publicRoute.get('/rest/info/', function *() {
+    publicRoute.get('/rest/info/', async function(ctx) {
       let {APP_NAME} = process.env
-      this.body = {APP_NAME}
+      ctx.body = {APP_NAME}
     })
 
     // Test Raspberry Pi connect
@@ -57,6 +58,7 @@ export default class Routes {
     // find slave Device & Groups
     publicRoute.get('/rest/slave/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/slave/findAllDeviceGroups', HmeController.findAllDeviceGroups);
+    publicRoute.get('/rest/slave/getCachedDeviceList', HmeController.getCachedDeviceList);
 
     //  Test slave Device
     publicRoute.get('/rest/slave/test/all', HmeController.testAllDevices);
@@ -64,9 +66,11 @@ export default class Routes {
     publicRoute.get('/rest/slave/test/group/id', HmeController.testGruopByID);
     publicRoute.post('/rest/slave/test/setLedDisplay', HmeController.setLedDisplay);
 
+    publicRoute.post('/rest/slave/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
 
 
-    publicRoute.get('/', function *() {
+
+    publicRoute.get('/', function(ctx, next) {
       const HTML = `
       <!DOCTYPE html>
       <html>
@@ -81,25 +85,25 @@ export default class Routes {
         </head>
         <body>
           <div id="react-view"></div>
-          <script type="application/javascript" src="js/bundle.js"></script>
+          <script type="application/javascript" src="/public/assets/js/bundle.js"></script>
           <!--<script>
             document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
           </script>-->
         </body>
       </html>
       `;
-      this.body = HTML
+      ctx.body = HTML
     })
     // publicRoute.get('/', MainController.index);
     app.use(publicRoute.middleware())
 
 
-    app.use(function *(next) {
+    app.use(async function (ctx, next) {
 
-      if (true || services.user.isAuthenticated(this)) {
-        yield next
+      if (true || services.user.isAuthenticated(ctx)) {
+        await next();
       } else {
-        this.redirect('/auth/login')
+        ctx.redirect('/auth/login')
       }
     })
 

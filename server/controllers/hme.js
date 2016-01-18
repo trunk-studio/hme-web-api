@@ -1,23 +1,23 @@
-exports.hello = function *() {
+exports.hello = async function (ctx) {
   console.log('=== services ===', services);
-  let result = yield services.hme.hello()
+  let result = await services.hme.hello()
 
-  this.body = {result}
+  ctx.body = {result}
 };
 
-exports.ping = function *() {
-  let result = yield services.hme.ping();
-  this.body = {result}
+exports.ping = async function (ctx) {
+  let result = await services.hme.ping();
+  ctx.body = {result}
 };
 
 
-exports.searchDevice = function *() {
-  let result = yield services.hme.SearchDevice();
+exports.searchDevice = async function (ctx) {
+  let result = await services.hme.SearchDevice();
   console.log('controller',result);
-  this.body = result
+  ctx.body = result
 };
 
-exports.findAllDeviceGroups = function *() {
+exports.findAllDeviceGroups = async function (ctx) {
   // let result = await models.groups.findAll();
   let result = [
     {
@@ -30,29 +30,39 @@ exports.findAllDeviceGroups = function *() {
       id: 3
     }
   ];
-  this.body = result
+  ctx.body = result
 }
 
-exports.setLedDisplay = function *() {
-  let data = this.request.body;
+exports.setLedDisplay = async function (ctx) {
+  let data = ctx.request.body;
   console.log('setLedDisplay',data);
-  let result = yield services.hme.setLedDisplay(data);
-  this.body = result
+  let result = await services.hme.setLedDisplay(data);
+  ctx.body = result
 };
 
-exports.testAllDevices = function *() {
-  let result = yield services.hme.testAll();
-  this.body = result
+exports.testAllDevices = async function (ctx) {
+  let result = await services.hme.testAll();
+  ctx.body = result
 }
 
-exports.testDeviceByID = function *() {
-  let devID = this.params.id;
-  let result = yield services.hme.testDevID(devID);
-  this.body = result
+exports.testDeviceByID = async function (ctx) {
+  let devID = ctx.params.id;
+  let result = await services.hme.testDevID(devID);
+  ctx.body = result
 }
 
-exports.testGruopByID = function *() {
-  let groupID = this.params.id;
-  let result = yield services.hme.testGroup(groupID);
-  this.body = result
+exports.testGruopByID = async function (ctx) {
+  let groupID = ctx.params.id;
+  let result = await services.hme.testGroup(groupID);
+  ctx.body = result
+}
+
+exports.getCachedDeviceList = async function (ctx) {
+  try {
+    let result = await services.hme.getCachedDeviceList();
+    ctx.body = result;
+    done();
+  } catch (e) {
+    done(e);
+  }
 }

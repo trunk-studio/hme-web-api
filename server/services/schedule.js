@@ -67,13 +67,13 @@ module.exports = {
 
   updateScheduleList: async(scheduleArray) => {
     try {
-      let newScheduleList =  await* scheduleArray.map( async (item) => {
+      let newScheduleList =  await Promise.all(scheduleArray.map( async (item) => {
         let schedule = await models.Schedule.findById(item.id);
         schedule.Days = item.Days || 0;
         schedule.StartDate = item.StartDate;
         schedule = await schedule.save();
         return schedule;
-      });
+      }));
       return newScheduleList;
     } catch (e) {
       throw e;

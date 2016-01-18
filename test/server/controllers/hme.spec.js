@@ -1,8 +1,6 @@
 describe("hme", () => {
 
-
-
-  it("hello localhost", (done) => {
+  it.only("hello localhost", (done) => {
 
     request.get("/rest/hme/hello")
       .expect(200)
@@ -57,6 +55,17 @@ describe("hme", () => {
       }
     });
 
+    it("get cache deviceList", async done => {
+      try {
+        let result = await request.get("/rest/slave/getCachedDeviceList");
+        result.body.should.be.Array;
+        result.body[0].should.have.any.keys('id','uid','GroupId','SlaveId');
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
     it("allGroup", async(done) => {
       try {
         let result = await request.get('/rest/slave/findAllDeviceGroups');
@@ -70,6 +79,7 @@ describe("hme", () => {
         done(e);
       }
     });
+
   });
 
 });

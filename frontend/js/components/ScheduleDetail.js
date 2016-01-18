@@ -251,7 +251,7 @@ export default class ScheduleDetail extends React.Component {
         overflowX: 'hidden'
         }}>
           <div className="row">
-            <div className="center-self">
+            <div className="center-self" style={{position: 'relative'}}>
               <div className="col-md-11 col-sm-11 col-xs-11 chart-container">
                 <NVD3Chart
                   type="lineChart"
@@ -266,7 +266,7 @@ export default class ScheduleDetail extends React.Component {
                   }} />
               </div>
               <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '85px',
-                position: 'absolute', right: '-75px'}}>
+                position: 'absolute', right: '-60px'}}>
                 <VerticalSlider className="vertical-slider"
                   min={0} max={100} marks={SLIDER_WEIGHT_MARKS}
                   included={false} style={{float: 'right'}}
