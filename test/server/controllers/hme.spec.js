@@ -1,6 +1,6 @@
 describe("hme", () => {
 
-  it.only("hello localhost", (done) => {
+  it("hello localhost", (done) => {
 
     request.get("/rest/hme/hello")
       .expect(200)

@@ -20,11 +20,9 @@ export default class Routes {
     var getSlaveRoute = new Router()
 
     app.use(async function (ctx, next){
-      // if(/\/rest\/slave\//g.test(ctx.req.url)){
-      //   ctx.req.url = ctx.req.header.host + ctx.req.url;
-      // }
-
-      console.log(ctx);
+      if(/\/rest\/slave\//g.test(ctx.req.url)){
+        ctx.request.url = ctx.request.header.host + ctx.request.url;
+      }
       await next();
     });
   }
