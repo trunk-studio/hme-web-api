@@ -4,6 +4,7 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
+  devtool: 'source-map',
   entry: [
     //js
     'webpack-hot-middleware/client',
@@ -17,7 +18,7 @@ module.exports = {
     path: path.resolve(__dirname, './public/assets/'),
     filename: 'js/bundle.js',
     //chunkFilename: '[chunkhash].js',
-    publicPath: '/'
+    publicPath: '/public/assets/'
   },
   plugins: [
     //relative to output.path
