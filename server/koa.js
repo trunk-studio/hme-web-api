@@ -33,7 +33,8 @@ global.fs = fs;
 
 const {environment} = appConfig;
 const app = new koa();
-const convert = require('koa-convert')
+const convert = require('koa-convert');
+console.log('aaa',webpackConfig);
 const compiler = webpack(webpackConfig);
 
 
