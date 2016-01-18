@@ -96,6 +96,7 @@ export default class Hme {
                 results = Rxarry;
                 clearInterval(T1id);
                 clearTimeout(T2id);
+                console.log('TimeCont=',T1num);
                 return resolve(results);
               } else if (T1num > 60) {
                 console.log('TimeOut!');
