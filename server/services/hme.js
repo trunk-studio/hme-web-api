@@ -470,7 +470,7 @@ export default class Hme {
     }
   };
 
-  setLedDisplay = async ({DevID, groupID, WWBright, DBBright, BLBright, GRBright, REBright, Bright}) => {
+  setLedDisplay = async ({devID, groupID, WW, DB, BL, GR, RE, Bright}) => {
     try {
 
         let setParams = {
