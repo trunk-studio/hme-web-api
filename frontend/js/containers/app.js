@@ -18,12 +18,20 @@ const ScheduleList = require('../components/ScheduleList');
 const ScheduleDetail = require('../components/ScheduleDetail');
 const ScheduleDetailConfig = require('../components/ScheduleDetailConfig');
 
+
+// export default class RedirectToDefaultValue extends React.Component {
+//   willTransitionTo (transition, params) {
+//     transition.redirect(`#/manage/1`);
+//   }
+//   render () { return null; }
+// }
+
 export default class App extends React.Component {
   render() {
     return (
       <Router>
         <Route path="/" component={LoginPage} />
-        <Route path="/manage" component={ManagePage} />
+        <Route path="/manage/:tabIndex" component={ManagePage} />
         <Route path="/graph" component={SettingGraph} />
         <Route path="/schedule/list" component={ScheduleList} />
         <Route path="/schedule/edit/:scheduleID" component={ScheduleDetail} />
