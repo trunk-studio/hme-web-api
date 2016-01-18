@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import {
   requestScan, requestDeviceGroup, requestTestOneDevice,
   requestTestGroupDevices, requestTestAllDevices,
-  requestTestSetLedDisplay
+  requestTestSetLedDisplay, requestGetCachedDeviceList
 } from '../actions/TestActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
@@ -34,8 +34,9 @@ export default class ManagePage extends React.Component {
       reValue: 100,
       cctValue: 100,
       brightValue: 100,
-      groupID: 1,
-      deviceID: 1
+      groupID: 0,
+      deviceID: 0,
+      tabIndex: 0
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -44,41 +45,35 @@ export default class ManagePage extends React.Component {
       this.state.RE[i]+
       this.state.WW[i])
     });
-    console.log(this.state.DB.length,
-      this.state.BL.length,
-      this.state.GR.length,
-      this.state.RE.length,
-      this.state.WW.length,
-      this.state.SUM.length,
-      this.state.SUM);
   }
 
   _handleScan = (e) => {
     this.props.requestScan();
-  }
+  };
 
   _testOneDevice = (e) => {
     this.props.requestTestOneDevice(this.state.deviceID);
-  }
+  };
 
   _testGroupDevice = (e) => {
     this.props.requestTestGroupDevices(this.state.groupID);
-  }
+  };
 
   _deviceMenuIndexChanged = (e, value) => {
     this.setState({
       deviceID: value
     })
-  }
+  };
 
   _gruopMenuIndexChanged = (e, value) => {
     this.setState({
       groupID: value
     })
-  }
+  };
 
   componentDidMount() {
-    this.props.requestScan();
+    // this.props.requestScan();
+    this.props.requestGetCachedDeviceList();
     this.props.requestDeviceGroup();
   }
 
@@ -90,31 +85,31 @@ export default class ManagePage extends React.Component {
       wwValue: value
     })
     this._updateChart();
-  }
+  };
   _dbChanged = (e, value) => {
     this.setState({
       dbValue: value
     })
     this._updateChart();
-  }
+  };
   _blChanged = (e, value) => {
     this.setState({
       blValue: value
     })
     this._updateChart();
-  }
+  };
   _grChanged = (e, value) => {
     this.setState({
       grValue: value
     })
     this._updateChart();
-  }
+  };
   _reChanged = (e, value) => {
     this.setState({
       reValue: value
     })
     this._updateChart();
-  }
+  };
   _cctChanged = () => {
     let value = this.refs.CCT.state.value;
     if(value >= 3000 && value < 4000){
@@ -168,7 +163,7 @@ export default class ManagePage extends React.Component {
         value
       );
     }
-  }
+  };
 
   _updateChart = (e) => {
     let newSUM = [];
@@ -194,7 +189,7 @@ export default class ManagePage extends React.Component {
       REBright: this.state.reValue,
       Bright: this.state.brightValue
     })
-  }
+  };
 
   _setAll = (ww, db, bl, gr, re, cct) =>{
     console.log(ww, db, bl, gr, re);
@@ -206,34 +201,34 @@ export default class ManagePage extends React.Component {
     if(cct)
       this.state.cctValue = cct;
     this._updateChart();
-  }
+  };
   _brightChanged = (e, value) => {
     this.setState({
       brightValue: this.refs.Bright.state.value
     })
     this._updateChart();
-  }
+  };
 
   _AllOpen = (e) => {
     this._setAll(1,1,1,1,1);
-  }
+  };
 
   _6500k = (e) => {
     this._setAll(0.85, 0.9, 0.8, 0.85, 0.25);
-  }
+  };
 
   _4600k = (e) => {
     this._setAll(1, 0.67, 0.61, 0.67, 0.59);
-  }
+  };
   _2950k = (e) => {
     this._setAll(1, 0, 0.25, 0.29, 1);
-  }
+  };
   _saving = (e) => {
     this._setAll(1, 1, 0.5, 0, 1);
-  }
+  };
   _BR = (e) => {
     this._setAll(0, 1, 1, 0, 1);
-  }
+  };
 
   render() {
     let chartData = {
@@ -257,26 +252,39 @@ export default class ManagePage extends React.Component {
       datasetStroke: false,
       pointHitDetectionRadius: 0
     }
+
+    let deviceList = [{
+      payload: 0,
+      primary: 'Select Device',
+      text: 'Select Device'
+    }];
+
+    let slaveList = [{
+      payload: 0,
+      primary: 'Select Slave',
+      text: 'Select Slave'
+    }]
+
+    deviceList.push(this.props.deviceList);
+    // slaveList.push(this.props.slaveList);
+
+    let tabIndex = parseInt(this.props.params.tabIndex);
+
     return (
-      <Tabs>
+      <Tabs initialSelectedIndex={tabIndex}>
         <Tab label="TEST">
-          <div className="self-center" style={{width: '350px'}}>
+          <div className="self-center" style={{width: '315px', marginTop: '15px'}}>
             <div style={{display: 'table-caption'}}>
               <div style={{display: 'inline-flex'}}>
                 <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={this.props.deviceList}/>
-                <RaisedButton label="TEST" onTouchTap={this._testOneDevice}/>
+                <SelectField labelMember="primary" menuItems={this.props.groupList} style={{width: '200px'}}/>
+                <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px'}}></RaisedButton>
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField onChange={this._deviceMenuIndexChanged}
-                  ref="groupMenu" menuItems={this.props.groupList}/>
-                <RaisedButton label="Grouping" onTouchTap={this._testGroupDevice}/>
-              </div>
-              <div style={{display: 'inline-flex'}}>
-                <SelectField menuItems={this.props.groupList}/>
-                <RaisedButton label="TEST" />
+                <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '200px'}}/>
+                <RaisedButton label="Test" secondary={true} style={{marginLeft:'15px', width: '100px'}} onTouchTap={this._testOneDevice}></RaisedButton>
               </div>
             </div>
           </div>
@@ -313,7 +321,7 @@ export default class ManagePage extends React.Component {
               <Slider ref="BL" name="BL" defaultValue={100} max={100} step={1} value={this.state.blValue} description={`BL ${this.state.blValue}`} className="slider" onChange={this._blChanged} />
               <Slider ref="GR" name="GR" defaultValue={100} max={100} step={1} value={this.state.grValue} description={`GR ${this.state.grValue}`} className="slider" onChange={this._grChanged} />
               <Slider ref="RE" name="RE" defaultValue={100} max={100} step={1} value={this.state.reValue} description={`RE ${this.state.reValue}`} className="slider" onChange={this._reChanged} />
-              <Slider ref="CCT" name="CCT" defaultValue={3000} max={16000} value={this.state.cctValue} description="CCT" step="10" className="slider" onChange={this._cctChanged}/>
+              <Slider ref="CCT" name="CCT" defaultValue={3000} max={16000} value={this.state.cctValue} description="CCT" step={10} className="slider" onChange={this._cctChanged}/>
               <Slider ref="Bright" name="Bright" defaultValue={100} className="slider" max={100} value={this.state.brightValue} description="Bright" onChange={this._brightChanged}/>
             </div>
           </div>
@@ -344,13 +352,21 @@ function _injectPropsFromStore(state) {
       groupList = [];
   if(scanDevice.deviceList) {
     for(let device of scanDevice.deviceList) {
-      scanResult.push({payload: device.DevID, text: device.DevID});
+      scanResult.push({
+        payload: device.DevID,
+        primary: `DeviceID: ${device.DevID}`,
+        text: device.DevID
+      });
     }
   }
 
   if(scanDevice.groupList) {
     for(let group of scanDevice.groupList) {
-      groupList.push({payload: group.id, text: group.id});
+      groupList.push({
+        payload: group.id,
+        primary: `SlaveID: ${group.id}`,
+        text: group.id,
+      });
     }
   }
   return {
@@ -365,7 +381,8 @@ const _injectPropsFromActions = {
   requestTestSetLedDisplay,
   requestTestGroupDevices,
   requestTestAllDevices,
-  requestTestOneDevice
+  requestTestOneDevice,
+  requestGetCachedDeviceList
 }
 
 

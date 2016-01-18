@@ -23,7 +23,7 @@ export default class LoginPage extends React.Component {
     this.setState({
       role: e.target.value
     });
-  }
+  };
 
   _login = (e) => {
     e.preventDefault();
@@ -41,12 +41,12 @@ export default class LoginPage extends React.Component {
       Password.setErrorText('Please fill the password field.');
       // alert('Please fill the password field.');
     }
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if('success' in this.props.login) {
       if(this.props.login.success) {
-        window.location.href = "/#manage";
+        window.location.href = "/#manage/0";
       }
       else {
         let Password = this.refs.password;

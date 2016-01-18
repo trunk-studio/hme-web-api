@@ -5,11 +5,11 @@ let config;
 
 try {
   config = require(`./${env}`);
-  config.default.environment = env;
+  config.environment = env;
 
 }
 catch (error) {
   debug('dev')(`No specific configuration for env ${env}`);
 }
 
-export default config.default;
+export default config;

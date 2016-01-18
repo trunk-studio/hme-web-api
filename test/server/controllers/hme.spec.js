@@ -42,6 +42,12 @@ describe("hme", () => {
           description: "描述",
           apiVersion: "0.1.0",
         });
+        let group = await models.Group.create();
+        let device = await models.Device.create({
+          uid: 164,
+          GroupId: group.id,
+          SlaveId: slave.id
+        });
         done();
       } catch (e) {
         done(e);
@@ -64,7 +70,7 @@ describe("hme", () => {
       try {
         let result = await request.get(`/rest/slave/${slave.id}/getCachedDeviceList`);
         result.body.should.be.Array;
-        result.body[0].should.have.any.keys('id','uid','GroupId','SlaveId');
+        result.body[0].should.have.any.keys('DevID');
         done();
       } catch (e) {
         done(e);

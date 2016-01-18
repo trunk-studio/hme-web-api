@@ -13,7 +13,6 @@ exports.ping = async function (ctx) {
 
 exports.searchDevice = async function (ctx) {
   let result = await services.hme.SearchDevice();
-  console.log('controller',result);
   ctx.body = result
 };
 
@@ -63,6 +62,6 @@ exports.getCachedDeviceList = async function (ctx) {
     ctx.body = result;
     done();
   } catch (e) {
-    done(e);
+    throw e;
   }
 }
