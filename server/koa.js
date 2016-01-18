@@ -113,7 +113,7 @@ var liftApp = async () => {
   return app;
 
 }
-
+console.log('=== environment ===', environment);
 if (environment !== 'test') liftApp();
 
 module.exports = liftApp

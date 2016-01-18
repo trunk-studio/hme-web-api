@@ -5,8 +5,8 @@ let config;
 
 try {
   config = require(`./${env}`);
-  console.log('=== config ===', config);
-  config.environment = env;
+  config.default.environment = env;
+
 }
 catch (error) {
   debug('dev')(`No specific configuration for env ${env}`);
