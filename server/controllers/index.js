@@ -19,12 +19,20 @@ export default class Routes {
     var app = this.app;
     var getSlaveRoute = new Router()
 
-    app.use(async function (ctx, next){
-      if(/\/rest\/slave\//g.test(ctx.request.url)){
-        ctx.request.url = ctx.request.header.host + ctx.request.url;
+    getSlaveRoute.all([
+      '/rest/slave/:slaveId/getCachedDeviceList',
+      '/rest/slave/:slaveId/findAllDeviceGroups',
+      '/rest/slave/:slaveId/test/setLedDisplay'
+      ],
+      async function (ctx, next){
+        let slaveId =  ctx.params.slaveId;
+        let slave = await services.deviceControl.getSlaveHost(slaveId);
+        ctx.request.url = 'http://' + slave.host + ctx.req.url;
+        await next();
       }
-      await next();
-    });
+    );
+
+    app.use(getSlaveRoute.middleware());
   }
 
   setupPublicRoute() {
@@ -55,8 +63,8 @@ export default class Routes {
 
     // find slave Device & Groups
     publicRoute.get('/rest/slave/searchDevice', HmeController.searchDevice);
-    publicRoute.get('/rest/slave/findAllDeviceGroups', HmeController.findAllDeviceGroups);
-    publicRoute.get('/rest/slave/getCachedDeviceList', HmeController.getCachedDeviceList);
+    publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
+    publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceList);
 
     //  Test slave Device
     publicRoute.get('/rest/slave/test/all', HmeController.testAllDevices);

@@ -34,9 +34,14 @@ describe("hme", () => {
   });
 
   describe("device", () => {
+    let slave;
     before(async done => {
       try {
-
+        slave = await models.Slave.create({
+          host: "127.0.0.1",
+          description: "描述",
+          apiVersion: "0.1.0",
+        });
         done();
       } catch (e) {
         done(e);
@@ -57,7 +62,7 @@ describe("hme", () => {
 
     it("get cache deviceList", async done => {
       try {
-        let result = await request.get("/rest/slave/getCachedDeviceList");
+        let result = await request.get(`/rest/slave/${slave.id}/getCachedDeviceList`);
         result.body.should.be.Array;
         result.body[0].should.have.any.keys('id','uid','GroupId','SlaveId');
         done();
@@ -66,9 +71,9 @@ describe("hme", () => {
       }
     });
 
-    it("allGroup", async(done) => {
+    it.only("allGroup", async(done) => {
       try {
-        let result = await request.get('/rest/slave/findAllDeviceGroups');
+        let result = await request.get(`/rest/slave/${slave.id}/findAllDeviceGroups`);
         console.log('group list');
         console.log(result.body);
         result.status.should.be.equal(200);
