@@ -21,10 +21,14 @@ export default class Routes {
     var getSlaveRoute = new Router()
 
     getSlaveRoute.all([
+      '/rest/slave/:slaveId/searchDevice',
       '/rest/slave/:slaveId/getCachedDeviceList',
-      '/rest/slave/:slaveId/findAllDeviceGroups',
-      '/rest/slave/:slaveId/test/setLedDisplay',
-      '/rest/slave/:slaveId/schedule/setOnDevice'
+      '/rest/slave/:slaveId/test/all',
+      '/rest/slave/:slaveId/device/:deviceId/test',
+      '/rest/slave/:slaveId/test',
+      '/rest/slave/:slaveId/device/:deviceId/setLedDisplay',
+      '/rest/slave/:slaveId/schedule/setOnDevice',
+      '/rest/slave/:slaveId/findAllDeviceGroups'
       ],
       async function (ctx, next){
         try {
@@ -79,22 +83,16 @@ export default class Routes {
     publicRoute.get('/rest/master/schedule/config/:id', ScheduleController.getConfigDetail);
 
     // find slave Device & Groups
-    publicRoute.get('/rest/slave/searchDevice', HmeController.searchDevice);
-    publicRoute.get('/rest/slave/findAllDeviceGroups', HmeController.findAllDeviceGroups);
-    publicRoute.get('/rest/slave/getCachedDeviceList', HmeController.getCachedDeviceList);
-    publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
+    publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceList);
-
-    //  Test slave Device
-    publicRoute.get('/rest/slave/test/all', HmeController.testAllDevices);
-    // '/rest/slave/test/one/:id'
+    publicRoute.get('/rest/slave/:slaveId/test/all', HmeController.testAllDevices);
     publicRoute.get('/rest/slave/:slaveId/device/:deviceId/test', HmeController.testDeviceByID);
-    // '/rest/slave/test/group/id'
     publicRoute.get('/rest/slave/:slaveId/test', HmeController.testGruopByID);
-    // '/rest/slave/test/setLedDisplay'
     publicRoute.post('/rest/slave/:slaveId/device/:deviceId/setLedDisplay', HmeController.setLedDisplay);
-
     publicRoute.post('/rest/slave/:slaveId/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
+
+    publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
+
 
 
     publicRoute.get('/', function(ctx, next) {

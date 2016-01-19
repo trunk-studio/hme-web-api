@@ -31,10 +31,10 @@ export function requestTestOneDevice(deviceID) {
   };
 }
 
-export function requestTestAllDevices() {
+export function requestTestAllDevices(slaveID) {
   return (dispatch) => {
     return request
-      .get(`/rest/slave/test/all`)
+      .get(`/rest/slave/${slaveID}/test/all`)
   };
 }
 
@@ -42,7 +42,7 @@ export function requestTestAllDevices() {
 export function requestGetCachedDeviceList() {
   return (dispatch) => {
     return request
-      .get(`/rest/slave/getCachedDeviceList`)
+      .get(`/rest/slave/0/getCachedDeviceList`)
       .then(response => dispatch(receivedScan(response.data)));
   }
 }
@@ -51,7 +51,7 @@ export function requestScan() {
   // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
-      .get('/rest/slave/searchDevice')
+      .get('/rest/slave/0/searchDevice')
       .then(response => dispatch(requestGetCachedDeviceList()));
   };
 }
@@ -105,11 +105,11 @@ export function requestTestGroupDevices(groupID) {
   };
 }
 
-export function requestDeviceGroup() {
+export function requestDeviceGroup(slaveID) {
   // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
-      .get('/rest/slave/findAllDeviceGroups')
+      .get(`/rest/slave/${slaveID}/findAllDeviceGroups`)
       .then(response => dispatch(receivedDeviceGroup(response.data)));
   };
 }

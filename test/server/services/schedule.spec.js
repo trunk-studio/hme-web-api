@@ -197,7 +197,7 @@ describe("schedule", () => {
       }
     });
 
-    it.only( "should be get currect json object" , async done => {
+    it( "should be get currect json object" , async done => {
       try {
         let config = {
           Device: 1,

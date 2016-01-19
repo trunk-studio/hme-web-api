@@ -61,7 +61,7 @@ describe("hme", () => {
 
     it("SearchDevice", async(done) => {
       try {
-        let result = await request.get("/rest/slave/searchDevice");
+        let result = await request.get("/rest/slave/0/searchDevice");
         result.status.should.be.equal(200);
         result.body.should.be.Array;
         result.body[0].should.have.any.keys('DevID', 'DevGroup');
