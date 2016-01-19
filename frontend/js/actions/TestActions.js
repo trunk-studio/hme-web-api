@@ -4,6 +4,7 @@ export const REQUEST_SCAN = 'REQUEST_SCAN'
 export const RECEIVED_SCAN = 'RECEIVED_SCAN'
 export const REQUEST_DEVICEGROUP = 'REQUEST_DEVICEGROUP'
 export const RECEIVED_DEVICEGROUP = 'RECEIVED_DEVICEGROUP'
+export const RECEIVED_SLAVE_LIST = 'RECEIVED_SLAVE_LIST'
 
 export const RECEIVED_TEST_SET_LED_DISPLAY = 'RECEIVED_TEST_SET_LED_DISPLAY'
 
@@ -80,5 +81,29 @@ export function requestGetCachedDeviceList() {
     return request
       .get(`/rest/slave/getCachedDeviceList`)
       .then(response => dispatch(receivedScan(response.data)));
+  }
+}
+
+
+export function requestGetCachedSlaveList() {
+  return (dispatch) => {
+    return request
+    .get(`/rest/hme/getCachedSlaveList`)
+    .then(response => dispatch(receivedSlaveList(response.data)));
+  }
+}
+
+export function requestSearchSlave() {
+  return (dispatch) => {
+    return request
+      .get(`/rest/hme/searchSlave`)
+      .then(response => dispatch(receivedSlaveList(response.data)));
+  }
+}
+
+export function receivedSlaveList(data) {
+  return {
+    type: RECEIVED_SLAVE_LIST,
+    data
   }
 }
