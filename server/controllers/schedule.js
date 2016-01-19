@@ -13,7 +13,7 @@ exports.configUpdate = async function(ctx) {
     config = await config.save();
     ctx.body = config ;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 
 },
@@ -35,7 +35,7 @@ exports.getConfigDetail = async function(ctx) {
     ];
     ctx.body =  chartData;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 
 }
@@ -48,7 +48,7 @@ exports.createSchedule = async function(ctx) {
     let result = await services.schedule.create(newSchedule);
     ctx.body =  result;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 
 }
@@ -60,7 +60,7 @@ exports.getOneSchedule = async function(ctx) {
     let result = await services.schedule.find(id);
     ctx.body =  result;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 }
 
@@ -70,7 +70,7 @@ exports.getAllSchedule = async function(ctx) {
     let result = await services.schedule.findAll();
     ctx.body =  result;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 }
 
@@ -81,7 +81,7 @@ exports.updateScheduleDay = async function(ctx) {
     let result = await services.schedule.updateDay(data);
     ctx.body =  result;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 }
 
@@ -92,7 +92,7 @@ exports.updateScheduleList = async function(ctx) {
     let result = await services.schedule.updateScheduleList(data);
     ctx.body =  result;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 }
 
@@ -103,7 +103,7 @@ exports.updateScheduleDetail = async function(ctx) {
     let result = await services.schedule.updateScheduleDetail(data);
     ctx.body =  result;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 }
 
@@ -122,7 +122,7 @@ exports.updateScheduleDetails = async function(ctx) {
     }
     ctx.body = newScheduleDetails;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 }
 
@@ -182,8 +182,7 @@ exports.setSchedulesToDevice = async function(ctx) {
 
     let result = await services.hme.writeTimeTabToDevice(scheduleConfigs);
     ctx.body = result;
-    done();
   } catch (e) {
-    done(e);
+    console.error(e);
   }
 }
