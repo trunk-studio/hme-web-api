@@ -43,31 +43,31 @@ export default class ScheduleDetailConfig extends React.Component {
   }
   componentDidMount () {
     this.props.requestGetScheduleDetailConfig(this.props.params.id);
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
-  }
+  };
 
   _wwChanged = () => {
     this.state.wwValue = this.refs.WW.state.value;
     this._saveConfig();
-  }
+  };
   _dbChanged = () => {
     this.state.dbValue = this.refs.DB.state.value;
     this._saveConfig();
-  }
+  };
   _blChanged = () => {
     this.state.blValue = this.refs.BL.state.value;
     this._saveConfig();
-  }
+  };
   _grChanged = () => {
     this.state.grValue = this.refs.GR.state.value;
     this._saveConfig();
-  }
+  };
   _reChanged = () => {
     this.state.reValue = this.refs.RE.state.value;
     this._saveConfig();
-  }
+  };
   _cctChanged = () => {
     let value = this.refs.CCT.state.value;
     if(value >= 3000 && value < 4000){
@@ -121,7 +121,7 @@ export default class ScheduleDetailConfig extends React.Component {
         value
       );
     }
-  }
+  };
   _setAll = (ww, db, bl, gr, re, cct) =>{
     console.log(ww, db, bl, gr, re);
     this.state.wwValue = Math.round(ww * 100);
@@ -132,14 +132,14 @@ export default class ScheduleDetailConfig extends React.Component {
     if(cct)
       this.state.cctValue = cct;
     this._saveConfig();
-  }
+  };
   _brightChanged = (e, value) => {
     // this.state.brightValue = value;
     this.setState({
       brightValue: this.refs.Bright.state.value
     })
     // this._saveConfig();
-  }
+  };
 
   _saveConfig = (e) => {
     this.props.requestUpdateScheduleDetailConfig({
@@ -152,31 +152,31 @@ export default class ScheduleDetailConfig extends React.Component {
       CCT: this.state.cctValue,
       Bright: this.state.brightValue
     })
-  }
+  };
 
   backClick = () => {
-  }
+  };
 
   _AllOpen = (e) => {
     this._setAll(1,1,1,1,1);
-  }
+  };
 
   _6500k = (e) => {
     this._setAll(0.85, 0.9, 0.8, 0.85, 0.25);
-  }
+  };
 
   _4600k = (e) => {
     this._setAll(1, 0.67, 0.61, 0.67, 0.59);
-  }
+  };
   _2950k = (e) => {
     this._setAll(1, 0, 0.25, 0.29, 1);
-  }
+  };
   _saving = (e) => {
     this._setAll(1, 1, 0.5, 0, 1);
-  }
+  };
   _BR = (e) => {
     this._setAll(0, 1, 1, 0, 1);
-  }
+  };
 
   render() {
     if(this.props.config){
@@ -265,7 +265,7 @@ export default class ScheduleDetailConfig extends React.Component {
         </div>
       </div>
     );
-  }
+  };
 }
 
 function _injectPropsFromStore(state) {
@@ -275,11 +275,11 @@ function _injectPropsFromStore(state) {
   return {
     config
   };
-}
+};
 
 const _injectPropsFromActions = {
   requestGetScheduleDetailConfig,
   requestUpdateScheduleDetailConfig
-}
+};
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleDetailConfig);

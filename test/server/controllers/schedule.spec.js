@@ -10,6 +10,7 @@ describe("Schedule", () => {
         apiVersion: "0.1.0",
       });
       testDevice = await models.Device.create({
+        uid: 2,
         GroupId: testGroup.id,
         SlaveId: slaves.id
       });

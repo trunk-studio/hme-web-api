@@ -36,10 +36,10 @@ export default class ScheduleList extends React.Component {
 
   componentDidMount () {
     this.props.requestGetScheduleList();
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
-  }
+  };
 
   _addRow = (e) => {
     this.props.requestScheduleCreate(this.props.scheduleList);
@@ -47,7 +47,7 @@ export default class ScheduleList extends React.Component {
       isSetBtnClose: true
     });
     this.refs.snackbar.setState({open: true});
-  }
+  };
 
   _saveScheduleList = (e) => {
     this.props.requestUpdateScheduleList(this.props.scheduleList);
@@ -55,14 +55,14 @@ export default class ScheduleList extends React.Component {
       isSetBtnClose: false
     });
     this.refs.snackbar.setState({open: false});
-  }
+  };
 
   _setScheduleList = (e) => {
     this.setState({
       isSetBtnClose: true
     });
     this.refs.snackbar.setState({open: true});
-  }
+  };
 
   _formatDate = (date) => {
     date = new Date(date);
@@ -70,7 +70,7 @@ export default class ScheduleList extends React.Component {
     let monthIndex = date.getMonth();
     let year = date.getFullYear();
     return year + '/'+ monthIndex+1 +'/' + day;
-  }
+  };
 
   _calculateDate = (i,e) => {
     let value = e.target.value;
@@ -81,7 +81,7 @@ export default class ScheduleList extends React.Component {
       isSetBtnClose: true
     })
     this.refs.snackbar.setState({open: true});
-  }
+  };
 
   _handleDatePickChange = (event, date) => {
     this.props.updateScheduleFirstDate(date);
@@ -90,7 +90,7 @@ export default class ScheduleList extends React.Component {
       isSetBtnClose: true
     })
     this.refs.snackbar.setState({open: true});
-  }
+  };
 
   _handleRequestClose = (e) => {
     this.refs.snackbar.setState({open: false});
@@ -191,7 +191,7 @@ export default class ScheduleList extends React.Component {
         />
       </div>
     );
-  }
+  };
 }
 
 function _injectPropsFromStore(state) {

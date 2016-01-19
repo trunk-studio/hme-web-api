@@ -36,7 +36,17 @@ describe("hme", () => {
   describe("device", () => {
     before(async done => {
       try {
-
+        let group = await models.Group.create();
+        let slaves = await models.Slave.create({
+          host: "hostName",
+          description: "描述",
+          apiVersion: "0.1.0",
+        });
+        let device = await models.Device.create({
+          uid: 164,
+          GroupId: group.id,
+          SlaveId: slaves.id
+        });
         done();
       } catch (e) {
         done(e);
@@ -59,7 +69,7 @@ describe("hme", () => {
       try {
         let result = await request.get("/rest/slave/getCachedDeviceList");
         result.body.should.be.Array;
-        result.body[0].should.have.any.keys('id','uid','GroupId','SlaveId');
+        result.body[0].should.have.any.keys('DevID');
         done();
       } catch (e) {
         done(e);

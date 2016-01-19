@@ -1,9 +1,10 @@
 var path = require('path');
 var webpack = require('webpack');
-var BowerWebpackPlugin = require("bower-webpack-plugin");
+// var BowerWebpackPlugin = require("bower-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
+  devtool: 'source-map',
   entry: [
     //js
     'webpack-hot-middleware/client',
@@ -17,7 +18,7 @@ module.exports = {
     path: path.resolve(__dirname, './public/assets/'),
     filename: 'js/bundle.js',
     //chunkFilename: '[chunkhash].js',
-    publicPath: '/'
+    publicPath: '/public/assets/'
   },
   plugins: [
     //relative to output.path
@@ -26,12 +27,12 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     // new ExtractTextPlugin("./css/app.css"),
-    new webpack.ResolverPlugin(
-      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
-    ),
-    new BowerWebpackPlugin({
-      excludes: /.*\.less/
-    }),
+    // new webpack.ResolverPlugin(
+    //   new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
+    // ),
+    // new BowerWebpackPlugin({
+    //   excludes: /.*\.less/
+    // }),
     new webpack.ProvidePlugin({
       $:      "jquery",
       jQuery: "jquery"
@@ -45,24 +46,24 @@ module.exports = {
       //loaders
       {
         test: /\.js$/,
-        loader: 'babel-loader',
+        loader: 'babel',
         include: [path.resolve(__dirname, './frontend/js')],
-        query: {
-          'stage': 0,
-          'plugins': ['react-transform'],
-          'extra': {
-            'react-transform': {
-              'transforms': [{
-                'transform': 'react-transform-hmr',
-                'imports': ['react'],
-                'locals': ['module']
-              }, {
-                'transform': 'react-transform-catch-errors',
-                'imports': ['react', 'redbox-react']
-              }]
-            }
-          }
-        }
+        // query: {
+        //   'stage': 0,
+        //   'plugins': ['react-transform'],
+        //   'extra': {
+        //     'react-transform': {
+        //       'transforms': [{
+        //         'transform': 'react-transform-hmr',
+        //         'imports': ['react'],
+        //         'locals': ['module']
+        //       }, {
+        //         'transform': 'react-transform-catch-errors',
+        //         'imports': ['react', 'redbox-react']
+        //       }]
+        //     }
+        //   }
+        // }
       },
       {
         test: /\.css$/,
