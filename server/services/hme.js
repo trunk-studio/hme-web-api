@@ -225,6 +225,26 @@ export default class Hme {
     }
   };
 
+
+  getCachedSlaveList = async () => {
+    try {
+      let slaveList = await models.Slave.findAll();
+      let result = [];
+      for(let slave of slaveList) {
+        result.push({
+          host: slave.host,
+          description: slave.description,
+          apiVersion: slave.apiVersion
+        });
+      }
+      console.log(JSON.stringify(result,null, 4));
+
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  };
+
   testAll = async () => {
     try {
       await this.testGroup(0, 0)
