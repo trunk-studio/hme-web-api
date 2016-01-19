@@ -263,7 +263,7 @@ export default class Hme {
     }
   };
 
-  async testDevID (DevID)  {
+  async testDevID (devID)  {
     try {
       console.log('devID:',devID);
       return (await this.testDevice(devID,0));
@@ -321,7 +321,7 @@ export default class Hme {
     }
   };
 
-  async testDevice (DevID, groupID)  {
+  async testDevice (devID, groupID)  {
     try {
       let BrightArry = [5000, 10, 5000, 10, 5000, 10];
       let serialPort = this.serialPort;
@@ -367,7 +367,7 @@ export default class Hme {
   };
 
 
-  async setLedCtrlMode (DevID, groupID, CtrlMode)  {
+  async setLedCtrlMode (devID, groupID, CtrlMode)  {
     try {
       let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
       let COpParams = {
@@ -404,7 +404,7 @@ export default class Hme {
     }
   };
 
-  async setLedBrighter ({DevID, groupID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt})  {
+  async setLedBrighter ({devID, groupID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt})  {
     try {
       let COpParams = {
         u8DevID:devID,
@@ -441,7 +441,7 @@ export default class Hme {
     }
   };
 
-  async setLedBrigh ({DevID, groupID, LedCH, BrighNum})  {
+  async setLedBrigh ({devID, groupID, LedCH, BrighNum})  {
     try {
       let COpParams = {
         u8DevID:devID,
@@ -506,7 +506,7 @@ export default class Hme {
     }
   };
 
-  async setLedDisplay ({DevID, groupID, WWBright, DBBright, BLBright, GRBright, REBright, Bright})  {
+  async setLedDisplay ({devID, groupID, WW, DB, BL, GR, RE, Bright})  {
     try {
 
         let setParams = {
@@ -531,7 +531,7 @@ export default class Hme {
     }
   };
 
-  async setGroupID (DevID, groupID)  {
+  async setGroupID (devID, groupID)  {
     try {
         let COpParams = {
         u8DevID:devID,
@@ -571,7 +571,7 @@ export default class Hme {
     }
   };
 
-  async writeFlashMemory (DevID, groupID)  {
+  async writeFlashMemory (devID, groupID)  {
     try {
         let COpParams = {
         u8DevID:devID,
@@ -694,7 +694,7 @@ export default class Hme {
   };
 
 
-  async writeTimeTabToDevice () {
+  async writeTimeTabToDevice (config) {
     try {
           let devID = config.Device;
           let groupID = config.Group;
@@ -923,7 +923,7 @@ export default class Hme {
 
 
 
-  // async accessDevice ({DevID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum})  {
+  // async accessDevice ({devID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum})  {
   //   try {
   //       let COpParams = {
   //       u8DevID:devID,

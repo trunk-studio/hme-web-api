@@ -299,11 +299,8 @@ export default class Encode {
 
 
 
-<<<<<<< HEAD
-  RxDecode = function({FuncCT, devID, u8RxDataArry}){
-=======
-  RxDecode ({FuncCT, DevID, u8RxDataArry}){
->>>>>>> 9089c12e1c7af61467f5a40f064afa01f50bad3b
+
+  RxDecode ({FuncCT, devID, u8RxDataArry}){
     //檢查接收的資料並解碼
 
     //分割資料段
