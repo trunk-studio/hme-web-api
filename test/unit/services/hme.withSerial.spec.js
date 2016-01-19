@@ -70,7 +70,7 @@ describe("hme with seriel port", () => {
     it("serial Port testDevID", async done => {
 
       try {
-        //測試特定DevID之燈具
+        //測試特定devID之燈具
         let devID = 1;
         let result = await services.hme.testDevID(devID);
         console.log('testDevID result',result);
@@ -102,8 +102,8 @@ describe("hme with seriel port", () => {
     it("serial Port testDevice", async done => {
 
       try {
-        // 當DevID != 0，groupID設定無效
-        // DevID == 0 && groupID == 0，測試全部裝置
+        // 當devID != 0，groupID設定無效
+        // devID == 0 && groupID == 0，測試全部裝置
         let devID = 1;
         let groupID = 1;
         let result = await services.hme.testDevice(devID, groupID);

@@ -299,7 +299,7 @@ export default class Encode {
 
 
 
-  RxDecode = function({FuncCT, DevID, u8RxDataArry}){
+  RxDecode = function({FuncCT, devID, u8RxDataArry}){
     //檢查接收的資料並解碼
 
     //分割資料段

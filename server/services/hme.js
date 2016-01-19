@@ -179,7 +179,7 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:33,
-        DevID:1,
+        devID:1,
         u8RxDataArry:[]
       }
 
@@ -190,13 +190,13 @@ export default class Hme {
         console.log('Sech Comm=',params2.Comm);
 
         DecodParams.u8RxDataArry =  await this.UartTxRx(params2);
-        DecodParams.DevID = i;
+        DecodParams.devID = i;
         ReDataArry = this.encode.RxDecode(DecodParams);
         if (ReDataArry.length != 0) {
           console.log('out =', i);
           console.log('out =',ReDataArry);
           let DevData = {
-            DevID:i,
+            devID:i,
             DevGroup:ReDataArry[0]
           }
           ReDevArry.push(DevData);
@@ -350,7 +350,7 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:devID,
+        devID:devID,
         u8RxDataArry:[]
       }
       console.log('setLedCtrlMode,COpParams:', COpParams);
@@ -448,7 +448,7 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:devID,
+        devID:devID,
         u8RxDataArry:[]
       }
       console.log('setLedBrighter,COpParams:',COpParams);
@@ -495,10 +495,10 @@ export default class Hme {
     }
   };
 
-  setGroupID = async (DevID, groupID) => {
+  setGroupID = async (devID, groupID) => {
     try {
         let COpParams = {
-        u8DevID:DevID,
+        u8DevID:devID,
         groupID:0,
         sFunc:'WordWt',
         u8DataNum:1,
@@ -513,14 +513,14 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:DevID,
+        devID:devID,
         u8RxDataArry:[]
       }
 
       TxParams.Comm = this.encode.ClientOp(COpParams);
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
-        if (await this.writeFlashMemory(DevID,0)){
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
+        if (await this.writeFlashMemory(devID,0)){
           return (true);
         }else {
           return (false);
@@ -535,10 +535,10 @@ export default class Hme {
     }
   };
 
-  writeFlashMemory = async (DevID, groupID) => {
+  writeFlashMemory = async (devID, groupID) => {
     try {
         let COpParams = {
-        u8DevID:DevID,
+        u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
         u8DataNum:1,
@@ -553,13 +553,13 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:DevID,
+        devID:devID,
         u8RxDataArry:[]
       }
 
       TxParams.Comm = this.encode.ClientOp(COpParams);
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
         return (true);
       } else {
         return (false);
@@ -589,7 +589,7 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:devID,
+        devID:devID,
         u8RxDataArry:[]
       }
 
@@ -626,7 +626,7 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:devID,
+        devID:devID,
         u8RxDataArry:[]
       }
 
@@ -707,7 +707,7 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:devID,
+        devID:devID,
         u8RxDataArry:[]
       }
 
@@ -747,7 +747,7 @@ export default class Hme {
         }
         let DecodParams = {
           FuncCT:49,
-          DevID:devID,
+          devID:devID,
           u8RxDataArry:[]
         }
 
@@ -764,7 +764,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   getSimRtc = async (devID, groupID) => {
     try {
@@ -784,7 +784,7 @@ export default class Hme {
         }
         let DecodParams = {
           FuncCT:33,
-          DevID:devID,
+          devID:devID,
           u8RxDataArry:[]
         }
 
@@ -806,7 +806,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   setSimRtcFunc = async (devID, groupID, func) => {
     try {
@@ -827,7 +827,7 @@ export default class Hme {
         }
         let DecodParams = {
           FuncCT:49,
-          DevID:devID,
+          devID:devID,
           u8RxDataArry:[]
         }
 
@@ -844,7 +844,7 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   setSimRtcFastForward = async (devID, groupID, rate) => {
     try {
@@ -865,7 +865,7 @@ export default class Hme {
         }
         let DecodParams = {
           FuncCT:49,
-          DevID:devID,
+          devID:devID,
           u8RxDataArry:[]
         }
 
@@ -882,14 +882,14 @@ export default class Hme {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
 
 
-  // accessDevice = async ({DevID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum}) => {
+  // accessDevice = async ({devID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum}) => {
   //   try {
   //       let COpParams = {
-  //       u8DevID:DevID,
+  //       u8DevID:devID,
   //       groupID:groupID,
   //       sFunc:sFunc,
   //       u8DataNum:dataNum,
@@ -917,13 +917,13 @@ export default class Hme {
   //
   //     let DecodParams = {
   //       FuncCT:(FuncCommTable[sFunc] & 0x7f),
-  //       DevID:DevID,
+  //       devID:devID,
   //       u8RxDataArry:[]
   //     }
   //
   //     TxParams.Comm = this.encode.ClientOp(COpParams);
   //     DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-  //     if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+  //     if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
   //       return (true);
   //     } else {
   //       return (false);
