@@ -11,7 +11,7 @@ export default class Encode {
     this.buff = new Buffer([128,1,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0]);
   }
 
-  WordTo3Byte = function (u16word) {
+  WordTo3Byte  (u16word) {
     //用於將1Word資料編碼為3Byte
 
     //u8Byte:用於存放轉好的資料,元素=Bytet,長度=3
@@ -30,12 +30,12 @@ export default class Encode {
     return(u8ByteArry);
   };
 
-  u3ByteToWord = function (u3Byte) {
+  u3ByteToWord  (u3Byte) {
   	//將經編碼之3Byte資料解碼為1Word
   	return(u3Byte[0] + ((u3Byte[1]<<7)&0xff) + (((u3Byte[1]>>1) + (u3Byte[2]<<6))* 0x100));
   };
 
-  WordListToAdd3ByteList = function({Data_list, WordDatat_list}) {
+  WordListToAdd3ByteList ({Data_list, WordDatat_list}) {
   	//用於將WordTypeList編碼為3Byte,並加入3ByteTypeList中
     for (var i = 0; i < WordDatat_list.length; i++) {
   		Data_list = Data_list.concat(this.WordTo3Byte(WordDatat_list[i]));
@@ -43,7 +43,7 @@ export default class Encode {
   	return(Data_list);
   };
   //?未測試
-  DataListToChkSum3ByteList = function(Data_Arry) {
+  DataListToChkSum3ByteList (Data_Arry) {
   	let u16ChkSum = 0;
   	for(var i = 0; i < Data_Arry.length; i++){
   		u16ChkSum = u16ChkSum + Data_Arry[i];
@@ -54,7 +54,7 @@ export default class Encode {
   };
 
 
-  CopBitModify = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry){
+  CopBitModify (u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry){
     let u8DataOut_arry =[
       0x80,
       ...this.WordTo3Byte(u8DevID),
@@ -85,7 +85,7 @@ export default class Encode {
   };
 
 
-  CopBitInv = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8Mask_Arry){
+  CopBitInv (u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8Mask_Arry){
     let u8DataOut_arry =[
       0x80,
       ...this.WordTo3Byte(u8DevID),
@@ -107,7 +107,7 @@ export default class Encode {
   	return (u8DataOut_arry);
   };
 
-  CopWordRd = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry){
+  CopWordRd (u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry){
     let u8DataOut_arry =[
       0x80,
       ...this.WordTo3Byte(u8DevID),
@@ -136,7 +136,7 @@ export default class Encode {
     //[ 128, 127, 31, 0, 0, 0, 0, 33, 5, 0, 0, 1, 0, 0, 69, 2, 0 ]
   };
 
-  CopDiscWordRd = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry){
+  CopDiscWordRd (u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry){
     let u8DataOut_arry =[
       0x80,
       ...this.WordTo3Byte(u8DevID),
@@ -167,7 +167,7 @@ export default class Encode {
   };
 
 
-  CopDiscWordWt = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
+  CopDiscWordWt (u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
     let u8DataOut_arry = [
       0x80,
       ...this.WordTo3Byte(u8DevID),
@@ -202,7 +202,7 @@ export default class Encode {
   };
 
 
-  CopWordWt = function(u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
+  CopWordWt (u8DevID, groupID, u8FuncCT, u8DataNum, u8Addr_Arry, u8DataIn_Arry){
     let u8DataOut_arry = [
       0x80,
       ...this.WordTo3Byte(u8DevID),
@@ -243,7 +243,7 @@ export default class Encode {
 
   };
   //未測試
-  ClientOp = function({u8DevID, groupID, sFunc, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry, RepeatNum}){
+  ClientOp ({u8DevID, groupID, sFunc, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry, RepeatNum}){
   	//用於進行通訊,讀寫操作燈具裝置之記憶體
   	//u8DevID = 裝置ID, sFunc = 記憶體操作方式, u8DataNum = 資料長度(Word)
   	//u8Addr_Arry = 欲操作之(燈具)記憶體位址, u8Mask_Arry = 位元操作遮罩, RepeatNum = 重傳次數上限
@@ -299,7 +299,8 @@ export default class Encode {
 
 
 
-  RxDecode = function({FuncCT, devID, u8RxDataArry}){
+
+  RxDecode ({FuncCT, devID, u8RxDataArry}){
     //檢查接收的資料並解碼
 
     //分割資料段
@@ -365,7 +366,7 @@ export default class Encode {
 
   };
 
-  configToTimeTabArry = function(config){
+  configToTimeTabArry (config){
     let ScheduleDetailsLen = 12;
     let dayTab = [];
     let dateLen = 0;
