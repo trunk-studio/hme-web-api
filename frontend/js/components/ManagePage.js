@@ -375,8 +375,6 @@ function _injectPropsFromStore(state) {
     }
   }
 
-  console.log('=====');
-  console.log('slave',JSON.stringify(slaveList,null,4));
   return {
     deviceList: scanResult,
     groupList: groupList,

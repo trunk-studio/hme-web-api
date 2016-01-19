@@ -72,8 +72,10 @@ export default class Hme {
   pingAllSlave = async () => {
     try {
 
-      let hosts = [];
-      let slaves = [];
+      let hosts = [],
+          slaves = [],
+          result = [];
+
       for(let i=1;i<10;i++) {
         hosts.push(`hmepi00${i}.local`);
       }
@@ -86,15 +88,23 @@ export default class Hme {
           });
         });
         if(exist) {
-          slaves.push({
-            host: host,
-            description: '',
-            apiVersion : ''
+          await models.Slave.findOrCreate({
+            where: {
+              host: host
+            },
+            defaults: {
+              host: host,
+              description: '',
+              apiVersion : ''
+            }
           });
+          result.push({
+              host: host,
+              description: '',
+              apiVersion : ''
+            });
         }
       }
-
-      let result = await services.hme.findOrCreate(slaves);
 
       return result;
     } catch (e) {
@@ -814,15 +824,6 @@ export default class Hme {
       }
     });
 
-  };
-
-  bulkCreateSlave = async (newSlaves) => {
-    try {
-      let result = await models.Slave.bulkCreate(newSlaves);
-      return result;
-    } catch (e) {
-      throw e;
-    }
   };
 
 }
