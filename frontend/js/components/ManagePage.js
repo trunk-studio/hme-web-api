@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import {
   requestScan, requestDeviceGroup, requestTestOneDevice,
   requestTestGroupDevices, requestTestAllDevices,
-  requestTestSetLedDisplay, requestGetCachedDeviceList
+  requestTestSetLedDisplay, requestGetCachedDeviceList,
+  requestSearchSlave, requestGetCachedSlaveList
 } from '../actions/TestActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
@@ -48,7 +49,8 @@ export default class ManagePage extends React.Component {
   }
 
   _handleScan = (e) => {
-    this.props.requestScan();
+    // this.props.requestScan();
+    this.props.requestSearchSlave();
   };
 
   _testOneDevice = (e) => {
@@ -73,8 +75,9 @@ export default class ManagePage extends React.Component {
 
   componentDidMount() {
     // this.props.requestScan();
+    this.props.requestGetCachedSlaveList();
     this.props.requestGetCachedDeviceList();
-    this.props.requestDeviceGroup();
+    // this.props.requestDeviceGroup();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -263,27 +266,27 @@ export default class ManagePage extends React.Component {
       payload: 0,
       primary: 'Select Slave',
       text: 'Select Slave'
-    }]
-
-    deviceList.push(this.props.deviceList);
-    // slaveList.push(this.props.slaveList);
+    }];
+    console.log('prop',this.props);
+    if(this.props.deviceList.length > 0)  deviceList.push(...this.props.deviceList);
+    if(this.props.slaveList.length > 0)   slaveList.push(...this.props.slaveList);
 
     let tabIndex = parseInt(this.props.params.tabIndex);
 
     return (
       <Tabs initialSelectedIndex={tabIndex}>
         <Tab label="TEST">
-          <div className="self-center" style={{width: '315px', marginTop: '15px'}}>
+          <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
             <div style={{display: 'table-caption'}}>
               <div style={{display: 'inline-flex'}}>
                 <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField labelMember="primary" menuItems={this.props.groupList} style={{width: '200px'}}/>
+                <SelectField labelMember="primary" menuItems={slaveList} style={{width: '300px'}}/>
                 <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px'}}></RaisedButton>
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '200px'}}/>
+                <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
                 <RaisedButton label="Test" secondary={true} style={{marginLeft:'15px', width: '100px'}} onTouchTap={this._testOneDevice}></RaisedButton>
               </div>
             </div>
@@ -333,7 +336,7 @@ export default class ManagePage extends React.Component {
                 hintText="Report Email"
                 floatingLabelText="Report Email"
                 type="text" />
-              <SelectField menuItems={this.props.groupList}/>
+              <SelectField menuItems={this.props.slaveList} />
               <RaisedButton label="Add in" style={{float: 'right', marginRight:'10%'}}/>
             </div>
           </div>
@@ -349,6 +352,7 @@ export default class ManagePage extends React.Component {
 function _injectPropsFromStore(state) {
   let { scanDevice } = state;
   let scanResult = [],
+      slaveList = [],
       groupList = [];
   if(scanDevice.deviceList) {
     for(let device of scanDevice.deviceList) {
@@ -359,19 +363,22 @@ function _injectPropsFromStore(state) {
       });
     }
   }
-
-  if(scanDevice.groupList) {
-    for(let group of scanDevice.groupList) {
-      groupList.push({
-        payload: group.id,
-        primary: `SlaveID: ${group.id}`,
-        text: group.id,
+  console.log('result');
+  console.log(scanDevice);
+  if(scanDevice.slaveList) {
+    for(let slave of scanDevice.slaveList) {
+      slaveList.push({
+        payload: slave.host,
+        primary: `Slave host: ${slave.host}`,
+        text: slave.host,
       });
     }
   }
+
   return {
     deviceList: scanResult,
-    groupList: groupList
+    groupList: groupList,
+    slaveList: slaveList
   };
 }
 
@@ -382,7 +389,9 @@ const _injectPropsFromActions = {
   requestTestGroupDevices,
   requestTestAllDevices,
   requestTestOneDevice,
-  requestGetCachedDeviceList
+  requestGetCachedDeviceList,
+  requestSearchSlave,
+  requestGetCachedSlaveList
 }
 
 

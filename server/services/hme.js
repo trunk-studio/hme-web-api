@@ -72,8 +72,10 @@ export default class Hme {
   pingAllSlave = async () => {
     try {
 
-      let hosts = [];
-      let slaves = [];
+      let hosts = [],
+          slaves = [],
+          result = [];
+
       for(let i=1;i<10;i++) {
         hosts.push(`hmepi00${i}.local`);
       }
@@ -86,22 +88,29 @@ export default class Hme {
           });
         });
         if(exist) {
-          slaves.push({
-            host: host,
-            description: '',
-            apiVersion : ''
+          await models.Slave.findOrCreate({
+            where: {
+              host: host
+            },
+            defaults: {
+              host: host,
+              description: '',
+              apiVersion : ''
+            }
           });
+          result.push({
+              host: host,
+              description: '',
+              apiVersion : ''
+            });
         }
       }
-      let result = await services.hme.bulkCreateSlave(slaves);
 
       return result;
     } catch (e) {
       throw e;
     }
   };
-
-
 
   UartTxRx = async ({Comm,RxLen}) => {
     try {
@@ -224,6 +233,28 @@ export default class Hme {
       throw e;
     }
   };
+
+
+  getCachedSlaveList = async () => {
+    try {
+      let slaveList = await models.Slave.findAll();
+      let result = [];
+      for(let slave of slaveList) {
+        result.push({
+          host: slave.host,
+          description: slave.description,
+          apiVersion: slave.apiVersion
+        });
+      }
+      console.log(JSON.stringify(result,null, 4));
+
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  };
+
+
 
   testAll = async () => {
     try {
@@ -793,15 +824,6 @@ export default class Hme {
       }
     });
 
-  };
-
-  bulkCreateSlave = async (newSlaves) => {
-    try {
-      let result = await models.Slave.bulkCreate(newSlaves);
-      return result;
-    } catch (e) {
-      throw e;
-    }
   };
 
 }
