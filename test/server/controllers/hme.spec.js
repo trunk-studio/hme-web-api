@@ -86,7 +86,7 @@ describe("hme", () => {
         let result = await request.get("/rest/hme/getCachedSlaveList");
         console.log('res',JSON.stringify(result.body,null,4));
         result.body.should.be.Array;
-        result.body[0].should.have.any.keys('host', 'description', 'apiVersion');
+        result.body[0].should.have.any.keys('id', 'host', 'description', 'apiVersion');
         done();
       } catch (e) {
         done(e);
