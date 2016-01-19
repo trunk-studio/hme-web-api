@@ -1,4 +1,4 @@
-import {SerialPort as serialPort} from "serialport";
+import {SerialPort} from "serialport";
 import Encode from "./encode";
 
 
@@ -14,17 +14,14 @@ export default class Hme {
     this.RxBufArry = [999];
   }
 
-  sleep = function(ms = 0){
+  sleep(ms = 0){
     return new Promise(r => setTimeout(r, ms));
   };
 
 
-  hello = (app) => {
-    let hello = 'yes!';
-    return {hello};
-  };
 
-  async connectSerialPort () => {
+
+  async connectSerialPort () {
     try {
       if(this.serialPortName != undefined){
 
@@ -49,7 +46,7 @@ export default class Hme {
     }
   };
 
-  async ping () => {
+  async ping () {
     try {
       let serialPort = this.serialPort;
       let restComm = this.restComm;
@@ -69,7 +66,7 @@ export default class Hme {
     }
   };
 
-  async pingAllSlave () => {
+  async pingAllSlave () {
     try {
 
       let hosts = [],
@@ -112,7 +109,7 @@ export default class Hme {
     }
   };
 
-  async UartTxRx ({Comm,RxLen}) => {
+  async UartTxRx ({Comm,RxLen})  {
     try {
       let serialPort = this.serialPort;
       let Rxarry = this.RxBufArry ;
@@ -128,7 +125,7 @@ export default class Hme {
           var T2id = setTimeout(function(){
             console.log('drain eer' );
             return reject(results);
-          },1000);
+          },1200);
 
           serialPort.drain(function (error) {
             console.log('UART drain');
@@ -138,8 +135,9 @@ export default class Hme {
                 results = Rxarry;
                 clearInterval(T1id);
                 clearTimeout(T2id);
+                console.log('TimeCont=',T1num);
                 return resolve(results);
-              } else if (T1num > 20) {
+              } else if (T1num > 60) {
                 console.log('TimeOut!');
                 results = [];
                 clearInterval(T1id);
@@ -154,7 +152,7 @@ export default class Hme {
               } else {
 
               }
-            } ,4);
+            } ,15);
           });
         });
       });
@@ -167,7 +165,7 @@ export default class Hme {
 
 
 
-  async SearchDevice () => {
+  async SearchDevice ()  {
     try {
       let ReDevArry = [];
       let ReDataArry = [];
@@ -187,24 +185,24 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:33,
-        DevID:1,
+        devID:1,
         u8RxDataArry:[]
       }
 
-      for (let i = 1; i < 300; i++) {
+      for (let i = 1; i < 50; i++) {
         params.u8DevID = i;
         console.log('Search DevID:',params.u8DevID);
         params2.Comm = this.encode.ClientOp(params);
         console.log('Sech Comm=',params2.Comm);
 
         DecodParams.u8RxDataArry =  await this.UartTxRx(params2);
-        DecodParams.DevID = i;
+        DecodParams.devID = i;
         ReDataArry = this.encode.RxDecode(DecodParams);
         if (ReDataArry.length != 0) {
           console.log('out =', i);
           console.log('out =',ReDataArry);
           let DevData = {
-            DevID:i,
+            devID:i,
             DevGroup:ReDataArry[0]
           }
           ReDevArry.push(DevData);
@@ -217,7 +215,7 @@ export default class Hme {
     }
   };
 
-  async getCachedDeviceList () => {
+  async getCachedDeviceList ()  {
     try {
       let deviceList = await models.Device.findAll();
       let result = [];
@@ -235,7 +233,7 @@ export default class Hme {
   };
 
 
-  async getCachedSlaveList () => {
+  async getCachedSlaveList ()  {
     try {
       let slaveList = await models.Slave.findAll();
       let result = [];
@@ -256,33 +254,33 @@ export default class Hme {
 
 
 
-  async testAll () => {
+  async testAll ()  {
     try {
-      await this.testGroup(0, 0)
+      await this.testGroup(0)
       return (true);
     } catch (e) {
       throw e;
     }
   };
 
-  async testDevID (DevID) => {
+  async testDevID (devID)  {
     try {
-      console.log('DevID:',DevID);
-      return (await this.testDevice(DevID,0));
+      console.log('devID:',devID);
+      return (await this.testDevice(devID,0));
     } catch (e) {
       throw e;
     }
   };
 
-  async testGroup (groupID) => {
+  async testGroup (groupID)  {
     try {
       let BrightArry = [5000, 10, 5000, 10, 5000, 10];
       let serialPort = this.serialPort;
       let triggerTimeMs = 500;
-      let DevID = 0;
+      let devID = 0;
 
       let LedBghParams = {
-        DevID:DevID,
+        devID:devID,
         groupID:groupID,
         Led1Bgt:0,
         Led2Bgt:0,
@@ -290,37 +288,47 @@ export default class Hme {
         Led4Bgt:0,
         Led5Bgt:0
       }
-      console.log('DevID:',DevID);
+      console.log('devID:',devID);
       console.log('groupID:',groupID);
       console.log('LedBghParams:',LedBghParams);
-      await this.setLedBrighter(LedBghParams);
-      await this.setLedCtrlMode(DevID, groupID, 'Interact');
+      if (false == await this.setLedBrighter(LedBghParams)) {
+        return (false);
+      }
+      if (false == await this.setLedCtrlMode(devID, groupID, 'Interact')) {
+        return (false);
+      }
       for (var i in BrightArry) {
         LedBghParams.Led1Bgt = BrightArry[i];
         LedBghParams.Led2Bgt = BrightArry[i];
         LedBghParams.Led3Bgt = BrightArry[i];
         LedBghParams.Led4Bgt = BrightArry[i];
         LedBghParams.Led5Bgt = BrightArry[i];
-        await this.setLedBrighter(LedBghParams);
+        if (false == await this.setLedBrighter(LedBghParams)) {
+          return (false);
+        }
         await this.sleep(triggerTimeMs);
       }
-      await this.setLedBrighter(LedBghParams);
+      if (false == await this.setLedBrighter(LedBghParams)) {
+        return (false);
+      }
       await this.sleep(triggerTimeMs);
-      await this.setLedCtrlMode(DevID, groupID, 'Normal');
+      if (false == await this.setLedCtrlMode(devID, groupID, 'Normal')) {
+        return (false);
+      }
       return (true);
     } catch (e) {
       throw e;
     }
   };
 
-  async testDevice (DevID, groupID) => {
+  async testDevice (devID, groupID)  {
     try {
       let BrightArry = [5000, 10, 5000, 10, 5000, 10];
       let serialPort = this.serialPort;
       let triggerTimeMs = 500;
 
       let LedBghParams = {
-        DevID:DevID,
+        devID:devID,
         groupID:groupID,
         Led1Bgt:0,
         Led2Bgt:0,
@@ -328,11 +336,11 @@ export default class Hme {
         Led4Bgt:0,
         Led5Bgt:0
       }
-      console.log('testDevice,DevID:',DevID,'groupID:',groupID);
+      console.log('testDevice,devID:',devID,'groupID:',groupID);
       if (await this.setLedBrighter(LedBghParams) == false){
         return (false);
       }
-      if ( await this.setLedCtrlMode(DevID, groupID, 'Interact') == false){
+      if ( await this.setLedCtrlMode(devID, groupID, 'Interact') == false){
         return (false);
       }
 
@@ -348,7 +356,7 @@ export default class Hme {
         await this.sleep(triggerTimeMs);
       }
 
-      if ( await this.setLedCtrlMode(DevID, groupID, 'Normal') == false){
+      if ( await this.setLedCtrlMode(devID, groupID, 'Normal') == false){
         return (false);
       }
       return (true);
@@ -359,11 +367,11 @@ export default class Hme {
   };
 
 
-  async setLedCtrlMode (DevID, groupID, CtrlMode) => {
+  async setLedCtrlMode (devID, groupID, CtrlMode)  {
     try {
       let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
       let COpParams = {
-        u8DevID:DevID,
+        u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
         u8DataNum:1,
@@ -378,13 +386,13 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:DevID,
+        devID:devID,
         u8RxDataArry:[]
       }
-      console.log('setLedCtrlMode,DevID:',DevID,'groupID:',groupID);
+      console.log('setLedCtrlMode,COpParams:', COpParams);
       TxParams.Comm = this.encode.ClientOp(COpParams);
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID || DevID == 0){
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID || devID == 0){
         return (true);
       } else {
         return (false);
@@ -396,10 +404,10 @@ export default class Hme {
     }
   };
 
-  async setLedBrighter ({DevID, groupID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt}) => {
+  async setLedBrighter ({devID, groupID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt})  {
     try {
       let COpParams = {
-        u8DevID:DevID,
+        u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
         u8DataNum:5,
@@ -414,15 +422,15 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:DevID,
+        devID:devID,
         u8RxDataArry:[]
       }
       console.log('setLedBrighter,COpParams:',COpParams);
-      console.log('setLedBrighter,DevID:',DevID,'groupID:',groupID);
+      console.log('setLedBrighter,devID:',devID,'groupID:',groupID);
       TxParams.Comm = this.encode.ClientOp(COpParams);
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID || DevID == 0){
-        //await this.setLedCtrlMode(DevID, groupID,'Interact');
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID || devID == 0){
+        //await this.setLedCtrlMode(devID, groupID,'Interact');
         return (true);
       } else {
         return (false);
@@ -433,10 +441,10 @@ export default class Hme {
     }
   };
 
-  async setLedBrigh ({DevID, groupID, LedCH, BrighNum}) => {
+  async setLedBrigh ({devID, groupID, LedCH, BrighNum})  {
     try {
       let COpParams = {
-        u8DevID:DevID,
+        u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
         u8DataNum:1,
@@ -476,16 +484,16 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:DevID,
+        devID:devID,
         u8RxDataArry:[]
       }
       console.log('setLedBrighter,COpParams:',COpParams);
-      console.log('setLedBrighter,DevID:',DevID,'groupID:',groupID);
+      console.log('setLedBrighter,devID:',devID,'groupID:',groupID);
       TxParams.Comm = this.encode.ClientOp(COpParams);
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID || DevID == 0){
-        //await this.setLedCtrlMode(DevID, groupID,'Interact');
-        if ( await this.setLedCtrlMode(DevID, groupID, 'Interact') == false){
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID || devID == 0){
+        //await this.setLedCtrlMode(devID, groupID,'Interact');
+        if ( await this.setLedCtrlMode(devID, groupID, 'Interact') == false){
           return (false);
         }
         return (true);
@@ -498,20 +506,20 @@ export default class Hme {
     }
   };
 
-  async setLedDisplay ({DevID, groupID, WWBright, DBBright, BLBright, GRBright, REBright, Bright}) => {
+  async setLedDisplay ({devID, groupID, WW, DB, BL, GR, RE, Bright})  {
     try {
 
         let setParams = {
-          DevID:DevID,
+          devID:devID,
           groupID:groupID,
-          Led1Bgt:DBBright * Bright,
-          Led2Bgt:BLBright * Bright,
-          Led3Bgt:GRBright * Bright,
-          Led4Bgt:REBright * Bright,
-          Led5Bgt:WWBright * Bright
+          Led1Bgt: DB * Bright,
+          Led2Bgt: BL * Bright,
+          Led3Bgt: GR * Bright,
+          Led4Bgt: RE * Bright,
+          Led5Bgt: WW * Bright
         }
 
-        let result = await this.setLedCtrlMode(DevID, groupID, 'Interact');
+        let result = await this.setLedCtrlMode(devID, groupID, 'Interact');
         if (result == false) {
             return (result);
         }
@@ -523,10 +531,10 @@ export default class Hme {
     }
   };
 
-  async setGroupID (DevID, groupID) => {
+  async setGroupID (devID, groupID)  {
     try {
         let COpParams = {
-        u8DevID:DevID,
+        u8DevID:devID,
         groupID:0,
         sFunc:'WordWt',
         u8DataNum:1,
@@ -541,14 +549,14 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:DevID,
+        devID:devID,
         u8RxDataArry:[]
       }
 
       TxParams.Comm = this.encode.ClientOp(COpParams);
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
-        if (this.writeFlashMemory(DevID,0)){
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
+        if (await this.writeFlashMemory(devID,0)){
           return (true);
         }else {
           return (false);
@@ -563,10 +571,10 @@ export default class Hme {
     }
   };
 
-  async writeFlashMemory (DevID, groupID) => {
+  async writeFlashMemory (devID, groupID)  {
     try {
         let COpParams = {
-        u8DevID:DevID,
+        u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
         u8DataNum:1,
@@ -581,13 +589,13 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:DevID,
+        devID:devID,
         u8RxDataArry:[]
       }
 
       TxParams.Comm = this.encode.ClientOp(COpParams);
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
         return (true);
       } else {
         return (false);
@@ -599,7 +607,7 @@ export default class Hme {
     }
   };
 
-  async setDayTab (devID, groupID, dayTab) => {
+  async setDayTab (devID, groupID, dayTab)  {
     try {
         let COpParams = {
         u8DevID:devID,
@@ -617,7 +625,7 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:devID,
+        devID:devID,
         u8RxDataArry:[]
       }
 
@@ -636,7 +644,7 @@ export default class Hme {
     }
   };
 
-  async setTimeTab (devID, groupID, timeTab) => {
+  async setTimeTab (devID, groupID, timeTab)  {
     try {
         let COpParams = {
         u8DevID:devID,
@@ -654,7 +662,7 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:devID,
+        devID:devID,
         u8RxDataArry:[]
       }
 
@@ -686,7 +694,7 @@ export default class Hme {
   };
 
 
-  async writeTimeTabToDevice () {
+  async writeTimeTabToDevice (config) {
     try {
           let devID = config.Device;
           let groupID = config.Group;
@@ -715,16 +723,16 @@ export default class Hme {
     }
   };
 
-  async setLedDisplayMode ({devID, groupID, mode}) => {
+  async setLedDisplayMode ({devID, groupID, mode})  {
     try {
         let modeIndex = {'cycle': 0, 'fullPower': 1, '6500k': 2, '4600k': 3,
                 '2950k': 4, 'savingE': 5, 'blueRed': 6}
         let COpParams = {
         u8DevID:devID,
-        groupID:0,
+        groupID:groupID,
         sFunc:'WordWt',
         u8DataNum:1,
-        u8Addr_Arry:[1010], //Device group
+        u8Addr_Arry:[103], //Normal control index
         u8DataIn_Arry:[modeIndex[mode]],
         u8Mask_Arry:[],
         RepeatNum:5
@@ -735,14 +743,14 @@ export default class Hme {
       }
       let DecodParams = {
         FuncCT:49,
-        DevID:devID,
+        devID:devID,
         u8RxDataArry:[]
       }
 
       TxParams.Comm = this.encode.ClientOp(COpParams);
       DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
       if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
-        if (this.writeFlashMemory(devID, 0)){
+        if (await this.writeFlashMemory(devID, 0)){
           return (true);
         }else {
           return (false);
@@ -757,12 +765,168 @@ export default class Hme {
     }
   };
 
+  async setSimRtc ({devID, groupID, year, month, day, hour, min, sec})  {
+    try {
+        let COpParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordWt',
+          u8DataNum:6,
+          u8Addr_Arry:[70],  //Addr 70 = RTC simulate set value
+          u8DataIn_Arry:[year, month, day, hour, min, sec],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+        let TxParams = {
+          Comm:[],
+          RxLen:8
+        }
+        let DecodParams = {
+          FuncCT:49,
+          devID:devID,
+          u8RxDataArry:[]
+        }
+
+        TxParams.Comm = this.encode.ClientOp(COpParams);
+        console.log('setDayTab.COpParams =', COpParams);
+        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
+          return (true);
+        } else {
+          return (false);
+        };
 
 
-  // async accessDevice ({DevID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum}) => {
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  async getSimRtc (devID, groupID)  {
+    try {
+        let COpParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordRd',
+          u8DataNum:6,
+          u8Addr_Arry:[70],  //Addr 70 = RTC simulate set value
+          u8DataIn_Arry:[],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+        let TxParams = {
+          Comm:[],
+          RxLen:26
+        }
+        let DecodParams = {
+          FuncCT:33,
+          devID:devID,
+          u8RxDataArry:[]
+        }
+
+        TxParams.Comm = this.encode.ClientOp(COpParams);
+        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+        console.log('u3ByteToWord=', DecodParams.u8RxDataArry);
+        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
+          let time = [];
+          for (let i = 5; i < 23; i+=3) {
+            time = [
+              ...time,
+              this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(i,i + 3))
+            ];
+          }
+          return (time);
+        } else {
+          return (false);
+        };
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  async setSimRtcFunc(devID, groupID, func)  {
+    try {
+        let funcIndex = {inti: 0, run: 1, stop: 2}
+        let COpParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordWt',
+          u8DataNum:1,
+          u8Addr_Arry:[60],  //Addr 60 = RTC simulate function
+          u8DataIn_Arry:[funcIndex[func]],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+        let TxParams = {
+          Comm:[],
+          RxLen:8
+        }
+        let DecodParams = {
+          FuncCT:49,
+          devID:devID,
+          u8RxDataArry:[]
+        }
+
+        TxParams.Comm = this.encode.ClientOp(COpParams);
+        console.log('setDayTab.COpParams =', COpParams);
+        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
+          return (true);
+        } else {
+          return (false);
+        };
+
+
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  async setSimRtcFastForward(devID, groupID, rate)  {
+    try {
+        //rate:0~2000
+        let COpParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordWt',
+          u8DataNum:1,
+          u8Addr_Arry:[61],  //Addr 60 = RTC simulate frequency divider (data: 0~2000 -> 2000Hz~1Hz)
+          u8DataIn_Arry:[(2000 - rate)],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+        let TxParams = {
+          Comm:[],
+          RxLen:8
+        }
+        let DecodParams = {
+          FuncCT:49,
+          devID:devID,
+          u8RxDataArry:[]
+        }
+
+        TxParams.Comm = this.encode.ClientOp(COpParams);
+        console.log('setDayTab.COpParams =', COpParams);
+        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
+        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
+          return (true);
+        } else {
+          return (false);
+        };
+
+
+    } catch (e) {
+      throw e;
+    }
+  };
+
+
+
+
+  // async accessDevice ({devID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum})  {
   //   try {
   //       let COpParams = {
-  //       u8DevID:DevID,
+  //       u8DevID:devID,
   //       groupID:groupID,
   //       sFunc:sFunc,
   //       u8DataNum:dataNum,
@@ -790,13 +954,13 @@ export default class Hme {
   //
   //     let DecodParams = {
   //       FuncCT:(FuncCommTable[sFunc] & 0x7f),
-  //       DevID:DevID,
+  //       devID:devID,
   //       u8RxDataArry:[]
   //     }
   //
   //     TxParams.Comm = this.encode.ClientOp(COpParams);
   //     DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-  //     if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == DevID){
+  //     if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
   //       return (true);
   //     } else {
   //       return (false);
@@ -808,7 +972,7 @@ export default class Hme {
   //   }
   // }
 
-  _eventsSetup = () => {
+  _eventsSetup()  {
     let serialPort = this.serialPort;
     let RxBufArry = this.RxBufArry
 

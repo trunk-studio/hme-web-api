@@ -51,19 +51,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it("serial Port SearchDevice", async done => {
 
-      try {
-        let result = await services.hme.SearchDevice();
-        console.log('SearchDevice result',result);
-        result.should.be.Array;
-        result[0].should.have.any.keys('DevID', 'DevGroup');
-        done();
-      } catch (e) {
-        done(e);
-      }
-
-    });
 
     it("serial Port testAll", async done => {
 
@@ -82,9 +70,9 @@ describe("hme with seriel port", () => {
     it("serial Port testDevID", async done => {
 
       try {
-        //測試特定DevID之燈具
-        let DevID = 1;
-        let result = await services.hme.testDevID(DevID);
+        //測試特定devID之燈具
+        let devID = 1;
+        let result = await services.hme.testDevID(devID);
         console.log('testDevID result',result);
         result.should.be.true;
         done();
@@ -114,11 +102,11 @@ describe("hme with seriel port", () => {
     it("serial Port testDevice", async done => {
 
       try {
-        // 當DevID != 0，groupID設定無效
-        // DevID == 0 && groupID == 0，測試全部裝置
-        let DevID = 1;
+        // 當devID != 0，groupID設定無效
+        // devID == 0 && groupID == 0，測試全部裝置
+        let devID = 1;
         let groupID = 1;
-        let result = await services.hme.testDevice(DevID, groupID);
+        let result = await services.hme.testDevice(devID, groupID);
         console.log('TestDevice result',result);
         result.should.be.true;
         done();
@@ -136,10 +124,10 @@ describe("hme with seriel port", () => {
       // 一開機是進入Normal
       // 燈具維護這類使用者可以直接操作UI讓燈具產生反應的模式是Interact
       try {
-        let DevID = 0;
+        let devID = 1;
         let groupID = 1;
-        let CtrlMode = 'Interact';
-        let result = await services.hme.setLedCtrlMode(DevID, groupID, CtrlMode);
+        let CtrlMode = 'Normal';
+        let result = await services.hme.setLedCtrlMode(devID, groupID, CtrlMode);
         console.log('setLedCtrlMode result',result);
         result.should.be.true;
         done();
@@ -153,12 +141,13 @@ describe("hme with seriel port", () => {
       //設定燈具固定顯示特定色光
       // cycle:預設模式, 根據Schedule設定顯示燈光
       // fullPower, 6500k...blueRed:燈具固定顯示特定色光, 持續不變
+      // 固定顯示特定色光時，不接受使用者即時改變燈光
       //進入Schedule頁面時,務必重設'cycle'模式
       try {
         let params = {
           devID: 1,
           groupID: 1,
-          mode: '6500k'
+          mode: '2950k'
         }
         //mode: cycle, fullPower, 6500k, 4600k, 2950k, savingE, blueRed
 
@@ -178,7 +167,7 @@ describe("hme with seriel port", () => {
       // 在Interact模式下才有效果
       try {
         let params = {
-          DevID:0,
+          devID:1,
           groupID:1,
           Led1Bgt:1000,
           Led2Bgt:500,
@@ -203,7 +192,7 @@ describe("hme with seriel port", () => {
       // BrighNum: 1~10000
       try {
         let params = {
-          DevID:1,
+          devID:1,
           groupID:1,
           LedCH:'LedCH2',
           BrighNum:800
@@ -217,6 +206,73 @@ describe("hme with seriel port", () => {
       }
 
     });
+
+
+    it("serial Port setSimRtc", async done => {
+      try {
+        let params = {
+          devID: 1,
+          groupID: 1,
+          year: 2017,
+          month: 1,
+          day: 5,
+          hour: 6,
+          min: 11,
+          sec: 0
+        }
+        let result = await services.hme.setSimRtc(params);
+        console.log('setSimRtc result',result);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port getSimRtc", async done => {
+      try {
+        let devID = 1;
+        let groupID = 1;
+        let params = {
+          devID: 1,
+          groupID: 1,
+          year: 2017,
+          month: 1,
+          day: 5,
+          hour: 6,
+          min: 11,
+          sec: 5
+        }
+        await services.hme.setSimRtc(params);
+        let result = await services.hme.getSimRtc(devID, groupID);
+        console.log('getSimRtc result',result);
+        //result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port setSimRtcFunc", async done => {
+      try {
+        let devID = 1;
+        let groupID = 1;
+        let func = 'inti'
+        // func = 'inti', 'run', 'stop'
+
+        let result = await services.hme.setSimRtcFunc(devID, groupID, func);
+        console.log('setSimRtc result',result);
+        result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+
 
 
     it("serial Port setLedDisplay", async done => {
@@ -277,6 +333,20 @@ describe("hme with seriel port", () => {
         await services.hme.writeFlashMemory(devID, groupID);  //寫入Flash
         console.log('setDayTab result',result);
         result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port SearchDevice", async done => {
+
+      try {
+        let result = await services.hme.SearchDevice();
+        console.log('SearchDevice result',result);
+        result.should.be.Array;
+        result[0].should.have.any.keys('DevID', 'DevGroup');
         done();
       } catch (e) {
         done(e);
