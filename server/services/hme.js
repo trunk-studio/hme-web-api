@@ -93,15 +93,14 @@ export default class Hme {
           });
         }
       }
-      let result = await services.hme.bulkCreateSlave(slaves);
+
+      let result = await services.hme.findOrCreate(slaves);
 
       return result;
     } catch (e) {
       throw e;
     }
   };
-
-
 
   UartTxRx = async ({Comm,RxLen}) => {
     try {
@@ -244,6 +243,8 @@ export default class Hme {
       throw e;
     }
   };
+
+
 
   testAll = async () => {
     try {
