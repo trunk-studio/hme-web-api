@@ -291,9 +291,8 @@ export default class ManagePage extends React.Component {
         </Tab>
         <Tab label="Group Test">
           <div style={{display: 'table-caption'}}>
-            <div style={{display: 'inline-flex'}}>
-              <SelectField menuItems={this.props.deviceList}/>
-              <RaisedButton label="TEST" />
+            <div style={{display: 'inline-flex' , marginTop: '15px', marginLeft: '15px'}}>
+              <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '200px'}}/>
             </div>
           </div>
           <div className="self-center" style={{width: '100%', marginTop: '5px'}}>
