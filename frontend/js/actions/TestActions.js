@@ -10,7 +10,7 @@ export const RECEIVED_TEST_SET_LED_DISPLAY = 'RECEIVED_TEST_SET_LED_DISPLAY'
 export function requestTestSetLedDisplay(data) {
   return (dispatch) => {
     return request
-      .post('/rest/slave/test/setLedDisplay',data)
+      .post(`/rest/slave/${data.groupID}/device/${data.DevID}/setLedDisplay`,data)
       .then(response => dispatch(receivedTestSetLedDisplay(response.data)));
   };
 }
@@ -57,7 +57,7 @@ export function receivedDeviceGroup(data) {
 export function requestTestOneDevice(deviceID) {
   return (dispatch) => {
     return request
-      .get(`/rest/slave/test/one/${deviceID}`)
+      .get(`/rest/slave/0/device/${deviceID}/test`)
   };
 }
 
@@ -71,7 +71,7 @@ export function requestTestAllDevices() {
 export function requestTestGroupDevices(groupID) {
   return (dispatch) => {
     return request
-      .get(`/rest/slave/test/group/${groupID}`)
+      .get(`/rest/slave/${groupID}/test`)
   };
 }
 

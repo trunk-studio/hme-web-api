@@ -32,7 +32,7 @@ export default class Routes {
           let slaveId =  ctx.params.slaveId;
           let slave = await services.deviceControl.getSlaveHost(slaveId);
 
-          if(ctx.request.header.host.indexOf(slave.host) != -1 ){
+          if(ctx.request.header.host.indexOf(slave.host) != -1 && slaveId == 0){
             await next();
           }else{
             request({
@@ -85,13 +85,14 @@ export default class Routes {
 
     //  Test slave Device
     publicRoute.get('/rest/slave/test/all', HmeController.testAllDevices);
-    publicRoute.get('/rest/slave/test/one/:id', HmeController.testDeviceByID);
-    publicRoute.get('/rest/slave/test/group/id', HmeController.testGruopByID);
-    publicRoute.post('/rest/slave/test/setLedDisplay', HmeController.setLedDisplay);
+    // '/rest/slave/test/one/:id'
+    publicRoute.get('/rest/slave/:slaveId/device/:deviceId/test', HmeController.testDeviceByID);
+    // '/rest/slave/test/group/id'
+    publicRoute.get('/rest/slave/:slaveId/test', HmeController.testGruopByID);
+    // '/rest/slave/test/setLedDisplay'
+    publicRoute.post('/rest/slave/:slaveId/device/:deviceId/setLedDisplay', HmeController.setLedDisplay);
 
-    publicRoute.post('/rest/slave/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
     publicRoute.post('/rest/slave/:slaveId/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
-
 
 
     publicRoute.get('/', function(ctx, next) {
