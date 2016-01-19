@@ -62,6 +62,8 @@ export default class Routes {
     // Test Raspberry Pi connect
     publicRoute.get('/rest/hme/hello/', HmeController.hello);
     publicRoute.get('/rest/hme/ping/', HmeController.ping);
+    publicRoute.get('/rest/hme/searchSlave', HmeController.searchSlave);
+    publicRoute.get('/rest/hme/getCachedSlaveList', HmeController.getCachedSlaveList);
 
     // master
     publicRoute.get('/rest/master/user/', UserController.index);

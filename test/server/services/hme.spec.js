@@ -12,6 +12,11 @@ describe("hme", () => {
         GroupId: group.id,
         SlaveId: slaves.id
       });
+      let slave = await models.Slave.create({
+        host: 'testHost',
+        description: 'testDesc',
+        apiVersion: 'testAPIversion'
+      });
       done();
     } catch (e) {
       done(e);
@@ -38,7 +43,7 @@ describe("hme", () => {
 
   });
 
-  it("Get Device CachedList", async done => {
+  it("Get Cached DeviceList", async done => {
     try {
       let result = await services.hme.getCachedDeviceList();
       // console.log(result[0]);
@@ -50,6 +55,20 @@ describe("hme", () => {
     }
   });
 
+
+  it("Get Cached DeviceList", async done => {
+    try {
+      let result = await services.hme.getCachedSlaveList();
+      // console.log(result[0]);
+      result.should.be.Array;
+      result[0].should.have.any.keys('host', 'description', 'apiVersion');
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
+
+
   it("ping all slaves", async done => {
     try {
       let result = await services.hme.pingAllSlave();
@@ -60,26 +79,4 @@ describe("hme", () => {
     }
   })
 
-  it("bulkCreateSlave", async done => {
-    try {
-      let newSlaves = [{
-        host: 'test host1',
-        description: 'test desc1',
-        apiVersion: 'test version1'
-      },{
-        host: 'test host2',
-        description: 'test desc2',
-        apiVersion: 'test version2'
-      }];
-      let result = await services.hme.bulkCreateSlave(newSlaves);
-
-      result[0].host.should.be.equal(newSlaves[0].host);
-      result[0].description.should.be.equal(newSlaves[0].description);
-      result[0].apiVersion.should.be.equal(newSlaves[0].apiVersion);
-
-      done();
-    } catch (e) {
-      done(e);
-    }
-  })
 });

@@ -48,6 +48,11 @@ describe("hme", () => {
           GroupId: group.id,
           SlaveId: slave.id
         });
+        let slave = await models.Slave.create({
+          host: 'testHost',
+          description: 'testDesc',
+          apiVersion: 'testAPIversion'
+        });
         done();
       } catch (e) {
         done(e);
@@ -66,11 +71,23 @@ describe("hme", () => {
       }
     });
 
-    it("get cache deviceList", async done => {
+    it("get cached deviceList", async done => {
       try {
         let result = await request.get(`/rest/slave/${slave.id}/getCachedDeviceList`);
         result.body.should.be.Array;
         result.body[0].should.have.any.keys('DevID');
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+    it("get cached slaveList", async done => {
+      try {
+        let result = await request.get("/rest/hme/getCachedSlaveList");
+        console.log('res',JSON.stringify(result.body,null,4));
+        result.body.should.be.Array;
+        result.body[0].should.have.any.keys('host', 'description', 'apiVersion');
         done();
       } catch (e) {
         done(e);
