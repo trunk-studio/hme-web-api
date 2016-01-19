@@ -1,4 +1,4 @@
-import {SerialPort as serialPort} from "serialport";
+import {SerialPort} from "serialport";
 import Encode from "./encode";
 
 
@@ -14,17 +14,14 @@ export default class Hme {
     this.RxBufArry = [999];
   }
 
-  sleep = function(ms = 0){
+  sleep(ms = 0){
     return new Promise(r => setTimeout(r, ms));
   };
 
 
-  hello = (app) => {
-    let hello = 'yes!';
-    return {hello};
-  };
 
-  async connectSerialPort () => {
+
+  async connectSerialPort () {
     try {
       if(this.serialPortName != undefined){
 
@@ -49,7 +46,7 @@ export default class Hme {
     }
   };
 
-  async ping () => {
+  async ping () {
     try {
       let serialPort = this.serialPort;
       let restComm = this.restComm;
@@ -69,7 +66,7 @@ export default class Hme {
     }
   };
 
-  async pingAllSlave () => {
+  async pingAllSlave () {
     try {
 
       let hosts = [],
@@ -112,7 +109,7 @@ export default class Hme {
     }
   };
 
-  async UartTxRx ({Comm,RxLen}) => {
+  async UartTxRx ({Comm,RxLen})  {
     try {
       let serialPort = this.serialPort;
       let Rxarry = this.RxBufArry ;
@@ -168,7 +165,7 @@ export default class Hme {
 
 
 
-  async SearchDevice () => {
+  async SearchDevice ()  {
     try {
       let ReDevArry = [];
       let ReDataArry = [];
@@ -218,7 +215,7 @@ export default class Hme {
     }
   };
 
-  async getCachedDeviceList () => {
+  async getCachedDeviceList ()  {
     try {
       let deviceList = await models.Device.findAll();
       let result = [];
@@ -236,7 +233,7 @@ export default class Hme {
   };
 
 
-  async getCachedSlaveList () => {
+  async getCachedSlaveList ()  {
     try {
       let slaveList = await models.Slave.findAll();
       let result = [];
@@ -257,7 +254,7 @@ export default class Hme {
 
 
 
-  async testAll () => {
+  async testAll ()  {
     try {
       await this.testGroup(0)
       return (true);
@@ -266,7 +263,7 @@ export default class Hme {
     }
   };
 
-  async testDevID (DevID) => {
+  async testDevID (DevID)  {
     try {
       console.log('devID:',devID);
       return (await this.testDevice(devID,0));
@@ -275,7 +272,7 @@ export default class Hme {
     }
   };
 
-  async testGroup (groupID) => {
+  async testGroup (groupID)  {
     try {
       let BrightArry = [5000, 10, 5000, 10, 5000, 10];
       let serialPort = this.serialPort;
@@ -324,7 +321,7 @@ export default class Hme {
     }
   };
 
-  async testDevice (DevID, groupID) => {
+  async testDevice (DevID, groupID)  {
     try {
       let BrightArry = [5000, 10, 5000, 10, 5000, 10];
       let serialPort = this.serialPort;
@@ -370,7 +367,7 @@ export default class Hme {
   };
 
 
-  async setLedCtrlMode (DevID, groupID, CtrlMode) => {
+  async setLedCtrlMode (DevID, groupID, CtrlMode)  {
     try {
       let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
       let COpParams = {
@@ -407,7 +404,7 @@ export default class Hme {
     }
   };
 
-  async setLedBrighter ({DevID, groupID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt}) => {
+  async setLedBrighter ({DevID, groupID, Led1Bgt, Led2Bgt, Led3Bgt, Led4Bgt, Led5Bgt})  {
     try {
       let COpParams = {
         u8DevID:devID,
@@ -444,7 +441,7 @@ export default class Hme {
     }
   };
 
-  async setLedBrigh ({DevID, groupID, LedCH, BrighNum}) => {
+  async setLedBrigh ({DevID, groupID, LedCH, BrighNum})  {
     try {
       let COpParams = {
         u8DevID:devID,
@@ -509,7 +506,7 @@ export default class Hme {
     }
   };
 
-  async setLedDisplay ({DevID, groupID, WWBright, DBBright, BLBright, GRBright, REBright, Bright}) => {
+  async setLedDisplay ({DevID, groupID, WWBright, DBBright, BLBright, GRBright, REBright, Bright})  {
     try {
 
         let setParams = {
@@ -534,7 +531,7 @@ export default class Hme {
     }
   };
 
-  async setGroupID (DevID, groupID) => {
+  async setGroupID (DevID, groupID)  {
     try {
         let COpParams = {
         u8DevID:devID,
@@ -574,7 +571,7 @@ export default class Hme {
     }
   };
 
-  async writeFlashMemory (DevID, groupID) => {
+  async writeFlashMemory (DevID, groupID)  {
     try {
         let COpParams = {
         u8DevID:devID,
@@ -610,7 +607,7 @@ export default class Hme {
     }
   };
 
-  async setDayTab (devID, groupID, dayTab) => {
+  async setDayTab (devID, groupID, dayTab)  {
     try {
         let COpParams = {
         u8DevID:devID,
@@ -647,7 +644,7 @@ export default class Hme {
     }
   };
 
-  async setTimeTab (devID, groupID, timeTab) => {
+  async setTimeTab (devID, groupID, timeTab)  {
     try {
         let COpParams = {
         u8DevID:devID,
@@ -726,7 +723,7 @@ export default class Hme {
     }
   };
 
-  async setLedDisplayMode ({devID, groupID, mode}) => {
+  async setLedDisplayMode ({devID, groupID, mode})  {
     try {
         let modeIndex = {'cycle': 0, 'fullPower': 1, '6500k': 2, '4600k': 3,
                 '2950k': 4, 'savingE': 5, 'blueRed': 6}
@@ -768,7 +765,7 @@ export default class Hme {
     }
   };
 
-  setSimRtc = async ({devID, groupID, year, month, day, hour, min, sec}) => {
+  async setSimRtc ({devID, groupID, year, month, day, hour, min, sec})  {
     try {
         let COpParams = {
           u8DevID:devID,
@@ -805,7 +802,7 @@ export default class Hme {
     }
   };
 
-  getSimRtc = async (devID, groupID) => {
+  async getSimRtc (devID, groupID)  {
     try {
         let COpParams = {
           u8DevID:devID,
@@ -847,7 +844,7 @@ export default class Hme {
     }
   };
 
-  setSimRtcFunc = async (devID, groupID, func) => {
+  async setSimRtcFunc(devID, groupID, func)  {
     try {
         let funcIndex = {inti: 0, run: 1, stop: 2}
         let COpParams = {
@@ -885,7 +882,7 @@ export default class Hme {
     }
   };
 
-  setSimRtcFastForward = async (devID, groupID, rate) => {
+  async setSimRtcFastForward(devID, groupID, rate)  {
     try {
         //rate:0~2000
         let COpParams = {
@@ -926,7 +923,7 @@ export default class Hme {
 
 
 
-  // async accessDevice ({DevID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum}) => {
+  // async accessDevice ({DevID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum})  {
   //   try {
   //       let COpParams = {
   //       u8DevID:devID,
@@ -975,7 +972,7 @@ export default class Hme {
   //   }
   // }
 
-  _eventsSetup = () => {
+  _eventsSetup()  {
     let serialPort = this.serialPort;
     let RxBufArry = this.RxBufArry
 
