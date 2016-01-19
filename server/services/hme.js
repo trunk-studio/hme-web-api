@@ -694,28 +694,30 @@ export default class Hme {
   };
 
 
-  async writeTimeTabToDevice (config) {
+  async writeTimeTabToDevices (config, devList) {
     try {
-          let devID = config.Device;
-          let groupID = config.Group;
-
+          let devID = 0;
+          let groupID = 0;
           let timeTabArry = this.encode.configToTimeTabArry(config);
-          // console.log(timeTabArry.dayTab);
-          // console.log(devID);
-          console.log(timeTabArry.dayTab);
-          let result = await this.setDayTab(devID, groupID, timeTabArry.dayTab);
-          if(result == false){
-            return (false);
-          }
-          result = await this.setTimeTab(devID, groupID, timeTabArry.timePwmTab);
-          if(result == false){
-            return (false);
-          }
-          result = await this.writeFlashMemory(devID, groupID)
-          if(result == false){
-            return (false);
-          }
 
+          for (let i = 0; i < devList.length; i++) {
+            devID = devList[i];
+            // console.log(timeTabArry.dayTab);
+            // console.log(devID);
+            console.log(timeTabArry.dayTab);
+            let result = await this.setDayTab(devID, groupID, timeTabArry.dayTab);
+            if(result == false){
+              return (false);
+            }
+            result = await this.setTimeTab(devID, groupID, timeTabArry.timePwmTab);
+            if(result == false){
+              return (false);
+            }
+            result = await this.writeFlashMemory(devID, groupID)
+            if(result == false){
+              return (false);
+            }
+          }
           return (true);
 
     } catch (e) {
