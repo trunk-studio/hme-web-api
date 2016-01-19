@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import { requestScheduleCreate, requestGetScheduleList,
    updateScheduleFirstDate, updateScheduleDay,
    requestUpdateScheduleList} from '../actions/ScheduleListActions'
-
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
 const MenuItem = require('material-ui/lib/menus/menu-item');
@@ -24,15 +23,41 @@ const TableRow = require('material-ui/lib/table/table-row');
 const TableRowColumn = require('material-ui/lib/table/table-row-column');
 const Snackbar = require('material-ui/lib/snackbar');
 
+import ThemeManager from 'material-ui/lib/styles/theme-manager';
+import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
+import Colors from 'material-ui/lib/styles/colors';
+
 export default class ScheduleList extends React.Component {
+
+  static childContextTypes = {
+    muiTheme: React.PropTypes.object,
+  };
 
   constructor(props) {
     super(props);
     this.state = {
       isSetBtnClose: false,
-      scheduleDate: []
+      scheduleDate: [],
+      muiTheme: ThemeManager.getMuiTheme(LightRawTheme),
+      isAll: false,
+      isGroup: true
     };
   }
+
+  getChildContext() {
+    return {
+      muiTheme: this.state.muiTheme
+    };
+  };
+
+  componentWillMount() {
+    // change theme sample
+    // let newMuiTheme = ThemeManager.modifyRawThemePalette(this.state.muiTheme, {
+    //   textColor: Colors.deepOrange500,
+    // });
+
+    // this.setState({muiTheme: newMuiTheme});
+  };
 
   componentDidMount () {
     this.props.requestGetScheduleList();
@@ -94,6 +119,14 @@ export default class ScheduleList extends React.Component {
 
   _handleRequestClose = (e) => {
     this.refs.snackbar.setState({open: false});
+  };
+
+  _allScheduleBtn = (e) =>{
+    this.setState({isAll: true, isGroup: false});
+  };
+
+  _groupScheduleBtn = (e) =>{
+    this.setState({isAll: false, isGroup: true});
   };
 
   render () {
@@ -163,11 +196,15 @@ export default class ScheduleList extends React.Component {
     }
     // let isAddOpen = rows.length >= 5 ? true: false;
     return (
-      <div className="self-center" style={{width: '100%'}}>
-        <div className="row" style={{marginLeft: '30px', marginTop: '15px'}}>
-          <RaisedButton ref="scheduleAddBtn" primary={true} label="Add" disabled={false} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
-          <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} />
-          <RaisedButton ref="scheduleSetBtn" onTouchTap={this._setScheduleList} label="Set" disabled={this.state.isSetBtnClose} style={{marginLeft: '15px'}} />
+      <div id="scheduleList" className="self-center" style={{width: '100%'}}>
+        <div className="row">
+          <div style={{marginLeft: '30px', marginTop: '15px'}}>
+            <RaisedButton label="Group" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
+            <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
+            <RaisedButton ref="scheduleAddBtn" label="Add" primary={true} disabled={false} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
+            <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} />
+            <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose} style={{marginLeft: '15px'}} />
+          </div>
         </div>
         <Table selectable={false}>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>

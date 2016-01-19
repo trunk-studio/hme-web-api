@@ -61,7 +61,24 @@ exports.getCachedDeviceList = async function (ctx) {
   try {
     let result = await services.hme.getCachedDeviceList();
     ctx.body = result;
-    done();
+  } catch (e) {
+    throw e;
+  }
+}
+
+exports.searchSlave = async function(ctx) {
+  try {
+    let result = await services.hme.pingAllSlave();
+    ctx.body = result;
+  } catch (e) {
+    throw e;
+  }
+}
+
+exports.getCachedSlaveList = async function (ctx) {
+  try {
+    let result = await services.hme.getCachedSlaveList();
+    ctx.body = result;
   } catch (e) {
     throw e;
   }

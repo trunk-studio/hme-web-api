@@ -227,11 +227,16 @@ export default class ScheduleDetailConfig extends React.Component {
       datasetStroke: false,
       pointHitDetectionRadius: 0
     }
+    let id = this.props.params.id;
     return (
       <div>
         <AppBar
-          title="Title"
-          iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+          title="Schedule Detail Confing"
+          iconElementLeft={
+            <IconButton onTouchTap={function() {window.location.href =`#/schedule/edit/${id}`;}} >
+              <NavigationClose />
+            </IconButton>
+          }
           iconElementRight={<FlatButton label="Save" onTouchTap={this.backClick} />}
           onLeftIconButtonTouchTap={this.backClick} />
         <div className="self-center" style={{width: '100%', marginTop: '5px'}}>
