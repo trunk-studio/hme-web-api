@@ -34,18 +34,19 @@ describe("hme", () => {
   });
 
   describe("device", () => {
+    let slave;
     before(async done => {
       try {
-        let group = await models.Group.create();
-        let slaves = await models.Slave.create({
-          host: "hostName",
+        slave = await models.Slave.create({
+          host: "127.0.0.1",
           description: "描述",
           apiVersion: "0.1.0",
         });
+        let group = await models.Group.create();
         let device = await models.Device.create({
           uid: 164,
           GroupId: group.id,
-          SlaveId: slaves.id
+          SlaveId: slave.id
         });
         let slave = await models.Slave.create({
           host: 'testHost',
@@ -60,7 +61,7 @@ describe("hme", () => {
 
     it("SearchDevice", async(done) => {
       try {
-        let result = await request.get("/rest/slave/searchDevice");
+        let result = await request.get("/rest/slave/0/searchDevice");
         result.status.should.be.equal(200);
         result.body.should.be.Array;
         result.body[0].should.have.any.keys('DevID', 'DevGroup');
@@ -72,7 +73,7 @@ describe("hme", () => {
 
     it("get cached deviceList", async done => {
       try {
-        let result = await request.get("/rest/slave/getCachedDeviceList");
+        let result = await request.get(`/rest/slave/${slave.id}/getCachedDeviceList`);
         result.body.should.be.Array;
         result.body[0].should.have.any.keys('DevID');
         done();
@@ -95,7 +96,7 @@ describe("hme", () => {
 
     it("allGroup", async(done) => {
       try {
-        let result = await request.get('/rest/slave/findAllDeviceGroups');
+        let result = await request.get(`/rest/slave/${slave.id}/findAllDeviceGroups`);
         console.log('group list');
         console.log(result.body);
         result.status.should.be.equal(200);

@@ -239,6 +239,7 @@ export default class Hme {
       let result = [];
       for(let slave of slaveList) {
         result.push({
+          id: slave.id,
           host: slave.host,
           description: slave.description,
           apiVersion: slave.apiVersion

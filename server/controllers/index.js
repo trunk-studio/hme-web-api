@@ -5,6 +5,7 @@ import ScheduleController from './schedule'
 import Router from 'koa-router';
 import fs from 'fs';
 import path from 'path';
+import request from 'axios'
 
 export default class Routes {
 
@@ -13,6 +14,52 @@ export default class Routes {
     this.router = router;
     this.app = app;
 
+  }
+
+  getSlaveHostRoute(){
+    var app = this.app;
+    var getSlaveRoute = new Router()
+
+    getSlaveRoute.all([
+      '/rest/slave/:slaveId/searchDevice',
+      '/rest/slave/:slaveId/getCachedDeviceList',
+      '/rest/slave/:slaveId/test/all',
+      '/rest/slave/:slaveId/device/:deviceId/test',
+      '/rest/slave/:slaveId/test',
+      '/rest/slave/:slaveId/device/:deviceId/setLedDisplay',
+      '/rest/slave/:slaveId/schedule/setOnDevice',
+      '/rest/slave/:slaveId/findAllDeviceGroups'
+      ],
+      async function (ctx, next){
+        try {
+
+          let slaveId =  ctx.params.slaveId;
+          let slave = await services.deviceControl.getSlaveHost(slaveId);
+          console.log(slave.id, slave.host,ctx.request.header.host);
+          // slave = slave.dataValues;
+          if(slave){
+            if(ctx.request.header.host.indexOf(slave.host) != -1){
+              console.log("My router");
+              await next();
+            }else{
+              console.log(slave.host, "proxy: ", ctx.request.method, 'http://'+ slave.host + ctx.request.url);
+              request({
+                method: ctx.request.method,
+                url: 'http://'+ slave.host + ctx.request.url,
+                data: ctx.request.body || {}
+              })
+            }
+          }else{
+            await next();
+          }
+        } catch (e) {
+          console.log(e);
+          throw e
+        }
+      }
+    );
+
+    app.use(getSlaveRoute.middleware());
   }
 
   setupPublicRoute() {
@@ -44,17 +91,15 @@ export default class Routes {
     publicRoute.get('/rest/master/schedule/config/:id', ScheduleController.getConfigDetail);
 
     // find slave Device & Groups
-    publicRoute.get('/rest/slave/searchDevice', HmeController.searchDevice);
-    publicRoute.get('/rest/slave/findAllDeviceGroups', HmeController.findAllDeviceGroups);
-    publicRoute.get('/rest/slave/getCachedDeviceList', HmeController.getCachedDeviceList);
+    publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
+    publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceList);
+    publicRoute.get('/rest/slave/:slaveId/test/all', HmeController.testAllDevices);
+    publicRoute.get('/rest/slave/:slaveId/device/:deviceId/test', HmeController.testDeviceByID);
+    publicRoute.get('/rest/slave/:slaveId/test', HmeController.testGruopByID);
+    publicRoute.post('/rest/slave/:slaveId/device/:deviceId/setLedDisplay', HmeController.setLedDisplay);
+    publicRoute.post('/rest/slave/:slaveId/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
 
-    //  Test slave Device
-    publicRoute.get('/rest/slave/test/all', HmeController.testAllDevices);
-    publicRoute.get('/rest/slave/test/one/:id', HmeController.testDeviceByID);
-    publicRoute.get('/rest/slave/test/group/id', HmeController.testGruopByID);
-    publicRoute.post('/rest/slave/test/setLedDisplay', HmeController.setLedDisplay);
-
-    publicRoute.post('/rest/slave/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
+    publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
 
 
 
@@ -104,5 +149,6 @@ export default class Routes {
 
 
   }
+
 
 }

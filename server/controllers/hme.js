@@ -5,7 +5,6 @@ exports.hello = async function (ctx) {
   ctx.body = {result}
 };
 
-
 exports.ping = async function (ctx) {
   let result = await services.hme.ping();
   ctx.body = {result}
