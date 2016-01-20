@@ -54,7 +54,7 @@ export default class Routes {
           }
         } catch (e) {
           console.log(e);
-          await next();
+          throw e
         }
       }
     );
