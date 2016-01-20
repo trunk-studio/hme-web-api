@@ -33,7 +33,7 @@ export default class ManagePage extends React.Component {
       blValue: 100,
       grValue: 100,
       reValue: 100,
-      cctValue: 100,
+      cctValue: 3000,
       brightValue: 100,
       groupID: 0,
       deviceID: 0,
@@ -335,7 +335,7 @@ export default class ManagePage extends React.Component {
               <Slider ref="BL" name="BL" defaultValue={100} max={100} step={1} value={this.state.blValue} description={`BL ${this.state.blValue}`} className="slider" onChange={this._blChanged} />
               <Slider ref="GR" name="GR" defaultValue={100} max={100} step={1} value={this.state.grValue} description={`GR ${this.state.grValue}`} className="slider" onChange={this._grChanged} />
               <Slider ref="RE" name="RE" defaultValue={100} max={100} step={1} value={this.state.reValue} description={`RE ${this.state.reValue}`} className="slider" onChange={this._reChanged} />
-              <Slider ref="CCT" name="CCT" defaultValue={3000} max={16000} value={this.state.cctValue} description="CCT" step={10} className="slider" onChange={this._cctChanged}/>
+              <Slider ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} description="CCT" step={10} className="slider" onChange={this._cctChanged}/>
               <Slider ref="Bright" name="Bright" defaultValue={100} className="slider" max={100} value={this.state.brightValue} description="Bright" onChange={this._brightChanged}/>
             </div>
           </div>
