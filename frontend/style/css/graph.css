@@ -40,11 +40,7 @@
 
 /* schedule detail Slider*/
 .slider {
-  height: 50px;
-}
-
-.slider div{
-  margin-top: 0px !important;
+  margin-bottom: 15px;
 }
 
 .smalllRaisedBnutton > div {

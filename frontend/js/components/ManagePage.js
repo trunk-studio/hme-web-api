@@ -15,7 +15,7 @@ const Tab = require('material-ui/lib/tabs/tab');
 const ScheduleList = require('./ScheduleList');
 const LineChart = require("react-chartjs").Line;
 import { Slider} from 'material-ui';
-
+import SliderRc from 'rc-slider';
 
 export default class ManagePage extends React.Component {
   constructor(props) {
@@ -95,38 +95,28 @@ export default class ManagePage extends React.Component {
   componentDidUpdate(prevProps, prevState) {
   }
 
-  _wwChanged = (e, value) => {
-    this.setState({
-      wwValue: value
-    })
+  _wwChanged = (value) => {
+    this.state.wwValue = value;
     this._updateChart();
   };
-  _dbChanged = (e, value) => {
-    this.setState({
-      dbValue: value
-    })
+  _dbChanged = (value) => {
+    this.state.dbValue = value;
     this._updateChart();
   };
-  _blChanged = (e, value) => {
-    this.setState({
-      blValue: value
-    })
+  _blChanged = (value) => {
+    this.state.blValue = value;
     this._updateChart();
   };
-  _grChanged = (e, value) => {
-    this.setState({
-      grValue: value
-    })
+  _grChanged = (value) => {
+    this.state.grValue = value;
     this._updateChart();
   };
-  _reChanged = (e, value) => {
-    this.setState({
-      reValue: value
-    })
+  _reChanged = (value) => {
+    this.state.reValue = value;
     this._updateChart();
   };
-  _cctChanged = () => {
-    let value = this.refs.CCT.state.value;
+  _cctChanged = (value) => {
+    // let value = this.refs.CCT.state.value;
     if(value >= 3000 && value < 4000){
       console.log("3");
       this._setAll(
@@ -217,10 +207,8 @@ export default class ManagePage extends React.Component {
       this.state.cctValue = cct;
     this._updateChart();
   };
-  _brightChanged = (e, value) => {
-    this.setState({
-      brightValue: this.refs.Bright.state.value
-    })
+  _brightChanged = (value) => {
+    this.state.brightValue = value
     this._updateChart();
   };
 
@@ -304,40 +292,47 @@ export default class ManagePage extends React.Component {
             </div>
           </div>
         </Tab>
-        <Tab label="Group Test">
+        <Tab label="Setup Test">
           <div style={{display: 'table-caption'}}>
             <div style={{display: 'inline-flex' , marginTop: '15px', marginLeft: '15px'}}>
               <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '200px'}}/>
             </div>
           </div>
-          <div className="self-center" style={{width: '100%', marginTop: '5px'}}>
+          <div className="row self-center" style={{width: '100%', marginTop: '5px'}}>
             <div className="col-md-8 col-sm-8 col-xs-8">
               <div className="row">
                 <LineChart ref="chart" data={chartData} style={{
                   margin: '5px',
                   width: '100%',
-                  height: '250px'
+                  height: '200px'
                   }}
                   options={chartOptions} />
               </div>
-              <div className="row smalllRaisedBnutton" style={{marginLeft:'30px'}}>
-                <RaisedButton label="全開"  onTouchTap={this._AllOpen}/>
-                <RaisedButton label="6500K" onTouchTap={this._6500k}/>
-                <RaisedButton label="4600K" onTouchTap={this._4600k}/>
-                <RaisedButton label="2950K" onTouchTap={this._2950k}/>
-                <RaisedButton label="saving E" onTouchTap={this._saving}/>
-                <RaisedButton label="B + R" onTouchTap={this._BR}/>
-              </div>
             </div>
-            <div className="col-md-4 col-sm-4 col-xs-4">
-              <Slider ref="WW" name="WW" defaultValue={100} max={100} step={1} value={this.state.wwValue} description={`WW ${this.state.wwValue}`} className="slider" onChange={this._wwChanged} />
-              <Slider ref="DB" name="DB" defaultValue={100} max={100} step={1} value={this.state.dbValue} description={`DB ${this.state.dbValue}`} className="slider" onChange={this._dbChanged} />
-              <Slider ref="BL" name="BL" defaultValue={100} max={100} step={1} value={this.state.blValue} description={`BL ${this.state.blValue}`} className="slider" onChange={this._blChanged} />
-              <Slider ref="GR" name="GR" defaultValue={100} max={100} step={1} value={this.state.grValue} description={`GR ${this.state.grValue}`} className="slider" onChange={this._grChanged} />
-              <Slider ref="RE" name="RE" defaultValue={100} max={100} step={1} value={this.state.reValue} description={`RE ${this.state.reValue}`} className="slider" onChange={this._reChanged} />
-              <Slider ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} description="CCT" step={10} className="slider" onChange={this._cctChanged}/>
-              <Slider ref="Bright" name="Bright" defaultValue={100} className="slider" max={100} value={this.state.brightValue} description="Bright" onChange={this._brightChanged}/>
+            <div className="col-md-4 col-sm-4 col-xs-4" style={{marginTop: '-60px'}}>
+              <div>WW {this.state.wwValue}</div>
+              <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
+              <div>DB {this.state.dbValue}</div>
+              <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
+              <div>BL {this.state.blValue}</div>
+              <SliderRc ref="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
+              <div>GR {this.state.grValue}</div>
+              <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
+              <div>RE {this.state.reValue}</div>
+              <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
+              <div>CCT {this.state.cctValue}</div>
+              <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className="slider"/>
+              <div>Bright {this.state.brightValue}</div>
+              <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider"/>
             </div>
+          </div>
+          <div className="row smalllRaisedBnutton" style={{marginLeft:'30px'}}>
+            <RaisedButton label="全開"  onTouchTap={this._AllOpen}/>
+            <RaisedButton label="6500K" onTouchTap={this._6500k}/>
+            <RaisedButton label="4600K" onTouchTap={this._4600k}/>
+            <RaisedButton label="2950K" onTouchTap={this._2950k}/>
+            <RaisedButton label="saving E" onTouchTap={this._saving}/>
+            <RaisedButton label="B + R" onTouchTap={this._BR}/>
           </div>
         </Tab>
         <Tab label="Report Setting">
