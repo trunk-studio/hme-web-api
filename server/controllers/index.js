@@ -37,16 +37,20 @@ export default class Routes {
           let slave = await services.deviceControl.getSlaveHost(slaveId);
           console.log(slave.id, slave.host,ctx.request.header.host);
           // slave = slave.dataValues;
-          if(ctx.request.header.host.indexOf(slave.host) != -1 && slaveId == 0){
-            console.log("My router");
-            await next();
+          if(slave){
+            if(ctx.request.header.host.indexOf(slave.host) != -1){
+              console.log("My router");
+              await next();
+            }else{
+              console.log(slave.host, "proxy: ", ctx.request.method, 'http://'+ slave.host + ctx.request.url);
+              request({
+                method: ctx.request.method,
+                url: 'http://'+ slave.host + ctx.request.url,
+                data: ctx.request.body || {}
+              })
+            }
           }else{
-            console.log("proxy: ",slave.host, ctx.request.method, 'http://'+ slave.host + ctx.request.url);
-            request({
-              method: ctx.request.method,
-              url: 'http://'+ slave.host + ctx.request.url,
-              data: ctx.request.body || {}
-            })
+            await next();
           }
         } catch (e) {
           console.log(e);
