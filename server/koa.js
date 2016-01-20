@@ -47,7 +47,6 @@ global.models = (new Models()).getDb();
 app.use(convert(responseTime()));
 app.use(logger());
 
-
 if (environment === 'production') {
   // set debug environment to `koa` only
   // must be set programmaticaly for windows

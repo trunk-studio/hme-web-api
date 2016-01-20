@@ -37,6 +37,7 @@ export default class ManagePage extends React.Component {
       brightValue: 100,
       groupID: 0,
       deviceID: 0,
+      slaveID: 0,
       tabIndex: 0
     }
     this.state.DB.forEach((data,i) => {
@@ -61,9 +62,20 @@ export default class ManagePage extends React.Component {
     this.props.requestTestGroupDevices(this.state.groupID);
   };
 
+  _testSlaveDevice = (e) => {
+    this.props.requestTestGroupDevices(this.state.slaveID);
+  };
+
   _deviceMenuIndexChanged = (e, value) => {
     this.setState({
       deviceID: value
+    })
+  };
+
+  _slaveMenuIndexChanged = (e, value) => {
+    let id = this.props.slaveList[value - 1].payload;
+    this.setState({
+      slaveID: id
     })
   };
 
@@ -282,8 +294,8 @@ export default class ManagePage extends React.Component {
                 <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
               </div>
               <div style={{display: 'inline-flex'}}>
-                <SelectField labelMember="primary" menuItems={slaveList} style={{width: '300px'}}/>
-                <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px'}}></RaisedButton>
+                <SelectField labelMember="primary" menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}}/>
+                <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
               </div>
               <div style={{display: 'inline-flex'}}>
                 <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
@@ -367,7 +379,7 @@ function _injectPropsFromStore(state) {
   if(scanDevice.slaveList) {
     for(let slave of scanDevice.slaveList) {
       slaveList.push({
-        payload: slave.host,
+        payload: slave.id,
         primary: `Slave host: ${slave.host}`,
         text: slave.host,
       });
