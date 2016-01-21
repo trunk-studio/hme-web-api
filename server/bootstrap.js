@@ -42,7 +42,7 @@ export default async (cb) => {
     if(connected)
       await services.deviceControl.syncDevice();
     // search slave
-    services.hme.pingAllSlave();
+    await services.hme.pingAllSlave();
   } catch (e) {
 
     console.log("error", e);
