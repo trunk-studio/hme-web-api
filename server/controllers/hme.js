@@ -12,8 +12,9 @@ exports.ping = async function (ctx) {
 
 
 exports.searchDevice = async function (ctx) {
-  let result = await services.hme.SearchDevice();
-  ctx.body = result
+  // let result = await services.hme.SearchDevice();
+  await services.deviceControl.syncDevice();
+  ctx.body = "ok"
 };
 
 exports.findAllDeviceGroups = async function (ctx) {

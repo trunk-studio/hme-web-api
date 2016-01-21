@@ -4,7 +4,8 @@ import {
   requestScan, requestDeviceGroup, requestTestOneDevice,
   requestTestGroupDevices, requestTestAllDevices,
   requestTestSetLedDisplay, requestGetCachedDeviceList,
-  requestSearchSlave, requestGetCachedSlaveList
+  requestSearchSlave, requestGetCachedSlaveList,
+  requestSearchSlaveAndDevice
 } from '../actions/TestActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
@@ -51,8 +52,9 @@ export default class ManagePage extends React.Component {
   }
 
   _handleScan = (e) => {
-    this.props.requestScan();
-    this.props.requestSearchSlave();
+    // this.props.requestSearchSlave();
+    // this.props.requestScan();
+    this.props.requestSearchSlaveAndDevice();
   };
 
   _testOneDevice = (e) => {
@@ -87,9 +89,9 @@ export default class ManagePage extends React.Component {
   };
 
   componentDidMount() {
-    // this.props.requestScan();
-    this.props.requestGetCachedSlaveList();
     this.props.requestGetCachedDeviceList();
+    this.props.requestGetCachedSlaveList();
+    this.props.requestScan();
     // this.props.requestDeviceGroup();
   }
 
@@ -194,11 +196,11 @@ export default class ManagePage extends React.Component {
     this.props.requestTestSetLedDisplay({
       devID:this.state.deviceID,
       groupID:this.state.groupID,
-      WWBright: this.state.wwValue,
-      DBBright: this.state.dbValue,
-      BLBright: this.state.blValue,
-      GRBright: this.state.grValue,
-      REBright: this.state.reValue,
+      WW: this.state.wwValue,
+      DB: this.state.dbValue,
+      BL: this.state.blValue,
+      GR: this.state.grValue,
+      RE: this.state.reValue,
       Bright: this.state.brightValue
     })
   };
@@ -401,7 +403,8 @@ const _injectPropsFromActions = {
   requestTestOneDevice,
   requestGetCachedDeviceList,
   requestSearchSlave,
-  requestGetCachedSlaveList
+  requestGetCachedSlaveList,
+  requestSearchSlaveAndDevice
 }
 
 

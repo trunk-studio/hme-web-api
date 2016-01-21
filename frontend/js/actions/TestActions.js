@@ -89,6 +89,23 @@ export function requestSearchSlave() {
   }
 }
 
+export function requestSearchSlaveAndDevice() {
+  return (dispatch) => {
+    return request
+      .get(`/rest/hme/searchSlave`)
+      .then(response => dispatch(requestSearchSlaveAndDeviceSetp2()));
+  }
+}
+
+export function requestSearchSlaveAndDeviceSetp2() {
+  // dispatch(function() {return {type: REQUEST_LOGIN});
+  return request
+    .get('/rest/slave/0/searchDevice')
+    .then(function(){
+      requestGetCachedDeviceList();
+      requestGetCachedSlaveList();  
+    });
+}
 
 // tmp
 export function receivedDeviceGroup(data) {

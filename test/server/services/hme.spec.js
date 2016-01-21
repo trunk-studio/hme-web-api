@@ -77,6 +77,6 @@ describe("hme", () => {
     } catch (e) {
       done(e);
     }
-  })
+  });
 
 });

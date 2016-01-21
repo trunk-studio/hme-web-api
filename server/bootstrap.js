@@ -38,11 +38,11 @@ export default async (cb) => {
     let createdAdmin = await models.User.create(adminUser);
     let connected = await services.hme.connectSerialPort();
 
+    await services.hme.pingAllSlave();
     // without await to reduce bootstrap waiting time
     if(connected)
       await services.deviceControl.syncDevice();
     // search slave
-    services.hme.pingAllSlave();
   } catch (e) {
 
     console.log("error", e);
