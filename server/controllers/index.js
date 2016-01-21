@@ -35,8 +35,6 @@ export default class Routes {
 
           let slaveId =  ctx.params.slaveId;
           let slave = await services.deviceControl.getSlaveHost(slaveId);
-          console.log(slave.id, slave.host,ctx.request.header.host);
-          // slave = slave.dataValues;
           if(slave){
             if(ctx.request.header.host.indexOf(slave.host) != -1){
               console.log("My router");
@@ -112,7 +110,7 @@ export default class Routes {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>HME</title>
         <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1 ,maximum-scale=1.0, user-scalable=no;">
         <link rel="shortcut icon" href="images/HME.ico" type="image/x-icon" />
         <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet">-->

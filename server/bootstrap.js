@@ -40,7 +40,7 @@ export default async (cb) => {
 
     // without await to reduce bootstrap waiting time
     if(connected)
-      services.deviceControl.syncDevice();
+      await services.deviceControl.syncDevice();
     // search slave
     services.hme.pingAllSlave();
   } catch (e) {

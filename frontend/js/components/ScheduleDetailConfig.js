@@ -5,12 +5,14 @@ import { requestGetScheduleDetailConfig, requestUpdateScheduleDetailConfig} from
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
 
 const LineChart = require("react-chartjs").Line;
+import SliderRc from 'rc-slider';
 
 export default class ScheduleDetailConfig extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      cctSliderStyle: 'slider',
       currentIndex: 0,
       DB: [0 ,0 ,0 ,0 ,0 ,0.001011122 ,0.005055612 ,0.008088979 ,0.018200202 ,0.037411527 ,0.072800809 ,0.127401416 ,0.209302326 ,0.323559151 ,0.477249747 ,0.649140546 ,0.68958544 ,0.649140546 ,0.520728008 ,0.416582406 ,0.333670374 ,0.260869565 ,0.209302326 ,0.164812942 ,0.128412538 ,0.098078868 ,0.072800809 ,0.053589484 ,0.038422649 ,0.026289181 ,0.018200202 ,0.012133468 ,0.008088979 ,0.005055612 ,0.003033367 ,0.002022245 ,0.002022245 ,0.002022245 ,0.001011122 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0],
       BL: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.001011122, 0.004044489, 0.006066734, 0.014155713, 0.03033367, 0.057633974, 0.102123357, 0.166835187, 0.258847321, 0.381193124, 0.519716886, 0.552072801, 0.519716886, 0.416582406, 0.332659252, 0.266936299, 0.209302326, 0.166835187, 0.131445905, 0.102123357, 0.077856421, 0.058645096, 0.042467139, 0.03033367, 0.021233569, 0.014155713, 0.009100101, 0.006066734, 0.004044489, 0.003033367, 0.002022245, 0.001011122, 0.001011122, 0.001011122, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -48,28 +50,34 @@ export default class ScheduleDetailConfig extends React.Component {
   componentDidUpdate(prevProps, prevState) {
   };
 
-  _wwChanged = () => {
-    this.state.wwValue = this.refs.WW.state.value;
+  _wwChanged = (value) => {
+    this.state.wwValue = value;
+    this.state.cctSliderStyle = 'notActiveSlider';
     this._saveConfig();
   };
-  _dbChanged = () => {
-    this.state.dbValue = this.refs.DB.state.value;
+  _dbChanged = (value) => {
+    this.state.dbValue = value;
+    this.state.cctSliderStyle = 'notActiveSlider';
     this._saveConfig();
   };
-  _blChanged = () => {
-    this.state.blValue = this.refs.BL.state.value;
+  _blChanged = (value) => {
+    this.state.blValue = value;
+    this.state.cctSliderStyle = 'notActiveSlider';
     this._saveConfig();
   };
-  _grChanged = () => {
-    this.state.grValue = this.refs.GR.state.value;
+  _grChanged = (value) => {
+    this.state.grValue = value;
+    this.state.cctSliderStyle = 'notActiveSlider';
     this._saveConfig();
   };
-  _reChanged = () => {
-    this.state.reValue = this.refs.RE.state.value;
+  _reChanged = (value) => {
+    this.state.reValue = value;
+    this.state.cctSliderStyle = 'notActiveSlider';
     this._saveConfig();
   };
-  _cctChanged = () => {
-    let value = this.refs.CCT.state.value;
+  _cctChanged = (value) => {
+    this.state.cctSliderStyle = 'slider';
+    // let value = this.refs.CCT.state.value;
     if(value >= 3000 && value < 4000){
       console.log("3");
       this._setAll(
@@ -133,10 +141,9 @@ export default class ScheduleDetailConfig extends React.Component {
       this.state.cctValue = cct;
     this._saveConfig();
   };
-  _brightChanged = (e, value) => {
-    // this.state.brightValue = value;
+  _brightChanged = (value) => {
     this.setState({
-      brightValue: this.refs.Bright.state.value
+      brightValue: value
     })
     // this._saveConfig();
   };
@@ -186,7 +193,7 @@ export default class ScheduleDetailConfig extends React.Component {
       this.state.grValue = Math.round(this.props.config[3] * (this.state.brightValue * 0.01));
       this.state.reValue = Math.round(this.props.config[4] * (this.state.brightValue * 0.01));
       this.state.cctValue = this.props.config[5];
-      this.state.brightValue = this.props.config[6];
+      // this.state.brightValue = this.props.config[6];
 
       let newSUM = [];
       this.state.DB.forEach((data,i) => {
@@ -249,24 +256,31 @@ export default class ScheduleDetailConfig extends React.Component {
                 }}
                 options={chartOptions} />
             </div>
-            <div className="row smalllRaisedBnutton" style={{marginLeft:'30px'}}>
-              <RaisedButton label="全開"  onTouchTap={this._AllOpen}/>
-              <RaisedButton label="6500K" onTouchTap={this._6500k}/>
-              <RaisedButton label="4600K" onTouchTap={this._4600k}/>
-              <RaisedButton label="2950K" onTouchTap={this._2950k}/>
-              <RaisedButton label="saving E" onTouchTap={this._saving}/>
-              <RaisedButton label="B + R" onTouchTap={this._BR}/>
-            </div>
           </div>
           <div className="col-md-4 col-sm-4 col-xs-4">
-            <Slider ref="WW" name="WW" defaultValue={0} max={100} step={1} value={this.state.wwValue} description={`WW ${this.state.wwValue}`} className="slider" onDragStop={this._wwChanged} />
-            <Slider ref="DB" name="DB" defaultValue={0} max={100} step={1} value={this.state.dbValue} description={`DB ${this.state.dbValue}`} className="slider" onDragStop={this._dbChanged} />
-            <Slider ref="BL" name="BL" defaultValue={0} max={100} step={1} value={this.state.blValue} description={`BL ${this.state.blValue}`} className="slider" onDragStop={this._blChanged} />
-            <Slider ref="GR" name="GR" defaultValue={0} max={100} step={1} value={this.state.grValue} description={`GR ${this.state.grValue}`} className="slider" onDragStop={this._grChanged} />
-            <Slider ref="RE" name="RE" defaultValue={0} max={100} step={1} value={this.state.reValue} description={`RE ${this.state.reValue}`} className="slider" onDragStop={this._reChanged} />
-            <Slider ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} description={`${this.state.cctValue}k`} step={10} className="slider" onDragStop={this._cctChanged}/>
-            <Slider ref="Bright" name="Bright" defaultValue={100} className="slider" max={100} step={1} value={this.state.brightValue} description={`Bright ${this.state.brightValue}`} onChange={this._brightChanged}/>
+            <div>WW {this.state.wwValue}</div>
+            <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
+            <div>DB {this.state.dbValue}</div>
+            <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
+            <div>BL {this.state.blValue}</div>
+            <SliderRc ref="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
+            <div>GR {this.state.grValue}</div>
+            <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
+            <div>RE {this.state.reValue}</div>
+            <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
+            <div>CCT {this.state.cctValue}</div>
+            <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
+            <div>Bright {this.state.brightValue}</div>
+            <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onChange={this._brightChanged} className="slider"/>
           </div>
+        </div>
+        <div className="row smalllRaisedBnutton" style={{marginLeft:'30px'}}>
+          <RaisedButton label="全開"  onTouchTap={this._AllOpen}/>
+          <RaisedButton label="6500K" onTouchTap={this._6500k}/>
+          <RaisedButton label="4600K" onTouchTap={this._4600k}/>
+          <RaisedButton label="2950K" onTouchTap={this._2950k}/>
+          <RaisedButton label="saving E" onTouchTap={this._saving}/>
+          <RaisedButton label="B + R" onTouchTap={this._BR}/>
         </div>
       </div>
     );
