@@ -94,7 +94,7 @@ module.exports = {
     }
   },
 
-  getCurrectSetting: async() => {
+  getCurrectSetting: async({Device, Group}) => {
     try {
       let basicSchedules  = await models.Schedule.findAll({
         include:[{
@@ -126,7 +126,7 @@ module.exports = {
         })
         return format
       })
-      return {Schedules} ;
+      return {Device, Group, Schedules} ;
     } catch (e) {
       throw e;
     }

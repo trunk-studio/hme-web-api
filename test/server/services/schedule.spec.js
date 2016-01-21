@@ -161,17 +161,17 @@ describe("schedule", () => {
   });
 
   describe("models to hardware time table config", async done => {
-    let newSchedule, scheduleDetail;
+    let newSchedule, scheduleDetail, slaves, device;
     before( async done => {
       try {
         let group = await models.Group.create();
-        let slaves = await models.Slave.create({
-          host: "hostName",
+        slaves = await models.Slave.create({
+          host: "127.0.0.1",
           description: "描述",
           apiVersion: "0.1.0",
           SlaveId: newSlaveId
         });
-        let device = await models.Device.create({
+        device = await models.Device.create({
           uid: "1",
           GroupId: group.id,
           SlaveId: slaves.id
@@ -270,7 +270,7 @@ describe("schedule", () => {
             Days: 7
           }]
         }
-        let result = await services.schedule.getCurrectSetting();
+        let result = await services.schedule.getCurrectSetting({Device: device.id, Group: slaves.id});
         console.log("currect json !!! ",JSON.stringify(result,null,2));
         result.Schedules.should.be.an.Array;
         result.Schedules[0].should.have.property('StartDate');
@@ -301,7 +301,7 @@ describe("schedule", () => {
       try {
         let group = await models.Group.create();
         let slaves = await models.Slave.create({
-          host: "hostName",
+          host: "127.0.0.1",
           description: "描述",
           apiVersion: "0.1.0",
           SlaveId: newSlaveId

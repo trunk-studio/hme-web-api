@@ -1,11 +1,11 @@
 describe("Schedule", () => {
 
-  let newSchedule, scheduleDetail,testDevice,testGroup;
+  let newSchedule, scheduleDetail,testDevice,testGroup, slaves
   before( async done => {
     try {
       testGroup = await models.Group.create();
-      let slaves = await models.Slave.create({
-        host: "hostName",
+      slaves = await models.Slave.create({
+        host: "127.0.0.1",
         description: "描述",
         apiVersion: "0.1.0",
       });
@@ -129,7 +129,7 @@ describe("Schedule", () => {
     try {
       console.log('testDevice',JSON.stringify(testDevice,null,4));
       console.log('testGroup',JSON.stringify(testGroup,null,4));
-      let result = await request.post('/rest/slave/schedule/setOnDevice').send({
+      let result = await request.post(`/rest/slave/${slaves.id}/schedule/setOnDevice`).send({
         groupID: testGroup.id,
         deviceID: testDevice.id,
         scheduleIDs:  [newSchedule.id]
