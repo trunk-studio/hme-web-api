@@ -101,10 +101,10 @@ export function requestSearchSlaveAndDeviceSetp2() {
   // dispatch(function() {return {type: REQUEST_LOGIN});
   return request
     .get('/rest/slave/0/searchDevice')
-    .then(
+    .then(function(){
       requestGetCachedDeviceList();
-      requestGetCachedSlaveList();
-    );
+      requestGetCachedSlaveList();  
+    });
 }
 
 // tmp

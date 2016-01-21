@@ -4,7 +4,8 @@ import {
   requestScan, requestDeviceGroup, requestTestOneDevice,
   requestTestGroupDevices, requestTestAllDevices,
   requestTestSetLedDisplay, requestGetCachedDeviceList,
-  requestSearchSlave, requestGetCachedSlaveList
+  requestSearchSlave, requestGetCachedSlaveList,
+  requestSearchSlaveAndDevice
 } from '../actions/TestActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
@@ -404,7 +405,8 @@ const _injectPropsFromActions = {
   requestTestOneDevice,
   requestGetCachedDeviceList,
   requestSearchSlave,
-  requestGetCachedSlaveList
+  requestGetCachedSlaveList,
+  requestSearchSlaveAndDevice
 }
 
 
