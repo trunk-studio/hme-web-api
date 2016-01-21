@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import { requestScheduleCreate, requestGetScheduleList,
    updateScheduleFirstDate, updateScheduleDay,
    requestUpdateScheduleList} from '../actions/ScheduleListActions'
-
+import moment from 'moment';
 import {requestGetCachedSlaveList} from '../actions/TestActions';
 import {
    RaisedButton,
@@ -96,11 +96,7 @@ export default class ScheduleList extends React.Component {
   };
 
   _formatDate = (date) => {
-    date = new Date(date);
-    let day = date.getDate();
-    let monthIndex = date.getMonth();
-    let year = date.getFullYear();
-    return year + '/'+ monthIndex+1 +'/' + day;
+    return moment(date).format('YYYY/MM/DD');
   };
 
   _calculateDate = (i,e) => {
@@ -136,7 +132,6 @@ export default class ScheduleList extends React.Component {
   };
 
   _handleSlaveSelect = (e, selectIndex) => {
-    console.log(e.target.value);
     this.setState({
       isAll: (selectIndex == 1)? true : false,
       selectedSlave: (selectIndex == 1)? 0 : e.target.value
@@ -150,7 +145,10 @@ export default class ScheduleList extends React.Component {
 
     if(this.props.scheduleList) {
       if(this.state.isAll) {
-        tmpScheduleList.push(...this.props.scheduleList);
+        this.props.scheduleList.forEach((schedule, i) => {
+          if (schedule.SlaveId == null)
+            tmpScheduleList.push(schedule);
+        });
       }
       else {
         this.props.scheduleList.forEach((schedule, i) => {
