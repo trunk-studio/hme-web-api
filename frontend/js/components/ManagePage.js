@@ -368,10 +368,11 @@ function _injectPropsFromStore(state) {
       groupList = [];
   if(scanDevice.deviceList) {
     for(let device of scanDevice.deviceList) {
+      console.log("!!!!!!!!!!",device);
       scanResult.push({
-        payload: device.DevID,
-        primary: `DeviceID: ${device.DevID}`,
-        text: device.DevID
+        payload: device.devID,
+        primary: `DeviceID: ${device.devID}`,
+        text: device.devID
       });
     }
   }
