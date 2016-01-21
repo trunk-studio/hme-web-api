@@ -346,7 +346,8 @@ describe("hme with seriel port", () => {
         let result = await services.hme.SearchDevice();
         console.log('SearchDevice result',result);
         result.should.be.Array;
-        result[0].should.have.any.keys('DevID', 'DevGroup');
+        result[0].should.have.any.keys('devID');
+        result[0].should.have.any.keys('DevGroup');
         done();
       } catch (e) {
         done(e);
