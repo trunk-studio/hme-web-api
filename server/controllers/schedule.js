@@ -132,6 +132,16 @@ exports.setScheduleListToDevice = async function(ctx) {
     let slaveId = ctx.request.body.slaveId;
     let hostSlaveId = ctx.params.slaveId;
     slaveId == 0 ? null: slaveId;
+    if(hostSlaveId == 0){
+      let host = await services.deviceControl.getDomainHost(ctx.request.header.host);
+      let slave = await models.Slave.findOne({
+        where:{
+          host: { $like: '%'+host+'%' }
+        }
+      });
+      console.log(slave);
+      hostSlaveId = slave.id;
+    }
     let config = await services.schedule.getCurrectSetting({
       slaveId: slaveId
     });
