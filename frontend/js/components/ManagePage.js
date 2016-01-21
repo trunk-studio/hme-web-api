@@ -276,7 +276,6 @@ export default class ManagePage extends React.Component {
       primary: 'Select Slave',
       text: 'Select Slave'
     }];
-    console.log('prop',this.props);
     if(this.props.deviceList.length > 0)  deviceList.push(...this.props.deviceList);
     if(this.props.slaveList.length > 0)   slaveList.push(...this.props.slaveList);
 
@@ -377,8 +376,7 @@ function _injectPropsFromStore(state) {
       });
     }
   }
-  console.log('result');
-  console.log(scanDevice);
+
   if(scanDevice.slaveList) {
     for(let slave of scanDevice.slaveList) {
       slaveList.push({

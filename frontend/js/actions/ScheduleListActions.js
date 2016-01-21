@@ -17,7 +17,7 @@ export const RECEIVED_UPDATE_SCHEDULE_LIST = 'RECEIVED_UPDATE_SCHEDULE_LIST'
 
 export function requestScheduleCreate(scheduleList) {
   let data={};
-  if(scheduleList.length > 0){
+  if(scheduleList.length > 0) {
     let listLength = scheduleList.length-1;
     let date = new Date(scheduleList[listLength].StartDate);
     date.setDate(date.getDate() + parseInt(scheduleList[listLength].Days,10));
