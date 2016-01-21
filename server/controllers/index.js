@@ -80,6 +80,7 @@ export default class Routes {
     publicRoute.post('/rest/master/login', UserController.login);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
     publicRoute.get('/rest/master/schedule/findAll', ScheduleController.getAllSchedule);
+    publicRoute.get('/rest/master/slave/:slaveId/schedule/findAll', ScheduleController.getAllScheduleBySlaveId);
     publicRoute.get('/rest/master/schedule/:id', ScheduleController.getOneSchedule);
     publicRoute.post('/rest/master/schedule/update/day', ScheduleController.updateScheduleDay);
     publicRoute.post('/rest/master/schedule/update/list', ScheduleController.updateScheduleList);
@@ -110,7 +111,7 @@ export default class Routes {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>HME</title>
         <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1 ,maximum-scale=1.0, user-scalable=no;">
+        <meta name="viewport" content="width=device-width, initial-scale=1 ,maximum-scale=1.0, user-scalable=no">
         <link rel="shortcut icon" href="images/HME.ico" type="image/x-icon" />
         <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet">-->

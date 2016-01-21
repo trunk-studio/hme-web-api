@@ -94,3 +94,11 @@ export function receivedGetScheduleList(data) {
     data
   }
 }
+
+export function requestGetSlaveSchedule(slaveId) {
+  return (dispatch) => {
+    return request
+      .get(`/rest/master/slave/${slaveId}/schedule/findAll`)
+      .then(response => dispatch(receivedGetScheduleList(response.data)));
+  };
+}

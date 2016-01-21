@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux'
 import { requestScheduleCreate, requestGetScheduleList,
    updateScheduleFirstDate, updateScheduleDay,
-   requestUpdateScheduleList} from '../actions/ScheduleListActions'
+   requestUpdateScheduleList, requestGetSlaveSchedule} from '../actions/ScheduleListActions'
 import moment from 'moment';
 import {requestGetCachedSlaveList} from '../actions/TestActions';
 import {
@@ -66,7 +66,7 @@ export default class ScheduleList extends React.Component {
 
   componentDidMount () {
     this.props.requestGetCachedSlaveList();
-    this.props.requestGetScheduleList();
+    // this.props.requestGetScheduleList();
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -103,7 +103,16 @@ export default class ScheduleList extends React.Component {
     let value = e.target.value;
     if(parseInt(value, 10) > 9999)
       value = 9999;
-    this.props.updateScheduleDay(value, i);
+    console.log('id', i);
+    let tmpScheduleList = [...this.props.scheduleList];
+    tmpScheduleList[i].Days = value;
+
+    for(let i = 0; i < tmpScheduleList.length-1; i++) {
+      let newDate = new Date(tmpScheduleList[i].StartDate);
+      newDate.setDate(newDate.getDate() + parseInt(tmpScheduleList[i].Days,10));
+      tmpScheduleList[i+1].StartDate = newDate;
+    }
+    // this.props.updateScheduleDay(value, i);
     this.setState({
       isSetBtnClose: true
     });
@@ -131,21 +140,25 @@ export default class ScheduleList extends React.Component {
     this.setState({isAll: false, isGroup: true});
   };
 
-  _handleSlaveSelect = (e, selectIndex) => {
-    if(selectIndex == 0)
+  _handleSlaveSelect = (e, selectedIndex) => {
+    if(selectedIndex > 0) {
+      console.log(e.target.value);
+      this.props.requestGetSlaveSchedule(e.target.value);
+    }
+
+    if(selectedIndex == 0)
       this.setState({
         isAll: false,
         selectedSlave: 0
       });
     else
       this.setState({
-        isAll: (selectIndex == 1)? true : false,
-        selectedSlave: (selectIndex == 1)? null : e.target.value
+        isAll: (selectedIndex == 1)? true : false,
+        selectedSlave: (selectedIndex == 1)? null : e.target.value
       });
   };
 
   render () {
-
     let rows = [];
     let tmpScheduleList = [];
 
@@ -187,8 +200,8 @@ export default class ScheduleList extends React.Component {
               <TableRowColumn>
                 <TextField
                   type="number"
-                  onChange={this._calculateDate.bind(this,i)}
-                  value={tmpScheduleList[i].Days}
+                  onChange={this._calculateDate.bind({}, i)}
+                  defaultValue={tmpScheduleList[i].Days}
                 />
               </TableRowColumn>
               {/*
@@ -216,8 +229,8 @@ export default class ScheduleList extends React.Component {
               <TableRowColumn>
                 <TextField
                   type="number"
-                  onChange={this._calculateDate.bind(this,i)}
-                  value={tmpScheduleList[i].Days}
+                  onChange={this._calculateDate.bind({}, i)}
+                  defaultValue={tmpScheduleList[i].Days}
                 />
               </TableRowColumn>
               {/*
@@ -232,11 +245,11 @@ export default class ScheduleList extends React.Component {
     }
 
     let slaveList = [{
-      payload: '-1',
+      payload: -1,
       primary: 'Select Slave',
       text: 'Select Slave'
     },{
-      payload: '0',
+      payload: null,
       primary: 'All Slave',
       text: 'All Slave'
     }];
@@ -253,7 +266,7 @@ export default class ScheduleList extends React.Component {
               <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
             */}
             <RaisedButton ref="scheduleAddBtn" label="Add" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
-            <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} />
+            <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
             <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose} style={{marginLeft: '15px'}} />
           </div>
         </div>
@@ -311,7 +324,8 @@ const _injectPropsFromActions = {
   updateScheduleFirstDate,
   updateScheduleDay,
   requestUpdateScheduleList,
-  requestGetCachedSlaveList
+  requestGetCachedSlaveList,
+  requestGetSlaveSchedule
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleList);

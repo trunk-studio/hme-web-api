@@ -74,6 +74,18 @@ exports.getAllSchedule = async function(ctx) {
   }
 }
 
+exports.getAllScheduleBySlaveId = async function(ctx) {
+  try {
+    console.log("==== getAllScheduleBySlaveId ===");
+    let slaveId = ctx.params.slaveId;
+    console.log('aaaa',slaveId);
+    let result = await services.schedule.findAllBySlaveId(slaveId);
+    ctx.body =  result;
+  } catch(e) {
+    console.error(e);
+  }
+}
+
 exports.updateScheduleDay = async function(ctx) {
   try {
     console.log("==== updateDay ===");
