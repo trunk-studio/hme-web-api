@@ -51,7 +51,7 @@ export default class ManagePage extends React.Component {
   }
 
   _handleScan = (e) => {
-    // this.props.requestScan();
+    this.props.requestScan();
     this.props.requestSearchSlave();
   };
 
@@ -192,7 +192,7 @@ export default class ManagePage extends React.Component {
     });
     console.log("!!!!!!!!!",this.state.groupID,this.state.groupID);
     this.props.requestTestSetLedDisplay({
-      DevID:this.state.deviceID,
+      devID:this.state.deviceID,
       groupID:this.state.groupID,
       WWBright: this.state.wwValue,
       DBBright: this.state.dbValue,

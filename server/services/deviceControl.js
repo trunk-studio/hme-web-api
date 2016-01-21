@@ -4,12 +4,12 @@ module.exports = {
     try {
       let deviceList = await Promise.all(data.map( async (device) => {
         let newDevice = {
-          uid: device.DevID,
+          uid: device.devID,
           GroupId: device.GroupID
         }
         newDevice = await models.Device.findOrCreate({
           where:{
-            uid: device.DevID
+            uid: device.devID
           },
           defaults: newDevice
         });

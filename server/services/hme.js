@@ -221,7 +221,7 @@ export default class Hme {
       let result = [];
       for(let device of deviceList) {
         result.push({
-          DevID: device.uid
+          devID: device.uid
         });
       }
       console.log(JSON.stringify(result,null, 4));
