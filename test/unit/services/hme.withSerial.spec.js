@@ -1112,7 +1112,7 @@ describe("hme with seriel port", () => {
                   }]
           }]
         }
-        let devList = [1];
+        let devList = {devIDs:[1]};
         let result = await services.hme.writeTimeTabToDevices(config, devList);
         console.log('writeTimeTabToDevices result',result);
         result.should.be.true;

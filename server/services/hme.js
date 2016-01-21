@@ -115,6 +115,9 @@ export default class Hme {
       let Rxarry = this.RxBufArry ;
       let DataBufArry =[];
       let T1num = 0;
+      const T1NUMMAX = 50;
+      const T1MS = 20;
+      // T1NUMMAX * T1MS = maximum reception time
 
       let result = await new Promise((resolve, reject) => {
         //Rxarry= [1];
@@ -125,7 +128,7 @@ export default class Hme {
           var T2id = setTimeout(function(){
             console.log('drain eer' );
             return reject(results);
-          },1200);
+          },1500);
 
           serialPort.drain(function (error) {
             console.log('UART drain');
@@ -137,7 +140,7 @@ export default class Hme {
                 clearTimeout(T2id);
                 console.log('TimeCont=',T1num);
                 return resolve(results);
-              } else if (T1num > 60) {
+              } else if (T1num > T1NUMMAX) {
                 console.log('TimeOut!');
                 results = [];
                 clearInterval(T1id);
@@ -152,7 +155,7 @@ export default class Hme {
               } else {
 
               }
-            } ,15);
+            } ,T1MS);
           });
         });
       });
@@ -169,6 +172,8 @@ export default class Hme {
     try {
       let ReDevArry = [];
       let ReDataArry = [];
+      const MAXSECHDEVNUM = 10;
+
       let params = {
         u8DevID:1,
         groupID:0,
@@ -189,7 +194,7 @@ export default class Hme {
         u8RxDataArry:[]
       }
 
-      for (let i = 1; i < 50; i++) {
+      for (let i = 1; i < MAXSECHDEVNUM; i++) {
         params.u8DevID = i;
         console.log('Search DevID:',params.u8DevID);
         params2.Comm = this.encode.ClientOp(params);
@@ -701,9 +706,9 @@ export default class Hme {
           let timeTabArry = this.encode.configToTimeTabArry(config);
 
           for (let i = 0; i < devList.length; i++) {
-            devID = devList[i];
+            devID = devList.devIDs[i];
             // console.log(timeTabArry.dayTab);
-            // console.log(devID);
+            .log(devID);
             console.log(timeTabArry.dayTab);
             let result = await this.setDayTab(devID, groupID, timeTabArry.dayTab);
             if(result == false){
