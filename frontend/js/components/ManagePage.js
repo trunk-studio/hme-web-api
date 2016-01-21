@@ -368,7 +368,6 @@ function _injectPropsFromStore(state) {
       groupList = [];
   if(scanDevice.deviceList) {
     for(let device of scanDevice.deviceList) {
-      console.log("!!!!!!!!!!",device);
       scanResult.push({
         payload: device.devID,
         primary: `DeviceID: ${device.devID}`,
