@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         Schedule.hasMany(models.ScheduleDetail);
         Schedule.belongsTo(models.Device);
         Schedule.belongsTo(models.Group);
+        Schedule.belongsTo(models.Slave);
       }
     }
   });

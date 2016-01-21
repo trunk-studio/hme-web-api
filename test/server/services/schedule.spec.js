@@ -1,13 +1,29 @@
 describe("schedule", () => {
+  let newSlaveId;
+  before( async done => {
+    try {
+      let newSlave = {
+  			"host": "testHost",
+  			"description": "testDesc",
+  			"apiVersion": "testAPIversion"
+      };
+      let result = models.Slave.create(newSlave);
+      newSlaveId = result.id;
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
 
   it("create", async(done) => {
     try {
       let newSchedule = {
         StartDate: moment('2015/11/10','YYYY/MM/DD'),
-        Days: 15
+        Days: 15,
+        newSlaveId
       };
       let result = await services.schedule.create(newSchedule);
-      result.dataValues.should.have.any.keys('StartDate', 'Days');
+      result.dataValues.should.have.any.keys('StartDate', 'Days', 'SlaveId');
       done();
     } catch (e) {
       done(e);
@@ -15,12 +31,14 @@ describe("schedule", () => {
 
   });
 
+
   describe("query", async done => {
     before( async done => {
       try {
         let newSchedule = {
           StartDate: moment('1900/11/10','YYYY/MM/DD'),
-          Days: 15
+          Days: 15,
+          SlaveId: newSlaveId
         };
         await models.Schedule.create(newSchedule);
         done();
@@ -32,7 +50,7 @@ describe("schedule", () => {
     it( "All" , async done => {
       try {
         let result = await services.schedule.findAll();
-        result[0].dataValues.should.have.any.keys('StartDate', 'Days');
+        result[0].dataValues.should.have.any.keys('StartDate', 'Days', 'SlaveId');
         done();
       } catch (e) {
         done(e);
@@ -151,6 +169,7 @@ describe("schedule", () => {
           host: "127.0.0.1",
           description: "描述",
           apiVersion: "0.1.0",
+          SlaveId: newSlaveId
         });
         device = await models.Device.create({
           uid: "1",
@@ -162,7 +181,8 @@ describe("schedule", () => {
           StartDate: moment('2016/1/7','YYYY/MM/DD'),
           Days: 15,
           GroupId: group.id,
-          DeviceId: device.id
+          DeviceId: device.id,
+          SlaveId: newSlaveId
         };
 
         newSchedule = await models.Schedule.create(newSchedule);
@@ -284,6 +304,7 @@ describe("schedule", () => {
           host: "127.0.0.1",
           description: "描述",
           apiVersion: "0.1.0",
+          SlaveId: newSlaveId
         });
         let device = await models.Device.create({
           uid: 1,
