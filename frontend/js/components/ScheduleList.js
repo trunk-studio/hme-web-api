@@ -73,7 +73,7 @@ export default class ScheduleList extends React.Component {
   };
 
   _addRow = (e) => {
-    this.props.requestScheduleCreate(this.props.scheduleList);
+    this.props.requestScheduleCreate(this.props.scheduleList, this.state.selectedSlave);
     this.setState({
       isSetBtnClose: true
     });
@@ -103,10 +103,10 @@ export default class ScheduleList extends React.Component {
     let value = e.target.value;
     if(parseInt(value, 10) > 9999)
       value = 9999;
-    this.props.updateScheduleDay(value,i)
+    this.props.updateScheduleDay(value, i);
     this.setState({
       isSetBtnClose: true
-    })
+    });
     this.refs.snackbar.setState({open: true});
   };
 
@@ -132,10 +132,16 @@ export default class ScheduleList extends React.Component {
   };
 
   _handleSlaveSelect = (e, selectIndex) => {
-    this.setState({
-      isAll: (selectIndex == 1)? true : false,
-      selectedSlave: (selectIndex == 1)? 0 : e.target.value
-    });
+    if(selectIndex == 0)
+      this.setState({
+        isAll: false,
+        selectedSlave: 0
+      });
+    else
+      this.setState({
+        isAll: (selectIndex == 1)? true : false,
+        selectedSlave: (selectIndex == 1)? null : e.target.value
+      });
   };
 
   render () {
@@ -236,7 +242,6 @@ export default class ScheduleList extends React.Component {
     }];
 
     slaveList.push(...this.props.slaveList);
-
     // let isAddOpen = rows.length >= 5 ? true: false;
     return (
       <div id="scheduleList" className="self-center" style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
@@ -247,7 +252,7 @@ export default class ScheduleList extends React.Component {
               <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
               <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
             */}
-            <RaisedButton ref="scheduleAddBtn" label="Add" primary={true} disabled={false} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
+            <RaisedButton ref="scheduleAddBtn" label="Add" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
             <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} />
             <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose} style={{marginLeft: '15px'}} />
           </div>
