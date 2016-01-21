@@ -87,9 +87,9 @@ export default class ManagePage extends React.Component {
   };
 
   componentDidMount() {
-    // this.props.requestScan();
+    this.props.requestScan();
     this.props.requestGetCachedSlaveList();
-    this.props.requestGetCachedDeviceList();
+    // this.props.requestGetCachedDeviceList();
     // this.props.requestDeviceGroup();
   }
 
