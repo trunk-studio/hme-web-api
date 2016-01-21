@@ -705,10 +705,10 @@ export default class Hme {
           let groupID = 0;
           let timeTabArry = this.encode.configToTimeTabArry(config);
 
-          for (let i = 0; i < devList.length; i++) {
+          for (let i = 0; i < devList.devIDs.length; i++) {
             devID = devList.devIDs[i];
             // console.log(timeTabArry.dayTab);
-            .log(devID);
+            console.log(devID);
             console.log(timeTabArry.dayTab);
             let result = await this.setDayTab(devID, groupID, timeTabArry.dayTab);
             if(result == false){

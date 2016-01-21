@@ -363,7 +363,7 @@ describe("hme with seriel port", () => {
         // config共用單一設定, 其中Device與Group設置無效
         // config共計5個日程時段，一天12個設定點，每個設定點5(?)個通道
         // devList為Slave旗下所有Device之ID陣列
-        // 具有Dev1，Dev2，Dev3時，devList = [1, 2, 3]
+        // 具有Dev1，Dev2，Dev3時，devList = {devIDs:[1, 2, 3]}
         let config =  {
           Device: 1,
           Group: 0,
