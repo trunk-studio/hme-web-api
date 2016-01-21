@@ -51,8 +51,8 @@ export default class ManagePage extends React.Component {
   }
 
   _handleScan = (e) => {
-    this.props.requestScan();
     this.props.requestSearchSlave();
+    this.props.requestScan();
   };
 
   _testOneDevice = (e) => {
