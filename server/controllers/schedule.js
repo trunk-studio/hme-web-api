@@ -126,6 +126,24 @@ exports.updateScheduleDetails = async function(ctx) {
   }
 }
 
+exports.setScheduleListToDevice = async function(ctx) {
+  try {
+    console.log("==== setScheduleListToDevice ===",ctx.request);
+    let slaveId = ctx.request.body.slaveId;
+    let hostSlaveId = ctx.params.slaveId;
+    slaveId == 0 ? null: slaveId;
+    let config = await services.schedule.getCurrectSetting({
+      slaveId: slaveId
+    });
+    let devList = await services.hme.getSlaveDeviceArray(hostSlaveId);
+    let result = await services.hme.writeTimeTabToDevices(config, {devIDs: devList});
+    ctx.body = true;
+  } catch(e) {
+    ctx.body = false;
+    console.error(e);
+  }
+}
+
 exports.setSchedulesToDevice = async function(ctx) {
   try {
 

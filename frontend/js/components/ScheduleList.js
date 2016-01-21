@@ -2,7 +2,8 @@ import React from 'react';
 import {connect} from 'react-redux'
 import { requestScheduleCreate, requestGetScheduleList,
    updateScheduleFirstDate, updateScheduleDay,
-   requestUpdateScheduleList} from '../actions/ScheduleListActions'
+   requestUpdateScheduleList, requestSetScheduleList
+ } from '../actions/ScheduleListActions'
 import moment from 'moment';
 import {requestGetCachedSlaveList} from '../actions/TestActions';
 import {
@@ -89,6 +90,9 @@ export default class ScheduleList extends React.Component {
   };
 
   _setScheduleList = (e) => {
+    this.props.requestSetScheduleList({
+      slaveId: this.state.selectedSlave
+    })
     this.setState({
       isSetBtnClose: true
     });
@@ -306,7 +310,8 @@ const _injectPropsFromActions = {
   updateScheduleFirstDate,
   updateScheduleDay,
   requestUpdateScheduleList,
-  requestGetCachedSlaveList
+  requestGetCachedSlaveList,
+  requestSetScheduleList
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleList);

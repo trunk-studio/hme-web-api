@@ -15,6 +15,8 @@ export const RECEIVED_UPDATE_SCHEDULE_DAY = 'RECEIVED_UPDATE_SCHEDULE_DAY'
 export const REQUEST_UPDATE_SCHEDULE_LIST = 'REQUEST_UPDATE_SCHEDULE_LIST'
 export const RECEIVED_UPDATE_SCHEDULE_LIST = 'RECEIVED_UPDATE_SCHEDULE_LIST'
 
+export const RECEIVED_SET_SCHEDULE_LIST = 'RECEIVED_SET_SCHEDULE_LIST'
+
 export function requestScheduleCreate(scheduleList) {
   let data={};
   if(scheduleList.length > 0) {
@@ -90,6 +92,19 @@ export function receivedGetScheduleList(data) {
   // let scheduleList = formatListDate(data)
   return {
     type: RECEIVED_SCHEDULE_LIST,
+    data
+  }
+}
+
+export function requestSetScheduleList(data) {
+  return request
+    .post(`/rest/slave/${data.slaveId}/schedule/setOnDevice`, data)
+    .then(response => dispatch(receivedSetScheduleList(response.data)));
+}
+
+export function receivedSetScheduleList(data) {
+  return {
+    type: RECEIVED_SET_SCHEDULE_LIST,
     data
   }
 }
