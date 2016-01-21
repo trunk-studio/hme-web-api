@@ -122,6 +122,12 @@ export default class ScheduleList extends React.Component {
   _handleDatePickChange = (event, date) => {
     this.props.updateScheduleFirstDate(date);
     this.props.updateScheduleDay()
+    let tmpScheduleList = [...this.props.scheduleList];
+    for(let i = 0; i < tmpScheduleList.length-1; i++) {
+      let newDate = new Date(tmpScheduleList[i].StartDate);
+      newDate.setDate(newDate.getDate() + parseInt(tmpScheduleList[i].Days,10));
+      tmpScheduleList[i+1].StartDate = newDate;
+    }
     this.setState({
       isSetBtnClose: true
     })
