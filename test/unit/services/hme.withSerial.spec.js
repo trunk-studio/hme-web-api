@@ -346,7 +346,8 @@ describe("hme with seriel port", () => {
         let result = await services.hme.SearchDevice();
         console.log('SearchDevice result',result);
         result.should.be.Array;
-        result[0].should.have.any.keys('DevID', 'DevGroup');
+        result[0].should.have.any.keys('devID');
+        result[0].should.have.any.keys('DevGroup');
         done();
       } catch (e) {
         done(e);
@@ -354,13 +355,15 @@ describe("hme with seriel port", () => {
 
     });
 
-    it("serial Port writeTimeTabToDevice", async done => {
+    it.only("serial Port writeTimeTabToDevices", async done => {
 
       try {
-        // writeTimeTabToDevice
-        //將Device1的groupID設為6
-        //TimeTabt
-        //共計5個日程時段，一天12個設定點，每個設定點5(?)個通道
+        // writeTimeTabToDevices
+        // 用於Slave設定旗下所有Device之Schedule
+        // config共用單一設定, 其中Device與Group設置無效
+        // config共計5個日程時段，一天12個設定點，每個設定點5(?)個通道
+        // devList為Slave旗下所有Device之ID陣列
+        // 具有Dev1，Dev2，Dev3時，devList = {devIDs:[1, 2, 3]}
         let config =  {
           Device: 1,
           Group: 0,
@@ -1110,9 +1113,9 @@ describe("hme with seriel port", () => {
                   }]
           }]
         }
-
-        let result = await services.hme.writeTimeTabToDevice(config);
-        console.log('writeTimeTabToDevice result',result);
+        let devList = {devIDs:[1]};
+        let result = await services.hme.writeTimeTabToDevices(config, devList);
+        console.log('writeTimeTabToDevices result',result);
         result.should.be.true;
         done();
       } catch (e) {
