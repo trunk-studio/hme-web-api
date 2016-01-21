@@ -35,8 +35,6 @@ export default class Routes {
 
           let slaveId =  ctx.params.slaveId;
           let slave = await services.deviceControl.getSlaveHost(slaveId);
-          console.log(slave.id, slave.host,ctx.request.header.host);
-          // slave = slave.dataValues;
           if(slave){
             if(ctx.request.header.host.indexOf(slave.host) != -1){
               console.log("My router");
