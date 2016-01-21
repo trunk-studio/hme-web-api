@@ -12,6 +12,7 @@ export default class ScheduleDetailConfig extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      cctSliderStyle: 'slider',
       currentIndex: 0,
       DB: [0 ,0 ,0 ,0 ,0 ,0.001011122 ,0.005055612 ,0.008088979 ,0.018200202 ,0.037411527 ,0.072800809 ,0.127401416 ,0.209302326 ,0.323559151 ,0.477249747 ,0.649140546 ,0.68958544 ,0.649140546 ,0.520728008 ,0.416582406 ,0.333670374 ,0.260869565 ,0.209302326 ,0.164812942 ,0.128412538 ,0.098078868 ,0.072800809 ,0.053589484 ,0.038422649 ,0.026289181 ,0.018200202 ,0.012133468 ,0.008088979 ,0.005055612 ,0.003033367 ,0.002022245 ,0.002022245 ,0.002022245 ,0.001011122 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0],
       BL: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.001011122, 0.004044489, 0.006066734, 0.014155713, 0.03033367, 0.057633974, 0.102123357, 0.166835187, 0.258847321, 0.381193124, 0.519716886, 0.552072801, 0.519716886, 0.416582406, 0.332659252, 0.266936299, 0.209302326, 0.166835187, 0.131445905, 0.102123357, 0.077856421, 0.058645096, 0.042467139, 0.03033367, 0.021233569, 0.014155713, 0.009100101, 0.006066734, 0.004044489, 0.003033367, 0.002022245, 0.001011122, 0.001011122, 0.001011122, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -50,26 +51,32 @@ export default class ScheduleDetailConfig extends React.Component {
   };
 
   _wwChanged = (value) => {
-    this.state.wwValue = value; //this.refs.WW.state.value;
+    this.state.wwValue = value;
+    this.state.cctSliderStyle = 'notActiveSlider';
     this._saveConfig();
   };
   _dbChanged = (value) => {
-    this.state.dbValue = value; //this.refs.DB.state.value;
+    this.state.dbValue = value;
+    this.state.cctSliderStyle = 'notActiveSlider';
     this._saveConfig();
   };
   _blChanged = (value) => {
-    this.state.blValue = value; //this.refs.BL.state.value;
+    this.state.blValue = value;
+    this.state.cctSliderStyle = 'notActiveSlider';
     this._saveConfig();
   };
   _grChanged = (value) => {
-    this.state.grValue = value; //this.refs.GR.state.value;
+    this.state.grValue = value;
+    this.state.cctSliderStyle = 'notActiveSlider';
     this._saveConfig();
   };
   _reChanged = (value) => {
-    this.state.reValue = value; //this.refs.RE.state.value;
+    this.state.reValue = value;
+    this.state.cctSliderStyle = 'notActiveSlider';
     this._saveConfig();
   };
   _cctChanged = (value) => {
+    this.state.cctSliderStyle = 'slider';
     // let value = this.refs.CCT.state.value;
     if(value >= 3000 && value < 4000){
       console.log("3");
@@ -262,7 +269,7 @@ export default class ScheduleDetailConfig extends React.Component {
             <div>RE {this.state.reValue}</div>
             <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
             <div>CCT {this.state.cctValue}</div>
-            <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className="slider"/>
+            <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
             <div>Bright {this.state.brightValue}</div>
             <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onChange={this._brightChanged} className="slider"/>
           </div>

@@ -42,6 +42,17 @@
 .slider {
   margin-bottom: 15px;
 }
+.notActiveSlider {
+  margin-bottom: 15px;
+}
+
+.notActiveSlider .rc-slider-handle{
+  border: solid 2px #ccc;
+}
+
+.notActiveSlider .rc-slider-track {
+  background-color: #DBE4E8;
+}
 
 .smalllRaisedBnutton > div {
   min-width: 30px !important;
