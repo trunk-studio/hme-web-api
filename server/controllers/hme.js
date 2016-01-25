@@ -52,7 +52,7 @@ exports.testDeviceByID = async function (ctx) {
 }
 
 exports.testGruopByID = async function (ctx) {
-  let groupID = ctx.params.id;
+  let groupID = ctx.params.slaveId;
   let result = await services.hme.testGroup(groupID);
   ctx.body = result
 }
