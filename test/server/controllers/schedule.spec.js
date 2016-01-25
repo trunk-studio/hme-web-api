@@ -125,7 +125,7 @@ describe("Schedule", () => {
     }
   });
 
-  it.only("write saved schedules to device", async done => {
+  it("write saved schedules to device", async done => {
     try {
       console.log('testDevice',JSON.stringify(testDevice,null,4));
       console.log('testGroup',JSON.stringify(testGroup,null,4));
