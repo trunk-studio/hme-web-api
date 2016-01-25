@@ -445,4 +445,28 @@ export default class Encode {
 
   };
 
+  timeSetToArry (timeSet) {
+    let re = /(\d+):(\d+)/;
+    let strST = '';
+    let arrST = '';
+
+
+    strST = timeSet.StartTime;
+    arrST = strST.match(re);
+    let Bright = timeSet.ScheduleDetailConfig.Bright
+    let timePwmTab = [
+      parseInt(arrST[1], 10), //H
+      parseInt(arrST[2], 10), //M
+      0,  //S
+      timeSet.ScheduleDetailConfig.DB * Bright, //CH1
+      timeSet.ScheduleDetailConfig.BL * Bright, //CH2
+      timeSet.ScheduleDetailConfig.RE * Bright, //CH3
+      timeSet.ScheduleDetailConfig.GR * Bright, //CH4
+      timeSet.ScheduleDetailConfig.WW * Bright, //CH5
+    ];
+
+    return (timePwmTab);
+
+  }
+
 }

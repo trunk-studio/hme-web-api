@@ -115,8 +115,8 @@ export default class Hme {
       let Rxarry = this.RxBufArry ;
       let DataBufArry =[];
       let T1num = 0;
-      const T1NUMMAX = 50;
-      const T1MS = 20;
+      const T1NUMMAX = 30;
+      const T1MS = 10;
       // T1NUMMAX * T1MS = maximum reception time
 
       let result = await new Promise((resolve, reject) => {
@@ -670,7 +670,6 @@ export default class Hme {
         devID:devID,
         u8RxDataArry:[]
       }
-
       let index = 0;
       while (timeTab.length >  index) {
         if ((timeTab.length - index) > 50) {
@@ -684,7 +683,7 @@ export default class Hme {
           COpParams.u8DataIn_Arry = timeTab.slice(index, index + COpParams.u8DataNum);
           index += COpParams.u8DataNum;
         }
-        console.log('COpParams', COpParams);
+        console.log('setTimeTab.COpParams', COpParams);
         TxParams.Comm = this.encode.ClientOp(COpParams);
         DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
         if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) != devID){
@@ -853,7 +852,7 @@ export default class Hme {
 
   async setSimRtcFunc(devID, groupID, func)  {
     try {
-        let funcIndex = {inti: 0, run: 1, stop: 2}
+        let funcIndex = {init: 0, run: 1, stop: 2}
         let COpParams = {
           u8DevID:devID,
           groupID:groupID,
@@ -897,7 +896,7 @@ export default class Hme {
           groupID:groupID,
           sFunc:'WordWt',
           u8DataNum:1,
-          u8Addr_Arry:[61],  //Addr 60 = RTC simulate frequency divider (data: 0~2000 -> 2000Hz~1Hz)
+          u8Addr_Arry:[61],  //Addr 61 = RTC simulate frequency divider (data: 0~2000 -> 2000Hz~1Hz)
           u8DataIn_Arry:[(2000 - rate)],
           u8Mask_Arry:[],
           RepeatNum:5
@@ -927,7 +926,58 @@ export default class Hme {
     }
   };
 
+  async setFastRun (devID, groupID, rate, timeTab)  {
+    try {
+      let timeTabArry = [];
+      for (var i = 0; i < timeTab.length; i++) {
+        timeTabArry = [
+          ...timeTabArry,
+          ...this.encode.timeSetToArry(timeTab[i])
+         ]
+      }
+      console.log('timeTabArry=', timeTabArry);
 
+      if(await this.setTimeTab(devID, groupID, timeTabArry) == false){
+        return (false);
+      }
+
+      let SimRtc = {
+            devID: devID,
+            groupID: groupID,
+            year: 1900,
+            month: 1,
+            day: 1,
+            hour: 0,
+            min: 0,
+            sec: 0
+          }
+      if(await this.setSimRtc(SimRtc) == false){
+        return (false);
+      }
+
+      if(await this.setSimRtcFunc(devID, groupID, 'init') == false){
+        return (false);
+      }
+
+      if(await this.setLedCtrlMode(devID, groupID, 'Fast') == false){
+        return (false);
+      }
+
+      if(await this.setSimRtcFastForward(devID, groupID, rate) == false){
+        return (false);
+      }
+
+      if(await this.setSimRtcFunc(devID, groupID, 'run') == false){
+        return (false);
+      }
+
+
+      return (true);
+
+    } catch (e) {
+      throw e;
+    }
+  };
 
 
   // async accessDevice ({devID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum})  {
