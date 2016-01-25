@@ -73,6 +73,7 @@ export default class ScheduleList extends React.Component {
   };
 
   _addRow = (e) => {
+    console.log('addRow', this.props.scheduleList);
     this.props.requestScheduleCreate(this.props.scheduleList, this.state.selectedSlave);
     this.setState({
       isSetBtnClose: true
@@ -165,6 +166,7 @@ export default class ScheduleList extends React.Component {
   };
 
   render () {
+    console.log('props', this.props);
     let rows = [];
     let tmpScheduleList = [];
 
@@ -317,7 +319,6 @@ function _injectPropsFromStore(state) {
       });
     }
   }
-
   return {
     scheduleList: schedule.scheduleList,
     slaveList: slaveList

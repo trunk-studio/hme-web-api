@@ -91,14 +91,14 @@ export default class Hme {
             },
             defaults: {
               host: host,
-              description: '',
-              apiVersion : ''
+              description: 'test',
+              apiVersion : 'test'
             }
           });
           result.push({
               host: host,
-              description: '',
-              apiVersion : ''
+              description: 'test',
+              apiVersion : 'test'
             });
         }
       }
