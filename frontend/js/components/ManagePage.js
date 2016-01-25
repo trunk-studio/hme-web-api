@@ -282,7 +282,7 @@ export default class ManagePage extends React.Component {
     let tabIndex = parseInt(this.props.params.tabIndex);
     return (
       <Tabs initialSelectedIndex={tabIndex}>
-        <Tab label="TEST">
+        <Tab label="TESTING">
           <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
             <div style={{display: 'table-caption'}}>
               <div style={{display: 'inline-flex'}}>
