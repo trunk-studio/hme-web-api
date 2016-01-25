@@ -20,17 +20,24 @@ export const RECEIVED_SET_SCHEDULE_LIST = 'RECEIVED_SET_SCHEDULE_LIST'
 export function requestScheduleCreate(scheduleList, slaveId) {
   let data={};
   if(scheduleList.length > 0) {
-    let listLength = scheduleList.length-1;
-    let date = new Date(scheduleList[listLength].StartDate);
-    date.setDate(date.getDate() + parseInt(scheduleList[listLength].Days,10));
+    let listLength = scheduleList.length;
+    let date = new Date(scheduleList[listLength-1].StartDate);
+    date.setDate(date.getDate() + parseInt(scheduleList[listLength-1].Days,10));
     data.StartDate = date;
     data.Days = 1;
     data.SlaveId = slaveId;
   }
+  else {
+    data = {
+      StartDate: new Date(),
+      Days: 1,
+      SlaveId: slaveId
+    }
+  }
   return (dispatch) => {
     return request
       .post('/rest/master/schedule/create',data)
-      .then(response => dispatch(receivedScheduleCreate(response.data)));
+      .then(response => dispatch(requestGetScheduleList()));
   };
 }
 

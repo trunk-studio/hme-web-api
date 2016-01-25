@@ -75,7 +75,7 @@ export default class ScheduleList extends React.Component {
   };
 
   _addRow = (e) => {
-    console.log(this.props.scheduleList, this.state.selectedSlave);
+    console.log('addRow', this.props.scheduleList);
     this.props.requestScheduleCreate(this.props.scheduleList, this.state.selectedSlave);
     this.setState({
       isSetBtnClose: true
@@ -171,6 +171,7 @@ export default class ScheduleList extends React.Component {
   };
 
   render () {
+    console.log('props', this.props);
     let rows = [];
     let tmpScheduleList = [];
 
@@ -279,7 +280,7 @@ export default class ScheduleList extends React.Component {
             */}
             <RaisedButton ref="scheduleAddBtn" label="Add" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
             <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
-            <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose} style={{marginLeft: '15px'}} />
+            <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '15px'}} />
           </div>
         </div>
         <Table selectable={false}>
@@ -323,7 +324,6 @@ function _injectPropsFromStore(state) {
       });
     }
   }
-
   return {
     scheduleList: schedule.scheduleList,
     slaveList: slaveList
