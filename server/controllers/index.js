@@ -96,7 +96,7 @@ export default class Routes {
     publicRoute.get('/rest/slave/:slaveId/device/:deviceId/test', HmeController.testDeviceByID);
     publicRoute.get('/rest/slave/:slaveId/test', HmeController.testGruopByID);
     publicRoute.post('/rest/slave/:slaveId/device/:deviceId/setLedDisplay', HmeController.setLedDisplay);
-    publicRoute.post('/rest/slave/:slaveId/schedule/setOnDevice', ScheduleController.setSchedulesToDevice);
+    publicRoute.post('/rest/slave/:slaveId/schedule/setOnDevice', ScheduleController.setScheduleListToDevice);
 
     publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
 
@@ -112,7 +112,7 @@ export default class Routes {
         <title>HME</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1 ,maximum-scale=1.0, user-scalable=no">
-        <link rel="shortcut icon" href="images/HME.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/public/assets/images/HME.ico" type="image/x-icon" />
         <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet">-->
         </head>

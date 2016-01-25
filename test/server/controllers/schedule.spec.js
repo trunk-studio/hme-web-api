@@ -130,10 +130,9 @@ describe("Schedule", () => {
       console.log('testDevice',JSON.stringify(testDevice,null,4));
       console.log('testGroup',JSON.stringify(testGroup,null,4));
       let result = await request.post(`/rest/slave/${slaves.id}/schedule/setOnDevice`).send({
-        groupID: testGroup.id,
-        deviceID: testDevice.id,
-        scheduleIDs:  [newSchedule.id]
+        slaveId: slaves.id
       });
+      console.log(result.body);
       result.body.should.be.true;
       done();
     } catch (e) {

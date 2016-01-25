@@ -107,9 +107,12 @@ module.exports = {
     }
   },
 
-  getCurrectSetting: async({Device, Group}) => {
+  getCurrectSetting: async({Device, Group, slaveId}) => {
     try {
       let basicSchedules  = await models.Schedule.findAll({
+        where:{
+          SlaveId: slaveId
+        },
         include:[{
           model: models.ScheduleDetail,
           include:{

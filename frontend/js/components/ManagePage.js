@@ -317,17 +317,17 @@ export default class ManagePage extends React.Component {
               </div>
             </div>
             <div className="col-md-4 col-sm-4 col-xs-4" style={{marginTop: '-60px'}}>
-              <div>WW {this.state.wwValue}</div>
+              <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px'}}>WW {this.state.wwValue}</div>
               <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
-              <div>DB {this.state.dbValue}</div>
+              <div style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
               <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
-              <div>BL {this.state.blValue}</div>
+              <div style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '2px'}}>BL {this.state.blValue}</div>
               <SliderRc ref="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
-              <div>GR {this.state.grValue}</div>
+              <div style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '2px'}}>GR {this.state.grValue}</div>
               <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
-              <div>RE {this.state.reValue}</div>
+              <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
               <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
-              <div>CCT {this.state.cctValue}</div>
+              <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px'}}><span style={{opacity: 0}}>.</span></div>
               <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
               <div>Bright {this.state.brightValue}</div>
               <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider"/>

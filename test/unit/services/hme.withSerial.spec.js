@@ -355,7 +355,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port writeTimeTabToDevices", async done => {
+    it("serial Port writeTimeTabToDevices", async done => {
 
       try {
         // writeTimeTabToDevices

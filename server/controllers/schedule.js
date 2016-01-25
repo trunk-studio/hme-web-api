@@ -138,6 +138,40 @@ exports.updateScheduleDetails = async function(ctx) {
   }
 }
 
+exports.setScheduleListToDevice = async function(ctx) {
+  try {
+    console.log("==== setScheduleListToDevice ===",ctx.request);
+    let slaveId = ctx.request.body.slaveId;
+    let hostSlaveId = ctx.params.slaveId;
+    console.log("slaveId!!",slaveId);
+    console.log("hostSlaveId!!",hostSlaveId);
+    slaveId == 0 ? null: slaveId;
+    if(hostSlaveId == 0){
+      let host = await services.deviceControl.getDomainHost(ctx.request.header.host);
+      console.log("host!!",host);
+      let slave = await models.Slave.findOne({
+        where:{
+          host: { $like: '%'+host+'%' }
+        }
+      });
+      console.log("slave!!",slave);
+      hostSlaveId = slave.id;
+      console.log("hostSlaveId!!",hostSlaveId);
+    }
+    let config = await services.schedule.getCurrectSetting({
+      slaveId: slaveId
+    });
+    console.log("config!!",config);
+    let devList = await services.hme.getSlaveDeviceArray(hostSlaveId);
+    console.log("devList!!",devList);
+    let result = await services.hme.writeTimeTabToDevices(config, {devIDs: devList});
+    ctx.body = true;
+  } catch(e) {
+    console.error(e);
+    ctx.body = false;
+  }
+}
+
 exports.setSchedulesToDevice = async function(ctx) {
   try {
 
