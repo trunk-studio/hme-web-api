@@ -164,6 +164,16 @@ export default class ScheduleDetail extends React.Component {
     this._resetScheduleDetailsTime(startTime, endTime);
   };
 
+  _handleTImeInputChanged = (ref, e) => {
+    /*
+    let text = e.target.value;
+    if(text.length==2)
+      this.refs[ref].setValue(text+':');
+    if(text.length>5)
+      this.refs[ref].setValue(text.slice(0,5));
+    */
+  };
+
   render () {
 
     console.log('prop', this.props);
@@ -326,6 +336,8 @@ export default class ScheduleDetail extends React.Component {
               ref="inputStartTime"
               hintText="08:15"
               floatingLabelText="StartTime"
+              onChange={this._handleTImeInputChanged.bind({}, 'inputStartTime')}
+              defaultValue={this.props.scheduleDetails[0]? this.props.scheduleDetails[0].StartTime.toString().slice(0,5) : ''}
               style={{
                 display: 'inline-block',
                 width: '50%'
@@ -334,6 +346,8 @@ export default class ScheduleDetail extends React.Component {
               ref="inputEndTime"
               hintText="20:12"
               floatingLabelText="EndTime"
+              onChange={this._handleTImeInputChanged.bind({}, 'inputEndTime')}
+              defaultValue={this.props.scheduleDetails[SCHEDULE_DETAILS_AMOUNT-1]? this.props.scheduleDetails[SCHEDULE_DETAILS_AMOUNT-1].StartTime.toString().slice(0,5) : ''}
               style={{
                 display: 'inline-block',
                 width: '50%'
