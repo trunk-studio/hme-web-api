@@ -52,6 +52,19 @@ module.exports = {
     }
   },
 
+  findAllBySlaveId: async(slaveId) => {
+    try {
+      let schedules = await models.Schedule.findAll({
+        where: {
+          SlaveId: (slaveId == 'null')? null : slaveId//isNaN(slaveId)? slaveId : null
+        }
+      });
+      return schedules;
+    } catch (e) {
+      throw e;
+    }
+  },
+
   updateDay: async({
     ScheduleId, Days
   }) => {

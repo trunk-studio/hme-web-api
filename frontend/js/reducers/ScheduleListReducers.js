@@ -24,26 +24,36 @@ export function schedule(state = { }, action) {
         ...state,
         scheduleList: updateFirstDate
       };
-    case RECEIVED_UPDATE_SCHEDULE_DAY:
-      let updateScheduleList = [...state.scheduleList]
-      if(action.data)
-        updateScheduleList[action.index].Days = action.data;
-      for(let i = 0 ; i < updateScheduleList.length-1; i++){
-        if(updateScheduleList[i].Days){
-          let date = new Date(updateScheduleList[i].StartDate);
-          date.setDate(date.getDate() + parseInt(updateScheduleList[i].Days,10));
-          updateScheduleList[i+1].StartDate = date;
-        }
-      };
-      return {
-        ...state,
-        scheduleList: updateScheduleList
-      };
     case RECEIVED_SET_SCHEDULE_LIST:
       return {
         ...state,
         setDeviceSuccess: action.data
-      }
+      };
+    // case RECEIVED_UPDATE_SCHEDULE_DAY:
+      // let updateScheduleList = [...state.scheduleList]
+      // if(action.data)
+      //   updateScheduleList.forEach((schedule) => {
+      //     if(schedule.id == action.index)
+      //       updateScheduleList[action.index].Days = action.data;
+      //   });
+      // console.log('acdata',action.data, updateScheduleList[action.index]);
+
+      // let slaveId = updateScheduleList[action.index].SlaveId;
+      // let nextDate = null;
+      // for(let i = 0; i < updateScheduleList.length-1; i++) {
+      //   if(updateScheduleList[i].Days && updateScheduleList[i].slaveId === slaveId) {
+      //     if(nextDate != null) {
+      //       updateScheduleList[i].StartDate = nextDate;
+      //     }
+      //     let date = new Date(updateScheduleList[i].StartDate);
+      //     date.setDate(date.getDate() + parseInt(updateScheduleList[i].Days,10));
+      //     nextDate = date;
+      //   }
+      // };
+      // return {
+      //   ...state,
+      //   scheduleList: updateScheduleList
+      // };
     default:
       return state
   }
