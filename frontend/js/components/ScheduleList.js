@@ -32,6 +32,7 @@ import {
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Colors from 'material-ui/lib/styles/colors';
+import DayPicker from "react-day-picker";
 
 export default class ScheduleList extends React.Component {
 
@@ -125,7 +126,8 @@ export default class ScheduleList extends React.Component {
     this.refs.snackbar.setState({open: true});
   };
 
-  _handleDatePickChange = (event, date) => {
+  _handleDatePickChange = (event) => {
+    let date = event.target.value;
     this.props.updateScheduleFirstDate(date);
     this.props.updateScheduleDay()
     let tmpScheduleList = [...this.props.scheduleList];
@@ -170,6 +172,10 @@ export default class ScheduleList extends React.Component {
       });
   };
 
+  _handleDateDialogOpen = (e) => {
+    console.log(e);
+  };
+
   render () {
     console.log('props', this.props);
     let rows = [];
@@ -201,14 +207,20 @@ export default class ScheduleList extends React.Component {
                 <RaisedButton disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
               </TableRowColumn>
               <TableRowColumn>
+                <TextField
+                  defaultValue={moment(date).format('YYYY-MM-DD')}
+                  onChange={this._handleDatePickChange}
+                  type="date" />
+                {/*
                 <DatePicker
                   value={date || ''}
                   hintText="new"
                   autoOk={true}
-                  mode="landscape"
                   formatDate={this._formatDate}
                   onChange={this._handleDatePickChange}
-                  style={{width: '50px'}}/>
+                  onShow={this._handleDateDialogOpen}
+                  style={{width: '100%'}}/>
+                  */}
               </TableRowColumn>
               <TableRowColumn>
                 <TextField
@@ -294,7 +306,7 @@ export default class ScheduleList extends React.Component {
               */}
             </TableRow>
           </TableHeader>
-          <TableBody displayRowCheckbox={false}>
+          <TableBody displayRowCheckbox={false} style={{height: '500px'}}>
             {rows}
           </TableBody>
         </Table>
