@@ -74,6 +74,8 @@ export default class Routes {
     publicRoute.get('/rest/hme/ping/', HmeController.ping);
     publicRoute.get('/rest/hme/searchSlave', HmeController.searchSlave);
     publicRoute.get('/rest/hme/getCachedSlaveList', HmeController.getCachedSlaveList);
+    publicRoute.get('/rest/hme/getCachedDeviceList', HmeController.getCachedDeviceList);
+    publicRoute.get('/rest/hme/getCachedSlaveAndDeviceList', HmeController.getCachedSlaveAndDeviceList);
 
     // master
     publicRoute.get('/rest/master/user/', UserController.index);
@@ -91,7 +93,7 @@ export default class Routes {
 
     // find slave Device & Groups
     publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
-    publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceList);
+    publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceListBySlave);
     publicRoute.get('/rest/slave/:slaveId/test/all', HmeController.testAllDevices);
     publicRoute.get('/rest/slave/:slaveId/device/:deviceId/test', HmeController.testDeviceByID);
     publicRoute.get('/rest/slave/:slaveId/test', HmeController.testGruopByID);

@@ -7,6 +7,8 @@ export const RECEIVED_DEVICEGROUP = 'RECEIVED_DEVICEGROUP'
 export const RECEIVED_SLAVE_LIST = 'RECEIVED_SLAVE_LIST'
 
 export const RECEIVED_TEST_SET_LED_DISPLAY = 'RECEIVED_TEST_SET_LED_DISPLAY'
+export const SCANNING = 'SCANNING'
+
 
 //test
 export function requestTestSetLedDisplay(data) {
@@ -85,7 +87,9 @@ export function requestSearchSlave() {
   return (dispatch) => {
     return request
       .get(`/rest/hme/searchSlave`)
-      .then(response => dispatch(requestGetCachedSlaveList()));
+      .then(response => {
+        dispatch(requestGetCachedSlaveList());
+      });
   }
 }
 
@@ -93,7 +97,10 @@ export function requestSearchSlaveAndDevice() {
   return (dispatch) => {
     return request
       .get(`/rest/hme/searchSlave`)
-      .then(response => dispatch(requestSearchSlaveAndDeviceSetp2()));
+      .then(response => {
+        dispatch(scanStatus('loading'));
+        dispatch(requestSearchSlaveAndDeviceSetp2());
+      });
   }
 }
 
@@ -101,10 +108,37 @@ export function requestSearchSlaveAndDeviceSetp2() {
   // dispatch(function() {return {type: REQUEST_LOGIN});
   return request
     .get('/rest/slave/0/searchDevice')
-    .then(function(){
+    .then(response => {
       requestGetCachedDeviceList();
-      requestGetCachedSlaveList();  
+      requestGetCachedSlaveList();
+      // dispatch(scanStatus('hide'));
     });
+}
+
+
+export function requestGetSlaveAndDeviceList () {
+  return (dispatch) => {
+    dispatch(scanStatus('loading'));
+    return request
+      .get('/rest/hme/getCachedSlaveAndDeviceList')
+      .then((response) => {
+        dispatch(receivedSlaveList(response.data.slaveList));
+        dispatch(receivedScan(response.data.deviceList));
+        dispatch(scanStatus('hide'));
+      });
+  }
+  // let [slaveList, deviceList] = await Promise.all([request.get(`/rest/hme/getCachedSlaveList`), request.get(`/rest/slave/0/getCachedDeviceList`)]);
+  // return (dispatch) => {
+  //   dispatch(receivedSlaveList(slaveList));
+    // dispatch(receivedScan(deviceList));
+  // }
+}
+
+export function scanStatus(data) {
+  return {
+    type: SCANNING,
+    data
+  }
 }
 
 // tmp
