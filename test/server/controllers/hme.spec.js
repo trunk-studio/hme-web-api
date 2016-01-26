@@ -71,16 +71,28 @@ describe("hme", () => {
       }
     });
 
-    it("get cached deviceList", async done => {
+    it("get cached deviceList by slaveId", async done => {
       try {
         let result = await request.get(`/rest/slave/${slave.id}/getCachedDeviceList`);
         result.body.should.be.Array;
-        result.body[0].should.have.any.keys('DevID');
+        result.body[0].should.have.any.keys('devID', 'SlaveId');
         done();
       } catch (e) {
         done(e);
       }
     });
+
+    it("get all cached deviceList", async done => {
+      try {
+        let result = await request.get(`/rest/hme/getCachedDeviceList`);
+        result.body.should.be.Array;
+        result.body[0].should.have.any.keys('devID', 'SlaveId');
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
 
     it("get cached slaveList", async done => {
       try {
@@ -93,6 +105,29 @@ describe("hme", () => {
         done(e);
       }
     });
+
+    it("get all cached device", async done => {
+      try {
+        let result = await request.get('/rest/hme/getCachedDeviceList');
+        result.body.should.be.Array;
+        result.body[0].should.have.any.keys('devId','SlaveId');
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+    it("get cached slave & device list", async done => {
+      try {
+        let result = await request.get('/rest/hme/getCachedSlaveAndDeviceList');
+        result.body.should.be.Object;
+        result.body.should.have.any.keys('slaveList', 'deviceList');
+        done();
+      } catch (e) {
+        done(e);
+      }
+    })
+
 
     it("allGroup", async(done) => {
       try {

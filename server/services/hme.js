@@ -226,7 +226,8 @@ export default class Hme {
       let result = [];
       for(let device of deviceList) {
         result.push({
-          devID: device.uid
+          devID: device.uid,
+          SlaveId: device.SlaveId
         });
       }
       console.log(JSON.stringify(result,null, 4));
@@ -237,6 +238,23 @@ export default class Hme {
     }
   };
 
+  async getCachedDeviceListBySlave (slaveId)  {
+    try {
+      let deviceList = await models.Device.findAll({where: {SlaveId: slaveId}});
+      let result = [];
+      for(let device of deviceList) {
+        result.push({
+          devID: device.uid,
+          SlaveId: device.SlaveId
+        });
+      }
+      console.log(JSON.stringify(result,null, 4));
+
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  };
 
   async getCachedSlaveList ()  {
     try {

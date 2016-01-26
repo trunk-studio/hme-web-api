@@ -66,6 +66,16 @@ exports.getCachedDeviceList = async function (ctx) {
   }
 }
 
+exports.getCachedDeviceListBySlave = async function (ctx) {
+  try {
+    let slaveId = ctx.params.slaveId;
+    let result = await services.hme.getCachedDeviceListBySlave(slaveId);
+    ctx.body = result;
+  } catch (e) {
+    throw e;
+  }
+}
+
 exports.searchSlave = async function(ctx) {
   try {
     let result = await services.hme.pingAllSlave();
@@ -79,6 +89,18 @@ exports.getCachedSlaveList = async function (ctx) {
   try {
     let result = await services.hme.getCachedSlaveList();
     ctx.body = result;
+  } catch (e) {
+    throw e;
+  }
+}
+
+exports.getCachedSlaveAndDeviceList = async function (ctx) {
+  try {
+    let [slaveList, deviceList] = await Promise.all([services.hme.getCachedSlaveList(), services.hme.getCachedDeviceList()]);
+    ctx.body = {
+      slaveList: slaveList,
+      deviceList: deviceList
+    };
   } catch (e) {
     throw e;
   }
