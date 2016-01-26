@@ -5,7 +5,7 @@ import {
   requestTestGroupDevices, requestTestAllDevices,
   requestTestSetLedDisplay, requestGetCachedDeviceList,
   requestSearchSlave, requestGetCachedSlaveList,
-  requestSearchSlaveAndDevice
+  requestSearchSlaveAndDevice, requestGetSlaveAndDeviceList
 } from '../actions/TestActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
@@ -17,7 +17,7 @@ const ScheduleList = require('./ScheduleList');
 const LineChart = require("react-chartjs").Line;
 import { Slider} from 'material-ui';
 import SliderRc from 'rc-slider';
-
+import RefreshIndicator from 'material-ui/lib/refresh-indicator';
 export default class ManagePage extends React.Component {
   constructor(props) {
     super(props);
@@ -89,9 +89,10 @@ export default class ManagePage extends React.Component {
   };
 
   componentDidMount() {
-    this.props.requestGetCachedDeviceList();
-    this.props.requestGetCachedSlaveList();
-    this.props.requestScan();
+    this.props.requestGetSlaveAndDeviceList();
+    // this.props.requestGetCachedDeviceList();
+    // this.props.requestGetCachedSlaveList();
+    //this.props.requestScan();
     // this.props.requestDeviceGroup();
   }
 
@@ -127,7 +128,6 @@ export default class ManagePage extends React.Component {
     // let value = this.refs.CCT.state.value;
     this.state.cctSliderStyle = 'slider';
     if(value >= 3000 && value < 4000){
-      console.log("3");
       this._setAll(
         1 ,
         0.6  * ((value - 3000) / (4000 - 3000)),
@@ -137,7 +137,6 @@ export default class ManagePage extends React.Component {
         value
       );
     }else if(value >= 4000 && value < 5000){
-      console.log("4");
       this._setAll(
         1 ,
         0.6  + (0.8 - 0.6)  * ((value - 4000) / (5000 - 4000)),
@@ -147,7 +146,6 @@ export default class ManagePage extends React.Component {
         value
       );
     }else if(value >= 5000 && value < 6500){
-      console.log("5");
       this._setAll(
         1    + (0.8  - 1   ) * ((value - 5000) / (6500 - 5000)),
         0.8  + (1    - 0.8 ) * ((value - 5000) / (6500 - 5000)),
@@ -157,7 +155,6 @@ export default class ManagePage extends React.Component {
         value
       );
     }else if(value >= 6500 && value < 10000){
-      console.log("6.5");
       this._setAll(
         0.8 + (0.6 - 0.8) * ((value - 6500) / (10000 - 6500)),
         1,
@@ -167,7 +164,6 @@ export default class ManagePage extends React.Component {
         value
       );
     }else if(value >= 10000 && value < 16000){
-      console.log("10");
       this._setAll(
         0.6 + (0.4 - 0.6) * ((value - 10000) / (16000 - 10000)),
         1,
@@ -192,7 +188,6 @@ export default class ManagePage extends React.Component {
     this.setState({
       SUM: newSUM
     });
-    console.log("!!!!!!!!!",this.state.groupID,this.state.groupID);
     this.props.requestTestSetLedDisplay({
       devID:this.state.deviceID,
       groupID:this.state.groupID,
@@ -206,7 +201,7 @@ export default class ManagePage extends React.Component {
   };
 
   _setAll = (ww, db, bl, gr, re, cct) =>{
-    console.log(ww, db, bl, gr, re);
+    // console.log(ww, db, bl, gr, re);
     this.state.wwValue = Math.round(ww * 100);
     this.state.dbValue = Math.round(db * 100);
     this.state.blValue = Math.round(bl * 100);
@@ -243,6 +238,7 @@ export default class ManagePage extends React.Component {
   };
 
   render() {
+    console.log('ppp', this.props);
     let chartData = {
         labels: ["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],
         datasets: [
@@ -280,6 +276,8 @@ export default class ManagePage extends React.Component {
     if(this.props.slaveList.length > 0)   slaveList.push(...this.props.slaveList);
 
     let tabIndex = parseInt(this.props.params.tabIndex);
+    let scanningStatus = this.props.scanning? this.props.scanning: 'hide';
+    console.log(scanningStatus);
     return (
       <Tabs initialSelectedIndex={tabIndex}>
         <Tab label="TESTING">
@@ -287,6 +285,13 @@ export default class ManagePage extends React.Component {
             <div style={{display: 'table-caption'}}>
               <div style={{display: 'inline-flex'}}>
                 <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
+                <RefreshIndicator
+                  size={40}
+                  left={10}
+                  top={0}
+                  status={scanningStatus}
+                  style={{display: 'inline-block',
+                          position: 'relative'}} />
               </div>
               <div style={{display: 'inline-flex'}}>
                 <SelectField labelMember="primary" menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}}/>
@@ -386,11 +391,12 @@ function _injectPropsFromStore(state) {
       });
     }
   }
-
+  console.log('obj', scanDevice);
   return {
     deviceList: scanResult,
     groupList: groupList,
-    slaveList: slaveList
+    slaveList: slaveList,
+    scanning: scanDevice.scanning? scanDevice.scanning : 'hide'
   };
 }
 
@@ -404,7 +410,8 @@ const _injectPropsFromActions = {
   requestGetCachedDeviceList,
   requestSearchSlave,
   requestGetCachedSlaveList,
-  requestSearchSlaveAndDevice
+  requestSearchSlaveAndDevice,
+  requestGetSlaveAndDeviceList
 }
 
 
