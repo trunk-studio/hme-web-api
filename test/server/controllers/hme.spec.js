@@ -145,4 +145,72 @@ describe("hme", () => {
 
   });
 
+  describe.only('master get All slave device', () => {
+    let slave1, slave2;
+    let s1d1,s1d2,s2d1,s2d2
+    before(async done => {
+      try {
+        slave1 = await models.Slave.create({
+          host: "127.0.0.1",
+          description: "描述",
+          apiVersion: "0.1.0",
+        });
+        slave2 = await models.Slave.create({
+          host: "127.0.0.1",
+          description: "描述",
+          apiVersion: "0.1.2",
+        });
+        s1d1 = await models.Device.create({
+          uid: 34895,
+          SlaveId: slave1.id
+        });
+        s1d2 = await models.Device.create({
+          uid: 49575,
+          SlaveId: slave1.id
+        });
+        s2d1 = await models.Device.create({
+          uid: 25673,
+          SlaveId: slave2.id
+        });
+        s2d2 = await models.Device.create({
+          uid: 49576,
+          SlaveId: slave2.id
+        });
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+  it('get All slave Device', async (done) => {
+    try {
+      let ans = [{
+        slaveId: slave1.id,
+        deviceList:[{
+          "id": s1d1.id,
+          "uid": 34895,
+        },{
+          "id": s1d2.id,
+          "uid": 49575,
+        }]
+      },{
+        slaveId: slave2.id,
+        deviceList:[{
+          "id": s2d1.id,
+          "uid": 25673,
+        },{
+          "id": s2d2.id,
+          "uid": 49576,
+        }]
+      }]
+      let result = await request.get('/rest/master/searchDevice');
+      console.log(result.body);
+      done();
+    } catch (e) {
+      console.log(e);
+      done(e);
+    }
+  });
+});
+
 });

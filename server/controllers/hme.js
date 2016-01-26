@@ -105,3 +105,12 @@ exports.getCachedSlaveAndDeviceList = async function (ctx) {
     throw e;
   }
 }
+
+exports.getAllSlaveDeviceList = async function (ctx) {
+  try{
+    let result = await services.deviceControl.getAllSlaveDeviceList();
+    ctx.body = result;
+  }catch(e){
+    throw e;
+  }
+}

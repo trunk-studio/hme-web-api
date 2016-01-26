@@ -61,5 +61,14 @@ module.exports = {
       console.log(e);
       throw e
     }
+  },
+
+  getAllSlaveDeviceList: () => {
+    try {
+
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
   }
 }

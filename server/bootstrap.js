@@ -32,7 +32,30 @@ export default async (cb) => {
 
 
   try {
-
+    if(appConfig.environment === 'test' || appConfig.environment === 'development'){
+      sinon.stub(services.deviceControl, 'getAllSlaveDeviceList', () => {
+        let result = [{
+          slaveId: 1,
+          deviceList:[{
+      			"id": 1,
+      			"uid": 34895,
+          },{
+      			"id": 2,
+      			"uid": 49575,
+          }]
+        },{
+          slaveId: 2,
+          deviceList:[{
+      			"id": 3,
+      			"uid": 25673,
+          },{
+      			"id": 4,
+      			"uid": 49576,
+          }]
+        }];
+        return result;
+      });
+    }
     let createdVisitor = await models.User.create(visitorUser);
     let createdEditor = await models.User.create(editorUser);
     let createdAdmin = await models.User.create(adminUser);
