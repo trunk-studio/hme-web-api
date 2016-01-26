@@ -5,7 +5,8 @@ import {
   requestTestGroupDevices, requestTestAllDevices,
   requestTestSetLedDisplay, requestGetCachedDeviceList,
   requestSearchSlave, requestGetCachedSlaveList,
-  requestSearchSlaveAndDevice, requestGetSlaveAndDeviceList
+  requestSearchSlaveAndDevice, requestGetSlaveAndDeviceList,
+  requestReportEmail, requestUpdateReportEmail
 } from '../actions/TestActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
@@ -237,8 +238,13 @@ export default class ManagePage extends React.Component {
     this._setAll(0, 1, 1, 0, 1);
   };
 
+
+  _saveReportingEmail = (e) => {
+    let inputReportingEmail = this.refs.inputReportingEmail;
+    console.log(inputReportingEmail.getValue());
+  };
+
   render() {
-    console.log('ppp', this.props);
     let chartData = {
         labels: ["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],
         datasets: [
@@ -277,7 +283,6 @@ export default class ManagePage extends React.Component {
 
     let tabIndex = parseInt(this.props.params.tabIndex);
     let scanningStatus = this.props.scanning? this.props.scanning: 'hide';
-    console.log(scanningStatus);
     return (
       <Tabs initialSelectedIndex={tabIndex}>
         <Tab label="TESTING">
@@ -348,14 +353,15 @@ export default class ManagePage extends React.Component {
           </div>
         </Tab>
         <Tab label="Report Setting">
-          <div className="self-center" style={{width: '200px'}}>
+          <div className="self-center" style={{width: '250px'}}>
             <div style={{display: 'table-caption'}}>
               <TextField
+                ref="inputReportingEmail"
                 hintText="Report Email"
                 floatingLabelText="Report Email"
+                multiLine={true}
                 type="text" />
-              <SelectField menuItems={this.props.slaveList} />
-              <RaisedButton label="Add in" style={{float: 'right', marginRight:'10%'}}/>
+              <RaisedButton onTouchTap={this._saveReportingEmail} label="Save" style={{float: 'right', marginRight:'15px'}}/>
             </div>
           </div>
         </Tab>
@@ -391,7 +397,6 @@ function _injectPropsFromStore(state) {
       });
     }
   }
-  console.log('obj', scanDevice);
   return {
     deviceList: scanResult,
     groupList: groupList,
@@ -401,6 +406,7 @@ function _injectPropsFromStore(state) {
 }
 
 const _injectPropsFromActions = {
+  // testing
   requestScan,
   requestDeviceGroup,
   requestTestSetLedDisplay,
@@ -411,7 +417,10 @@ const _injectPropsFromActions = {
   requestSearchSlave,
   requestGetCachedSlaveList,
   requestSearchSlaveAndDevice,
-  requestGetSlaveAndDeviceList
+  requestGetSlaveAndDeviceList,
+  //report setting
+  requestReportEmail,
+  requestUpdateReportEmail
 }
 
 
