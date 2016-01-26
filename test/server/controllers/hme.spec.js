@@ -186,19 +186,19 @@ describe("hme", () => {
     try {
       let ans = [{
         slaveId: slave1.id,
-        deviceList:[{
+        deviceList: [{
           "id": s1d1.id,
           "uid": 34895,
-        },{
+        }, {
           "id": s1d2.id,
           "uid": 49575,
         }]
-      },{
+      }, {
         slaveId: slave2.id,
-        deviceList:[{
+        deviceList: [{
           "id": s2d1.id,
           "uid": 25673,
-        },{
+        }, {
           "id": s2d2.id,
           "uid": 49576,
         }]
