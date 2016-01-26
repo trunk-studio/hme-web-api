@@ -30,7 +30,6 @@ global.appConfig = config;
 import fs from 'fs-extra';
 global.fs = fs;
 
-
 const {environment} = appConfig;
 const app = new koa();
 const convert = require('koa-convert');

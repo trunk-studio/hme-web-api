@@ -36,16 +36,26 @@ export default class Routes {
           let slaveId =  ctx.params.slaveId;
           let slave = await services.deviceControl.getSlaveHost(slaveId);
           if(slave){
-            if(ctx.request.header.host.indexOf(slave.host) != -1){
+            if(ctx.request.header.host.indexOf(slave.host.split(':')[0]) != -1){
               console.log("My router");
               await next();
             }else{
               console.log(slave.host, "proxy: ", ctx.request.method, 'http://'+ slave.host + ctx.request.url);
-              request({
-                method: ctx.request.method,
-                url: 'http://'+ slave.host + ctx.request.url,
-                data: ctx.request.body || {}
-              })
+              let result = await new Promise((resolve, reject) => {
+                request({
+                  method: ctx.request.method,
+                  url: 'http://'+ slave.host + ctx.request.url,
+                  // url: 'http://'+ slave.host + '/rest/hme/getCachedDeviceList',
+                  data: ctx.request.body || {}
+                }).then(function(res){
+                  if (res instanceof Error) {
+                    reject(res);
+                  } else {
+                    resolve(res);
+                  }
+                })
+              });
+              ctx.body =  result.data;
             }
           }else{
             await next();
@@ -80,7 +90,7 @@ export default class Routes {
     // master
     publicRoute.get('/rest/master/user/', UserController.index);
     publicRoute.post('/rest/master/login', UserController.login);
-    publicRoute.get('/rest/master/searchDevice', HmeController.getAllSlaveDeviceList);
+    publicRoute.get('/rest/master/syncAllSlaveAndDevice', HmeController.syncAllSlaveAndDevice);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
     publicRoute.get('/rest/master/schedule/findAll', ScheduleController.getAllSchedule);
     publicRoute.get('/rest/master/slave/:slaveId/schedule/findAll', ScheduleController.getAllScheduleBySlaveId);

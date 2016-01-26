@@ -13,8 +13,10 @@ exports.ping = async function (ctx) {
 
 exports.searchDevice = async function (ctx) {
   // let result = await services.hme.SearchDevice();
-  await services.deviceControl.syncDevice();
-  ctx.body = "ok"
+  console.log("!!!!!!!!!!!",ctx);
+  slaveId = ctx.params.slaveId;
+  await services.deviceControl.syncDevice(slaveId);
+  ctx.body = 'ok';
 };
 
 exports.findAllDeviceGroups = async function (ctx) {
@@ -106,10 +108,10 @@ exports.getCachedSlaveAndDeviceList = async function (ctx) {
   }
 }
 
-exports.getAllSlaveDeviceList = async function (ctx) {
+exports.syncAllSlaveAndDevice = async function (ctx) {
   try{
-    let result = await services.deviceControl.getAllSlaveDeviceList();
-    ctx.body = result;
+    let result = await services.deviceControl.syncAllSlaveAndDevice();
+    ctx.body = 'ok';
   }catch(e){
     throw e;
   }

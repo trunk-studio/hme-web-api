@@ -145,18 +145,18 @@ describe("hme", () => {
 
   });
 
-  describe.only('master get All slave device', () => {
+  describe('master get All slave device', () => {
     let slave1, slave2;
     let s1d1,s1d2,s2d1,s2d2
     before(async done => {
       try {
         slave1 = await models.Slave.create({
-          host: "127.0.0.1",
+          host: "127.0.0.1:3000",
           description: "描述",
           apiVersion: "0.1.0",
         });
         slave2 = await models.Slave.create({
-          host: "127.0.0.1",
+          host: "127.0.0.1:3000",
           description: "描述",
           apiVersion: "0.1.2",
         });
@@ -182,6 +182,37 @@ describe("hme", () => {
       }
     });
 
+  it("get all cached device", async done => {
+    try {
+      let result = await request.get('/rest/hme/getCachedDeviceList');
+      result.body.should.be.Array;
+      result.body[0].should.have.any.keys('devId','SlaveId');
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
+
+  it.only("get cached deviceList by slaveId", async done => {
+    try {
+      let result = await request.get(`/rest/slave/1/getCachedDeviceList`);
+      for(let device of result.body) {
+        await models.Device.findOrCreate({
+          where: {
+            uid: device.devID
+          },
+          defaults: {
+            uid: device.devID,
+            SlaveId: device.SlaveId
+          }
+        })
+      }
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
+
   it('get All slave Device', async (done) => {
     try {
       let ans = [{
@@ -203,8 +234,7 @@ describe("hme", () => {
           "uid": 49576,
         }]
       }]
-      let result = await request.get('/rest/master/searchDevice');
-      console.log(result.body);
+      let result = await request.get('/rest/master/syncAllSlaveAndDevice');
       done();
     } catch (e) {
       console.log(e);
