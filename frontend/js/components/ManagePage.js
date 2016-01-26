@@ -354,14 +354,23 @@ export default class ManagePage extends React.Component {
         </Tab>
         <Tab label="Report Setting">
           <div className="self-center" style={{width: '250px'}}>
-            <div style={{display: 'table-caption'}}>
+            <div style={{display: 'inline-flex'}}>
               <TextField
                 ref="inputReportingEmail"
                 hintText="Report Email"
                 floatingLabelText="Report Email"
                 multiLine={true}
                 type="text" />
+            </div>
+            <div style={{display: 'inline-flex'}}>
               <RaisedButton onTouchTap={this._saveReportingEmail} label="Save" style={{float: 'right', marginRight:'15px'}}/>
+              <RefreshIndicator
+                size={40}
+                left={10}
+                top={0}
+                status={'loading'}
+                style={{display: 'inline-block',
+                        position: 'relative'}} />
             </div>
           </div>
         </Tab>
