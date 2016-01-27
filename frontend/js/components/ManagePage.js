@@ -5,9 +5,12 @@ import {
   requestTestGroupDevices, requestTestAllDevices,
   requestTestSetLedDisplay, requestGetCachedDeviceList,
   requestSearchSlave, requestGetCachedSlaveList,
-  requestSearchSlaveAndDevice, requestGetSlaveAndDeviceList,
-  requestReportEmail, requestUpdateReportEmail
+  requestSearchSlaveAndDevice, requestGetSlaveAndDeviceList
 } from '../actions/TestActions'
+
+import {
+  requestGetReportEmail, requestUpdateReportEmail
+} from '../actions/ManageActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
@@ -41,7 +44,8 @@ export default class ManagePage extends React.Component {
       groupID: 0,
       deviceID: 0,
       slaveID: 0,
-      tabIndex: 0
+      tabIndex: 0,
+      tmpEmail: ''
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -91,6 +95,7 @@ export default class ManagePage extends React.Component {
 
   componentDidMount() {
     this.props.requestGetSlaveAndDeviceList();
+    this.props.requestGetReportEmail();
     // this.props.requestGetCachedDeviceList();
     // this.props.requestGetCachedSlaveList();
     //this.props.requestScan();
@@ -241,10 +246,27 @@ export default class ManagePage extends React.Component {
   _saveReportingEmail = (e) => {
     let inputReportingEmail = this.refs.inputReportingEmail;
     console.log(inputReportingEmail.getValue());
+    let emailObj = {
+      emails: inputReportingEmail.getValue()
+    };
+    this.props.requestUpdateReportEmail(emailObj);
   };
 
   _handleTabChanged = (tabIndex, tab) => {
     // window.location.href = `/#/manage/${tabIndex}`;
+  };
+
+  _handleEditEmail = (e) => {
+    this.setState({
+      tmpEmail: e.target.value
+    })
+  };
+
+  componentWillUpdate (nextProps, nextState) {
+    if(this.props.reportEmail != nextProps.reportEmail)
+      this.setState({
+        tmpEmail: nextProps.reportEmail
+      });
   };
 
   render() {
@@ -281,11 +303,16 @@ export default class ManagePage extends React.Component {
       primary: 'Select Slave',
       text: 'Select Slave'
     }];
-    if(this.props.deviceList.length > 0)  deviceList.push(...this.props.deviceList);
-    if(this.props.slaveList.length > 0)   slaveList.push(...this.props.slaveList);
+
+
+    if(this.props.deviceList[this.state.slaveID] && this.props.deviceList[this.state.slaveID].length > 0)  deviceList.push(...this.props.deviceList[this.state.slaveID]);
+    if(this.props.slaveList.length > 0)  slaveList.push(...this.props.slaveList);
 
     let tabIndex = parseInt(this.props.params.tabIndex);
     let scanningStatus = this.props.scanning? this.props.scanning: 'hide';
+    let email = this.props.reportEmail;
+    console.log(email);
+
     return (
       <Tabs initialSelectedIndex={tabIndex} onChange={this._handleTabChanged}>
         <Tab label="TESTING" value='0'>
@@ -360,9 +387,10 @@ export default class ManagePage extends React.Component {
             <div style={{display: 'inline-flex'}}>
               <TextField
                 ref="inputReportingEmail"
-                hintText="Report Email"
                 floatingLabelText="Report Email"
                 multiLine={true}
+                value={this.state.tmpEmail}
+                onChange={this._handleEditEmail}
                 type="text" />
             </div>
             <div style={{display: 'inline-flex'}}>
@@ -371,7 +399,7 @@ export default class ManagePage extends React.Component {
                 size={40}
                 left={10}
                 top={0}
-                status={'loading'}
+                status={this.props.loadingEmail}
                 style={{display: 'inline-block',
                         position: 'relative'}} />
             </div>
@@ -386,22 +414,14 @@ export default class ManagePage extends React.Component {
 }
 
 function _injectPropsFromStore(state) {
-  let { scanDevice } = state;
+  let { scanDevice , manageSettings} = state;
   let scanResult = [],
       slaveList = [],
       groupList = [];
-  if(scanDevice.deviceList) {
-    for(let device of scanDevice.deviceList) {
-      scanResult.push({
-        payload: device.devID,
-        primary: `DeviceID: ${device.devID}`,
-        text: device.devID
-      });
-    }
-  }
 
   if(scanDevice.slaveList) {
     for(let slave of scanDevice.slaveList) {
+      scanResult[slave.id] = [];
       slaveList.push({
         payload: slave.id,
         primary: `Slave host: ${slave.host}`,
@@ -409,11 +429,24 @@ function _injectPropsFromStore(state) {
       });
     }
   }
+
+  if(scanDevice.deviceList) {
+    for(let device of scanDevice.deviceList) {
+      scanResult[device.SlaveId].push({
+        payload: device.devID,
+        primary: `DeviceID: ${device.devID}`,
+        text: device.devID
+      });
+    }
+  }
+
   return {
     deviceList: scanResult,
     groupList: groupList,
     slaveList: slaveList,
-    scanning: scanDevice.scanning? scanDevice.scanning : 'hide'
+    scanning: scanDevice.scanning? scanDevice.scanning : 'hide',
+    reportEmail: manageSettings.reportEmail,
+    loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide'
   };
 }
 
@@ -431,7 +464,7 @@ const _injectPropsFromActions = {
   requestSearchSlaveAndDevice,
   requestGetSlaveAndDeviceList,
   //report setting
-  requestReportEmail,
+  requestGetReportEmail,
   requestUpdateReportEmail
 }
 
