@@ -13,7 +13,6 @@ exports.ping = async function (ctx) {
 
 exports.searchDevice = async function (ctx) {
   // let result = await services.hme.SearchDevice();
-  console.log("!!!!!!!!!!!",ctx);
   slaveId = ctx.params.slaveId;
   await services.deviceControl.syncDevice(slaveId);
   ctx.body = 'ok';
