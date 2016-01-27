@@ -174,7 +174,6 @@ export default class Hme {
       let T1num = 0;
       const T1MS = 10;
       let T1NumMax = Math.ceil(waitTime/T1MS);
-      console.log('AMS= ', waitTime/T1MS);
 
       // T1NUMMAX * T1MS = maximum reception time
       let success = false;
@@ -1095,8 +1094,15 @@ export default class Hme {
       do {
         receiveRawData =  await this.uartDataTxRx(TxParams);
         repeatIndex++;
-        if (receiveRawData.RxData.length != 0 && receiveRawData.success == true) {
+        if (devID == 0 && receiveRawData.success == true) {
+          // devID == 0 => Broadcast mode
+          // console.log('accDev_group');
+          result.ramData = [];
+          result.success = true;
+          return(result);
+        } else if (receiveRawData.RxData.length != 0 && receiveRawData.success == true) {
           //have to discoding
+          // console.log('accDev_discoding');
           DecodParams.u8RxDataArry = receiveRawData.RxData;
           let receiveData = this.encode.RxDecode(DecodParams);
           if(receiveData.success){
@@ -1105,15 +1111,16 @@ export default class Hme {
             return(result);
           }else {
             //receive is Error
+            console.log(' accDev_Error');
             receiveRawData.success = false;
           }
         }
 
       } while ((repeatNum > repeatIndex) && (receiveRawData.success != true));
-      if (receiveRawData.success == false) {
-        return (result);
-      }
-
+      // if (receiveRawData.success == false) {
+      //   return (result);
+      // }
+      return (result);
     } catch (e) {
       throw e;
     }

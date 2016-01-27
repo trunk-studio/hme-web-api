@@ -1316,8 +1316,8 @@ describe("hme with seriel port", () => {
                       devID: 1,
                       groupID: 0,
                       sFunc: 'WordRd',
-                      dataNum: 300,
-                      addrArry: [5],
+                      dataNum: 2,
+                      addrArry: [200],
                       dataInArry: [],
                       maskArry: [],
                       repeatNum: 2
