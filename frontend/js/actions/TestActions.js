@@ -93,27 +93,28 @@ export function requestSearchSlave() {
   }
 }
 
+
 export function requestSearchSlaveAndDevice() {
   return (dispatch) => {
+    dispatch(scanStatus('loading'));
     return request
-      .get(`/rest/hme/searchSlave`)
+      .get(`/rest/master/syncAllSlaveAndDevice`)
       .then(response => {
-        dispatch(scanStatus('loading'));
-        dispatch(requestSearchSlaveAndDeviceSetp2());
+        dispatch(requestGetSlaveAndDeviceList());
       });
   }
 }
 
-export function requestSearchSlaveAndDeviceSetp2() {
-  // dispatch(function() {return {type: REQUEST_LOGIN});
-  return request
-    .get('/rest/slave/0/searchDevice')
-    .then(response => {
-      requestGetCachedDeviceList();
-      requestGetCachedSlaveList();
-      // dispatch(scanStatus('hide'));
-    });
-}
+// export function requestSearchSlaveAndDeviceSetp2() {
+//   // dispatch(function() {return {type: REQUEST_LOGIN});
+//   return request
+//     .get('/rest/slave/0/searchDevice')
+//     .then(response => {
+//       requestGetCachedDeviceList();
+//       requestGetCachedSlaveList();
+//       // dispatch(scanStatus('hide'));
+//     });
+// }
 
 
 export function requestGetSlaveAndDeviceList () {
