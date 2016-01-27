@@ -3,3 +3,4 @@ export * from './ScheduleListReducers';
 export * from './TestReducers';
 export * from './ScheduleDetailReducers';
 export * from './ScheduleDetailConfigReducers';
+export * from './ManageReducers';
