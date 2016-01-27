@@ -52,7 +52,8 @@
     "sequelize": "^3.0.0",
     "serialport": "^2.0.5",
     "sqlite3": "^3.0.8",
-    "vertical-rc-slider": "https://github.com/kyoyadmoon/vertical-slider-tmp.git"
+    "vertical-rc-slider": "https://github.com/kyoyadmoon/vertical-slider-tmp.git",
+    "superagent": "^1.7.1"
   },
   "devDependencies": {
     "babel-core": "^6.3.15",

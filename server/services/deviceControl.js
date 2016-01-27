@@ -1,11 +1,13 @@
+import request from 'superagent'
 module.exports = {
 
-  saveDevice: async(data) => {
+  saveDevice: async(data, slaveId) => {
     try {
       let deviceList = await Promise.all(data.map( async (device) => {
         let newDevice = {
           uid: device.devID,
-          GroupId: device.GroupID
+          GroupId: device.GroupID,
+          SlaveId: slaveId
         }
         newDevice = await models.Device.findOrCreate({
           where:{
@@ -21,10 +23,10 @@ module.exports = {
     }
   },
 
-  syncDevice: async() => {
+  syncDevice: async(slaveId) => {
     try {
       let deviceArray =  await services.hme.SearchDevice();
-      await services.deviceControl.saveDevice(deviceArray);
+      await services.deviceControl.saveDevice(deviceArray, slaveId);
     } catch (e) {
       throw e;
     }
@@ -57,6 +59,45 @@ module.exports = {
       domain = domain.split(':')[0];
       return domain;
 
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
+  },
+
+  syncAllSlaveAndDevice: async() => {
+    try {
+      await services.hme.pingAllSlave();
+      let slaveList = await models.Slave.findAll();
+      let devicesLists =[];
+      for (let slave of slaveList) {
+        let result = await new Promise((resolve, reject) => {
+          request.get(`/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
+            if(err) return reject(err);
+            resolve(res.body);
+          });
+        });
+      }
+      for (let slave of slaveList) {
+        let result = await new Promise((resolve, reject) => {
+          request.get(`/rest/slave/${slave.id}/getCachedDeviceList`).end((err, res) => {
+            if(err) return reject(err);
+            resolve(res.body);
+          });
+        });
+        devicesLists.push(result);
+        for(let device of result) {
+          await models.Device.findOrCreate({
+            where: {
+              uid: device.devID
+            },
+            defaults: {
+              uid: device.devID,
+              SlaveId: device.SlaveId
+            }
+          })
+        }
+      }
     } catch (e) {
       console.log(e);
       throw e
