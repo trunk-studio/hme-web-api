@@ -137,7 +137,7 @@ module.exports = {
           detailFormat.Config.GR = detail.ScheduleDetailConfigs[0].GR;
           detailFormat.Config.RE = detail.ScheduleDetailConfigs[0].RE;
           detailFormat.Config.CCT = detail.ScheduleDetailConfigs[0].CCT;
-          detailFormat.Config.Bright = detail.ScheduleDetailConfigs[0].Bright;
+          detailFormat.Config.Bright = detail.weight * 100;
           return detailFormat;
         })
         return format

@@ -182,14 +182,14 @@ describe("schedule", () => {
           Days: 15,
           GroupId: group.id,
           DeviceId: device.id,
-          SlaveId: newSlaveId
+          SlaveId: slaves.id
         };
 
         newSchedule = await models.Schedule.create(newSchedule);
         let scheduleConfig = [];
         for(let a = 0; a<24; a+=2){
           scheduleConfig.push({
-            "weight": 1,
+            "weight": 0.3,
             "StartTime": a +":00:00",
             "ScheduleId": newSchedule.id
           });
@@ -270,7 +270,7 @@ describe("schedule", () => {
             Days: 7
           }]
         }
-        let result = await services.schedule.getCurrectSetting({Device: device.id, Group: slaves.id});
+        let result = await services.schedule.getCurrectSetting({Device: device.id, Group: slaves.id, slaveId: slaves.id});
         console.log("currect json !!! ",JSON.stringify(result,null,2));
         result.Schedules.should.be.an.Array;
         result.Schedules[0].should.have.property('StartDate');
