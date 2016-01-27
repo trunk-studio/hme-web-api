@@ -17,7 +17,7 @@ const SettingGraph = require('../components/SettingGraph');
 const ScheduleList = require('../components/ScheduleList');
 const ScheduleDetail = require('../components/ScheduleDetail');
 const ScheduleDetailConfig = require('../components/ScheduleDetailConfig');
-
+import WifiSetting from '../components/WifiSetting';
 
 // export default class RedirectToDefaultValue extends React.Component {
 //   willTransitionTo (transition, params) {
@@ -38,6 +38,7 @@ export default class App extends React.Component {
         <Route path="/schedule/list" component={ScheduleList} />
         <Route path="/schedule/edit/:scheduleID" component={ScheduleDetail} />
         <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} />
+        <Route path="/wifisetting" component={WifiSetting} />
       </Router>
     );
   }

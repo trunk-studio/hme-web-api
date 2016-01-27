@@ -42,7 +42,7 @@
     "react": "^0.14.3",
     "react-chartjs": "https://github.com/jhudson8/react-chartjs.git#0.7.3",
     "react-dom": "^0.14.3",
-    "react-nvd3": "^0.4.1",
+    "react-nvd3": "0.4.1",
     "react-redux": "^4.0.0",
     "react-router": "^1.0.1",
     "react-tap-event-plugin": "^0.2.1",
