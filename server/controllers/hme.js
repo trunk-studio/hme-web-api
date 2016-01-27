@@ -115,3 +115,23 @@ exports.syncAllSlaveAndDevice = async function (ctx) {
     throw e;
   }
 }
+
+exports.saveEmail = async function (ctx) {
+  try {
+    let emails = ctx.request.body.emails;
+    console.log(emails);
+    let result = await services.deviceControl.saveEmail(emails);
+    ctx.body = 'ok';
+  } catch (e) {
+    throw e;
+  }
+}
+
+exports.loadEmail = async function (ctx) {
+  try {
+    let result = await services.deviceControl.loadEmail();
+    ctx.body = { emails: result};
+  } catch (e) {
+    throw e;
+  }
+}

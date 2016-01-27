@@ -90,6 +90,8 @@ export default class Routes {
     // master
     publicRoute.get('/rest/master/user/', UserController.index);
     publicRoute.post('/rest/master/login', UserController.login);
+    publicRoute.post('/rest/master/saveEmail', HmeController.saveEmail);
+    publicRoute.get('/rest/master/loadEmail', HmeController.loadEmail);
     publicRoute.get('/rest/master/syncAllSlaveAndDevice', HmeController.syncAllSlaveAndDevice);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
     publicRoute.get('/rest/master/schedule/findAll', ScheduleController.getAllSchedule);
