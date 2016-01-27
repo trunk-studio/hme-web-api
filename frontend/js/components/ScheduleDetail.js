@@ -7,7 +7,7 @@ import {
 } from '../actions/ScheduleDetailActions'
 import moment from 'moment'
 import {
-  AppBar, TimePicker, FontIcon, Dialog, IconButton, FlatButton, RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow
+  RefreshIndicator, AppBar, TimePicker, FontIcon, Dialog, IconButton, FlatButton, RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow
 } from 'material-ui';
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
 
@@ -66,7 +66,7 @@ export default class ScheduleDetail extends React.Component {
 
   _handleTimeBtnClick(index) {
     if(index == this.state.currentIndex)
-      window.location.href = `#/schedule/config/${this.props.scheduleDetails[index].id}`;
+      window.location.href = `#/schedule/${this.props.params.scheduleID}/config/${this.props.scheduleDetails[index].id}`;
     this.setState({currentIndex: index});
   };
 
@@ -187,7 +187,6 @@ export default class ScheduleDetail extends React.Component {
 
   render () {
 
-    console.log('prop', this.props);
     let scheduleDetails = this.props.scheduleDetails,
         currentIndex = this.state.currentIndex;
     let firstScheduleDetail = scheduleDetails[0],
@@ -218,7 +217,6 @@ export default class ScheduleDetail extends React.Component {
       color: '#2d7fe0',
       values: [
         { x: 0, y: midWeight},
-        ...dots,
         { x: _timeToInteger('24:00:00'), y: midWeight}
       ]
     }];
@@ -273,7 +271,14 @@ export default class ScheduleDetail extends React.Component {
           iconElementRight={
             <div>
               <FlatButton label="RESET" onTouchTap={this._handleDialogOpen} style={{marginTop:'6px',marginRight:'10px',marginLeft:'auto', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
-              <FlatButton label="Save" onTouchTap={this._saveScheduleDetails} style={{didFlip:'true',marginTop:'6px',marginRight:'10px',marginLeft:'auto', backgroundColor: 'rgba(0,0,0,0)', color: '#fff'}} />
+              <FlatButton label="save" onTouchTap={this._saveScheduleDetails} style={{didFlip:'true',marginTop:'6px',marginRight:'10px',marginLeft:'auto', backgroundColor: 'rgba(0,0,0,0)', color: '#fff'}} >
+                <RefreshIndicator
+                  size={28}
+                  left={0}
+                  top={5}
+                  status={this.props.loading || 'hide'}
+                  style={{display: 'inline-block', position: 'relative'}} />
+              </FlatButton>
             </div>
           }
         />
@@ -405,7 +410,8 @@ function _injectPropsFromStore(state) {
     }
   }
   return {
-    scheduleDetails: scheduleDetails
+    scheduleDetails: scheduleDetails,
+    loading: scheduleDetail.loading? scheduleDetail.loading : 'hide'
   };
 }
 

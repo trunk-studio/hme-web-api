@@ -44,7 +44,7 @@ export default class ScheduleDetailConfig extends React.Component {
       this.state.SUM);
   }
   componentDidMount () {
-    this.props.requestGetScheduleDetailConfig(this.props.params.id);
+    this.props.requestGetScheduleDetailConfig(this.props.params.configID);
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -150,7 +150,7 @@ export default class ScheduleDetailConfig extends React.Component {
 
   _saveConfig = (e) => {
     this.props.requestUpdateScheduleDetailConfig({
-      id: this.props.params.id,
+      id: this.props.params.configID,
       WW: this.state.wwValue,
       DB: this.state.dbValue,
       BL: this.state.blValue,
@@ -234,13 +234,15 @@ export default class ScheduleDetailConfig extends React.Component {
       datasetStroke: false,
       pointHitDetectionRadius: 0
     }
-    let id = this.props.params.id;
+    let configID = this.props.params.configID,
+        scheduleID = this.props.params.scheduleID;
+
     return (
       <div>
         <AppBar
           title="Schedule Detail Confing"
           iconElementLeft={
-            <IconButton onTouchTap={function() {window.location.href =`#/schedule/edit/${id}`;}} >
+            <IconButton onTouchTap={function() {window.location.href =`#/schedule/edit/${scheduleID}`;}} >
               <NavigationClose />
             </IconButton>
           }

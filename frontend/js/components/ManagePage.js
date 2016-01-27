@@ -238,10 +238,13 @@ export default class ManagePage extends React.Component {
     this._setAll(0, 1, 1, 0, 1);
   };
 
-
   _saveReportingEmail = (e) => {
     let inputReportingEmail = this.refs.inputReportingEmail;
     console.log(inputReportingEmail.getValue());
+  };
+
+  _handleTabChanged = (tabIndex, tab) => {
+    // window.location.href = `/#/manage/${tabIndex}`;
   };
 
   render() {
@@ -284,8 +287,8 @@ export default class ManagePage extends React.Component {
     let tabIndex = parseInt(this.props.params.tabIndex);
     let scanningStatus = this.props.scanning? this.props.scanning: 'hide';
     return (
-      <Tabs initialSelectedIndex={tabIndex}>
-        <Tab label="TESTING">
+      <Tabs initialSelectedIndex={tabIndex} onChange={this._handleTabChanged}>
+        <Tab label="TESTING" value='0'>
           <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
             <div style={{display: 'table-caption'}}>
               <div style={{display: 'inline-flex'}}>
@@ -309,7 +312,7 @@ export default class ManagePage extends React.Component {
             </div>
           </div>
         </Tab>
-        <Tab label="Setup Test">
+        <Tab label="Setup Test" value='1'>
           <div style={{display: 'table-caption'}}>
             <div style={{display: 'inline-flex' , marginTop: '15px', marginLeft: '15px'}}>
               <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '200px'}}/>
@@ -352,7 +355,7 @@ export default class ManagePage extends React.Component {
             <RaisedButton label="B + R" onTouchTap={this._BR}/>
           </div>
         </Tab>
-        <Tab label="Report Setting">
+        <Tab label="Report Setting" value='2'>
           <div className="self-center" style={{width: '250px'}}>
             <div style={{display: 'inline-flex'}}>
               <TextField
@@ -374,7 +377,7 @@ export default class ManagePage extends React.Component {
             </div>
           </div>
         </Tab>
-        <Tab label='Schedule List'>
+        <Tab label='Schedule List' value='3'>
           <ScheduleList />
         </Tab>
       </Tabs>
