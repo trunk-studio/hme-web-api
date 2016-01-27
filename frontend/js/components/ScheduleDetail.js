@@ -20,6 +20,9 @@ const style = {
   margin: 50
 };
 
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
+
 const SCHEDULE_DETAILS_AMOUNT = 12,
       MAX_TIME_INTEGER = 1440,
       SLIDER_TIME_MARKS = {
@@ -217,9 +220,11 @@ export default class ScheduleDetail extends React.Component {
       color: '#2d7fe0',
       values: [
         { x: 0, y: midWeight},
+        ...dots,
         { x: _timeToInteger('24:00:00'), y: midWeight}
       ]
     }];
+    console.log('===', data, dots);
 
     let ButtonGroup1 = [],
         ButtonGroup2 = [];
@@ -263,6 +268,9 @@ export default class ScheduleDetail extends React.Component {
     return (
       <div>
         <AppBar title="Schedule Detail"
+          style={{height: '55px', marginTop: '-5px'}}
+          titleStyle={{fontSize: '20px'}}
+
           iconElementLeft={
             <IconButton onTouchTap={function() {window.location.href = '#/manage/3';}} >
               <NavigationClose />
