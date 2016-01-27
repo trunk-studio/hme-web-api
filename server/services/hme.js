@@ -166,6 +166,66 @@ export default class Hme {
     }
   };
 
+  async uartDataTxRx ({Comm, RxLen, waitTime})  {
+    try {
+      let serialPort = this.serialPort;
+      let Rxarry = this.RxBufArry ;
+      let DataBufArry =[];
+      let T1num = 0;
+      let T1NumMax = Math.ceil(waitTime/T1MS);
+      const T1MS = 10;
+      // T1NUMMAX * T1MS = maximum reception time
+      let success = false;
+      let result = await new Promise((resolve, reject) => {
+        //Rxarry= [1];
+        Rxarry.length = 0;
+        let RepeatIndex = 0;
+
+        serialPort.write(Comm, function(err, results) {
+          if(err) return reject(err);
+
+          var T2id = setTimeout(function(){
+            console.log('drain eer' );
+            return reject(results);
+          },1500);
+
+          serialPort.drain(function (error) {
+            console.log('UART drain');
+            var T1id = setInterval(function(){
+              T1num++;
+              if (Rxarry.length == RxLen) {
+                results = Rxarry;
+                clearInterval(T1id);
+                clearTimeout(T2id);
+                console.log('TimeCont=',T1num);
+                success = true;
+                return resolve(results);
+              } else if (T1num > T1NumMax) {
+                console.log('TimeOut!');
+                results = [];
+                clearInterval(T1id);
+                clearTimeout(T2id);
+                return resolve(results);
+              } else if (Rxarry.length > RxLen) {
+                console.log('DataErr!');
+                results = [];
+                clearInterval(T1id);
+                clearTimeout(T2id);
+                return resolve(results);
+              } else {
+
+              }
+            } ,T1MS);
+          });
+        });
+      });
+      return ({RxData: result, success: success});
+    } catch (e) {
+      console.log('ERROR!!');
+      throw e;
+    }
+  };
+
 
 
   async SearchDevice ()  {
@@ -191,7 +251,8 @@ export default class Hme {
       let DecodParams = {
         FuncCT:33,
         devID:1,
-        u8RxDataArry:[]
+        u8RxDataArry:[],
+        u8DataNum: params.u8DataNum
       }
 
       for (let i = 1; i < MAXSECHDEVNUM; i++) {
@@ -202,7 +263,7 @@ export default class Hme {
 
         DecodParams.u8RxDataArry =  await this.UartTxRx(params2);
         DecodParams.devID = i;
-        ReDataArry = this.encode.RxDecode(DecodParams);
+        ReDataArry = this.encode.RxDecode(DecodParams).ramData;
         if (ReDataArry.length != 0) {
           console.log('out =', i);
           console.log('out =',ReDataArry);
@@ -980,54 +1041,77 @@ export default class Hme {
   };
 
 
-  // async accessDevice ({devID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum})  {
-  //   try {
-  //       let COpParams = {
-  //       u8DevID:devID,
-  //       groupID:groupID,
-  //       sFunc:sFunc,
-  //       u8DataNum:dataNum,
-  //       u8Addr_Arry:addrArry,
-  //       u8DataIn_Arry:dataInArry,
-  //       u8Mask_Arry:maskArry,
-  //       RepeatNum:repeatNum
-  //     }
-  //
-  //     let TxParams = {
-  //       Comm:[],
-  //       RxLen:undefined
-  //     }
-  //
-  //     let FuncCommTable = {'Inital':0, 'Close':0, 'BitModify':17, 'BitInv':18, 'WordRd':33, 'DiscWordRd':34,
-  //   					'WordWt':49, 'DiscWordWt':50};
-  //
-  //     if (sFunc == 'WordRd' || sFunc == 'DiscWordRd') {
-  //       TxParams.RxLen = 8 + (dataNum * 3);
-  //     } else {
-  //       TxParams.RxLen = 8;
-  //     }
-  //
-  //     TxParams.Comm = this.encode.ClientOp(COpParams);
-  //
-  //     let DecodParams = {
-  //       FuncCT:(FuncCommTable[sFunc] & 0x7f),
-  //       devID:devID,
-  //       u8RxDataArry:[]
-  //     }
-  //
-  //     TxParams.Comm = this.encode.ClientOp(COpParams);
-  //     DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-  //     if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
-  //       return (true);
-  //     } else {
-  //       return (false);
-  //     };
-  //
-  //
-  //   } catch (e) {
-  //     throw e;
-  //   }
-  // }
+  async accessDevice ({devID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum})  {
+    try {
+      let result = {
+        ramData: [],
+        success: false
+      }
+      let COpParams = {
+        u8DevID:devID,
+        groupID:groupID,
+        sFunc:sFunc,
+        u8DataNum:dataNum,
+        u8Addr_Arry:addrArry,
+        u8DataIn_Arry:dataInArry,
+        u8Mask_Arry:maskArry,
+        RepeatNum:repeatNum
+      }
+      let TxParams = {
+        Comm:[],
+        RxLen:undefined
+      }
+
+      let FuncCommTable = {'Inital':0, 'Close':0, 'BitModify':17, 'BitInv':18, 'WordRd':33, 'DiscWordRd':34,
+    					'WordWt':49, 'DiscWordWt':50};
+
+      // Set RxLen
+      if (devID == 0) {
+        TxParams.RxLen = 0;
+      } else if (sFunc == 'WordRd' || sFunc == 'DiscWordRd') {
+        TxParams.RxLen = 8 + (dataNum * 3);
+      } else {
+        TxParams.RxLen = 8;
+      }
+
+      // Set Comm
+      TxParams.Comm = this.encode.ClientOp(COpParams);
+
+      let DecodParams = {
+        FuncCT:(FuncCommTable[sFunc] & 0x7f),
+        devID:devID,
+        u8RxDataArry:[]
+      }
+
+      //Send data
+      let receiveRawData  = undefined;
+      let repeatIndex = 0;
+
+      do {
+        receiveRawData =  await this.UartTxRx(TxParams);
+        repeatIndex++;
+        if (receiveRawData.RxData.length != 0 && receiveRawData.success == true) {
+          //have to discoding
+          DecodParams.u8RxDataArry = receiveRawData.RxData;
+          let receiveData = RxDecode(DecodParams);
+          if(receiveData.success){
+
+
+          }else {
+            //receive is Error
+            receiveRawData.success = false;
+          }
+        }
+
+      } while ((repeatNum > repeatIndex) && (receiveRawData.success != true));
+      if (receiveRawData.success == false) {
+        return [];
+      }
+
+    } catch (e) {
+      throw e;
+    }
+  }
 
   _eventsSetup()  {
     let serialPort = this.serialPort;

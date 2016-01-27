@@ -51,7 +51,24 @@ describe("hme with seriel port", () => {
 
     });
 
+    it("serial Port uartDataTxRx", async done => {
 
+      try {
+        let restComm = [128,1,0,0,0,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0];
+        let params = {
+          Comm:restComm,
+          RxLen:8,
+          waitTime:20
+        }
+        let result = await services.hme.uartDataTxRx(params);
+        //result.should.be.equal[ 192, 1, 0, 0, 50, 115, 1, 0 ];
+        console.log('UartTxRx result',result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
 
     it("serial Port testAll", async done => {
 
@@ -341,7 +358,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it("serial Port SearchDevice", async done => {
+    it.only("serial Port SearchDevice", async done => {
 
       try {
         let result = await services.hme.SearchDevice();
@@ -1125,7 +1142,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port setFastRun", async done => {
+    it("serial Port setFastRun", async done => {
       // 設定快轉預覽時程設定照明效果
       try {
         let devID = 1;
@@ -1279,9 +1296,9 @@ describe("hme with seriel port", () => {
 
         let result = await services.hme.setFastRun(devID, groupID, rate, timeTab);
 
-        setInterval(function(){
-
-        }, 3000);
+        // setInterval(function(){
+        //
+        // }, 3000);
 
         console.log('setFastRun result',result);
         result.should.be.true;
