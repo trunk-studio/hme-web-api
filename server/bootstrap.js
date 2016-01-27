@@ -37,10 +37,16 @@ export default async (cb) => {
     let createdAdmin = await models.User.create(adminUser);
     let connected = await services.hme.connectSerialPort();
 
-    // await services.hme.pingAllSlave();
+    fs.ensureFile('./email', function (err) {
+      if(err)
+        throw new Error('create email file error');
+    })
+    
+    await services.hme.pingAllSlave();
     // without await to reduce bootstrap waiting time
-    // if(connected)
-    //   await services.deviceControl.syncDevice();
+    if(connected)
+      await services.deviceControl.syncDevice();
+
     // search slave
   } catch (e) {
 
