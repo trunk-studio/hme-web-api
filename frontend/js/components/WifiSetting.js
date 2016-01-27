@@ -35,7 +35,7 @@ export default class  WifiSetting extends React.Component  {
     return (
       <div>
         <AppBar title="Wifi Setting"
-          style={{height: '55px', marginTop: '-5px'}}
+          style={{height: '55px', minHeight: '0px', marginTop: '-9px'}}
           titleStyle={{fontSize: '20px'}}
           iconElementLeft={
             <IconButton onTouchTap={function() {window.location.href = '#/manage/3';}} >

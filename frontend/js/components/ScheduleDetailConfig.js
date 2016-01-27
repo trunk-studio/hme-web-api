@@ -1,5 +1,5 @@
 import React                from 'react';
-import { AppBar, IconButton, FlatButton , Slider, RadioButton, RadioButtonGroup, DropDownMenu, RaisedButton} from 'material-ui';
+import { AppBar, RefreshIndicator, IconButton, FlatButton , Slider, RadioButton, RadioButtonGroup, DropDownMenu, RaisedButton} from 'material-ui';
 import { connect } from 'react-redux'
 import { requestGetScheduleDetailConfig, requestUpdateScheduleDetailConfig} from '../actions/ScheduleDetailConfigActions'
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
@@ -238,15 +238,26 @@ export default class ScheduleDetailConfig extends React.Component {
         scheduleID = this.props.params.scheduleID;
 
     return (
-      <div>
+      <div style={{overflowX: 'hidden'}}>
         <AppBar
           title="Schedule Detail Confing"
+          style={{height: '55px', minHeight: '0px', marginTop: '-9px'}}
+          titleStyle={{fontSize: '20px'}}
           iconElementLeft={
             <IconButton onTouchTap={function() {window.location.href =`#/schedule/edit/${scheduleID}`;}} >
               <NavigationClose />
             </IconButton>
           }
-          iconElementRight={<FlatButton label="Save" onTouchTap={this.backClick} />}
+          iconElementRight={
+            <FlatButton label="Save" onTouchTap={this.backClick}style={{marginTop:'4px',marginRight:'10px',marginLeft:'auto', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} >
+              <RefreshIndicator
+                size={28}
+                left={0}
+                top={5}
+                status={this.props.configLoading || 'hide'}
+                style={{display: 'inline-block', position: 'relative'}} />
+            </FlatButton>
+          }
           onLeftIconButtonTouchTap={this.backClick} />
         <div className="self-center" style={{width: '100%', marginTop: '5px'}}>
           <div className="col-md-8 col-sm-8 col-xs-8">
@@ -290,11 +301,12 @@ export default class ScheduleDetailConfig extends React.Component {
 }
 
 function _injectPropsFromStore(state) {
-  // let { login, isLoading } = state;
+  let { scheduleDetailConfig } = state;
   console.log("_injectPropsFromStore!!",state.scheduleDetailConfig.configData);
-  let config = state.scheduleDetailConfig.configData
+  let config = scheduleDetailConfig.configData
   return {
-    config
+    config,
+    configLoading: scheduleDetailConfig.configLoading? scheduleDetailConfig.configLoading : 'hide'
   };
 };
 

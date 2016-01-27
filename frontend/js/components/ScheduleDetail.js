@@ -268,9 +268,8 @@ export default class ScheduleDetail extends React.Component {
     return (
       <div>
         <AppBar title="Schedule Detail"
-          style={{height: '55px', marginTop: '-5px'}}
+          style={{height: '55px', minHeight: '0px', marginTop: '-9px'}}
           titleStyle={{fontSize: '20px'}}
-
           iconElementLeft={
             <IconButton onTouchTap={function() {window.location.href = '#/manage/3';}} >
               <NavigationClose />
@@ -278,8 +277,8 @@ export default class ScheduleDetail extends React.Component {
           }
           iconElementRight={
             <div>
-              <FlatButton label="RESET" onTouchTap={this._handleDialogOpen} style={{marginTop:'6px',marginRight:'10px',marginLeft:'auto', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
-              <FlatButton label="save" onTouchTap={this._saveScheduleDetails} style={{didFlip:'true',marginTop:'6px',marginRight:'10px',marginLeft:'auto', backgroundColor: 'rgba(0,0,0,0)', color: '#fff'}} >
+              <FlatButton label="RESET" onTouchTap={this._handleDialogOpen} style={{marginTop:'4px',marginRight:'10px',marginLeft:'auto', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
+              <FlatButton label="save" onTouchTap={this._saveScheduleDetails} style={{didFlip:'true',marginTop:'4px',marginRight:'10px',marginLeft:'auto', backgroundColor: 'rgba(0,0,0,0)', color: '#fff'}} >
                 <RefreshIndicator
                   size={28}
                   left={0}
