@@ -337,7 +337,7 @@ export default class ManagePage extends React.Component {
               <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
               <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
               <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
-              <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px'}}><span style={{opacity: 0}}>.</span></div>
+              <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid'}}><span style={{opacity: 0}}>.</span></div>
               <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
               <div>Bright {this.state.brightValue}</div>
               <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider"/>
