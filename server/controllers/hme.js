@@ -1,3 +1,5 @@
+import request from 'superagent'
+
 exports.hello = async function (ctx) {
   console.log('=== services ===', services);
   let result = await services.hme.hello()
@@ -39,6 +41,30 @@ exports.setLedDisplay = async function (ctx) {
   console.log('setLedDisplay',data);
   let result = await services.hme.setLedDisplay(data);
   ctx.body = result
+};
+
+exports.setSlaveAllLedDisplay = async function (ctx) {
+  let data = ctx.request.body;
+  console.log('setLedDisplay',data);
+  let schedule = await models.Schedule.findById(data.scheduleID);
+  let devices = await models.Device.findAll({
+    where:{
+      SlaveId: schedule.SlaveId
+    }
+  })
+  for(let device of devices){
+    console.log(schedule.SlaveId, device.id);
+    let result = await new Promise((resolve, reject) => {
+      request
+        .post(`/rest/slave/${schedule.SlaveId}/device/${device.id}/setLedDisplay`)
+        .send(data)
+        .end((err, res) => {
+          if(err) return reject(err);
+          resolve(res.body);
+        });
+    });
+  }
+  ctx.body = 'ok'
 };
 
 exports.testAllDevices = async function (ctx) {

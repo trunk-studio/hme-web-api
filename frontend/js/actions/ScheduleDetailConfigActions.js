@@ -44,3 +44,20 @@ export function receivedUpdateScheduleDetailConfig(data) {
     data
   }
 }
+
+export function requestUpdateSlaveDeviceColor(updateData) {
+  let data = [
+    updateData.WW,
+    updateData.DB,
+    updateData.BL,
+    updateData.GR,
+    updateData.RE,
+    updateData.CCT,
+    updateData.Bright
+  ]
+  return (dispatch) => {
+    return request
+      .post(`/rest/slave/:slaveId/setLedDisplay`,data)
+      .then(response => dispatch(receivedTestSetLedDisplay(response.data)));
+  };
+}
