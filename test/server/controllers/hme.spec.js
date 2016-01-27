@@ -193,7 +193,7 @@ describe("hme", () => {
     }
   });
 
-  it.only("get cached deviceList by slaveId", async done => {
+  it("get cached deviceList by slaveId", async done => {
     try {
       let result = await request.get(`/rest/slave/1/getCachedDeviceList`);
       for(let device of result.body) {
