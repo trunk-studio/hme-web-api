@@ -16,6 +16,7 @@ export const REQUEST_UPDATE_SCHEDULE_LIST = 'REQUEST_UPDATE_SCHEDULE_LIST'
 export const RECEIVED_UPDATE_SCHEDULE_LIST = 'RECEIVED_UPDATE_SCHEDULE_LIST'
 
 export const RECEIVED_SET_SCHEDULE_LIST = 'RECEIVED_SET_SCHEDULE_LIST'
+export const UPDATE_LOADING_STATUS = 'UPDATE_LOADING_STATUS'
 
 export function requestScheduleCreate(scheduleList, slaveId) {
   let data={};
@@ -87,7 +88,6 @@ export function receivedUpdateScheduleDay(data = null,index = null) {
   }
 }
 
-
 export function requestGetScheduleList() {
   return (dispatch) => {
     return request
@@ -119,8 +119,19 @@ export function receivedSetScheduleList(data) {
 
 export function requestGetSlaveSchedule(slaveId) {
   return (dispatch) => {
+    dispatch(updateLoadingStatus('loading'));
     return request
       .get(`/rest/master/slave/${slaveId}/schedule/findAll`)
-      .then(response => dispatch(receivedGetScheduleList(response.data)));
+      .then(response => {
+        dispatch(receivedGetScheduleList(response.data));
+        dispatch(updateLoadingStatus('hide'));        
+      });
   };
+}
+
+export function updateLoadingStatus(status) {
+  return {
+    type: UPDATE_LOADING_STATUS,
+    status
+  }
 }

@@ -75,7 +75,6 @@ export default class ScheduleList extends React.Component {
   };
 
   _addRow = (e) => {
-    console.log('addRow', this.props.scheduleList);
     this.props.requestScheduleCreate(this.props.scheduleList, this.state.selectedSlave);
     this.setState({
       isSetBtnClose: true
@@ -109,7 +108,6 @@ export default class ScheduleList extends React.Component {
     let value = e.target.value;
     if(parseInt(value, 10) > 9999)
       value = 9999;
-    console.log('id', i);
     let tmpScheduleList = [...this.props.scheduleList];
     tmpScheduleList[i].Days = value;
 
@@ -176,7 +174,6 @@ export default class ScheduleList extends React.Component {
   };
 
   render () {
-    console.log('props', this.props);
     let rows = [];
     let tmpScheduleList = [];
 
@@ -277,22 +274,28 @@ export default class ScheduleList extends React.Component {
       primary: 'All Slave',
       text: 'All Slave'
     }];
-
     slaveList.push(...this.props.slaveList);
     // let isAddOpen = rows.length >= 5 ? true: false;
     return (
       <div id="scheduleList" className="self-center" style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
         <div className="row">
           <div style={{marginLeft: '30px', marginTop: '15px', display: 'inline-flex'}}>
-            <SelectField labelMember="primary" onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '220px'}}/>
+            <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px'}}/>
             {/*
               <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
               <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
             */}
-            <RaisedButton ref="scheduleAddBtn" label="Add" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
+            <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
             <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
             <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '15px'}} />
-          </div>
+            <RefreshIndicator
+              size={30}
+              left={8}
+              top={2}
+              status={this.props.loading || 'hide'}
+              style={{display: 'inline-block',
+                      position: 'relative'}} />
+        </div>
         </div>
         <Table selectable={false}>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
@@ -335,9 +338,11 @@ function _injectPropsFromStore(state) {
       });
     }
   }
+
   return {
     scheduleList: schedule.scheduleList,
-    slaveList: slaveList
+    slaveList: slaveList,
+    loading: schedule.loading ? schedule.loading : 'hide'
   };
 }
 
