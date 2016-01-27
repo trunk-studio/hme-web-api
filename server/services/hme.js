@@ -172,8 +172,10 @@ export default class Hme {
       let Rxarry = this.RxBufArry ;
       let DataBufArry =[];
       let T1num = 0;
-      let T1NumMax = Math.ceil(waitTime/T1MS);
       const T1MS = 10;
+      let T1NumMax = Math.ceil(waitTime/T1MS);
+      console.log('AMS= ', waitTime/T1MS);
+
       // T1NUMMAX * T1MS = maximum reception time
       let success = false;
       let result = await new Promise((resolve, reject) => {
@@ -187,10 +189,11 @@ export default class Hme {
           var T2id = setTimeout(function(){
             console.log('drain eer' );
             return reject(results);
-          },1500);
+          },1500 + waitTime);
 
           serialPort.drain(function (error) {
             console.log('UART drain');
+            console.log("T1NumMax=", T1NumMax);
             var T1id = setInterval(function(){
               T1num++;
               if (Rxarry.length == RxLen) {
@@ -1058,8 +1061,9 @@ export default class Hme {
         RepeatNum:repeatNum
       }
       let TxParams = {
-        Comm:[],
-        RxLen:undefined
+        Comm: [],
+        RxLen: undefined,
+        waitTime: Math.ceil(dataNum * 0.7) + 13
       }
 
       let FuncCommTable = {'Inital':0, 'Close':0, 'BitModify':17, 'BitInv':18, 'WordRd':33, 'DiscWordRd':34,
@@ -1080,7 +1084,8 @@ export default class Hme {
       let DecodParams = {
         FuncCT:(FuncCommTable[sFunc] & 0x7f),
         devID:devID,
-        u8RxDataArry:[]
+        u8RxDataArry:[],
+        u8DataNum: dataNum
       }
 
       //Send data
@@ -1088,15 +1093,16 @@ export default class Hme {
       let repeatIndex = 0;
 
       do {
-        receiveRawData =  await this.UartTxRx(TxParams);
+        receiveRawData =  await this.uartDataTxRx(TxParams);
         repeatIndex++;
         if (receiveRawData.RxData.length != 0 && receiveRawData.success == true) {
           //have to discoding
           DecodParams.u8RxDataArry = receiveRawData.RxData;
-          let receiveData = RxDecode(DecodParams);
+          let receiveData = this.encode.RxDecode(DecodParams);
           if(receiveData.success){
-
-
+            result.ramData = receiveData.ramData;
+            result.success = true;
+            return(result);
           }else {
             //receive is Error
             receiveRawData.success = false;
@@ -1105,7 +1111,7 @@ export default class Hme {
 
       } while ((repeatNum > repeatIndex) && (receiveRawData.success != true));
       if (receiveRawData.success == false) {
-        return [];
+        return (result);
       }
 
     } catch (e) {

@@ -358,7 +358,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port SearchDevice", async done => {
+    it("serial Port SearchDevice", async done => {
 
       try {
         let result = await services.hme.SearchDevice();
@@ -1302,6 +1302,30 @@ describe("hme with seriel port", () => {
 
         console.log('setFastRun result',result);
         result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it.only("serial Port accessDevice", async done => {
+
+      try {
+        let params = {
+                      devID: 1,
+                      groupID: 0,
+                      sFunc: 'WordRd',
+                      dataNum: 300,
+                      addrArry: [5],
+                      dataInArry: [],
+                      maskArry: [],
+                      repeatNum: 2
+                    }
+        let result = await services.hme.accessDevice(params);
+        console.log('accessDevice result',result);
+        result.ramData.should.be.Array;
+
         done();
       } catch (e) {
         done(e);
