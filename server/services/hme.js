@@ -438,7 +438,7 @@ export default class Hme {
   async setLedCtrlMode (devID, groupID, CtrlMode)  {
     try {
       let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
-      let COpParams = {
+      let accDevParams = {
         u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
@@ -448,24 +448,10 @@ export default class Hme {
         u8Mask_Arry:[],
         RepeatNum:5
       }
-      let TxParams = {
-        Comm:[],
-        RxLen:8
-      }
-      let DecodParams = {
-        FuncCT:49,
-        devID:devID,
-        u8RxDataArry:[]
-      }
-      console.log('setLedCtrlMode,COpParams:', COpParams);
-      TxParams.Comm = this.encode.ClientOp(COpParams);
-      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID || devID == 0){
-        return (true);
-      } else {
-        return (false);
-      };
 
+      console.log('setLedCtrlMode,accDevParams:', accDevParams);
+      let result =  await this.accessDevice(accDevParams);
+      return (result.success);
 
     } catch (e) {
       throw e;
@@ -714,7 +700,7 @@ export default class Hme {
 
   async setTimeTab (devID, groupID, timeTab)  {
     try {
-        let COpParams = {
+        let accDevParams = {
         u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
@@ -724,32 +710,22 @@ export default class Hme {
         u8Mask_Arry:[],
         RepeatNum:5
       }
-      let TxParams = {
-        Comm:[],
-        RxLen:8
-      }
-      let DecodParams = {
-        FuncCT:49,
-        devID:devID,
-        u8RxDataArry:[]
-      }
       let index = 0;
       while (timeTab.length >  index) {
         if ((timeTab.length - index) > 50) {
-          COpParams.u8DataNum = 50;
-          COpParams.u8Addr_Arry = [(1200 + index)];
-          COpParams.u8DataIn_Arry = timeTab.slice(index, index + COpParams.u8DataNum);
-          index += COpParams.u8DataNum;
+          accDevParams.u8DataNum = 50;
+          accDevParams.u8Addr_Arry = [(1200 + index)];
+          accDevParams.u8DataIn_Arry = timeTab.slice(index, index + accDevParams.u8DataNum);
+          index += accDevParams.u8DataNum;
         } else {
-          COpParams.u8DataNum = timeTab.length - index;
-          COpParams.u8Addr_Arry = [(1200 + index)];
-          COpParams.u8DataIn_Arry = timeTab.slice(index, index + COpParams.u8DataNum);
-          index += COpParams.u8DataNum;
+          accDevParams.u8DataNum = timeTab.length - index;
+          accDevParams.u8Addr_Arry = [(1200 + index)];
+          accDevParams.u8DataIn_Arry = timeTab.slice(index, index + accDevParams.u8DataNum);
+          index += accDevParams.u8DataNum;
         }
-        console.log('setTimeTab.COpParams', COpParams);
-        TxParams.Comm = this.encode.ClientOp(COpParams);
-        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) != devID){
+        console.log('setTimeTab.accDevParams', accDevParams);
+        let result =  await this.accessDevice(accDevParams);
+        if(result.success != true){
           return (false);
         }
       }
@@ -836,7 +812,7 @@ export default class Hme {
 
   async setSimRtc ({devID, groupID, year, month, day, hour, min, sec})  {
     try {
-        let COpParams = {
+        let accDevParams = {
           u8DevID:devID,
           groupID:groupID,
           sFunc:'WordWt',
@@ -846,25 +822,11 @@ export default class Hme {
           u8Mask_Arry:[],
           RepeatNum:5
         }
-        let TxParams = {
-          Comm:[],
-          RxLen:8
-        }
-        let DecodParams = {
-          FuncCT:49,
-          devID:devID,
-          u8RxDataArry:[]
-        }
 
-        TxParams.Comm = this.encode.ClientOp(COpParams);
-        console.log('setDayTab.COpParams =', COpParams);
-        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
-          return (true);
-        } else {
-          return (false);
-        };
+        console.log('setDayTab.accDevParams =', accDevParams);
+        let result =  await this.accessDevice(accDevParams);
 
+        return (result.success);
 
     } catch (e) {
       throw e;
@@ -873,7 +835,7 @@ export default class Hme {
 
   async getSimRtc (devID, groupID)  {
     try {
-        let COpParams = {
+        let accDevParams = {
           u8DevID:devID,
           groupID:groupID,
           sFunc:'WordRd',
@@ -892,19 +854,11 @@ export default class Hme {
           devID:devID,
           u8RxDataArry:[]
         }
-
-        TxParams.Comm = this.encode.ClientOp(COpParams);
-        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
         console.log('u3ByteToWord=', DecodParams.u8RxDataArry);
-        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
-          let time = [];
-          for (let i = 5; i < 23; i+=3) {
-            time = [
-              ...time,
-              this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(i,i + 3))
-            ];
-          }
-          return (time);
+        let result =  await this.accessDevice(accDevParams);
+
+        if(result.success){
+          return (result.ramData);
         } else {
           return (false);
         };
@@ -916,7 +870,7 @@ export default class Hme {
   async setSimRtcFunc(devID, groupID, func)  {
     try {
         let funcIndex = {init: 0, run: 1, stop: 2}
-        let COpParams = {
+        let accDevParams = {
           u8DevID:devID,
           groupID:groupID,
           sFunc:'WordWt',
@@ -926,25 +880,10 @@ export default class Hme {
           u8Mask_Arry:[],
           RepeatNum:5
         }
-        let TxParams = {
-          Comm:[],
-          RxLen:8
-        }
-        let DecodParams = {
-          FuncCT:49,
-          devID:devID,
-          u8RxDataArry:[]
-        }
 
-        TxParams.Comm = this.encode.ClientOp(COpParams);
-        console.log('setDayTab.COpParams =', COpParams);
-        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
-          return (true);
-        } else {
-          return (false);
-        };
-
+        console.log('setDayTab.accDevParams =', accDevParams);
+        let result =  await this.accessDevice(accDevParams);
+        return (result.success);
 
     } catch (e) {
       throw e;
@@ -954,7 +893,7 @@ export default class Hme {
   async setSimRtcFastForward(devID, groupID, rate)  {
     try {
         //rate:0~2000
-        let COpParams = {
+        let accDevParams = {
           u8DevID:devID,
           groupID:groupID,
           sFunc:'WordWt',
@@ -964,25 +903,10 @@ export default class Hme {
           u8Mask_Arry:[],
           RepeatNum:5
         }
-        let TxParams = {
-          Comm:[],
-          RxLen:8
-        }
-        let DecodParams = {
-          FuncCT:49,
-          devID:devID,
-          u8RxDataArry:[]
-        }
 
-        TxParams.Comm = this.encode.ClientOp(COpParams);
-        console.log('setDayTab.COpParams =', COpParams);
-        DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-        if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
-          return (true);
-        } else {
-          return (false);
-        };
-
+        console.log('setDayTab.accDevParams =', accDevParams);
+        let result =  await this.accessDevice(accDevParams);
+        return (result.success);
 
     } catch (e) {
       throw e;
@@ -1015,22 +939,27 @@ export default class Hme {
             sec: 0
           }
       if(await this.setSimRtc(SimRtc) == false){
+        console.log('setSimRtc_Error');
         return (false);
       }
 
       if(await this.setSimRtcFunc(devID, groupID, 'init') == false){
+        console.log('setSimRtcFunc_Error');
         return (false);
       }
 
       if(await this.setLedCtrlMode(devID, groupID, 'Fast') == false){
+        console.log('setLedCtrlMode_Error');
         return (false);
       }
 
       if(await this.setSimRtcFastForward(devID, groupID, rate) == false){
+        console.log('setSimRtcFastForward_Error');
         return (false);
       }
 
       if(await this.setSimRtcFunc(devID, groupID, 'run') == false){
+        console.log('setSimRtcFunc_Error');
         return (false);
       }
 
@@ -1043,36 +972,36 @@ export default class Hme {
   };
 
 
-  async accessDevice ({devID, groupID, sFunc, dataNum, addrArry, dataInArry, maskArry, repeatNum})  {
+  async accessDevice ({u8DevID, groupID, sFunc, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry, RepeatNum})  {
     try {
       let result = {
         ramData: [],
         success: false
       }
       let COpParams = {
-        u8DevID:devID,
+        u8DevID:u8DevID,
         groupID:groupID,
         sFunc:sFunc,
-        u8DataNum:dataNum,
-        u8Addr_Arry:addrArry,
-        u8DataIn_Arry:dataInArry,
-        u8Mask_Arry:maskArry,
-        RepeatNum:repeatNum
+        u8DataNum:u8DataNum,
+        u8Addr_Arry:u8Addr_Arry,
+        u8DataIn_Arry:u8DataIn_Arry,
+        u8Mask_Arry:u8Mask_Arry,
+        RepeatNum:RepeatNum
       }
       let TxParams = {
         Comm: [],
         RxLen: undefined,
-        waitTime: Math.ceil(dataNum * 0.7) + 13
+        waitTime: Math.ceil(u8DataNum * 0.7) + 13
       }
 
       let FuncCommTable = {'Inital':0, 'Close':0, 'BitModify':17, 'BitInv':18, 'WordRd':33, 'DiscWordRd':34,
     					'WordWt':49, 'DiscWordWt':50};
 
       // Set RxLen
-      if (devID == 0) {
+      if (u8DevID == 0) {
         TxParams.RxLen = 0;
       } else if (sFunc == 'WordRd' || sFunc == 'DiscWordRd') {
-        TxParams.RxLen = 8 + (dataNum * 3);
+        TxParams.RxLen = 8 + (u8DataNum * 3);
       } else {
         TxParams.RxLen = 8;
       }
@@ -1082,9 +1011,9 @@ export default class Hme {
 
       let DecodParams = {
         FuncCT:(FuncCommTable[sFunc] & 0x7f),
-        devID:devID,
+        devID:u8DevID,
         u8RxDataArry:[],
-        u8DataNum: dataNum
+        u8DataNum: u8DataNum
       }
 
       //Send data
@@ -1094,8 +1023,8 @@ export default class Hme {
       do {
         receiveRawData =  await this.uartDataTxRx(TxParams);
         repeatIndex++;
-        if (devID == 0 && receiveRawData.success == true) {
-          // devID == 0 => Broadcast mode
+        if (u8DevID == 0 && receiveRawData.success == true) {
+          // u8DevID == 0 => Broadcast mode
           // console.log('accDev_group');
           result.ramData = [];
           result.success = true;
@@ -1116,7 +1045,7 @@ export default class Hme {
           }
         }
 
-      } while ((repeatNum > repeatIndex) && (receiveRawData.success != true));
+      } while ((RepeatNum > repeatIndex) && (receiveRawData.success != true));
       // if (receiveRawData.success == false) {
       //   return (result);
       // }

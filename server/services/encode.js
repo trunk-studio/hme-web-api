@@ -319,10 +319,18 @@ export default class Encode {
       console.log('ChkSumErr')
       return(receiveData);
     }
-    if (u8RxDataArry.length != (8 + (u8DataNum * 3))) {
-      console.log('DataLengErr')
-      return(receiveData);
+    if (FuncCT == 33 || FuncCT == 34) {
+      if (u8RxDataArry.length != (8 + (u8DataNum * 3))) {
+        console.log('DataLengErr')
+        return(receiveData);
+      }
+    }else {
+      if (u8RxDataArry.length != 8) {
+        console.log('DataLengErr')
+        return(receiveData);
+      }
     }
+
 
     //驗證裝置ID正確性
     let u8RawIdArry = u8RxDataArry.slice(1,4);
@@ -378,7 +386,7 @@ export default class Encode {
       }
     }else {
       //其他都不需要做檢查，無記憶體資料回傳
-      console.log('No Data');
+      // console.log('No Data');
       receiveData.success = true;
       return(receiveData);
     }

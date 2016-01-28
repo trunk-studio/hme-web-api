@@ -229,7 +229,7 @@ describe("hme with seriel port", () => {
       try {
         let params = {
           devID: 1,
-          groupID: 1,
+          groupID: 0,
           year: 2016,
           month: 1,
           day: 18,
@@ -238,7 +238,7 @@ describe("hme with seriel port", () => {
           sec: 0
         }
         let result = await services.hme.setSimRtc(params);
-        await services.hme.setSimRtcFunc(1, 0, 'init');
+        await services.hme.setSimRtcFunc(params.devID, params.groupID, 'init');
         console.log('setSimRtc result',result);
         result.should.be.true;
         done();
@@ -1142,10 +1142,10 @@ describe("hme with seriel port", () => {
 
     });
 
-    it("serial Port setFastRun", async done => {
+    it.only("serial Port setFastRun", async done => {
       // 設定快轉預覽時程設定照明效果
       try {
-        let devID = 1;
+        let devID = 0;
         let groupID = 0;
         let rate = 2000
         let timeTab = [{
@@ -1296,31 +1296,53 @@ describe("hme with seriel port", () => {
 
         let result = await services.hme.setFastRun(devID, groupID, rate, timeTab);
 
-        // setInterval(function(){
-        //
-        // }, 3000);
+        let timeParams = {
+          devID: devID,
+          groupID: groupID,
+          year: 1900,
+          month: 1,
+          day: 1,
+          hour: 0,
+          min: 0,
+          sec: 0
+        }
+        let T2id = setTimeout(function(){
+          console.log('Start FastRun');
+          clearInterval(TiID);
 
-        console.log('setFastRun result',result);
-        result.should.be.true;
-        done();
+          console.log('setFastRun result',result);
+          result.should.be.true;
+          done();
+
+        },60000 );
+        let time = new Date(1900, 1, 1, 0, 0, 0);
+        let TiID = setInterval(function(){
+          time.setMinutes(time.getMinutes() + 30 );
+          timeParams.hour = time.getHours();
+          timeParams.min = time.getMinutes();
+          console.log('timeParams=', timeParams);
+          services.hme.setSimRtc(timeParams);
+        }, 1000);
+
+
       } catch (e) {
         done(e);
       }
 
     });
 
-    it.only("serial Port accessDevice", async done => {
+    it("serial Port accessDevice", async done => {
 
       try {
         let params = {
                       devID: 1,
                       groupID: 0,
                       sFunc: 'WordRd',
-                      dataNum: 2,
-                      addrArry: [200],
-                      dataInArry: [],
-                      maskArry: [],
-                      repeatNum: 2
+                      u8DataNum: 2,
+                      u8Addr_Arry: [200],
+                      u8DataIn_Arry: [],
+                      u8Mask_Arry: [],
+                      RepeatNum: 2
                     }
         let result = await services.hme.accessDevice(params);
         console.log('accessDevice result',result);
