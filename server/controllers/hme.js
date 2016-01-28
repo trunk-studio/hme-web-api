@@ -89,7 +89,7 @@ exports.testAllDevices = async function (ctx) {
 }
 
 exports.testDeviceByID = async function (ctx) {
-  let devID = ctx.params.id;
+  let devID = ctx.params.deviceId;
   let result = await services.hme.testDevID(devID);
   ctx.body = result
 }
