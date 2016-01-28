@@ -26,10 +26,10 @@ export function receivedTestSetLedDisplay(data) {
   }
 }
 
-export function requestTestOneDevice(deviceID) {
+export function requestTestOneDevice(deviceID,slaveID) {
   return (dispatch) => {
     return request
-      .get(`/rest/slave/0/device/${deviceID}/test`)
+      .get(`/rest/slave/${slaveID}/device/${deviceID}/test`)
   };
 }
 
