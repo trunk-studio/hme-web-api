@@ -42,7 +42,7 @@
     "react": "^0.14.3",
     "react-chartjs": "https://github.com/jhudson8/react-chartjs.git#0.7.3",
     "react-dom": "^0.14.3",
-    "react-nvd3": "^0.4.1",
+    "react-nvd3": "0.4.1",
     "react-redux": "^4.0.0",
     "react-router": "^1.0.1",
     "react-tap-event-plugin": "^0.2.1",
@@ -52,7 +52,8 @@
     "sequelize": "^3.0.0",
     "serialport": "^2.0.5",
     "sqlite3": "^3.0.8",
-    "vertical-rc-slider": "https://github.com/kyoyadmoon/vertical-slider-tmp.git"
+    "vertical-rc-slider": "https://github.com/kyoyadmoon/vertical-slider-tmp.git",
+    "superagent": "^1.7.1"
   },
   "devDependencies": {
     "babel-core": "^6.3.15",

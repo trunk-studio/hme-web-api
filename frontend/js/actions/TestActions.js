@@ -7,12 +7,14 @@ export const RECEIVED_DEVICEGROUP = 'RECEIVED_DEVICEGROUP'
 export const RECEIVED_SLAVE_LIST = 'RECEIVED_SLAVE_LIST'
 
 export const RECEIVED_TEST_SET_LED_DISPLAY = 'RECEIVED_TEST_SET_LED_DISPLAY'
+export const SCANNING = 'SCANNING'
+
 
 //test
 export function requestTestSetLedDisplay(data) {
   return (dispatch) => {
     return request
-      .post('/rest/slave/test/setLedDisplay',data)
+      .post(`/rest/slave/${data.groupID}/device/${data.devID}/setLedDisplay`,data)
       .then(response => dispatch(receivedTestSetLedDisplay(response.data)));
   };
 }
@@ -27,14 +29,14 @@ export function receivedTestSetLedDisplay(data) {
 export function requestTestOneDevice(deviceID) {
   return (dispatch) => {
     return request
-      .get(`/rest/slave/test/one/${deviceID}`)
+      .get(`/rest/slave/0/device/${deviceID}/test`)
   };
 }
 
-export function requestTestAllDevices() {
+export function requestTestAllDevices(slaveID) {
   return (dispatch) => {
     return request
-      .get(`/rest/slave/test/all`)
+      .get(`/rest/slave/${slaveID}/test/all`)
   };
 }
 
@@ -42,7 +44,7 @@ export function requestTestAllDevices() {
 export function requestGetCachedDeviceList() {
   return (dispatch) => {
     return request
-      .get(`/rest/slave/getCachedDeviceList`)
+      .get(`/rest/slave/0/getCachedDeviceList`)
       .then(response => dispatch(receivedScan(response.data)));
   }
 }
@@ -51,7 +53,7 @@ export function requestScan() {
   // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
-      .get('/rest/slave/searchDevice')
+      .get('/rest/slave/0/searchDevice')
       .then(response => dispatch(requestGetCachedDeviceList()));
   };
 }
@@ -85,10 +87,60 @@ export function requestSearchSlave() {
   return (dispatch) => {
     return request
       .get(`/rest/hme/searchSlave`)
-      .then(response => dispatch(requestGetCachedSlaveList()));
+      .then(response => {
+        dispatch(requestGetCachedSlaveList());
+      });
   }
 }
 
+
+export function requestSearchSlaveAndDevice() {
+  return (dispatch) => {
+    dispatch(scanStatus('loading'));
+    return request
+      .get(`/rest/master/syncAllSlaveAndDevice`)
+      .then(response => {
+        dispatch(requestGetSlaveAndDeviceList());
+      });
+  }
+}
+
+// export function requestSearchSlaveAndDeviceSetp2() {
+//   // dispatch(function() {return {type: REQUEST_LOGIN});
+//   return request
+//     .get('/rest/slave/0/searchDevice')
+//     .then(response => {
+//       requestGetCachedDeviceList();
+//       requestGetCachedSlaveList();
+//       // dispatch(scanStatus('hide'));
+//     });
+// }
+
+
+export function requestGetSlaveAndDeviceList () {
+  return (dispatch) => {
+    dispatch(scanStatus('loading'));
+    return request
+      .get('/rest/hme/getCachedSlaveAndDeviceList')
+      .then((response) => {
+        dispatch(receivedSlaveList(response.data.slaveList));
+        dispatch(receivedScan(response.data.deviceList));
+        dispatch(scanStatus('hide'));
+      });
+  }
+  // let [slaveList, deviceList] = await Promise.all([request.get(`/rest/hme/getCachedSlaveList`), request.get(`/rest/slave/0/getCachedDeviceList`)]);
+  // return (dispatch) => {
+  //   dispatch(receivedSlaveList(slaveList));
+    // dispatch(receivedScan(deviceList));
+  // }
+}
+
+export function scanStatus(data) {
+  return {
+    type: SCANNING,
+    data
+  }
+}
 
 // tmp
 export function receivedDeviceGroup(data) {
@@ -101,15 +153,15 @@ export function receivedDeviceGroup(data) {
 export function requestTestGroupDevices(groupID) {
   return (dispatch) => {
     return request
-      .get(`/rest/slave/test/group/${groupID}`)
+      .get(`/rest/slave/${groupID}/test`)
   };
 }
 
-export function requestDeviceGroup() {
+export function requestDeviceGroup(slaveID) {
   // dispatch(function() {return {type: REQUEST_LOGIN});
   return (dispatch) => {
     return request
-      .get('/rest/slave/findAllDeviceGroups')
+      .get(`/rest/slave/${slaveID}/findAllDeviceGroups`)
       .then(response => dispatch(receivedDeviceGroup(response.data)));
   };
 }

@@ -1,3 +1,4 @@
+import request from 'superagent'
 export default async (cb) => {
 
   let visitorUser = {
@@ -32,17 +33,33 @@ export default async (cb) => {
 
 
   try {
-
     let createdVisitor = await models.User.create(visitorUser);
     let createdEditor = await models.User.create(editorUser);
     let createdAdmin = await models.User.create(adminUser);
     let connected = await services.hme.connectSerialPort();
 
+    fs.ensureFile('./email', function (err) {
+      if(err)
+        throw new Error('create email file error');
+    })
+
+    await services.hme.pingAllSlave();
     // without await to reduce bootstrap waiting time
-    if(connected)
-      services.deviceControl.syncDevice();
+    // if(connected){
+      // await services.deviceControl.syncDevice();
+    let slaveList = await models.Slave.findAll();
+    for (let slave of slaveList) {
+      let result = await new Promise((resolve, reject) => {
+        request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
+          if(err) return reject(err);
+          resolve(res.body);
+        });
+      });
+      console.log(result.body);
+    }
+    // }
+
     // search slave
-    services.hme.pingAllSlave();
   } catch (e) {
 
     console.log("error", e);

@@ -7,7 +7,7 @@ import {
 } from '../actions/ScheduleDetailActions'
 import moment from 'moment'
 import {
-  AppBar, TimePicker, FontIcon, Dialog, IconButton, FlatButton, RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow
+  RefreshIndicator, AppBar, TimePicker, FontIcon, Dialog, IconButton, FlatButton, RaisedButton, SelectField, TextField, Tabs, Tab, DatePicker, Table, RadioButtonGroup, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRowColumn, TableRow
 } from 'material-ui';
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
 
@@ -19,6 +19,9 @@ const style = {
   width: 400,
   margin: 50
 };
+
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
 
 const SCHEDULE_DETAILS_AMOUNT = 12,
       MAX_TIME_INTEGER = 1440,
@@ -66,7 +69,7 @@ export default class ScheduleDetail extends React.Component {
 
   _handleTimeBtnClick(index) {
     if(index == this.state.currentIndex)
-      window.location.href = `#/schedule/config/${this.props.scheduleDetails[index].id}`;
+      window.location.href = `#/schedule/${this.props.params.scheduleID}/config/${this.props.scheduleDetails[index].id}`;
     this.setState({currentIndex: index});
   };
 
@@ -108,11 +111,6 @@ export default class ScheduleDetail extends React.Component {
      });
   };
 
-  // _limitSlider = (val) => {
-  //   if( val >= this.props.scheduleDetails[(this.state.currentIndex + 1)%SCHEDULE_DETAILS_AMOUNT].StartTimeInteger)
-  //     this.setState({})
-  // }
-
   _saveScheduleDetails = (e) => {
     // console.log('save',this.props.scheduleDetails);
     this.props.requestUpdateScheduleDetails(this.props.scheduleDetails);
@@ -128,11 +126,10 @@ export default class ScheduleDetail extends React.Component {
 
   _resetScheduleDetailsTime = (startTime, endTime) => {
     let dis = _timeToInteger(endTime) - _timeToInteger(startTime);
-    let inteval = Math.floor(dis/11);
-    console.log('inteval', inteval);
+    let inteval = Math.floor(dis/SCHEDULE_DETAILS_AMOUNT-1);
     let dailySchedules = [];
     dailySchedules.push(...this.props.scheduleDetails);
-    for (let i=0;i<12;i++) {
+    for (let i=0;i<SCHEDULE_DETAILS_AMOUNT;i++) {
       let time = _formatMinutes(_timeToInteger(startTime) + (inteval*i));
       dailySchedules[i].StartTime = time;
     }
@@ -143,30 +140,56 @@ export default class ScheduleDetail extends React.Component {
     this._handleDialogClose();
   };
 
-  _dialogActionReset = (e) => {
+  _checkTimeInput = (e) => {
     let InputStartTime = this.refs.inputStartTime,
         InputEndTime = this.refs.inputEndTime,
         startTime = InputStartTime.getValue(),
         endTime = InputEndTime.getValue(),
-        regex = /^[0-9]{2}[:][0-9]{2}$/g;
-
+        regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/g;
 
     if(startTime.match(regex) == null) {
       InputStartTime.focus();
-      return ;
+      InputStartTime.setErrorText('Wrong Format');
+      return false;
     }
+    else
+      InputStartTime.setErrorText('');
 
     if(endTime.match(regex) == null) {
       InputEndTime.focus();
-      return ;
+      InputEndTime.setErrorText('Wrong Format');
+      return false;
     }
+    else
+      InputEndTime.setErrorText('');
 
-    this._resetScheduleDetailsTime(startTime, endTime);
+    return true;
+  };
+
+  _dialogActionReset = (e) => {
+    let InputStartTime = this.refs.inputStartTime,
+        InputEndTime = this.refs.inputEndTime,
+        startTime = InputStartTime.getValue(),
+        endTime = InputEndTime.getValue();
+
+    let success = this._checkTimeInput();
+    if(success)
+      this._resetScheduleDetailsTime(startTime, endTime);
+  };
+
+  _handleTImeInputChanged = (ref, e) => {
+    this._checkTimeInput();
+    /*
+    let text = e.target.value;
+    if(text.length==2)
+      this.refs[ref].setValue(text+':');
+    if(text.length>5)
+      this.refs[ref].setValue(text.slice(0,5));
+    */
   };
 
   render () {
 
-    console.log('prop', this.props);
     let scheduleDetails = this.props.scheduleDetails,
         currentIndex = this.state.currentIndex;
     let firstScheduleDetail = scheduleDetails[0],
@@ -193,7 +216,7 @@ export default class ScheduleDetail extends React.Component {
     let rate = weightDiff/timeDuration;
     let midWeight = scheduleDetails.length? lastScheduleDetail.weight + (MAX_TIME_INTEGER - lastScheduleDetail.StartTimeInteger)*rate : 0;
     let data = [{
-      key: 'testLine',
+      key: 'daily schedule',
       color: '#2d7fe0',
       values: [
         { x: 0, y: midWeight},
@@ -201,6 +224,7 @@ export default class ScheduleDetail extends React.Component {
         { x: _timeToInteger('24:00:00'), y: midWeight}
       ]
     }];
+    console.log('===', data, dots);
 
     let ButtonGroup1 = [],
         ButtonGroup2 = [];
@@ -216,7 +240,7 @@ export default class ScheduleDetail extends React.Component {
           </div>);
       }
 
-      for (let i=6; i<12; i++) {
+      for (let i=6; i<SCHEDULE_DETAILS_AMOUNT; i++) {
         let active = (i==this.state.currentIndex);
         ButtonGroup2.push(
           <div className="col-xs-2" key={i}>
@@ -240,16 +264,29 @@ export default class ScheduleDetail extends React.Component {
         primary={true}
         onTouchTap={this._dialogActionReset} />
     ];
+
     return (
       <div>
         <AppBar title="Schedule Detail"
+          style={{height: '55px', minHeight: '0px', marginTop: '-9px'}}
+          titleStyle={{fontSize: '20px'}}
           iconElementLeft={
             <IconButton onTouchTap={function() {window.location.href = '#/manage/3';}} >
               <NavigationClose />
             </IconButton>
           }
           iconElementRight={
-            <FlatButton label="Save" onTouchTap={this._saveScheduleDetails}/>
+            <div>
+              <FlatButton label="RESET" onTouchTap={this._handleDialogOpen} style={{marginTop:'4px',marginRight:'10px',marginLeft:'auto', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
+              <FlatButton label="save" onTouchTap={this._saveScheduleDetails} style={{didFlip:'true',marginTop:'4px',marginRight:'10px',marginLeft:'auto', backgroundColor: 'rgba(0,0,0,0)', color: '#fff'}} >
+                <RefreshIndicator
+                  size={28}
+                  left={0}
+                  top={5}
+                  status={this.props.loading || 'hide'}
+                  style={{display: 'inline-block', position: 'relative'}} />
+              </FlatButton>
+            </div>
           }
         />
         <div className="self-center" style={{
@@ -267,7 +304,7 @@ export default class ScheduleDetail extends React.Component {
                     tickValues: tickMarks,
                     tickFormat: function(d) {return _formatMinutes(d);}
                   }}
-                  forceX={[0,1440]}
+                  forceX={[0,MAX_TIME_INTEGER]}
                   yAxis={{
                     tickFormat: function(d) {return numeral(d).format('0%')}
                   }}
@@ -309,23 +346,28 @@ export default class ScheduleDetail extends React.Component {
             {ButtonGroup2}
           </div>
         </div>
+        {/*
         <div className="center-self" style={{width:"88px", marginTop: '5px', marginBottom: '5px'}}>
           <RaisedButton label="Reset" primary={true} onTouchTap={this._handleDialogOpen}/>
         </div>
+        */}
         <Dialog
           title="Reset Time"
           modal={false}
           actions={dialogActions}
           open={this.state.dialogIsOpen}
           onRequestClose={this._handleDialogClose}
+          bodyStyle={{paddingTop: '0px', paddingBottom: '0px'}}
           contentStyle={{
             width: '80%'
           }} >
-          <div>
+          <div style={{display: 'inline-flex', width: '100%'}}>
             <TextField
               ref="inputStartTime"
               hintText="08:15"
               floatingLabelText="StartTime"
+              onChange={this._handleTImeInputChanged.bind({}, 'inputStartTime')}
+              defaultValue={this.props.scheduleDetails[0]? this.props.scheduleDetails[0].StartTime.toString().slice(0,5) : ''}
               style={{
                 display: 'inline-block',
                 width: '50%'
@@ -334,6 +376,8 @@ export default class ScheduleDetail extends React.Component {
               ref="inputEndTime"
               hintText="20:12"
               floatingLabelText="EndTime"
+              onChange={this._handleTImeInputChanged.bind({}, 'inputEndTime')}
+              defaultValue={this.props.scheduleDetails[SCHEDULE_DETAILS_AMOUNT-1]? this.props.scheduleDetails[SCHEDULE_DETAILS_AMOUNT-1].StartTime.toString().slice(0,5) : ''}
               style={{
                 display: 'inline-block',
                 width: '50%'
@@ -373,7 +417,8 @@ function _injectPropsFromStore(state) {
     }
   }
   return {
-    scheduleDetails: scheduleDetails
+    scheduleDetails: scheduleDetails,
+    loading: scheduleDetail.loading? scheduleDetail.loading : 'hide'
   };
 }
 

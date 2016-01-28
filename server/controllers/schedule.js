@@ -13,7 +13,7 @@ exports.configUpdate = async function(ctx) {
     config = await config.save();
     ctx.body = config ;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 
 },
@@ -35,7 +35,7 @@ exports.getConfigDetail = async function(ctx) {
     ];
     ctx.body =  chartData;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 
 }
@@ -48,7 +48,7 @@ exports.createSchedule = async function(ctx) {
     let result = await services.schedule.create(newSchedule);
     ctx.body =  result;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 
 }
@@ -60,7 +60,7 @@ exports.getOneSchedule = async function(ctx) {
     let result = await services.schedule.find(id);
     ctx.body =  result;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 }
 
@@ -70,7 +70,19 @@ exports.getAllSchedule = async function(ctx) {
     let result = await services.schedule.findAll();
     ctx.body =  result;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
+  }
+}
+
+exports.getAllScheduleBySlaveId = async function(ctx) {
+  try {
+    console.log("==== getAllScheduleBySlaveId ===");
+    let slaveId = ctx.params.slaveId;
+    console.log('aaaa',slaveId);
+    let result = await services.schedule.findAllBySlaveId(slaveId);
+    ctx.body =  result;
+  } catch(e) {
+    console.error(e);
   }
 }
 
@@ -81,7 +93,7 @@ exports.updateScheduleDay = async function(ctx) {
     let result = await services.schedule.updateDay(data);
     ctx.body =  result;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 }
 
@@ -92,7 +104,7 @@ exports.updateScheduleList = async function(ctx) {
     let result = await services.schedule.updateScheduleList(data);
     ctx.body =  result;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 }
 
@@ -103,7 +115,7 @@ exports.updateScheduleDetail = async function(ctx) {
     let result = await services.schedule.updateScheduleDetail(data);
     ctx.body =  result;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
   }
 }
 
@@ -122,7 +134,41 @@ exports.updateScheduleDetails = async function(ctx) {
     }
     ctx.body = newScheduleDetails;
   } catch(e) {
-    console.error("delete user error", e);
+    console.error(e);
+  }
+}
+
+exports.setScheduleListToDevice = async function(ctx) {
+  try {
+    console.log("==== setScheduleListToDevice ===",ctx.request);
+    let slaveId = ctx.request.body.slaveId;
+    let hostSlaveId = ctx.params.slaveId;
+    console.log("slaveId!!",slaveId);
+    console.log("hostSlaveId!!",hostSlaveId);
+    slaveId == 0 ? null: slaveId;
+    if(hostSlaveId == 0){
+      let host = await services.deviceControl.getDomainHost(ctx.request.header.host);
+      console.log("host!!",host);
+      let slave = await models.Slave.findOne({
+        where:{
+          host: { $like: '%'+host+'%' }
+        }
+      });
+      console.log("slave!!",slave);
+      hostSlaveId = slave.id;
+      console.log("hostSlaveId!!",hostSlaveId);
+    }
+    let config = await services.schedule.getCurrectSetting({
+      slaveId: slaveId
+    });
+    console.log("config!!",config);
+    let devList = await services.hme.getSlaveDeviceArray(hostSlaveId);
+    console.log("devList!!",devList);
+    let result = await services.hme.writeTimeTabToDevices(config, {devIDs: devList});
+    ctx.body = true;
+  } catch(e) {
+    console.error(e);
+    ctx.body = false;
   }
 }
 
@@ -182,8 +228,7 @@ exports.setSchedulesToDevice = async function(ctx) {
 
     let result = await services.hme.writeTimeTabToDevice(scheduleConfigs);
     ctx.body = result;
-    done();
   } catch (e) {
-    done(e);
+    console.error(e);
   }
 }

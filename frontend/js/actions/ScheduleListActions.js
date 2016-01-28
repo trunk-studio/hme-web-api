@@ -15,19 +15,30 @@ export const RECEIVED_UPDATE_SCHEDULE_DAY = 'RECEIVED_UPDATE_SCHEDULE_DAY'
 export const REQUEST_UPDATE_SCHEDULE_LIST = 'REQUEST_UPDATE_SCHEDULE_LIST'
 export const RECEIVED_UPDATE_SCHEDULE_LIST = 'RECEIVED_UPDATE_SCHEDULE_LIST'
 
-export function requestScheduleCreate(scheduleList) {
+export const RECEIVED_SET_SCHEDULE_LIST = 'RECEIVED_SET_SCHEDULE_LIST'
+export const UPDATE_LOADING_STATUS = 'UPDATE_LOADING_STATUS'
+
+export function requestScheduleCreate(scheduleList, slaveId) {
   let data={};
-  if(scheduleList.length > 0){
-    let listLength = scheduleList.length-1;
-    let date = new Date(scheduleList[listLength].StartDate);
-    date.setDate(date.getDate() + parseInt(scheduleList[listLength].Days,10));
+  if(scheduleList.length > 0) {
+    let listLength = scheduleList.length;
+    let date = new Date(scheduleList[listLength-1].StartDate);
+    date.setDate(date.getDate() + parseInt(scheduleList[listLength-1].Days,10));
     data.StartDate = date;
     data.Days = 1;
+    data.SlaveId = slaveId;
+  }
+  else {
+    data = {
+      StartDate: new Date(),
+      Days: 1,
+      SlaveId: slaveId
+    }
   }
   return (dispatch) => {
     return request
       .post('/rest/master/schedule/create',data)
-      .then(response => dispatch(receivedScheduleCreate(response.data)));
+      .then(response => dispatch(requestGetScheduleList()));
   };
 }
 
@@ -77,7 +88,6 @@ export function receivedUpdateScheduleDay(data = null,index = null) {
   }
 }
 
-
 export function requestGetScheduleList() {
   return (dispatch) => {
     return request
@@ -91,5 +101,37 @@ export function receivedGetScheduleList(data) {
   return {
     type: RECEIVED_SCHEDULE_LIST,
     data
+  }
+}
+
+export function requestSetScheduleList(data) {
+  return request
+    .post(`/rest/slave/${data.slaveId}/schedule/setOnDevice`, data)
+    .then(response => dispatch(receivedSetScheduleList(response.data)));
+}
+
+export function receivedSetScheduleList(data) {
+  return {
+    type: RECEIVED_SET_SCHEDULE_LIST,
+    data
+  }
+}
+
+export function requestGetSlaveSchedule(slaveId) {
+  return (dispatch) => {
+    dispatch(updateLoadingStatus('loading'));
+    return request
+      .get(`/rest/master/slave/${slaveId}/schedule/findAll`)
+      .then(response => {
+        dispatch(receivedGetScheduleList(response.data));
+        dispatch(updateLoadingStatus('hide'));        
+      });
+  };
+}
+
+export function updateLoadingStatus(status) {
+  return {
+    type: UPDATE_LOADING_STATUS,
+    status
   }
 }

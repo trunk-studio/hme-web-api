@@ -30,7 +30,6 @@ global.appConfig = config;
 import fs from 'fs-extra';
 global.fs = fs;
 
-
 const {environment} = appConfig;
 const app = new koa();
 const convert = require('koa-convert');
@@ -46,7 +45,6 @@ global.models = (new Models()).getDb();
 
 app.use(convert(responseTime()));
 app.use(logger());
-
 
 if (environment === 'production') {
   // set debug environment to `koa` only
@@ -67,6 +65,7 @@ if (environment === 'development') {
 global.services = new Services();
 
 var controllers = new Controllers(app);
+controllers.getSlaveHostRoute()
 controllers.setupPublicRoute()
 controllers.setupAppRoute()
 

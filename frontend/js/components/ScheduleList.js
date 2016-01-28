@@ -2,26 +2,32 @@ import React from 'react';
 import {connect} from 'react-redux'
 import { requestScheduleCreate, requestGetScheduleList,
    updateScheduleFirstDate, updateScheduleDay,
-   requestUpdateScheduleList} from '../actions/ScheduleListActions'
-const RaisedButton = require('material-ui/lib/raised-button');
-const SelectField = require('material-ui/lib/select-field');
-const MenuItem = require('material-ui/lib/menus/menu-item');
-const TextField = require('material-ui/lib/text-field');
-const Tabs = require('material-ui/lib/tabs/tabs');
-const Tab = require('material-ui/lib/tabs/tab');
-const RefreshIndicator = require('material-ui/lib/refresh-indicator');
-const DatePicker = require('material-ui/lib/date-picker/date-picker');
-const DatePickerDialog = require('material-ui/lib/date-picker/date-picker-dialog');
-const RadioButton = require('material-ui/lib/radio-button');
-const RadioButtonGroup = require('material-ui/lib/radio-button-group');
-const Table = require('material-ui/lib/table/table');
-const TableBody = require('material-ui/lib/table/table-body');
-const TableFooter = require('material-ui/lib/table/table-footer');
-const TableHeader = require('material-ui/lib/table/table-header');
-const TableHeaderColumn = require('material-ui/lib/table/table-header-column');
-const TableRow = require('material-ui/lib/table/table-row');
-const TableRowColumn = require('material-ui/lib/table/table-row-column');
-const Snackbar = require('material-ui/lib/snackbar');
+   requestSetScheduleList,requestGetSlaveSchedule,
+   requestUpdateScheduleList
+ } from '../actions/ScheduleListActions'
+import moment from 'moment';
+import {requestGetCachedSlaveList} from '../actions/TestActions';
+import {
+   RaisedButton,
+   SelectField,
+   MenuItem,
+   TextField,
+   Tabs,
+   Tab,
+   RefreshIndicator,
+   DatePicker,
+   DatePickerDialog,
+   RadioButton,
+   RadioButtonGroup,
+   Table,
+   TableBody,
+   TableFooter,
+   TableHeader,
+   TableHeaderColumn,
+   TableRow,
+   TableRowColumn,
+   Snackbar
+ } from 'material-ui';
 
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
@@ -40,7 +46,8 @@ export default class ScheduleList extends React.Component {
       scheduleDate: [],
       muiTheme: ThemeManager.getMuiTheme(LightRawTheme),
       isAll: false,
-      isGroup: true
+      isGroup: true,
+      selectedSlave: 0
     };
   }
 
@@ -60,14 +67,15 @@ export default class ScheduleList extends React.Component {
   };
 
   componentDidMount () {
-    this.props.requestGetScheduleList();
+    this.props.requestGetCachedSlaveList();
+    // this.props.requestGetScheduleList();
   };
 
   componentDidUpdate(prevProps, prevState) {
   };
 
   _addRow = (e) => {
-    this.props.requestScheduleCreate(this.props.scheduleList);
+    this.props.requestScheduleCreate(this.props.scheduleList, this.state.selectedSlave);
     this.setState({
       isSetBtnClose: true
     });
@@ -83,6 +91,9 @@ export default class ScheduleList extends React.Component {
   };
 
   _setScheduleList = (e) => {
+    this.props.requestSetScheduleList({
+      slaveId: this.state.selectedSlave
+    })
     this.setState({
       isSetBtnClose: true
     });
@@ -90,27 +101,38 @@ export default class ScheduleList extends React.Component {
   };
 
   _formatDate = (date) => {
-    date = new Date(date);
-    let day = date.getDate();
-    let monthIndex = date.getMonth();
-    let year = date.getFullYear();
-    return year + '/'+ monthIndex+1 +'/' + day;
+    return moment(date).format('YYYY/MM/DD');
   };
 
   _calculateDate = (i,e) => {
     let value = e.target.value;
     if(parseInt(value, 10) > 9999)
       value = 9999;
-    this.props.updateScheduleDay(value,i)
+    let tmpScheduleList = [...this.props.scheduleList];
+    tmpScheduleList[i].Days = value;
+
+    for(let i = 0; i < tmpScheduleList.length-1; i++) {
+      let newDate = new Date(tmpScheduleList[i].StartDate);
+      newDate.setDate(newDate.getDate() + parseInt(tmpScheduleList[i].Days,10));
+      tmpScheduleList[i+1].StartDate = newDate;
+    }
+    // this.props.updateScheduleDay(value, i);
     this.setState({
       isSetBtnClose: true
-    })
+    });
     this.refs.snackbar.setState({open: true});
   };
 
-  _handleDatePickChange = (event, date) => {
+  _handleDatePickChange = (event) => {
+    let date = event.target.value;
     this.props.updateScheduleFirstDate(date);
     this.props.updateScheduleDay()
+    let tmpScheduleList = [...this.props.scheduleList];
+    for(let i = 0; i < tmpScheduleList.length-1; i++) {
+      let newDate = new Date(tmpScheduleList[i].StartDate);
+      newDate.setDate(newDate.getDate() + parseInt(tmpScheduleList[i].Days,10));
+      tmpScheduleList[i+1].StartDate = newDate;
+    }
     this.setState({
       isSetBtnClose: true
     })
@@ -121,53 +143,99 @@ export default class ScheduleList extends React.Component {
     this.refs.snackbar.setState({open: false});
   };
 
-  _allScheduleBtn = (e) =>{
+  _allScheduleBtn = (e) => {
     this.setState({isAll: true, isGroup: false});
   };
 
-  _groupScheduleBtn = (e) =>{
+  _groupScheduleBtn = (e) => {
     this.setState({isAll: false, isGroup: true});
+  };
+
+  _handleSlaveSelect = (e, selectedIndex) => {
+    if(selectedIndex > 0) {
+      console.log(e.target.value);
+      this.props.requestGetSlaveSchedule(e.target.value);
+    }
+
+    if(selectedIndex == 0)
+      this.setState({
+        isAll: false,
+        selectedSlave: 0
+      });
+    else
+      this.setState({
+        isAll: (selectedIndex == 1)? true : false,
+        selectedSlave: (selectedIndex == 1)? null : e.target.value
+      });
+  };
+
+  _handleDateDialogOpen = (e) => {
+    console.log(e);
   };
 
   render () {
     let rows = [];
-    if(this.props.scheduleList){
-      this.props.scheduleList.forEach((row,i) => {
+    let tmpScheduleList = [];
+
+    if(this.props.scheduleList) {
+      if(this.state.isAll) {
+        this.props.scheduleList.forEach((schedule, i) => {
+          if (schedule.SlaveId == null)
+            tmpScheduleList.push(schedule);
+        });
+      }
+      else {
+        this.props.scheduleList.forEach((schedule, i) => {
+          if (schedule.SlaveId == this.state.selectedSlave)
+            tmpScheduleList.push(schedule);
+        });
+      }
+    }
+    if(tmpScheduleList) {
+      tmpScheduleList.forEach((row,i) => {
         if(i == 0){
-          let date
-          if(this.props.scheduleList[i].StartDate)
-            date = new Date(this.props.scheduleList[i].StartDate);
+          let date;
+          if(tmpScheduleList[i].StartDate)
+            date = new Date(tmpScheduleList[i].StartDate);
           rows.push(
             <TableRow key={row.id}>
               <TableRowColumn>
                 <RaisedButton disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/edit/${row.id}`}/>
               </TableRowColumn>
               <TableRowColumn>
+                <TextField
+                  defaultValue={moment(date).format('YYYY-MM-DD')}
+                  onChange={this._handleDatePickChange}
+                  type="date" />
+                {/*
                 <DatePicker
                   value={date || ''}
                   hintText="new"
                   autoOk={true}
-                  mode="landscape"
                   formatDate={this._formatDate}
                   onChange={this._handleDatePickChange}
-                  style={{width: '50px'}}/>
+                  onShow={this._handleDateDialogOpen}
+                  style={{width: '100%'}}/>
+                  */}
               </TableRowColumn>
               <TableRowColumn>
                 <TextField
                   type="number"
-                  onChange={this._calculateDate.bind(this,i)}
-                  value={this.props.scheduleList[i].Days}
+                  onChange={this._calculateDate.bind({}, i)}
+                  defaultValue={tmpScheduleList[i].Days}
                 />
               </TableRowColumn>
+              {/*
               <TableRowColumn>
                 <SelectField autoWidth={true} fullWidth={true} menuItems={[{payload: 1, text: '1'}]}/>
               </TableRowColumn>
+              */}
             </TableRow>
           );
         }else{
           let date;
-          if(this.props.scheduleList[i].StartDate){
-            date = new Date(this.props.scheduleList[i].StartDate);
+          if(tmpScheduleList[i].StartDate){
+            date = new Date(tmpScheduleList[i].StartDate);
             let yyyy = date.getFullYear().toString();
             let mm = (date.getMonth()+1).toString();
             let dd  = date.getDate().toString();
@@ -182,29 +250,52 @@ export default class ScheduleList extends React.Component {
               <TableRowColumn>
                 <TextField
                   type="number"
-                  onChange={this._calculateDate.bind(this,i)}
-                  value={this.props.scheduleList[i].Days}
+                  onChange={this._calculateDate.bind({}, i)}
+                  defaultValue={tmpScheduleList[i].Days}
                 />
               </TableRowColumn>
+              {/*
               <TableRowColumn>
                 <SelectField autoWidth={true} fullWidth={true} menuItems={[{payload: 1, text: '1'}]}/>
               </TableRowColumn>
+              */}
             </TableRow>
           );
         }
       });
     }
+
+    let slaveList = [{
+      payload: -1,
+      primary: 'Select Slave',
+      text: 'Select Slave'
+    },{
+      payload: null,
+      primary: 'All Slave',
+      text: 'All Slave'
+    }];
+    slaveList.push(...this.props.slaveList);
     // let isAddOpen = rows.length >= 5 ? true: false;
     return (
-      <div id="scheduleList" className="self-center" style={{width: '100%'}}>
+      <div id="scheduleList" className="self-center" style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
         <div className="row">
-          <div style={{marginLeft: '30px', marginTop: '15px'}}>
-            <RaisedButton label="Group" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
-            <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
-            <RaisedButton ref="scheduleAddBtn" label="Add" primary={true} disabled={false} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
-            <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} />
-            <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose} style={{marginLeft: '15px'}} />
-          </div>
+          <div style={{marginLeft: '30px', marginTop: '15px', display: 'inline-flex'}}>
+            <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px'}}/>
+            {/*
+              <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
+              <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
+            */}
+            <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
+            <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
+            <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '15px'}} />
+            <RefreshIndicator
+              size={30}
+              left={8}
+              top={2}
+              status={this.props.loading || 'hide'}
+              style={{display: 'inline-block',
+                      position: 'relative'}} />
+        </div>
         </div>
         <Table selectable={false}>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
@@ -212,10 +303,12 @@ export default class ScheduleList extends React.Component {
               <TableHeaderColumn >Edit</TableHeaderColumn>
               <TableHeaderColumn >Start Date</TableHeaderColumn>
               <TableHeaderColumn >Days</TableHeaderColumn>
-              <TableHeaderColumn >Grouping setting</TableHeaderColumn>
+              {/*
+                <TableHeaderColumn >Grouping setting</TableHeaderColumn>
+              */}
             </TableRow>
           </TableHeader>
-          <TableBody displayRowCheckbox={false}>
+          <TableBody displayRowCheckbox={false} style={{height: '500px'}}>
             {rows}
           </TableBody>
         </Table>
@@ -233,9 +326,23 @@ export default class ScheduleList extends React.Component {
 
 function _injectPropsFromStore(state) {
   // let { login, isLoading } = state;
-  let {schedule} = state;
+  let {schedule, scanDevice} = state;
+  let scanResult = [],
+      slaveList = [];
+  if(scanDevice.slaveList) {
+    for(let slave of scanDevice.slaveList) {
+      slaveList.push({
+        payload: slave.id,
+        primary: `${slave.host}`,
+        text: slave.host,
+      });
+    }
+  }
+
   return {
-    scheduleList: schedule.scheduleList
+    scheduleList: schedule.scheduleList,
+    slaveList: slaveList,
+    loading: schedule.loading ? schedule.loading : 'hide'
   };
 }
 
@@ -244,7 +351,10 @@ const _injectPropsFromActions = {
   requestScheduleCreate,
   updateScheduleFirstDate,
   updateScheduleDay,
-  requestUpdateScheduleList
+  requestUpdateScheduleList,
+  requestGetCachedSlaveList,
+  requestSetScheduleList,
+  requestGetSlaveSchedule
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleList);

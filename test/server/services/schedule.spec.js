@@ -1,13 +1,29 @@
 describe("schedule", () => {
+  let newSlaveId;
+  before( async done => {
+    try {
+      let newSlave = {
+  			"host": "testHost",
+  			"description": "testDesc",
+  			"apiVersion": "testAPIversion"
+      };
+      let result = models.Slave.create(newSlave);
+      newSlaveId = result.id;
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
 
   it("create", async(done) => {
     try {
       let newSchedule = {
         StartDate: moment('2015/11/10','YYYY/MM/DD'),
-        Days: 15
+        Days: 15,
+        newSlaveId
       };
       let result = await services.schedule.create(newSchedule);
-      result.dataValues.should.have.any.keys('StartDate', 'Days');
+      result.dataValues.should.have.any.keys('StartDate', 'Days', 'SlaveId');
       done();
     } catch (e) {
       done(e);
@@ -15,12 +31,14 @@ describe("schedule", () => {
 
   });
 
+
   describe("query", async done => {
     before( async done => {
       try {
         let newSchedule = {
           StartDate: moment('1900/11/10','YYYY/MM/DD'),
-          Days: 15
+          Days: 15,
+          SlaveId: newSlaveId
         };
         await models.Schedule.create(newSchedule);
         done();
@@ -32,7 +50,7 @@ describe("schedule", () => {
     it( "All" , async done => {
       try {
         let result = await services.schedule.findAll();
-        result[0].dataValues.should.have.any.keys('StartDate', 'Days');
+        result[0].dataValues.should.have.any.keys('StartDate', 'Days', 'SlaveId');
         done();
       } catch (e) {
         done(e);
@@ -143,16 +161,17 @@ describe("schedule", () => {
   });
 
   describe("models to hardware time table config", async done => {
-    let newSchedule, scheduleDetail;
+    let newSchedule, scheduleDetail, slaves, device;
     before( async done => {
       try {
         let group = await models.Group.create();
-        let slaves = await models.Slave.create({
-          host: "hostName",
+        slaves = await models.Slave.create({
+          host: "127.0.0.1",
           description: "描述",
           apiVersion: "0.1.0",
+          SlaveId: newSlaveId
         });
-        let device = await models.Device.create({
+        device = await models.Device.create({
           uid: "1",
           GroupId: group.id,
           SlaveId: slaves.id
@@ -162,14 +181,15 @@ describe("schedule", () => {
           StartDate: moment('2016/1/7','YYYY/MM/DD'),
           Days: 15,
           GroupId: group.id,
-          DeviceId: device.id
+          DeviceId: device.id,
+          SlaveId: slaves.id
         };
 
         newSchedule = await models.Schedule.create(newSchedule);
         let scheduleConfig = [];
         for(let a = 0; a<24; a+=2){
           scheduleConfig.push({
-            "weight": 1,
+            "weight": 0.3,
             "StartTime": a +":00:00",
             "ScheduleId": newSchedule.id
           });
@@ -250,7 +270,7 @@ describe("schedule", () => {
             Days: 7
           }]
         }
-        let result = await services.schedule.getCurrectSetting();
+        let result = await services.schedule.getCurrectSetting({Device: device.id, Group: slaves.id, slaveId: slaves.id});
         console.log("currect json !!! ",JSON.stringify(result,null,2));
         result.Schedules.should.be.an.Array;
         result.Schedules[0].should.have.property('StartDate');
@@ -281,9 +301,10 @@ describe("schedule", () => {
       try {
         let group = await models.Group.create();
         let slaves = await models.Slave.create({
-          host: "hostName",
+          host: "127.0.0.1",
           description: "描述",
           apiVersion: "0.1.0",
+          SlaveId: newSlaveId
         });
         let device = await models.Device.create({
           uid: 1,

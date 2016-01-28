@@ -79,6 +79,7 @@ export default class Hme {
       hosts.push(`hmepi010.local`);
 
       for(let host of hosts) {
+        console.log("host:",host);
         let exist = await new Promise((done) => {
           ping.sys.probe(host, function (res) {
             done(res);
@@ -91,14 +92,14 @@ export default class Hme {
             },
             defaults: {
               host: host,
-              description: '',
-              apiVersion : ''
+              description: 'test',
+              apiVersion : 'test'
             }
           });
           result.push({
               host: host,
-              description: '',
-              apiVersion : ''
+              description: 'test',
+              apiVersion : 'test'
             });
         }
       }
@@ -283,13 +284,31 @@ export default class Hme {
     }
   };
 
+  async getSlaveDeviceArray (slaveId)  {
+    try {
+      let deviceList = await models.Device.findAll({
+        where:{
+          SlaveId: slaveId
+        }
+      });
+      let result = [];
+      for(let device of deviceList) {
+        result.push(device.uid);
+      }
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  };
+
   async getCachedDeviceList ()  {
     try {
       let deviceList = await models.Device.findAll();
       let result = [];
       for(let device of deviceList) {
         result.push({
-          DevID: device.uid
+          devID: device.uid,
+          SlaveId: device.SlaveId
         });
       }
       console.log(JSON.stringify(result,null, 4));
@@ -300,6 +319,23 @@ export default class Hme {
     }
   };
 
+  async getCachedDeviceListBySlave (slaveId)  {
+    try {
+      let deviceList = await models.Device.findAll({where: {SlaveId: slaveId}});
+      let result = [];
+      for(let device of deviceList) {
+        result.push({
+          devID: device.uid,
+          SlaveId: device.SlaveId
+        });
+      }
+      console.log(JSON.stringify(result,null, 4));
+
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  };
 
   async getCachedSlaveList ()  {
     try {
@@ -307,6 +343,7 @@ export default class Hme {
       let result = [];
       for(let slave of slaveList) {
         result.push({
+          id: slave.id,
           host: slave.host,
           description: slave.description,
           apiVersion: slave.apiVersion

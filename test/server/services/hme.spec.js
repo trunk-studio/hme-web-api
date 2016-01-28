@@ -48,7 +48,7 @@ describe("hme", () => {
       let result = await services.hme.getCachedDeviceList();
       // console.log(result[0]);
       result.should.be.Array;
-      result[0].should.have.any.keys('DevID');
+      result[0].should.have.any.keys('devID','SlaveId');
       done();
     } catch (e) {
       done(e);
@@ -61,7 +61,7 @@ describe("hme", () => {
       let result = await services.hme.getCachedSlaveList();
       // console.log(result[0]);
       result.should.be.Array;
-      result[0].should.have.any.keys('host', 'description', 'apiVersion');
+      result[0].should.have.any.keys('id', 'host', 'description', 'apiVersion');
       done();
     } catch (e) {
       done(e);
@@ -77,6 +77,6 @@ describe("hme", () => {
     } catch (e) {
       done(e);
     }
-  })
+  });
 
 });
