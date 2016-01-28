@@ -45,7 +45,8 @@ export default class Routes {
               let result = await new Promise((resolve, reject) => {
                 request({
                   method: ctx.request.method,
-                  url: 'http://'+ slave.host + ctx.request.url,
+                  baseURL: 'http://'+ slave.host,
+                  url: ctx.request.url,
                   // url: 'http://'+ slave.host + '/rest/hme/getCachedDeviceList',
                   data: ctx.request.body || {}
                 }).then(function(res){

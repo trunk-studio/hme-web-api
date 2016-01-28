@@ -72,7 +72,7 @@ module.exports = {
       let devicesLists =[];
       for (let slave of slaveList) {
         let result = await new Promise((resolve, reject) => {
-          request.get(`/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
+          request.get(`http://${slave.host}/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
             if(err) return reject(err);
             resolve(res.body);
           });
@@ -80,7 +80,7 @@ module.exports = {
       }
       for (let slave of slaveList) {
         let result = await new Promise((resolve, reject) => {
-          request.get(`/rest/slave/${slave.id}/getCachedDeviceList`).end((err, res) => {
+          request.get(`http://${slave.host}/rest/slave/${slave.id}/getCachedDeviceList`).end((err, res) => {
             if(err) return reject(err);
             resolve(res.body);
           });

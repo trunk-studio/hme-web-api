@@ -16,7 +16,7 @@ exports.ping = async function (ctx) {
 exports.searchDevice = async function (ctx) {
   // let result = await services.hme.SearchDevice();
   try {
-    slaveId = ctx.params.slaveId;
+    let slaveId = ctx.params.slaveId;
     if(slaveId == 0){
       let host = await services.deviceControl.getDomainHost(ctx.request.header.host);
       console.log("host!!",host);
