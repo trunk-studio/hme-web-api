@@ -1131,7 +1131,7 @@ describe("hme with seriel port", () => {
                   }]
           }]
         }
-        let devList = {devIDs:[1, 2]};
+        let devList = {devIDs:[1]};
         let result = await services.hme.writeTimeTabToDevices(config, devList);
         console.log('writeTimeTabToDevices result',result);
         result.should.be.true;
@@ -1142,12 +1142,12 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port setFastRun", async done => {
+    it("serial Port setFastRun", async done => {
       // 設定快轉預覽時程設定照明效果
       try {
         let devID = 0;
         let groupID = 0;
-        let rate = 2000
+        let rate = 2000;
         let timeTab = [{
                     weight: 1,
                     StartTime: '00:00',
@@ -1314,7 +1314,7 @@ describe("hme with seriel port", () => {
           result.should.be.true;
           done();
 
-        },60000 );
+        },6000 );
         let time = new Date(1900, 1, 1, 0, 0, 0);
         let TiID = setInterval(function(){
           time.setMinutes(time.getMinutes() + 30 );
@@ -1323,6 +1323,152 @@ describe("hme with seriel port", () => {
           console.log('timeParams=', timeParams);
           services.hme.setSimRtc(timeParams);
         }, 1000);
+
+        let timeTab2 = [{
+                    weight: 1,
+                    StartTime: '00:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '02:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '04:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '06:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '08:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '10:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '12:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '14:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '16:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '18:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '20:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '22:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 0
+                  }
+              }];
 
 
       } catch (e) {
@@ -1335,7 +1481,7 @@ describe("hme with seriel port", () => {
 
       try {
         let params = {
-                      devID: 1,
+                      u8DevID: 1,
                       groupID: 0,
                       sFunc: 'WordRd',
                       u8DataNum: 2,
@@ -1347,7 +1493,7 @@ describe("hme with seriel port", () => {
         let result = await services.hme.accessDevice(params);
         console.log('accessDevice result',result);
         result.ramData.should.be.Array;
-
+        result.success.should.be.true;
         done();
       } catch (e) {
         done(e);
