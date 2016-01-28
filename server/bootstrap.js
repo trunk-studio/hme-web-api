@@ -43,7 +43,7 @@ export default async (cb) => {
         throw new Error('create email file error');
     })
 
-    await services.hme.pingAllSlave();
+    // await services.hme.pingAllSlave();
     // without await to reduce bootstrap waiting time
     // if(connected){
       // await services.deviceControl.syncDevice();

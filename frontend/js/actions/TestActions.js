@@ -14,7 +14,7 @@ export const SCANNING = 'SCANNING'
 export function requestTestSetLedDisplay(data) {
   return (dispatch) => {
     return request
-      .post(`/rest/slave/${data.groupID}/device/${data.devID}/setLedDisplay`,data)
+      .post(`/rest/slave/${data.slaveID}/device/${data.devID}/setLedDisplay`,data)
       .then(response => dispatch(receivedTestSetLedDisplay(response.data)));
   };
 }

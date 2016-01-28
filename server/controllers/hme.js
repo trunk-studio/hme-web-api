@@ -59,28 +59,75 @@ exports.setLedDisplay = async function (ctx) {
   ctx.body = result
 };
 
-exports.setSlaveAllLedDisplay = async function (ctx) {
-  let data = ctx.request.body;
-  console.log('setLedDisplay',data);
-  let schedule = await models.Schedule.findById(data.scheduleID);
-  let devices = await models.Device.findAll({
-    where:{
-      SlaveId: schedule.SlaveId
-    }
-  })
-  for(let device of devices){
-    console.log(schedule.SlaveId, device.id);
-    let result = await new Promise((resolve, reject) => {
-      request
-        .post(`/rest/slave/${schedule.SlaveId}/device/${device.id}/setLedDisplay`)
-        .send(data)
-        .end((err, res) => {
-          if(err) return reject(err);
-          resolve(res.body);
+exports.previewLedColor = async function (ctx) {
+  try {
+    let data = ctx.request.body;
+    console.log('setLedDisplay',data);
+    let schedule = await models.Schedule.findById(data.scheduleID);
+    let ledData = {
+      WW: data.WW,
+      DB: data.DB,
+      BL: data.BL,
+      GR: data.GR,
+      RE: data.RE,
+      Bright: data.Bright,
+    };
+    let devices;
+    if(schedule.SlaveId === null){
+      let slaveList = await models.Slave.findAll();
+      for (let slave of slaveList) {
+        devices = await models.Device.findAll({
+          where:{
+            SlaveId: slave.id
+          }
         });
-    });
+        for(let device of devices){
+          try {
+            ledData.devID = device.id;
+            let result = await new Promise((resolve, reject) => {
+              request
+              .post(`http://${slave.host}/rest/slave/${slave.id}/device/${device.id}/setLedDisplay`)
+              .send(ledData)
+              .end((err, res) => {
+                if(err) return reject(err);
+                resolve(res.body);
+              });
+            });
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+    }else{
+      let slave = await models.Slave.findById(schedule.SlaveId);
+      devices = await models.Device.findAll({
+        where:{
+          SlaveId: schedule.SlaveId
+        }
+      })
+      ledData.groupID = slave.id;
+      for(let device of devices){
+        try {
+          ledData.devID = device.id;
+          console.log(schedule.SlaveId, device.id);
+          let result = await new Promise((resolve, reject) => {
+            request
+            .post(`http://${slave.host}/rest/slave/${schedule.SlaveId}/device/${device.id}/setLedDisplay`)
+            .send(ledData)
+            .end((err, res) => {
+              if(err) return reject(err);
+              resolve(res.body);
+            });
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    }
+    ctx.body = 'ok'
+  } catch (e) {
+    console.log(e);
   }
-  ctx.body = 'ok'
 };
 
 exports.testAllDevices = async function (ctx) {

@@ -28,8 +28,7 @@ export default class Routes {
       '/rest/slave/:slaveId/test',
       '/rest/slave/:slaveId/device/:deviceId/setLedDisplay',
       '/rest/slave/:slaveId/schedule/setOnDevice',
-      '/rest/slave/:slaveId/findAllDeviceGroups',
-      '/rest/slave/:slaveId/setLedDisplay'
+      '/rest/slave/:slaveId/findAllDeviceGroups'
       ],
       async function (ctx, next){
         try {
@@ -105,6 +104,7 @@ export default class Routes {
     publicRoute.post('/rest/master/schedule/update/details', ScheduleController.updateScheduleDetails);
     publicRoute.post('/rest/master/schedule/config/update', ScheduleController.configUpdate);
     publicRoute.get('/rest/master/schedule/config/:id', ScheduleController.getConfigDetail);
+    publicRoute.post('/rest/master/schedule/previewLedColor', HmeController.previewLedColor);
 
     // find slave Device & Groups
     publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
@@ -113,7 +113,6 @@ export default class Routes {
     publicRoute.get('/rest/slave/:slaveId/device/:deviceId/test', HmeController.testDeviceByID);
     publicRoute.get('/rest/slave/:slaveId/test', HmeController.testGruopByID);
     publicRoute.post('/rest/slave/:slaveId/device/:deviceId/setLedDisplay', HmeController.setLedDisplay);
-    publicRoute.post('/rest/slave/:slaveId/setLedDisplay', HmeController.setSlaveAllLedDisplay);
     publicRoute.post('/rest/slave/:slaveId/schedule/setOnDevice', ScheduleController.setScheduleListToDevice);
 
     publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
