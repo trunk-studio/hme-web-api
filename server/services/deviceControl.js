@@ -71,31 +71,40 @@ module.exports = {
       let slaveList = await models.Slave.findAll();
       let devicesLists =[];
       for (let slave of slaveList) {
-        let result = await new Promise((resolve, reject) => {
-          request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
-            if(err) return reject(err);
-            resolve(res.body);
+        try {
+          let result = await new Promise((resolve, reject) => {
+            request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
+              if(err) return reject(err);
+              resolve(res.body);
+            });
           });
-        });
+
+        } catch (e) {
+          console.log(e);
+        }
       }
       for (let slave of slaveList) {
-        let result = await new Promise((resolve, reject) => {
-          request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/getCachedDeviceList`).end((err, res) => {
-            if(err) return reject(err);
-            resolve(res.body);
+        try {
+          let result = await new Promise((resolve, reject) => {
+            request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/getCachedDeviceList`).end((err, res) => {
+              if(err) return reject(err);
+              resolve(res.body);
+            });
           });
-        });
-        devicesLists.push(result);
-        for(let device of result) {
-          await models.Device.findOrCreate({
-            where: {
-              uid: device.devID
-            },
-            defaults: {
-              uid: device.devID,
-              SlaveId: device.SlaveId
-            }
-          })
+          devicesLists.push(result);
+          for(let device of result) {
+            await models.Device.findOrCreate({
+              where: {
+                uid: device.devID
+              },
+              defaults: {
+                uid: device.devID,
+                SlaveId: device.SlaveId
+              }
+            })
+          }
+        } catch (e) {
+          console.log(e);
         }
       }
     } catch (e) {
