@@ -42,10 +42,20 @@ export default async (cb) => {
         throw new Error('create email file error');
     })
 
-    // await services.hme.pingAllSlave();
+    await services.hme.pingAllSlave();
     // without await to reduce bootstrap waiting time
-    // if(connected)
-    //   await services.deviceControl.syncDevice();
+    if(connected){
+      // await services.deviceControl.syncDevice();
+      let slaveList = await models.Slave.findAll();
+      for (let slave of slaveList) {
+        let result = await new Promise((resolve, reject) => {
+          request.get(`/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
+            if(err) return reject(err);
+            resolve(res.body);
+          });
+        });
+      }
+    }
 
     // search slave
   } catch (e) {

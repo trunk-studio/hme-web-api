@@ -15,9 +15,25 @@ exports.ping = async function (ctx) {
 
 exports.searchDevice = async function (ctx) {
   // let result = await services.hme.SearchDevice();
-  slaveId = ctx.params.slaveId;
-  await services.deviceControl.syncDevice(slaveId);
-  ctx.body = 'ok';
+  try {
+    slaveId = ctx.params.slaveId;
+    if(slaveId == 0){
+      let host = await services.deviceControl.getDomainHost(ctx.request.header.host);
+      console.log("host!!",host);
+      let slave = await models.Slave.findOne({
+        where:{
+          host: { $like: '%'+host+'%' }
+        }
+      });
+      console.log("slave!!",slave);
+      slaveId = slave.id;
+    }
+    await services.deviceControl.syncDevice(slaveId);
+    ctx.body = 'ok';
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
 };
 
 exports.findAllDeviceGroups = async function (ctx) {
