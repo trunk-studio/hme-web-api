@@ -294,31 +294,103 @@ export default class Encode {
   };
 
 
-
-
-
-
-
-
-  RxDecode ({FuncCT, devID, u8RxDataArry}){
+  RxDecode ({FuncCT, devID, u8RxDataArry, u8DataNum}){
     //檢查接收的資料並解碼
-
+    let receiveData = {
+      devID: undefined,
+      commd: undefined,
+      ramData: [],
+      success: false
+    }
     //分割資料段
+    //驗證標頭正確性
     let u8RawHeader = u8RxDataArry[0];
     if (u8RawHeader != 0xC0) {
       console.log('HeaderErr')
-      return([]);
+      return(receiveData);
     }
-    var u8RawIdArry = u8RxDataArry.slice(1,4);
 
+    // #開始驗證接收資料完整性
+    // #Check ChkSumErr
+    let u8RawChkSumArry = u8RxDataArry.slice(u8RxDataArry.length-3,u8RxDataArry.length);
+    let RespDataArry = u8RxDataArry.slice(0,u8RxDataArry.length-3);
+    let u16ReChkSum = 0xffff & RespDataArry.reduce(function(a, b) { return a + b; });
+    if (u16ReChkSum != this.u3ByteToWord(u8RawChkSumArry)) {
+      console.log('ChkSumErr')
+      return(receiveData);
+    }
+    if (FuncCT == 33 || FuncCT == 34) {
+      if (u8RxDataArry.length != (8 + (u8DataNum * 3))) {
+        console.log('DataLengErr')
+        return(receiveData);
+      }
+    }else {
+      if (u8RxDataArry.length != 8) {
+        console.log('DataLengErr')
+        return(receiveData);
+      }
+    }
+
+
+    //驗證裝置ID正確性
+    let u8RawIdArry = u8RxDataArry.slice(1,4);
+    let reDevID = this.u3ByteToWord(u8RawIdArry);
+    if (devID != reDevID) {
+      console.log('DevIDErr')
+      return(receiveData);
+    }
+
+    //驗證Comm正確性
+    let u8RawCommand = u8RxDataArry[4];
+    let reCommd = u8RawCommand;
+    if (devID != reDevID) {
+      console.log('CommErr')
+      return(receiveData);
+    }
+
+    //驗證完成 寫入資料
+    receiveData.devID = reDevID;
+    receiveData.commd = reCommd;
+    let u8RawDataArry = [];
     if(u8RxDataArry.length > 8){
       //沒有回傳記憶體資料時，封包標準長度為8Byte
-      var u8RawDataArry = u8RxDataArry.slice(5,u8RxDataArry.length-3);
-    } else {
-      var u8RawDataArry = [];
+      u8RawDataArry = u8RxDataArry.slice(5,u8RxDataArry.length-3);
     }
-    var u8RawChkSumArry = u8RxDataArry.slice(u8RxDataArry.length-3,u8RxDataArry.length);
-    var u8RawCommand = u8RxDataArry[4];
+
+    let u8ReData2DArry = [];
+    let u16ReDataArry = [];
+    let BoolChk = 0;
+    for (let i = 0; i < (u8RawDataArry.length/3); i++) {
+      u8ReData2DArry[i] = (u8RawDataArry.slice(i*3,i*3+3));
+    }
+    // console.log(u8ReData2DArry);
+    if(FuncCT == 33 || FuncCT == 34){
+      //WordRd or DiscWordRd 需做檢查
+      for (let i = 0; i < u8ReData2DArry.length; i++) {
+        BoolChk +=  (u8ReData2DArry[i][0] & 0x80);
+        BoolChk +=  (u8ReData2DArry[i][1] & 0x80);
+        BoolChk +=  (u8ReData2DArry[i][2] & 0xfc);
+      }
+      if (BoolChk == 0) {
+        for (let i = 0; i < (u8ReData2DArry.length); i++) {
+          // #將原始接接收資料解碼( 3Byte to 1Word )
+          u16ReDataArry = u16ReDataArry.concat(this.u3ByteToWord(u8ReData2DArry[i]));
+        }
+        receiveData.ramData = u16ReDataArry;
+        receiveData.success = true;
+        return(receiveData)
+      } else {
+        console.log('chk false');
+        receiveData.success = false;
+        return(receiveData)
+      }
+    }else {
+      //其他都不需要做檢查，無記憶體資料回傳
+      // console.log('No Data');
+      receiveData.success = true;
+      return(receiveData);
+    }
+
     //檢查資料內容
     // console.log('ID = '+u8RawIdArry);
     // console.log('Data = '+u8RawDataArry);
@@ -326,43 +398,9 @@ export default class Encode {
     // console.log('Header = '+u8RawHeader);
     // console.log('Comm = '+u8RawCommand);
 
-    // #開始驗證資料正確性
-    // #Check ChkSumErr
-    var RespDataArry = u8RxDataArry.slice(0,u8RxDataArry.length-3);
-    var u16ReChkSum = 0xffff & RespDataArry.reduce(function(a, b) { return a + b; });
-    console.log(u16ReChkSum);
-    if (u16ReChkSum != this.u3ByteToWord(u8RawChkSumArry)) {
-      console.log('HeaderErr')
-      return([]);
-    }
-    // #將原始接接收資料解碼( 3Byte to 1Word )
-    var u8ReData2DArry = [];
-    var u16ReDataArry = [];
-    var BoolChk = 0;
-    for (let i = 0; i < (u8RawDataArry.length/3); i++) {
-      u8ReData2DArry[i] = (u8RawDataArry.slice(i*3,i*3+3));
-    }
-    console.log(u8ReData2DArry);
-    if(FuncCT == 33 || FuncCT == 34){
-      //WordRd or DiscWordRd 需做檢查
-      for (var i = 0; i < u8ReData2DArry.length; i++) {
-        BoolChk +=  (u8ReData2DArry[i][0] & 0x80);
-        BoolChk +=  (u8ReData2DArry[i][1] & 0x80);
-        BoolChk +=  (u8ReData2DArry[i][2] & 0xfc);
-      }
-      if (BoolChk == 0) {
-        for (let i = 0; i < (u8ReData2DArry.length); i++) {
-          u16ReDataArry = u16ReDataArry.concat(this.u3ByteToWord(u8ReData2DArry[i]));
-        }
-        return(u16ReDataArry)
-      } else {
-        console.log('chk false');
-      }
-    }else {
-      //其他都不需要做檢查，無記憶體資料回傳
-      console.log('No Data');
-      return([])
-    }
+
+
+
 
   };
 
@@ -444,5 +482,29 @@ export default class Encode {
   	return (result);
 
   };
+
+  timeSetToArry (timeSet) {
+    let re = /(\d+):(\d+)/;
+    let strST = '';
+    let arrST = '';
+
+
+    strST = timeSet.StartTime;
+    arrST = strST.match(re);
+    let Bright = timeSet.ScheduleDetailConfig.Bright
+    let timePwmTab = [
+      parseInt(arrST[1], 10), //H
+      parseInt(arrST[2], 10), //M
+      0,  //S
+      timeSet.ScheduleDetailConfig.DB * Bright, //CH1
+      timeSet.ScheduleDetailConfig.BL * Bright, //CH2
+      timeSet.ScheduleDetailConfig.RE * Bright, //CH3
+      timeSet.ScheduleDetailConfig.GR * Bright, //CH4
+      timeSet.ScheduleDetailConfig.WW * Bright, //CH5
+    ];
+
+    return (timePwmTab);
+
+  }
 
 }
