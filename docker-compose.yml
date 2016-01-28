@@ -1,7 +1,7 @@
 build:
   container_name: hmi-build
   image: node:4
-  command: "/bin/bash -l -c 'npm i'"
+  command: "/bin/bash -l -c 'rm -rf node_modeule && npm i'"
   working_dir: /app
   volumes:
     - ./:/app
