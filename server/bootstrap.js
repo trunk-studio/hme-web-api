@@ -1,3 +1,4 @@
+import request from 'superagent'
 export default async (cb) => {
 
   let visitorUser = {
@@ -44,18 +45,19 @@ export default async (cb) => {
 
     await services.hme.pingAllSlave();
     // without await to reduce bootstrap waiting time
-    if(connected){
+    // if(connected){
       // await services.deviceControl.syncDevice();
-      let slaveList = await models.Slave.findAll();
-      for (let slave of slaveList) {
-        let result = await new Promise((resolve, reject) => {
-          request.get(`/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
-            if(err) return reject(err);
-            resolve(res.body);
-          });
+    let slaveList = await models.Slave.findAll();
+    for (let slave of slaveList) {
+      let result = await new Promise((resolve, reject) => {
+        request.get(`/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
+          if(err) return reject(err);
+          resolve(res.body);
         });
-      }
+      });
+      console.log(result.body);
     }
+    // }
 
     // search slave
   } catch (e) {

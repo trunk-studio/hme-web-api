@@ -79,6 +79,7 @@ export default class Hme {
       hosts.push(`hmepi010.local`);
 
       for(let host of hosts) {
+        console.log("host:",host);
         let exist = await new Promise((done) => {
           ping.sys.probe(host, function (res) {
             done(res);
