@@ -1,14 +1,15 @@
 import React                from 'react';
 import { connect } from 'react-redux'
 import { requestLogin } from '../actions/AuthActions'
-
-const RaisedButton = require('material-ui/lib/raised-button');
-const SelectField = require('material-ui/lib/select-field');
-const TextField = require('material-ui/lib/text-field');
-const Tabs = require('material-ui/lib/tabs/tabs');
-const Tab = require('material-ui/lib/tabs/tab');
-const RefreshIndicator = require('material-ui/lib/refresh-indicator');
-
+import {
+  RaisedButton,
+  SelectField,
+  TextField,
+  Tabs,
+  Tab,
+  RefreshIndicator
+} from 'material-ui';
+import md5 from 'md5';
 export default class LoginPage extends React.Component {
 
   constructor(props) {
@@ -32,7 +33,7 @@ export default class LoginPage extends React.Component {
     if(password.length > 0) {
       this.props.requestLogin({
         role: this.state.role,
-        password: password
+        password: md5(password)
       });
     }
     else {

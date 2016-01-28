@@ -1,5 +1,4 @@
 
-
 exports.index = async function(ctx) {
 
   let users = await models.User.findAll()
@@ -55,11 +54,8 @@ exports.delete = async function(ctx) {
 exports.login = async function (ctx, next) {
   let success = false;
   try {
-    let userData = {
-      admin: 'admin',
-      engineer: 'engineer',
-      user: 'user'
-    };
+    let userData = global.appConfig.userData;
+    console.log('userData', userData);
     let pass = false;
     let role = ctx.request.body.role;
     let password = ctx.request.body.password;
