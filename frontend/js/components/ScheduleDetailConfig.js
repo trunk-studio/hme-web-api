@@ -162,7 +162,7 @@ export default class ScheduleDetailConfig extends React.Component {
     })
   };
 
-  _setLed = (e) = {
+  _setLed = (e) => {
     this.props.requestUpdateSlaveDeviceColor({
       id: this.props.params.configID,
       WW: this.state.wwValue,
@@ -174,7 +174,7 @@ export default class ScheduleDetailConfig extends React.Component {
       Bright: this.state.brightValue,
       scheduleID: this.props.params.scheduleID
     })
-  }
+  };
 
   backClick = () => {
   };
