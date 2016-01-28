@@ -50,7 +50,7 @@ export default async (cb) => {
     let slaveList = await models.Slave.findAll();
     for (let slave of slaveList) {
       let result = await new Promise((resolve, reject) => {
-        request.get(`http://${slave.host}/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
+        request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
           if(err) return reject(err);
           resolve(res.body);
         });
