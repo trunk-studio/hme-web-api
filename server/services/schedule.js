@@ -147,7 +147,7 @@ module.exports = {
       let result = await new Promise((resolve, reject) => {
         request
         .post(`http://${slave.host}:3000/rest/slave/${slave.id}/schedule/setFastRun`)
-        .send(config)
+        .send(data)
         .end((err, res) => {
           if(err) return reject(err);
           resolve(res.body);

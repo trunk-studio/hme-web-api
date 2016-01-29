@@ -247,6 +247,7 @@ exports.setFastRun = async function(ctx) {
     let slaveId = ctx.request.body.slaveId;
     let scheduleId = ctx.request.body.scheduleId;
     console.log("slaveId!!",slaveId);
+    console.log("slaveId!!",scheduleId);
     let isAll = false;
     if(slaveId == 0){
       let slaveList = await models.Slave.findAll();
