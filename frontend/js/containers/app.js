@@ -38,7 +38,7 @@ export default class App extends React.Component {
         <Route path="/schedule/list" component={ScheduleList} />
         <Route path="/schedule/edit/:scheduleID" component={ScheduleDetail} />
         <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} />
-        <Route path="/wifisetting" component={WifiSetting} />
+        <Route path="/setup" component={WifiSetting} />
       </Router>
     );
   }
