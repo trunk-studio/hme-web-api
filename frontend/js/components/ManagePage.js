@@ -63,7 +63,7 @@ export default class ManagePage extends React.Component {
   };
 
   _testOneDevice = (e) => {
-    this.props.requestTestOneDevice(this.state.deviceID);
+    this.props.requestTestOneDevice(this.state.deviceID, this.state.slaveID);
   };
 
   _testGroupDevice = (e) => {
@@ -202,7 +202,8 @@ export default class ManagePage extends React.Component {
       BL: this.state.blValue,
       GR: this.state.grValue,
       RE: this.state.reValue,
-      Bright: this.state.brightValue
+      Bright: this.state.brightValue,
+      slaveID: this.state.slaveID
     })
   };
 

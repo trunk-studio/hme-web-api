@@ -99,9 +99,9 @@ var liftApp = async () => {
     console.log('=== liftApp ===');
     await models.sequelize.sync({force: config.connection.force})
 
-    await bootstrap();
     console.log('=== config ===', config);
     app.listen(config.port);
+    await bootstrap();
 
     if (process.send) process.send('online');
     debug('koa')(`Application started on port ${config.port}`);

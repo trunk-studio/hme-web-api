@@ -1,7 +1,8 @@
 import React                from 'react';
 import { AppBar, RefreshIndicator, IconButton, FlatButton , Slider, RadioButton, RadioButtonGroup, DropDownMenu, RaisedButton} from 'material-ui';
 import { connect } from 'react-redux'
-import { requestGetScheduleDetailConfig, requestUpdateScheduleDetailConfig} from '../actions/ScheduleDetailConfigActions'
+import { requestGetScheduleDetailConfig, requestUpdateScheduleDetailConfig,
+requestPreviewLedColor} from '../actions/ScheduleDetailConfigActions'
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
 
 const LineChart = require("react-chartjs").Line;
@@ -53,27 +54,27 @@ export default class ScheduleDetailConfig extends React.Component {
   _wwChanged = (value) => {
     this.state.wwValue = value;
     this.state.cctSliderStyle = 'notActiveSlider';
-    this._saveConfig();
+    this._previewLed();
   };
   _dbChanged = (value) => {
     this.state.dbValue = value;
     this.state.cctSliderStyle = 'notActiveSlider';
-    this._saveConfig();
+    this._previewLed();
   };
   _blChanged = (value) => {
     this.state.blValue = value;
     this.state.cctSliderStyle = 'notActiveSlider';
-    this._saveConfig();
+    this._previewLed();
   };
   _grChanged = (value) => {
     this.state.grValue = value;
     this.state.cctSliderStyle = 'notActiveSlider';
-    this._saveConfig();
+    this._previewLed();
   };
   _reChanged = (value) => {
     this.state.reValue = value;
     this.state.cctSliderStyle = 'notActiveSlider';
-    this._saveConfig();
+    this._previewLed();
   };
   _cctChanged = (value) => {
     this.state.cctSliderStyle = 'slider';
@@ -139,13 +140,13 @@ export default class ScheduleDetailConfig extends React.Component {
     this.state.reValue = Math.round(re * 100);
     if(cct)
       this.state.cctValue = cct;
-    this._saveConfig();
+    this._previewLed();
   };
   _brightChanged = (value) => {
     this.setState({
       brightValue: value
     })
-    // this._saveConfig();
+    // this._previewLed();
   };
 
   _saveConfig = (e) => {
@@ -162,8 +163,8 @@ export default class ScheduleDetailConfig extends React.Component {
     })
   };
 
-  _setLed = (e) => {
-    this.props.requestUpdateSlaveDeviceColor({
+  _previewLed = (e) => {
+    this.props.requestPreviewLedColor({
       id: this.props.params.configID,
       WW: this.state.wwValue,
       DB: this.state.dbValue,
@@ -264,7 +265,7 @@ export default class ScheduleDetailConfig extends React.Component {
             </IconButton>
           }
           iconElementRight={
-            <FlatButton label="Save" onTouchTap={this.backClick}style={{marginTop:'4px',marginRight:'10px',marginLeft:'auto', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} >
+            <FlatButton label="SAVE" onTouchTap={this._saveConfig} style={{didFlip:'true',marginTop:'4px',marginRight:'10px',marginLeft:'auto', backgroundColor: 'rgba(0,0,0,0)', color: '#fff'}} >
               <RefreshIndicator
                 size={28}
                 left={0}
@@ -329,7 +330,8 @@ function _injectPropsFromStore(state) {
 
 const _injectPropsFromActions = {
   requestGetScheduleDetailConfig,
-  requestUpdateScheduleDetailConfig
+  requestUpdateScheduleDetailConfig,
+  requestPreviewLedColor
 };
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleDetailConfig);

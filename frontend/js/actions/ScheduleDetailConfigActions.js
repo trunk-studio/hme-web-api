@@ -54,7 +54,7 @@ export function receivedUpdateScheduleDetailConfig(data) {
 }
 
 
-export function requestUpdateSlaveDeviceColor(updateData) {
+export function requestPreviewLedColor(updateData) {
   let data = [
     updateData.WW,
     updateData.DB,
@@ -65,9 +65,9 @@ export function requestUpdateSlaveDeviceColor(updateData) {
     updateData.Bright
   ]
   return (dispatch) => {
+    dispatch(receivedUpdateScheduleDetailConfig(data));
     return request
-      .post(`/rest/slave/:slaveId/setLedDisplay`,data)
-      .then(response => dispatch(receivedTestSetLedDisplay(response.data)));
+      .post(`/rest/master/schedule/previewLedColor`,updateData);
   };
 }
 
