@@ -36,9 +36,15 @@ const convert = require('koa-convert');
 console.log('aaa',webpackConfig);
 const compiler = webpack(webpackConfig);
 
+const jwt = require('koa-jwt');
+
+// do not use this secret for production
+const secret = 'secretTest'
 
 app.use(convert(koaBodyParser()));
+app.use(convert(jwt({ secret }).unless({
 
+})));
 
 // setup rest models
 global.models = (new Models()).getDb();

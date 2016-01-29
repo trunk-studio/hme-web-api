@@ -11,12 +11,12 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 
 injectTapEventPlugin();
 
-const LoginPage = require('../components/LoginPage');
-const ManagePage = require('../components/ManagePage');
-const SettingGraph = require('../components/SettingGraph');
-const ScheduleList = require('../components/ScheduleList');
-const ScheduleDetail = require('../components/ScheduleDetail');
-const ScheduleDetailConfig = require('../components/ScheduleDetailConfig');
+import LoginPage from '../components/LoginPage';
+import ManagePage from '../components/ManagePage';
+import SettingGraph from '../components/SettingGraph';
+import ScheduleList from '../components/ScheduleList';
+import ScheduleDetail from '../components/ScheduleDetail';
+import ScheduleDetailConfig from '../components/ScheduleDetailConfig';
 import WifiSetting from '../components/WifiSetting';
 
 // export default class RedirectToDefaultValue extends React.Component {
