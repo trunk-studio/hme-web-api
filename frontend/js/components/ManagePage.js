@@ -210,7 +210,7 @@ export default class ManagePage extends React.Component {
       SUM: newSUM
     });
     this.props.requestTestSetLedDisplay({
-      devID:this.state.deviceID,
+      devID:this.state.setupTestDeviceID,
       groupID:this.state.groupID,
       WW: this.state.wwValue,
       DB: this.state.dbValue,
