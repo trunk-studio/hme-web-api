@@ -172,7 +172,7 @@ exports.slaveSetScheduleListToDevice = async function(ctx) {
     let config = data.config;
     let devList = data.devList;
     let result = await services.hme.writeTimeTabToDevices(config, {devIDs: devList});
-    console.log("success:"result);
+    console.log("success:",result);
     ctx.body = true;
   } catch (e) {
     console.error(e);
