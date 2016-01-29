@@ -1,3 +1,6 @@
+const jsonWebToken = require('jsonwebtoken');
+
+
 
 exports.index = async function(ctx) {
 
@@ -60,10 +63,26 @@ exports.login = async function (ctx, next) {
     let role = ctx.request.body.role;
     let password = ctx.request.body.password;
 
-    if(userData[role] == password)
+
+    if(userData[role] == password) {
       success = true;
 
-    ctx.body = { success }
+      const user = {
+          role: role
+      };
+
+      const token = jsonwebtoken.sign(user, secret, {
+          issuer: 'localhost',
+          audience: 'someaudience',
+          expiresIn: '1d'
+      });
+    }
+
+    console.log({sucess});
+    ctx.body = {
+      success: success,
+      jwt: token
+    };
   } catch(e) {
     console.error("delete user error", e);
   }
