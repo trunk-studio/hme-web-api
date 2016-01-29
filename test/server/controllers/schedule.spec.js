@@ -141,15 +141,23 @@ describe("Schedule", () => {
   });
 
   describe("Detail Config", () => {
-    let scheduleDetailConfig
+    let scheduleDetailConfig,newSchedule;
     before(async(done) => {
       try {
 
         let group = await models.Group.create();
         let slaves = await models.Slave.create({
-          host: "hostName",
+          host: "127.0.0.1",
           description: "描述",
           apiVersion: "0.1.0",
+        });
+        let s1d1 = await models.Device.create({
+          uid: 489599,
+          SlaveId: slaves.id
+        });
+        let s1d2 = await models.Device.create({
+          uid: 95785,
+          SlaveId: slaves.id
         });
         let device = await models.Device.create({
           uid: "1",
@@ -165,6 +173,16 @@ describe("Schedule", () => {
           CCT: 600,
           Bright: 700,
         })
+
+        newSchedule = {
+          StartDate: moment('2016/1/7','YYYY/MM/DD'),
+          Days: 15,
+          GroupId: testGroup.id,
+          DeviceId: testDevice.id,
+          SlaveId: slaves.id
+        };
+
+        newSchedule = await models.Schedule.create(newSchedule);
         done();
       } catch (e) {
         done(e)
@@ -195,6 +213,26 @@ describe("Schedule", () => {
       try {
         let result = await request.get('/rest/master/schedule/config/' + scheduleDetailConfig.id);
         result.body.should.be.Array;
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+    it("set All slave", async(done) => {
+      try {
+        let data = {
+          id: scheduleDetailConfig.id,
+          WW: 0,
+          DB: 0,
+          BL: 0,
+          GR: 0,
+          RE: 0,
+          CCT: 3000,
+          Bright: 0,
+          scheduleID: newSchedule.id,
+        }
+        let result = await request.post('/rest/slave/0/setLedDisplay').send(data);
         done();
       } catch (e) {
         done(e);

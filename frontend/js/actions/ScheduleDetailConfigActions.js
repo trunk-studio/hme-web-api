@@ -54,6 +54,23 @@ export function receivedUpdateScheduleDetailConfig(data) {
 }
 
 
+export function requestUpdateSlaveDeviceColor(updateData) {
+  let data = [
+    updateData.WW,
+    updateData.DB,
+    updateData.BL,
+    updateData.GR,
+    updateData.RE,
+    updateData.CCT,
+    updateData.Bright
+  ]
+  return (dispatch) => {
+    return request
+      .post(`/rest/slave/:slaveId/setLedDisplay`,data)
+      .then(response => dispatch(receivedTestSetLedDisplay(response.data)));
+  };
+}
+
 export function updateScheduleDetailConfigLoadingStatus(status) {
   return {
     type: UPDATE_SCHEDULE_DETAIL_CONFIG_LOADING_STATUS,

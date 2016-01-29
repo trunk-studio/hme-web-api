@@ -28,7 +28,8 @@ export default class Routes {
       '/rest/slave/:slaveId/test',
       '/rest/slave/:slaveId/device/:deviceId/setLedDisplay',
       '/rest/slave/:slaveId/schedule/setOnDevice',
-      '/rest/slave/:slaveId/findAllDeviceGroups'
+      '/rest/slave/:slaveId/findAllDeviceGroups',
+      '/rest/slave/:slaveId/setLedDisplay'
       ],
       async function (ctx, next){
         try {
@@ -44,7 +45,8 @@ export default class Routes {
               let result = await new Promise((resolve, reject) => {
                 request({
                   method: ctx.request.method,
-                  url: 'http://'+ slave.host + ctx.request.url,
+                  baseURL: 'http://'+ slave.host+":3000",
+                  url: ctx.request.url,
                   // url: 'http://'+ slave.host + '/rest/hme/getCachedDeviceList',
                   data: ctx.request.body || {}
                 }).then(function(res){
@@ -111,6 +113,7 @@ export default class Routes {
     publicRoute.get('/rest/slave/:slaveId/device/:deviceId/test', HmeController.testDeviceByID);
     publicRoute.get('/rest/slave/:slaveId/test', HmeController.testGruopByID);
     publicRoute.post('/rest/slave/:slaveId/device/:deviceId/setLedDisplay', HmeController.setLedDisplay);
+    publicRoute.post('/rest/slave/:slaveId/setLedDisplay', HmeController.setSlaveAllLedDisplay);
     publicRoute.post('/rest/slave/:slaveId/schedule/setOnDevice', ScheduleController.setScheduleListToDevice);
 
     publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
@@ -126,6 +129,7 @@ export default class Routes {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>HME</title>
         <meta name="description" content="">
+        <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="viewport" content="width=device-width, initial-scale=1 ,maximum-scale=1.0, user-scalable=no">
         <link rel="shortcut icon" href="/public/assets/images/HME.ico" type="image/x-icon" />
         <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons"

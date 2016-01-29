@@ -157,7 +157,22 @@ export default class ScheduleDetailConfig extends React.Component {
       GR: this.state.grValue,
       RE: this.state.reValue,
       CCT: this.state.cctValue,
-      Bright: this.state.brightValue
+      Bright: this.state.brightValue,
+      scheduleID: this.props.params.scheduleID
+    })
+  };
+
+  _setLed = (e) => {
+    this.props.requestUpdateSlaveDeviceColor({
+      id: this.props.params.configID,
+      WW: this.state.wwValue,
+      DB: this.state.dbValue,
+      BL: this.state.blValue,
+      GR: this.state.grValue,
+      RE: this.state.reValue,
+      CCT: this.state.cctValue,
+      Bright: this.state.brightValue,
+      scheduleID: this.props.params.scheduleID
     })
   };
 
