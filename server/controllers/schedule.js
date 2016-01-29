@@ -148,10 +148,11 @@ exports.setScheduleListToDevice = async function(ctx) {
       let slaveList = await models.Slave.findAll();
       isAll = true;
       for (let slave of slaveList) {
-        await services.schedule.scheduleSetData(slave.id, isAll);
+        await services.schedule.scheduleSetData(slave, isAll);
       }
     }else{
-      await services.schedule.scheduleSetData(slaveId, isAll);
+      let slave = await models.Slave.findById(slaveId);
+      await services.schedule.scheduleSetData(slave, isAll);
     }
     ctx.body = true;
   } catch(e) {

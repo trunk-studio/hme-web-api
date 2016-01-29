@@ -108,10 +108,10 @@ module.exports = {
     }
   },
 
-  scheduleSetData: async(slaveId, isAll) => {
+  scheduleSetData: async(slave, isAll) => {
     try {
-      let devList = await services.hme.getSlaveDeviceArray(slaveId);
-      let id = isAll ? null : slaveId ;
+      let devList = await services.hme.getSlaveDeviceArray(slave.id);
+      let id = isAll ? null : slave.id ;
       let config = await services.schedule.getCurrectSetting({
         slaveId: id
       });
@@ -125,7 +125,7 @@ module.exports = {
       }
       let result = await new Promise((resolve, reject) => {
         request
-        .post(`http://${slave.host}:3000/rest/slave/${slaveId}/schedule/setOnDevice`)
+        .post(`http://${slave.host}:3000/rest/slave/${slave.id}/schedule/setOnDevice`)
         .send(data)
         .end((err, res) => {
           if(err) return reject(err);
