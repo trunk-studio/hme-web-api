@@ -148,7 +148,11 @@ exports.setScheduleListToDevice = async function(ctx) {
       let slaveList = await models.Slave.findAll();
       isAll = true;
       for (let slave of slaveList) {
-        await services.schedule.scheduleSetData(slave, isAll);
+        try {
+          await services.schedule.scheduleSetData(slave, isAll);
+        } catch (e) {
+          console.log(e);
+        }
       }
     }else{
       let slave = await models.Slave.findById(slaveId);
@@ -163,7 +167,7 @@ exports.setScheduleListToDevice = async function(ctx) {
 
 exports.slaveSetScheduleListToDevice = async function(ctx) {
   try {
-    console.log("==== slaveSetScheduleListToDevice ===",ctx.request);
+    console.log("==== slaveSetScheduleListToDevice ===",ctx.request.body);
     let data = ctx.request.body
     let config = data.config;
     let devList = data.devList;

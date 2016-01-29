@@ -123,7 +123,9 @@ module.exports = {
         config,
         devList
       }
+      console.log("!!!!!!!!!!!!!!",data);
       let result = await new Promise((resolve, reject) => {
+        console.log("!!!!!!!!!!!!!!",data);
         request
         .post(`http://${slave.host}:3000/rest/slave/${slave.id}/schedule/setOnDevice`)
         .send(data)
