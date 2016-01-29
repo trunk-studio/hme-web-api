@@ -1,3 +1,4 @@
+import request from 'superagent'
 module.exports = {
   create: async(data) => {
     try {
@@ -103,6 +104,36 @@ module.exports = {
       scheduleDetail = await scheduleDetail.save();
       return scheduleDetail;
     } catch (e) {
+      throw e;
+    }
+  },
+
+  scheduleSetData: async(slaveId, isAll) => {
+    try {
+      let devList = await services.hme.getSlaveDeviceArray(slaveId);
+      let id = isAll ? null : slaveId ;
+      let config = await services.schedule.getCurrectSetting({
+        slaveId: id
+      });
+      console.log("config!!",JSON.stringify(config,null, 2));
+      console.log("devList!!",devList);
+      // TODO require writeTimeTabToDevices
+      // let result = await services.hme.writeTimeTabToDevices(config, {devIDs: devList});
+      let data = {
+        config,
+        devList
+      }
+      let result = await new Promise((resolve, reject) => {
+        request
+        .post(`http://${slave.host}:3000/rest/slave/${slaveId}/schedule/setOnDevice`)
+        .send(data)
+        .end((err, res) => {
+          if(err) return reject(err);
+          resolve(res.body);
+        });
+      });
+    } catch (e) {
+      console.log(e);
       throw e;
     }
   },
