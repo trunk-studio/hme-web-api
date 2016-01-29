@@ -240,3 +240,45 @@ exports.setSchedulesToDevice = async function(ctx) {
     console.error(e);
   }
 }
+
+exports.setFastRun = async function(ctx) {
+  try {
+    console.log("==== setFastRun ===",ctx.request.body);
+    let slaveId = ctx.request.body.slaveId;
+    let scheduleId = ctx.request.body.scheduleId;
+    console.log("slaveId!!",slaveId);
+    let isAll = false;
+    if(slaveId == 0){
+      let slaveList = await models.Slave.findAll();
+      isAll = true;
+      for (let slave of slaveList) {
+        try {
+          await services.schedule.setFastRun(slave, isAll, scheduleId);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    }else{
+      let slave = await models.Slave.findById(slaveId);
+      await services.schedule.setFastRun(slave, isAll, scheduleId);
+    }
+    ctx.body = true;
+  } catch (e) {
+    console.error(e);
+    ctx.body = false;
+  }
+}
+
+exports.slaveSetFastRun = async function(ctx) {
+  try {
+    console.log("==== slaveSetFastRun ===",ctx.request.body);
+    let data = ctx.request.body
+    let timeTab = data;
+    let result = await services.hme.setFastRun(0, 0, 2000, timeTab);
+    console.log("success:",result);
+    ctx.body = true;
+  } catch (e) {
+    console.error(e);
+    ctx.body = false;
+  }
+}

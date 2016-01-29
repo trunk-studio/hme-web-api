@@ -53,6 +53,18 @@ describe("Schedule", () => {
     }
   });
 
+  it("setFastRun", async(done) => {
+    try {
+      let data = [{ weight: 1, StartTime: '00:00', ScheduleDetailConfig: { WW: 100, DB: 0, BL: 0, GR: 0, RE: 0, CCT: 0, Bright: 100 } },{ weight: 1, StartTime: '02:00', ScheduleDetailConfig: { WW: 0, DB: 100, BL: 0, GR: 0, RE: 0, CCT: 0, Bright: 100 } },{ weight: 1, StartTime: '04:00', ScheduleDetailConfig: { WW: 0, DB: 0, BL: 100, GR: 0, RE: 0, CCT: 0, Bright: 100 } },{ weight: 1, StartTime: '06:00', ScheduleDetailConfig: { WW: 0, DB: 0, BL: 0, GR: 100, RE: 0, CCT: 0, Bright: 100 } },{ weight: 1, StartTime: '08:00', ScheduleDetailConfig: { WW: 0, DB: 0, BL: 0, GR: 0, RE: 100, CCT: 0, Bright: 100 } },{ weight: 1, StartTime: '10:10', ScheduleDetailConfig: { WW: 70, DB: 70, BL: 70, GR: 70, RE: 70, CCT: 70, Bright: 70 } },{ weight: 1, StartTime: '08:20', ScheduleDetailConfig: { WW: 85, DB: 85, BL: 85, GR: 85, RE: 85, CCT: 85, Bright: 85 } },{ weight: 1, StartTime: '09:30', ScheduleDetailConfig: { WW: 60, DB: 60, BL: 60, GR: 60, RE: 60, CCT: 60, Bright: 60 } },{ weight: 1, StartTime: '10:00', ScheduleDetailConfig: { WW: 100, DB: 100, BL: 100, GR: 100, RE: 100, CCT: 0, Bright: 100 } },{ weight: 1, StartTime: '11:50', ScheduleDetailConfig: { WW: 25, DB: 25, BL: 25, GR: 25, RE: 25, CCT: 25, Bright: 25 } },{ weight: 1, StartTime: '12:12', ScheduleDetailConfig: { WW: 15, DB: 15, BL: 15, GR: 15, RE: 15, CCT: 15, Bright: 15 } },{ weight: 1, StartTime: '22:00', ScheduleDetailConfig: { WW: 5, DB: 5, BL: 5, GR: 5, RE: 5, CCT: 5, Bright: 5 } }];
+      let result = await request.post('/rest/master/schedule/setFastRun')
+      .send(data);
+      done()
+    } catch (e) {
+      console.log(e);
+      done(e)
+    }
+  });
+
   it("find", async(done) => {
     try {
       let result = await request.get('/rest/master/schedule/' + newSchedule.id);
