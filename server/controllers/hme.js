@@ -102,7 +102,7 @@ exports.previewLedColor = async function (ctx) {
         }
       }
     }else{
-      console.log("slave:",slave.id);
+      console.log("slave:",schedule.SlaveId);
       let slave = await models.Slave.findById(schedule.SlaveId);
       devices = await models.Device.findAll({
         where:{
