@@ -45,7 +45,9 @@ export default class ManagePage extends React.Component {
       deviceID: 0,
       slaveID: 0,
       tabIndex: 0,
-      tmpEmail: ''
+      tmpEmail: '',
+      setupTestSlaveId: 0,
+      setupTestDeviceId: 0
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -84,6 +86,19 @@ export default class ManagePage extends React.Component {
     let id = this.props.slaveList[value - 1].payload;
     this.setState({
       slaveID: id
+    })
+  };
+
+  _setupTestDeviceMenuIndexChanged = (e, value) => {
+    this.setState({
+      setupTestDeviceID: value
+    })
+  };
+
+  _setupTestSlaveMenuIndexChanged = (e, value) => {
+    let id = this.props.slaveList[value - 1].payload;
+    this.setState({
+      setupTestSlaveID: id
     })
   };
 
@@ -305,9 +320,24 @@ export default class ManagePage extends React.Component {
       text: 'Select Slave'
     }];
 
+    let setupTestDeviceList = [{
+      payload: 0,
+      primary: 'Select Device',
+      text: 'Select Device'
+    }];
+
+    let setupTestSlaveList = [{
+      payload: 0,
+      primary: 'Select Slave',
+      text: 'Select Slave'
+    }];
 
     if(this.props.deviceList[this.state.slaveID] && this.props.deviceList[this.state.slaveID].length > 0)  deviceList.push(...this.props.deviceList[this.state.slaveID]);
     if(this.props.slaveList.length > 0)  slaveList.push(...this.props.slaveList);
+
+    if(this.props.deviceList[this.state.setupTestSlaveID] && this.props.deviceList[this.state.setupTestSlaveID].length > 0)  setupTestDeviceList.push(...this.props.deviceList[this.state.setupDeviceSlaveID]);
+    if(this.props.slaveList.length > 0)  setupTestSlaveList.push(...this.props.slaveList);
+
 
     let tabIndex = parseInt(this.props.params.tabIndex);
     let scanningStatus = this.props.scanning? this.props.scanning: 'hide';
@@ -341,24 +371,33 @@ export default class ManagePage extends React.Component {
           </div>
         </Tab>
         <Tab label="Setup Test" value='1'>
-          <div style={{display: 'table-caption'}}>
-            <div style={{display: 'inline-flex' , marginTop: '15px', marginLeft: '15px'}}>
-              <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '200px'}}/>
+          <div className="self-center" style={{width: '500px'}}>
+            <div style={{width: '500px', display: 'inline-flex'}}>
+              <SelectField labelMember="primary" menuItems={setupTestSlaveList} onChange={this._setupTestSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '250px'}}/>
+              <SelectField labelMember="primary" onChange={this._setupTestDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={setupTestDeviceList} style={{width: '250px', marginLeft: '5px'}}/>
             </div>
           </div>
-          <div className="row self-center" style={{width: '100%', marginTop: '5px'}}>
+          <div className="row self-center" style={{width: '100%', marginTop: '15px'}}>
             <div className="col-md-8 col-sm-8 col-xs-8">
               <div className="row">
                 <LineChart ref="chart" data={chartData} style={{
                   margin: '5px',
                   width: '100%',
-                  height: '200px'
+                  height: 'auto'
                   }}
                   options={chartOptions} />
               </div>
+              <div className="row smalllRaisedBnutton self-center" style={{width: '310px'}}>
+                <RaisedButton label="全開"  onTouchTap={this._AllOpen} style={{width: '50px'}}/>
+                <RaisedButton label="6500K" onTouchTap={this._6500k} style={{width: '50px'}}/>
+                <RaisedButton label="4600K" onTouchTap={this._4600k} style={{width: '50px'}}/>
+                <RaisedButton label="2950K" onTouchTap={this._2950k} style={{width: '50px'}}/>
+                <RaisedButton label="saving E" onTouchTap={this._saving} style={{width: '60px'}}/>
+                <RaisedButton label="B + R" onTouchTap={this._BR} style={{width: '50px'}}/>
+              </div>
             </div>
-            <div className="col-md-4 col-sm-4 col-xs-4" style={{marginTop: '-60px'}}>
-              <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px'}}>WW {this.state.wwValue}</div>
+            <div className="col-md-4 col-sm-4 col-xs-4" style={{marginTop: '0px'}}>
+              <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
               <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
               <div style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
               <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
@@ -368,19 +407,11 @@ export default class ManagePage extends React.Component {
               <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
               <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
               <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
-              <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid'}}><span style={{opacity: 0}}>.</span></div>
+              <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
               <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
               <div>Bright {this.state.brightValue}</div>
               <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider"/>
             </div>
-          </div>
-          <div className="row smalllRaisedBnutton" style={{marginLeft:'30px'}}>
-            <RaisedButton label="全開"  onTouchTap={this._AllOpen}/>
-            <RaisedButton label="6500K" onTouchTap={this._6500k}/>
-            <RaisedButton label="4600K" onTouchTap={this._4600k}/>
-            <RaisedButton label="2950K" onTouchTap={this._2950k}/>
-            <RaisedButton label="saving E" onTouchTap={this._saving}/>
-            <RaisedButton label="B + R" onTouchTap={this._BR}/>
           </div>
         </Tab>
         <Tab label="Report Setting" value='2'>
