@@ -105,6 +105,7 @@ export default class Routes {
     publicRoute.post('/rest/master/schedule/config/update', ScheduleController.configUpdate);
     publicRoute.get('/rest/master/schedule/config/:id', ScheduleController.getConfigDetail);
     publicRoute.post('/rest/master/schedule/previewLedColor', HmeController.previewLedColor);
+    publicRoute.post('/rest/master/schedule/setOnDevice', ScheduleController.setScheduleListToDevice);
 
     // find slave Device & Groups
     publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
@@ -113,7 +114,7 @@ export default class Routes {
     publicRoute.get('/rest/slave/:slaveId/device/:deviceId/test', HmeController.testDeviceByID);
     publicRoute.get('/rest/slave/:slaveId/test', HmeController.testGruopByID);
     publicRoute.post('/rest/slave/:slaveId/device/:deviceId/setLedDisplay', HmeController.setLedDisplay);
-    publicRoute.post('/rest/slave/:slaveId/schedule/setOnDevice', ScheduleController.setScheduleListToDevice);
+    publicRoute.post('/rest/slave/:slaveId/schedule/setOnDevice', ScheduleController.slaveSetScheduleListToDevice);
 
     publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
 
