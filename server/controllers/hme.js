@@ -86,7 +86,7 @@ exports.previewLedColor = async function (ctx) {
             ledData.devID = device.id;
             let result = await new Promise((resolve, reject) => {
               request
-              .post(`http://${slave.host}/rest/slave/${slave.id}/device/${device.id}/setLedDisplay`)
+              .post(`http://${slave.host}:3000/rest/slave/${slave.id}/device/${device.id}/setLedDisplay`)
               .send(ledData)
               .end((err, res) => {
                 if(err) return reject(err);
@@ -112,7 +112,7 @@ exports.previewLedColor = async function (ctx) {
           console.log(schedule.SlaveId, device.id);
           let result = await new Promise((resolve, reject) => {
             request
-            .post(`http://${slave.host}/rest/slave/${schedule.SlaveId}/device/${device.id}/setLedDisplay`)
+            .post(`http://${slave.host}:3000/rest/slave/${schedule.SlaveId}/device/${device.id}/setLedDisplay`)
             .send(ledData)
             .end((err, res) => {
               if(err) return reject(err);
