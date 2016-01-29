@@ -74,14 +74,17 @@ exports.previewLedColor = async function (ctx) {
     };
     let devices;
     if(schedule.SlaveId === null){
+      console.log("All slave");
       let slaveList = await models.Slave.findAll();
       for (let slave of slaveList) {
+        console.log("slave:",slave.id);
         devices = await models.Device.findAll({
           where:{
             SlaveId: slave.id
           }
         });
         for(let device of devices){
+          console.log("device:",device.id);
           try {
             ledData.devID = device.id;
             let result = await new Promise((resolve, reject) => {
@@ -99,6 +102,7 @@ exports.previewLedColor = async function (ctx) {
         }
       }
     }else{
+      console.log("slave:",slave.id);
       let slave = await models.Slave.findById(schedule.SlaveId);
       devices = await models.Device.findAll({
         where:{
@@ -107,6 +111,7 @@ exports.previewLedColor = async function (ctx) {
       })
       ledData.groupID = slave.id;
       for(let device of devices){
+        console.log("device:",device.id);
         try {
           ledData.devID = device.id;
           console.log(schedule.SlaveId, device.id);
