@@ -115,17 +115,11 @@ module.exports = {
       let config = await services.schedule.getCurrectSetting({
         slaveId: id
       });
-      console.log("config!!",JSON.stringify(config,null, 2));
-      console.log("devList!!",devList);
-      // TODO require writeTimeTabToDevices
-      // let result = await services.hme.writeTimeTabToDevices(config, {devIDs: devList});
       let data = {
         config,
         devList
       }
-      console.log("!!!!!!!!!!!!!!",data);
       let result = await new Promise((resolve, reject) => {
-        console.log("!!!!!!!!!!!!!!",data);
         request
         .post(`http://${slave.host}:3000/rest/slave/${slave.id}/schedule/setOnDevice`)
         .send(data)
