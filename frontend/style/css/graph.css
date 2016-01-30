@@ -58,9 +58,11 @@
 }
 
 .smalllRaisedBnutton > div {
-  min-width: 30px !important;
+  min-width: 0px !important;
 }
-
+.smalllRaisedBnutton span {
+  padding: 5px !important;
+}
 .vertical-slider .rc-slider-mark-text {
   /* IE 9 */
   -webkit-transform: rotate(90deg);

@@ -279,13 +279,13 @@ describe("schedule", () => {
         result.Schedules[0].Details[0].should.have.property('weight');
         result.Schedules[0].Details[0].should.have.property('StartTime');
         result.Schedules[0].Details[0].should.have.property('Config');
-        result.Schedules[0].Details[0].Config.should.have.property('WW');
-        result.Schedules[0].Details[0].Config.should.have.property('DB');
-        result.Schedules[0].Details[0].Config.should.have.property('BL');
-        result.Schedules[0].Details[0].Config.should.have.property('GR');
-        result.Schedules[0].Details[0].Config.should.have.property('RE');
-        result.Schedules[0].Details[0].Config.should.have.property('CCT');
-        result.Schedules[0].Details[0].Config.should.have.property('Bright');
+        result.Schedules[0].Details[0].ScheduleDetailConfig.should.have.property('WW');
+        result.Schedules[0].Details[0].ScheduleDetailConfig.should.have.property('DB');
+        result.Schedules[0].Details[0].ScheduleDetailConfig.should.have.property('BL');
+        result.Schedules[0].Details[0].ScheduleDetailConfig.should.have.property('GR');
+        result.Schedules[0].Details[0].ScheduleDetailConfig.should.have.property('RE');
+        result.Schedules[0].Details[0].ScheduleDetailConfig.should.have.property('CCT');
+        result.Schedules[0].Details[0].ScheduleDetailConfig.should.have.property('Bright');
         done();
       } catch (e) {
         done(e);

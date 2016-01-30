@@ -3,7 +3,8 @@ module.exports = {
 
   saveDevice: async(data, slaveId) => {
     try {
-      let deviceList = await Promise.all(data.map( async (device) => {
+      let deviceList = [];
+      for(let device of data){
         let newDevice = {
           uid: device.devID,
           GroupId: device.GroupID,
@@ -15,8 +16,8 @@ module.exports = {
           },
           defaults: newDevice
         });
-        return newDevice;
-      }));
+        deviceList.push(newDevice);
+      }
       return deviceList;
     } catch (e) {
       throw e;
@@ -71,31 +72,40 @@ module.exports = {
       let slaveList = await models.Slave.findAll();
       let devicesLists =[];
       for (let slave of slaveList) {
-        let result = await new Promise((resolve, reject) => {
-          request.get(`/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
-            if(err) return reject(err);
-            resolve(res.body);
+        try {
+          let result = await new Promise((resolve, reject) => {
+            request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
+              if(err) return reject(err);
+              resolve(res.body);
+            });
           });
-        });
+
+        } catch (e) {
+          console.log(e);
+        }
       }
       for (let slave of slaveList) {
-        let result = await new Promise((resolve, reject) => {
-          request.get(`/rest/slave/${slave.id}/getCachedDeviceList`).end((err, res) => {
-            if(err) return reject(err);
-            resolve(res.body);
+        try {
+          let result = await new Promise((resolve, reject) => {
+            request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/getCachedDeviceList`).end((err, res) => {
+              if(err) return reject(err);
+              resolve(res.body);
+            });
           });
-        });
-        devicesLists.push(result);
-        for(let device of result) {
-          await models.Device.findOrCreate({
-            where: {
-              uid: device.devID
-            },
-            defaults: {
-              uid: device.devID,
-              SlaveId: device.SlaveId
-            }
-          })
+          devicesLists.push(result);
+          for(let device of result) {
+            await models.Device.findOrCreate({
+              where: {
+                uid: device.devID
+              },
+              defaults: {
+                uid: device.devID,
+                SlaveId: device.SlaveId
+              }
+            })
+          }
+        } catch (e) {
+          console.log(e);
         }
       }
     } catch (e) {
