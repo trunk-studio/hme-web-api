@@ -89,8 +89,10 @@ export default class ScheduleList extends React.Component {
   };
 
   _setScheduleList = (e) => {
+    let slaveId = this.state.selectedSlave || 0 ;
+    console.log(slaveId);
     this.props.requestSetScheduleList({
-      slaveId: this.state.selectedSlave
+      slaveId: slaveId
     })
     this.setState({
       isSetBtnClose: true
