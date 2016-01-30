@@ -69,7 +69,7 @@ app.use(async function (ctx, next) {
   try {
     await next();
   } catch (error) {
-    services.logger.error({error});
+    await services.logger.error({error});
     throw error;
   }
 });
