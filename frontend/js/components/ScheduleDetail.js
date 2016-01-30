@@ -174,6 +174,9 @@ export default class ScheduleDetail extends React.Component {
     for (let i=0;i<SCHEDULE_DETAILS_AMOUNT;i++) {
       let time = _formatMinutes(_timeToInteger(startTime) + (inteval*i));
       dailySchedules[i].StartTime = time;
+      if( i == 0 || i == SCHEDULE_DETAILS_AMOUNT-1 ) {
+        dailySchedules[i].weight = 0;
+      }
     }
 
     this.props.modifySchedule({

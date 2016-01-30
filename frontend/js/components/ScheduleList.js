@@ -15,8 +15,6 @@ import {
    Tabs,
    Tab,
    RefreshIndicator,
-   DatePicker,
-   DatePickerDialog,
    RadioButton,
    RadioButtonGroup,
    Table,
@@ -169,10 +167,6 @@ export default class ScheduleList extends React.Component {
         isAll: (selectedIndex == 1)? true : false,
         selectedSlave: (selectedIndex == 1)? null : e.target.value
       });
-  };
-
-  _handleDateDialogOpen = (e) => {
-    console.log(e);
   };
 
   render () {

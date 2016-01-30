@@ -285,15 +285,15 @@ export default class ScheduleDetailConfig extends React.Component {
             <div className="col-md-8 col-sm-8 col-xs-8">
               <div className="row">
                 <LineChart ref="chart" data={chartData} style={{
-                  margin: '5px',
+                  margin: '0 0 0 18px',
                   width: '100%',
                   height: '250px'
                   }}
                   options={chartOptions} />
               </div>
             </div>
-            <div className="col-md-4 col-sm-4 col-xs-4">
-              <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px'}}>WW {this.state.wwValue}</div>
+            <div className="col-md-4 col-sm-4 col-xs-4" style={{marginLeft: '-3px'}}>
+              <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
               <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
               <div style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
               <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
@@ -303,7 +303,7 @@ export default class ScheduleDetailConfig extends React.Component {
               <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
               <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
               <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
-              <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid'}}><span style={{opacity: 0}}>.</span></div>
+              <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
               <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
               {/*<div>Bright {this.state.brightValue}</div>
               <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onChange={this._brightChanged} className="slider"/> */}

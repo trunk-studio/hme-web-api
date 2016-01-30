@@ -12,7 +12,7 @@ import {
 } from 'material-ui'
 
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
-
+const timezones = require('../../../timezones.json');
 export default class  WifiSetting extends React.Component  {
 
   constructor(props) {
@@ -34,13 +34,17 @@ export default class  WifiSetting extends React.Component  {
   };
 
   render() {
-    let roles = [
-       { payload: 'engineer', text: '原廠工程師' },
-       { payload: 'admin', text: '主控者' },
-       { payload: 'user', text: '操作人員' }
-    ];
-    const {loadingStatus} = this.props;
 
+    let timezoneList = [];
+
+    for(let timezone of timezones) {
+      timezoneList.push({
+        payload: timezone.offset,
+        text: timezone.value
+      });
+    }
+
+    const {loadingStatus} = this.props;
 
     return (
       <div style={{width: '100%', overflowX: 'hidden'}}>
@@ -109,7 +113,13 @@ export default class  WifiSetting extends React.Component  {
           hintText="Connect to Master"
           type="text" />
       </div>
+      <div className="row" style={{marginLeft: '25%'}}>
+        <label style={{fontSize: '18px', marginTop: '15px'}}>Timezone</label>
+      </div>
       <div className="self-center" style={{width: "210px"}}>
+        <SelectField menuItems={timezoneList} style={{width: '300px'}}/>
+      </div>
+      <div className="self-center" style={{width: "300px"}}>
         <div className='row'>
           <RaisedButton label="APPLY" style={{float: 'right', marginBottom: '15px'}}/>
         </div>
