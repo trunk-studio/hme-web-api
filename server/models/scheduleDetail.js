@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = (sequelize, DataTypes) => {
   var ScheduleDetail = sequelize.define('ScheduleDetail', {
     weight: DataTypes.FLOAT,

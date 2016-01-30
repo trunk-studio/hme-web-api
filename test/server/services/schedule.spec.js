@@ -270,7 +270,15 @@ describe("schedule", () => {
             Days: 7
           }]
         }
-        let result = await services.schedule.getCurrectSetting({Device: device.id, Group: slaves.id, slaveId: slaves.id});
+        let result = await services.schedule.getCurrectSetting({
+          Device: device.id,
+          Group: slaves.id,
+          slaveId: slaves.id,
+          //  findScheduleId 可不給會撈出全部
+          findScheduleId: {
+            id: newSchedule.id
+          }
+        });
         console.log("currect json !!! ",JSON.stringify(result,null,2));
         result.Schedules.should.be.an.Array;
         result.Schedules[0].should.have.property('StartDate');
@@ -278,7 +286,7 @@ describe("schedule", () => {
         result.Schedules[0].Details.should.be.an.Array;
         result.Schedules[0].Details[0].should.have.property('weight');
         result.Schedules[0].Details[0].should.have.property('StartTime');
-        result.Schedules[0].Details[0].should.have.property('Config');
+        result.Schedules[0].Details[0].should.have.property('ScheduleDetailConfig');
         result.Schedules[0].Details[0].ScheduleDetailConfig.should.have.property('WW');
         result.Schedules[0].Details[0].ScheduleDetailConfig.should.have.property('DB');
         result.Schedules[0].Details[0].ScheduleDetailConfig.should.have.property('BL');

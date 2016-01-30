@@ -6,6 +6,8 @@ export const RECEIVED_UPDATED_SCHEDULE_DETAILS = 'RECEIVED_UPDATED_SCHEDULE_DETA
 // export const SET_SCHEDULE_WEIGHT = 'SET_SCHEDULE_WEIGHT'
 export const MODIFY_SCHEDULE = 'MODIFY_SCHEDULE'
 export const UPDATE_DETAIL_LOADING = 'UPDATE_DETAIL_LOADING'
+export const SET_FAST_RUN = 'SET_FAST_RUN'
+export const SET_SIM_RTC = 'SET_SIM_RTC'
 
 
 export function requestGetScheduleDetail(scheduleID) {
@@ -59,5 +61,37 @@ export function updateDetailLoadingStatus(status) {
   return {
     type: UPDATE_DETAIL_LOADING,
     status
+  }
+}
+
+export function requestSetFastRun(data) {
+  return (dispatch) => {
+    return request
+      .post('/rest/master/schedule/setFastRun', data)
+      .then(response => {
+        dispatch(receivedSetFastRun())
+      });
+  };
+}
+
+export function receivedSetFastRun() {
+  return {
+    type: SET_FAST_RUN
+  }
+}
+
+export function requestSetSimRtc(data) {
+  return (dispatch) => {
+    return request
+      .post('/rest/master/schedule/setSimRtc', data)
+      .then(response => {
+        dispatch(receivedSetSimRtc())
+      });
+  };
+}
+
+export function receivedSetSimRtc() {
+  return {
+    type: SET_SIM_RTC
   }
 }

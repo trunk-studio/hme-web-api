@@ -8,7 +8,7 @@ import jwtDecode from 'jwt-decode'
 import React from 'react';
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import { Router, Route, Link, IndexRoute } from 'react-router';
+import { browserHistory, Router, Route, Link, IndexRoute } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { autoRehydrate } from 'redux-persist';
@@ -49,13 +49,13 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <Router>
+      <Router history={browserHistory}>
         <Route path="/" component={LoginPage}  onEnter={this._requireAuth}/>
         <Route path="/login" component={LoginPage} />
         <Route path="/manage/:tabIndex" component={ManagePage} onEnter={this._requireAuth}/>
         <Route path="/graph" component={SettingGraph} />
         <Route path="/schedule/list" component={ScheduleList} onEnter={this._requireAuth}/>
-        <Route path="/schedule/edit/:scheduleID" component={ScheduleDetail} onEnter={this._requireAuth}/>
+        <Route path="/schedule/:slaveId/edit/:scheduleID" component={ScheduleDetail} onEnter={this._requireAuth}/>
         <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} onEnter={this._requireAuth}/>
         <Route path="/setup" component={WifiSetting} />
       </Router>

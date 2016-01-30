@@ -3,7 +3,8 @@ import {connect} from 'react-redux'
 import {
   requestGetScheduleDetail,
   requestUpdateScheduleDetails,
-  modifySchedule
+  modifySchedule, requestSetFastRun,
+  requestSetSimRtc
 } from '../actions/ScheduleDetailActions'
 import moment from 'moment'
 import {
@@ -59,7 +60,11 @@ export default class ScheduleDetail extends React.Component {
     super(props);
     this.state = {
       currentIndex: 0,
-      dialogIsOpen: false
+      dialogIsOpen: false,
+      fastRunLabel: 'FastRun',
+      fastRunIntervalId: '',
+      fastRunStart: false,
+      count: 0
     }
   }
 
@@ -114,6 +119,43 @@ export default class ScheduleDetail extends React.Component {
   _saveScheduleDetails = (e) => {
     // console.log('save',this.props.scheduleDetails);
     this.props.requestUpdateScheduleDetails(this.props.scheduleDetails);
+  };
+
+  _fastRun = (e) => {
+    if(!this.state.fastRunStart){
+      this.props.requestSetFastRun({
+        slaveId: this.props.params.slaveId,
+        scheduleId: this.props.params.scheduleID
+      });
+      let fastRunIntervalId = setInterval(this._setSimRtc, 1000);
+      this.setState({
+        fastRunIntervalId: fastRunIntervalId,
+        fastRunStart: true
+      })
+    }else{
+      clearInterval(this.state.fastRunIntervalId);
+      this.setState({
+        fastRunLabel: 'FastRun',
+        fastRunStart: false,
+        count: 0
+      })
+    }
+  };
+
+  _setSimRtc = (e) => {
+    let time = moment("2016-01-01T00:00:00");
+    let count = this.state.count;
+    time.add(30 * count,'m');
+    count++;
+    console.log(time.format());
+    this.props.requestSetSimRtc({
+      slaveId: this.props.params.slaveId,
+      count: count
+    })
+    this.setState({
+      fastRunLabel: time.format("HH:mm"),
+      count: count
+    })
   };
 
   _handleDialogOpen = (e) => {
@@ -280,6 +322,7 @@ export default class ScheduleDetail extends React.Component {
           }
           iconElementRight={
             <div>
+              <FlatButton label={this.state.fastRunLabel} ref="fastRun" onTouchTap={this._fastRun} style={{marginTop:'4px',marginRight:'10px',marginLeft:'auto', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
               <FlatButton label="RESET" onTouchTap={this._handleDialogOpen} style={{marginTop:'4px',marginRight:'10px',marginLeft:'auto', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
               <FlatButton label="save" onTouchTap={this._saveScheduleDetails} style={{didFlip:'true',marginTop:'4px',marginRight:'10px',marginLeft:'auto', backgroundColor: 'rgba(0,0,0,0)', color: '#fff'}} >
                 <RefreshIndicator
@@ -428,7 +471,9 @@ function _injectPropsFromStore(state) {
 const _injectPropsFromActions = {
   requestGetScheduleDetail,
   requestUpdateScheduleDetails,
-  modifySchedule
+  modifySchedule,
+  requestSetFastRun,
+  requestSetSimRtc
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleDetail);
