@@ -283,3 +283,54 @@ exports.slaveSetFastRun = async function(ctx) {
     ctx.body = false;
   }
 }
+
+exports.setSimRtc = async function(ctx) {
+  try {
+    console.log("==== setSimRtc ===",ctx.request.body);
+    let slaveId = ctx.request.body.slaveId;
+    let count = ctx.request.body.count;
+    console.log("slaveId!!",slaveId);
+    let isAll = false;
+    if(slaveId == 0){
+      let slaveList = await models.Slave.findAll();
+      isAll = true;
+      for (let slave of slaveList) {
+        try {
+          await services.schedule.setSimRtc(slave, count);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    }else{
+      let slave = await models.Slave.findById(slaveId, count);
+      await services.schedule.setSimRtc(slave);
+    }
+    ctx.body = true;
+  } catch (e) {
+    console.error(e);
+    ctx.body = false;
+  }
+}
+
+exports.slaveSetSimRtc = async function(ctx) {
+  try {
+    console.log("==== slaveSetSimRtc ===",ctx.request.body);
+    let data = ctx.request.body.count
+    let timeParams = {
+      devID: 0,
+      groupID: 0,
+      year: 1900,
+      month: 1,
+      day: 1,
+      hour: 0,
+      min: 0,
+      sec: 0
+    }
+    services.hme.setSimRtc(timeParams);
+    console.log("success:",result);
+    ctx.body = true;
+  } catch (e) {
+    console.error(e);
+    ctx.body = false;
+  }
+}
