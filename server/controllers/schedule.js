@@ -334,7 +334,7 @@ exports.slaveSetSimRtc = async function(ctx) {
       timeParams.min,
       timeParams.sec
     ]);
-    console.log("!!!!!!!!!!",timeParams,time.format());
+    
     time.add(30 * count,'m');
     timeParams.year = time.year();
     timeParams.month = time.month()+1;
@@ -342,7 +342,6 @@ exports.slaveSetSimRtc = async function(ctx) {
     timeParams.hour = time.hour();
     timeParams.min = time.minute();
 
-    console.log("!!!!!!!!!!",timeParams,time.format());
     services.hme.setSimRtc(timeParams);
 
     ctx.body = true;
