@@ -50,13 +50,13 @@ export default class App extends React.Component {
   render() {
     return (
       <Router>
-        <Route path="/" component={ManagePage} />
+        <Route path="/" component={LoginPage}  onEnter={this._requireAuth}/>
         <Route path="/login" component={LoginPage} />
         <Route path="/manage/:tabIndex" component={ManagePage} onEnter={this._requireAuth}/>
         <Route path="/graph" component={SettingGraph} />
-        <Route path="/schedule/list" component={ScheduleList} />
-        <Route path="/schedule/edit/:scheduleID" component={ScheduleDetail} />
-        <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} />
+        <Route path="/schedule/list" component={ScheduleList} onEnter={this._requireAuth}/>
+        <Route path="/schedule/edit/:scheduleID" component={ScheduleDetail} onEnter={this._requireAuth}/>
+        <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} onEnter={this._requireAuth}/>
         <Route path="/setup" component={WifiSetting} />
       </Router>
     );
