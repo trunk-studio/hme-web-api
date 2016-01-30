@@ -134,10 +134,55 @@ module.exports = {
     }
   },
 
-  getCurrectSetting: async({Device, Group, slaveId}) => {
+  setFastRun: async(slave, isAll, scheduleId) => {
+    try {
+      let id = isAll ? null : slave.id ;
+      let config = await services.schedule.getCurrectSetting({
+        slaveId: id,
+        findScheduleId: {
+          id: scheduleId
+        }
+      });
+      let data = config.Schedules[0].Details;
+      let result = await new Promise((resolve, reject) => {
+        request
+        .post(`http://${slave.host}:3000/rest/slave/${slave.id}/schedule/setFastRun`)
+        .send(data)
+        .end((err, res) => {
+          if(err) return reject(err);
+          resolve(res.body);
+        });
+      });
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
+  },
+
+  setSimRtc: async(slave, count) => {
+    try {
+      let result = await new Promise((resolve, reject) => {
+        request
+        .post(`http://${slave.host}:3000/rest/slave/${slave.id}/schedule/setSimRtc`)
+        .send({
+          count
+        })
+        .end((err, res) => {
+          if(err) return reject(err);
+          resolve(res.body);
+        });
+      });
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
+  },
+
+  getCurrectSetting: async({Device, Group, slaveId, findScheduleId}) => {
     try {
       let basicSchedules  = await models.Schedule.findAll({
         where:{
+          ...findScheduleId,
           SlaveId: slaveId
         },
         include:[{
