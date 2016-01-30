@@ -113,7 +113,7 @@ describe("Schedule", () => {
     }
   });
 
-  it.only("set All slave slaveSetSimRtc", async(done) => {
+  it("set All slave slaveSetSimRtc", async(done) => {
     try {
       let data = {
         count: 11
