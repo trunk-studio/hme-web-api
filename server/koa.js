@@ -38,7 +38,7 @@ const compiler = webpack(webpackConfig);
 const jwt = require('koa-jwt');
 
 // do not use this secret for production
-const secret = 'secretTest'
+const secret = config.secret;
 
 app.use(convert(koaBodyParser()));
 app.use(convert(jwt({ secret }).unless({

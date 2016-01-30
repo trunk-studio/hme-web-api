@@ -1,6 +1,5 @@
-const jsonWebToken = require('jsonwebtoken');
-
-
+import jsonWebToken from 'jsonwebtoken';
+import { secret } from '../config/init'
 
 exports.index = async function(ctx) {
 
@@ -63,6 +62,7 @@ exports.login = async function (ctx, next) {
     let role = ctx.request.body.role;
     let password = ctx.request.body.password;
 
+    let token;
 
     if(userData[role] == password) {
       success = true;
@@ -71,14 +71,14 @@ exports.login = async function (ctx, next) {
           role: role
       };
 
-      const token = jsonwebtoken.sign(user, secret, {
+      token = jsonWebToken.sign(user, secret, {
           issuer: 'localhost',
-          audience: 'someaudience',
+          audience: 'user',
           expiresIn: '1d'
       });
     }
 
-    console.log({sucess});
+    console.log({success});
     ctx.body = {
       success: success,
       jwt: token

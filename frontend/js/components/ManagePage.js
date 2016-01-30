@@ -9,6 +9,10 @@ import {
 } from '../actions/TestActions'
 
 import {
+  getRole
+} from '../actions/AuthActions'
+
+import {
   requestGetReportEmail, requestUpdateReportEmail
 } from '../actions/ManageActions'
 
@@ -111,6 +115,7 @@ export default class ManagePage extends React.Component {
   componentDidMount() {
     this.props.requestGetSlaveAndDeviceList();
     this.props.requestGetReportEmail();
+    // this.props.getRole();
     // this.props.requestGetCachedDeviceList();
     // this.props.requestGetCachedSlaveList();
     //this.props.requestScan();
@@ -497,7 +502,9 @@ const _injectPropsFromActions = {
   requestGetSlaveAndDeviceList,
   //report setting
   requestGetReportEmail,
-  requestUpdateReportEmail
+  requestUpdateReportEmail,
+  // Auth
+  getRole
 }
 
 

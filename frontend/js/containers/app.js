@@ -4,20 +4,20 @@ require('../../style/css/graph.css');
 require('../../style/css/nv.d3.css');
 require('../../style/css/slider.css');
 
+import jwtDecode from 'jwt-decode'
 import React from 'react';
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { Router, Route, Link, IndexRoute } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-// import { autoRehydrate } from 'redux-persist';
+import { autoRehydrate } from 'redux-persist';
 import createLogger from 'redux-logger';
 import reducers from '../reducers'
 import configureStore from '../store/configureStore';
 const store = configureStore();
 
-const createStoreWithMiddleware = applyMiddleware(thunk, createLogger())(createStore);
-// const store                     = compose(autoRehydrate())(createStoreWithMiddleware)(reducers);
+// const history                   = createBrowserHistory();
 
 injectTapEventPlugin();
 
@@ -41,12 +41,10 @@ import WifiSetting from '../components/WifiSetting';
 export default class App extends React.Component {
 
   _requireAuth = (nextState, replaceState) => {
-    const state = store.getState();
-    console.log('store', state);
-    // if (!state.auth.isLoggedIn) {
-        // const nextPathname = nextState.location.pathname;
-        // replaceState({ nextPathname }, '/login');
-    // }
+    if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
+      console.log('fail');
+      replaceState({}, '/login');
+    }
   };
 
   render() {
