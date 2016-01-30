@@ -2,13 +2,17 @@ import React                from 'react';
 import { connect } from 'react-redux'
 import { requestLogin } from '../actions/AuthActions'
 import {
- RaisedButton,
- SelectField,
- TextField,
- Tabs,
- Tab,
- RefreshIndicator
-} from 'material-ui'
+  RaisedButton,
+  SelectField,
+  TextField,
+  Tabs,
+  Tab,
+  RefreshIndicator
+} from 'material-ui';
+
+import md5 from 'md5';
+import configureStore from '../store/configureStore';
+const store = configureStore();
 export default class LoginPage extends React.Component {
 
   constructor(props) {
@@ -26,13 +30,14 @@ export default class LoginPage extends React.Component {
   };
 
   _login = (e) => {
+    console.log('click');
     e.preventDefault();
     let Password = this.refs.password;
     let password = Password.getValue();
     if(password.length > 0) {
       this.props.requestLogin({
         role: this.state.role,
-        password: password
+        password: md5(password)
       });
     }
     else {
@@ -45,7 +50,7 @@ export default class LoginPage extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if('success' in this.props.login) {
-      if(this.props.login.success) {
+      if(this.props.login.success && !prevProps.login.success) {
         window.location.href = "/#manage/0";
       }
       else {
