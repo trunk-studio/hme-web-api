@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = (sequelize, DataTypes) => {
   var Schedule = sequelize.define('Schedule', {
     StartDate: DataTypes.DATE,

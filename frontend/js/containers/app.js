@@ -5,7 +5,7 @@ require('../../style/css/nv.d3.css');
 require('../../style/css/slider.css');
 
 import React from 'react';
-import { Router, Route, Link } from 'react-router';
+import {browserHistory, Router, Route, Link } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -31,12 +31,12 @@ import WifiSetting from '../components/WifiSetting';
 export default class App extends React.Component {
   render() {
     return (
-      <Router>
+      <Router history={browserHistory}>
         <Route path="/" component={LoginPage} />
         <Route path="/manage/:tabIndex" component={ManagePage} />
         <Route path="/graph" component={SettingGraph} />
         <Route path="/schedule/list" component={ScheduleList} />
-        <Route path="/schedule/edit/:scheduleID" component={ScheduleDetail} />
+        <Route path="/schedule/:slaveId/edit/:scheduleID" component={ScheduleDetail} />
         <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} />
         <Route path="/setup" component={WifiSetting} />
       </Router>

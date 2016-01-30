@@ -201,6 +201,11 @@ export default class ScheduleDetailConfig extends React.Component {
     this._setAll(0, 1, 1, 0, 1);
   };
 
+  _goBack = (e) => {
+    console.log(this);
+    this.props.history.goBack();
+  };
+
   render() {
     if(this.props.config){
       this.state.wwValue = Math.round(this.props.config[0] * (this.state.brightValue * 0.01));
@@ -260,7 +265,7 @@ export default class ScheduleDetailConfig extends React.Component {
           style={{height: '55px', minHeight: '0px', marginTop: '-9px'}}
           titleStyle={{fontSize: '20px'}}
           iconElementLeft={
-            <IconButton onTouchTap={function() {window.location.href =`#/schedule/edit/${scheduleID}`;}} >
+            <IconButton onTouchTap={this._goBack} >
               <NavigationClose />
             </IconButton>
           }

@@ -53,6 +53,80 @@ describe("Schedule", () => {
     }
   });
 
+  it("set one slave FastRun", async(done) => {
+    try {
+      let data = {
+        slaveId: slaves.id,
+        scheduleId: newSchedule.id
+      }
+      let result = await request.post('/rest/master/schedule/setFastRun')
+      .send(data);
+      done()
+    } catch (e) {
+      console.log(e);
+      done(e)
+    }
+  });
+
+  it("set All slave FastRun", async(done) => {
+    try {
+      let data = {
+        slaveId: 0,
+        scheduleId: newSchedule.id
+      }
+      let result = await request.post('/rest/master/schedule/setFastRun')
+      .send(data);
+      done()
+    } catch (e) {
+      console.log(e);
+      done(e)
+    }
+  });
+
+  it("set one slave setSimRtc", async(done) => {
+    try {
+      let data = {
+        slaveId: slaves.id,
+        count: 1
+      }
+      let result = await request.post('/rest/master/schedule/setSimRtc')
+      .send(data);
+      done()
+    } catch (e) {
+      console.log(e);
+      done(e)
+    }
+  });
+
+  it("set All slave setSimRtc", async(done) => {
+    try {
+      let data = {
+        slaveId: 0,
+        count: 1
+      }
+      let result = await request.post('/rest/master/schedule/setSimRtc')
+      .send(data);
+      done()
+    } catch (e) {
+      console.log(e);
+      done(e)
+    }
+  });
+
+  it("set All slave slaveSetSimRtc", async(done) => {
+    try {
+      let data = {
+        count: 11
+      }
+      let result = await request.post(`/rest/slave/${slaves.id}/schedule/setSimRtc`)
+      .send(data);
+      done()
+    } catch (e) {
+      console.log(e);
+      done(e)
+    }
+  });
+
   it("find", async(done) => {
     try {
       let result = await request.get('/rest/master/schedule/' + newSchedule.id);
