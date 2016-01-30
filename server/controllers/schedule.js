@@ -343,7 +343,7 @@ exports.slaveSetSimRtc = async function(ctx) {
     timeParams.min = time.minute();
 
     console.log("!!!!!!!!!!",timeParams,time.format());
-    // services.hme.setSimRtc(timeParams);
+    services.hme.setSimRtc(timeParams);
 
     ctx.body = true;
   } catch (e) {

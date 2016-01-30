@@ -2,7 +2,8 @@ import {
   RECEIVED_SCHEDULE_DETAIL,
   RECEIVED_UPDATED_SCHEDULE_DETAILS,
   MODIFY_SCHEDULE,
-  UPDATE_DETAIL_LOADING
+  UPDATE_DETAIL_LOADING,
+  SET_FAST_RUN
 } from '../actions/ScheduleDetailActions'
 
 export function scheduleDetail(state = { }, action) {
