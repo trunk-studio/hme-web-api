@@ -315,7 +315,7 @@ exports.setSimRtc = async function(ctx) {
 exports.slaveSetSimRtc = async function(ctx) {
   try {
     console.log("==== slaveSetSimRtc ===",ctx.request.body);
-    let data = ctx.request.body.count
+    let count = ctx.request.body.count
     let timeParams = {
       devID: 0,
       groupID: 0,
@@ -326,8 +326,25 @@ exports.slaveSetSimRtc = async function(ctx) {
       min: 0,
       sec: 0
     }
-    services.hme.setSimRtc(timeParams);
-    console.log("success:",result);
+    let time = moment([
+      timeParams.year,
+      timeParams.month - 1,
+      timeParams.day,
+      timeParams.hour,
+      timeParams.min,
+      timeParams.sec
+    ]);
+    console.log("!!!!!!!!!!",timeParams,time.format());
+    time.add(30 * count,'m');
+    timeParams.year = time.year();
+    timeParams.month = time.month()+1;
+    timeParams.day = time.date();
+    timeParams.hour = time.hour();
+    timeParams.min = time.minute();
+
+    console.log("!!!!!!!!!!",timeParams,time.format());
+    // services.hme.setSimRtc(timeParams);
+
     ctx.body = true;
   } catch (e) {
     console.error(e);

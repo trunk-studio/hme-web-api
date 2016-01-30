@@ -163,7 +163,7 @@ module.exports = {
     try {
       let result = await new Promise((resolve, reject) => {
         request
-        .post(`http://${slave.host}:3000//rest/slave/${slave.id}/schedule/setSimRtc`)
+        .post(`http://${slave.host}:3000/rest/slave/${slave.id}/schedule/setSimRtc`)
         .send({
           count
         })
