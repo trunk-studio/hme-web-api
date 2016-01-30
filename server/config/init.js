@@ -11,6 +11,7 @@ try {
     engineer: md5('engineer'),
     user: md5('user')
   };
+  config.secret = 'supersecret';
 }
 catch (error) {
   debug('dev')(`No specific configuration for env ${env}`);
