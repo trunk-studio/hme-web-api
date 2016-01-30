@@ -24,7 +24,9 @@ import {
    TableHeaderColumn,
    TableRow,
    TableRowColumn,
-   Snackbar
+   Snackbar,
+   Dialog,
+   FlatButton
  } from 'material-ui';
 
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
@@ -45,7 +47,8 @@ export default class ScheduleList extends React.Component {
       muiTheme: ThemeManager.getMuiTheme(LightRawTheme),
       isAll: false,
       isGroup: true,
-      selectedSlave: 0
+      selectedSlave: 0,
+      open: false
     };
   }
 
@@ -72,6 +75,16 @@ export default class ScheduleList extends React.Component {
   componentDidUpdate(prevProps, prevState) {
   };
 
+  _warnHandleOpen = () => {
+    if(!this.state.selectedSlave){
+      this.setState({open: true});
+    }
+  };
+
+  _warnHandleClose = () => {
+    this.setState({open: false});
+  };
+
   _addRow = (e) => {
     this.props.requestScheduleCreate(this.props.scheduleList, this.state.selectedSlave);
     this.setState({
@@ -89,6 +102,7 @@ export default class ScheduleList extends React.Component {
   };
 
   _setScheduleList = (e) => {
+    this._warnHandleClose()
     let slaveId = this.state.selectedSlave || 0 ;
     console.log(slaveId);
     this.props.requestSetScheduleList({
@@ -272,49 +286,114 @@ export default class ScheduleList extends React.Component {
     }];
     slaveList.push(...this.props.slaveList);
     // let isAddOpen = rows.length >= 5 ? true: false;
+    let dialogActions = [
+      <FlatButton
+        key={'cancelButton'}
+        label="Cancel"
+        secondary={true}
+        onTouchTap={this._warnHandleClose} />,
+      <FlatButton
+        key={'resetButton'}
+        label="Set"
+        primary={true}
+        onTouchTap={this._setScheduleList} />
+    ];
     return (
-      <div id="scheduleList" className="self-center" style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
-        <div className="row">
-          <div style={{marginLeft: '30px', marginTop: '15px', display: 'inline-flex'}}>
-            <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px'}}/>
-            {/*
-              <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
-              <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
-            */}
-            <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
-            <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
-            <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '15px'}} />
-            <RefreshIndicator
-              size={30}
-              left={8}
-              top={2}
-              status={this.props.loading || 'hide'}
-              style={{display: 'inline-block',
-                      position: 'relative'}} />
-        </div>
-        </div>
-        <Table selectable={false}>
-          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-            <TableRow>
-              <TableHeaderColumn >Edit</TableHeaderColumn>
-              <TableHeaderColumn >Start Date</TableHeaderColumn>
-              <TableHeaderColumn >Days</TableHeaderColumn>
+      <div>
+        <Dialog
+          title="Warning"
+          actions={dialogActions}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this._warnHandleClose}>
+          The actions will clean all slave schedule.
+        </Dialog>
+        <div id="easyScheduleList" className="self-center" style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
+          <div className="row">
+            <div style={{marginLeft: '30px', marginTop: '15px', display: 'inline-flex'}}>
+              <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px'}}/>
               {/*
-                <TableHeaderColumn >Grouping setting</TableHeaderColumn>
+                <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
+                <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
               */}
-            </TableRow>
-          </TableHeader>
-          <TableBody displayRowCheckbox={false} style={{height: '500px'}}>
-            {rows}
-          </TableBody>
-        </Table>
-        <Snackbar
-          ref="snackbar"
-          open={false}
-          onRequestClose={this._handleRequestClose}
-          message={"已更改, 需要儲存"}
-          autoHideDuration={3000}
-        />
+              <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
+              <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
+              <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '15px'}} />
+              <RefreshIndicator
+                size={30}
+                left={8}
+                top={2}
+                status={this.props.loading || 'hide'}
+                style={{display: 'inline-block',
+                        position: 'relative'}} />
+          </div>
+          </div>
+          <Table selectable={false}>
+            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+              <TableRow>
+                <TableHeaderColumn >Edit</TableHeaderColumn>
+                <TableHeaderColumn >Start Date</TableHeaderColumn>
+                <TableHeaderColumn >Days</TableHeaderColumn>
+                {/*
+                  <TableHeaderColumn >Grouping setting</TableHeaderColumn>
+                */}
+              </TableRow>
+            </TableHeader>
+            <TableBody displayRowCheckbox={false} style={{height: '500px'}}>
+              {rows}
+            </TableBody>
+          </Table>
+          <Snackbar
+            ref="snackbar"
+            open={false}
+            onRequestClose={this._handleRequestClose}
+            message={"已更改, 需要儲存"}
+            autoHideDuration={3000}
+          />
+        </div>
+        <div id="scheduleList" className="self-center" style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
+          <div className="row">
+            <div style={{marginLeft: '30px', marginTop: '15px', display: 'inline-flex'}}>
+              <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px'}}/>
+              {/*
+                <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
+                <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
+              */}
+              <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
+              <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
+              <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '15px'}} />
+              <RefreshIndicator
+                size={30}
+                left={8}
+                top={2}
+                status={this.props.loading || 'hide'}
+                style={{display: 'inline-block',
+                        position: 'relative'}} />
+          </div>
+          </div>
+          <Table selectable={false}>
+            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+              <TableRow>
+                <TableHeaderColumn >Edit</TableHeaderColumn>
+                <TableHeaderColumn >Start Date</TableHeaderColumn>
+                <TableHeaderColumn >Days</TableHeaderColumn>
+                {/*
+                  <TableHeaderColumn >Grouping setting</TableHeaderColumn>
+                */}
+              </TableRow>
+            </TableHeader>
+            <TableBody displayRowCheckbox={false} style={{height: '500px'}}>
+              {rows}
+            </TableBody>
+          </Table>
+          <Snackbar
+            ref="snackbar"
+            open={false}
+            onRequestClose={this._handleRequestClose}
+            message={"已更改, 需要儲存"}
+            autoHideDuration={3000}
+          />
+        </div>
       </div>
     );
   };
