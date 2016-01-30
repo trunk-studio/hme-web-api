@@ -324,8 +324,7 @@ export default class ScheduleList extends React.Component {
                 left={8}
                 top={2}
                 status={this.props.loading || 'hide'}
-                style={{display: 'inline-block',
-                        position: 'relative'}} />
+                style={{display: 'inline-block', position: 'relative'}} />
           </div>
           </div>
           <Table selectable={false}>
