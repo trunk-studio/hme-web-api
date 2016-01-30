@@ -83,6 +83,36 @@ describe("Schedule", () => {
     }
   });
 
+  it("set one slave setSimRtc", async(done) => {
+    try {
+      let data = {
+        slaveId: slaves.id,
+        count: 1
+      }
+      let result = await request.post('/rest/master/schedule/setSimRtc')
+      .send(data);
+      done()
+    } catch (e) {
+      console.log(e);
+      done(e)
+    }
+  });
+
+  it("set All slave setSimRtc", async(done) => {
+    try {
+      let data = {
+        slaveId: 0,
+        count: 1
+      }
+      let result = await request.post('/rest/master/schedule/setSimRtc')
+      .send(data);
+      done()
+    } catch (e) {
+      console.log(e);
+      done(e)
+    }
+  });
+
   it("find", async(done) => {
     try {
       let result = await request.get('/rest/master/schedule/' + newSchedule.id);
