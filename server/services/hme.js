@@ -18,6 +18,9 @@ export default class Hme {
     return new Promise(r => setTimeout(r, ms));
   };
 
+  hello(){
+    return {msg: 'world'};
+  };
 
 
 

@@ -6,13 +6,11 @@ var fs        = require("fs");
 var path      = require("path");
 var Sequelize = require("sequelize");
 
-console.log('=== db config ===', config);
 var {connection} = config
 
 export default class Models {
 
   constructor() {
-    console.log('=== connection ===', connection);
     var sequelize = new Sequelize(connection.database, connection.username, connection.password, connection);
 
     var db = {};

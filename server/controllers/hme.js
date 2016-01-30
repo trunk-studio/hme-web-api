@@ -1,7 +1,6 @@
 import request from 'superagent'
 
 exports.hello = async function (ctx) {
-  console.log('=== services ===', services);
   let result = await services.hme.hello()
 
   ctx.body = {result}
