@@ -54,6 +54,23 @@ export function receivedUpdateScheduleDetailConfig(data) {
 }
 
 
+export function requestPreviewLedColor(updateData) {
+  let data = [
+    updateData.WW,
+    updateData.DB,
+    updateData.BL,
+    updateData.GR,
+    updateData.RE,
+    updateData.CCT,
+    updateData.Bright
+  ]
+  return (dispatch) => {
+    dispatch(receivedUpdateScheduleDetailConfig(data));
+    return request
+      .post(`/rest/master/schedule/previewLedColor`,updateData);
+  };
+}
+
 export function updateScheduleDetailConfigLoadingStatus(status) {
   return {
     type: UPDATE_SCHEDULE_DETAIL_CONFIG_LOADING_STATUS,

@@ -846,6 +846,30 @@ describe("hme without seriel port", () => {
     }
   });
 
+  it("timeSetToArry", done => {
+    try {
+      let timeSet = {
+        weight: 1,
+        StartTime: '22:00',
+        ScheduleDetailConfig: {
+        WW: 5,
+        DB: 5,
+        BL: 5,
+        GR: 5,
+        RE: 5,
+        CCT: 5,
+        Bright: 5
+        }
+      }
+
+      let result = services.hme.encode.timeSetToArry(timeSet);
+      console.log(result);
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
+
 
 
 });

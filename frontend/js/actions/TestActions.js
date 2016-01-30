@@ -14,7 +14,7 @@ export const SCANNING = 'SCANNING'
 export function requestTestSetLedDisplay(data) {
   return (dispatch) => {
     return request
-      .post(`/rest/slave/${data.groupID}/device/${data.devID}/setLedDisplay`,data)
+      .post(`/rest/slave/${data.slaveID}/device/${data.devID}/setLedDisplay`,data)
       .then(response => dispatch(receivedTestSetLedDisplay(response.data)));
   };
 }
@@ -26,10 +26,10 @@ export function receivedTestSetLedDisplay(data) {
   }
 }
 
-export function requestTestOneDevice(deviceID) {
+export function requestTestOneDevice(deviceID,slaveID) {
   return (dispatch) => {
     return request
-      .get(`/rest/slave/0/device/${deviceID}/test`)
+      .get(`/rest/slave/${slaveID}/device/${deviceID}/test`)
   };
 }
 

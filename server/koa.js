@@ -33,7 +33,6 @@ global.fs = fs;
 const {environment} = appConfig;
 const app = new koa();
 const convert = require('koa-convert');
-console.log('aaa',webpackConfig);
 const compiler = webpack(webpackConfig);
 
 const jwt = require('koa-jwt');
@@ -105,9 +104,9 @@ var liftApp = async () => {
     console.log('=== liftApp ===');
     await models.sequelize.sync({force: config.connection.force})
 
-    await bootstrap();
     console.log('=== config ===', config);
     app.listen(config.port);
+    await bootstrap();
 
     if (process.send) process.send('online');
     debug('koa')(`Application started on port ${config.port}`);

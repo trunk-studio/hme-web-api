@@ -51,7 +51,24 @@ describe("hme with seriel port", () => {
 
     });
 
+    it("serial Port uartDataTxRx", async done => {
 
+      try {
+        let restComm = [128,1,0,0,0,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0];
+        let params = {
+          Comm:restComm,
+          RxLen:8,
+          waitTime:20
+        }
+        let result = await services.hme.uartDataTxRx(params);
+        //result.should.be.equal[ 192, 1, 0, 0, 50, 115, 1, 0 ];
+        console.log('UartTxRx result',result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
 
     it("serial Port testAll", async done => {
 
@@ -212,15 +229,16 @@ describe("hme with seriel port", () => {
       try {
         let params = {
           devID: 1,
-          groupID: 1,
-          year: 2017,
+          groupID: 0,
+          year: 2016,
           month: 1,
-          day: 5,
-          hour: 6,
+          day: 18,
+          hour: 7,
           min: 11,
           sec: 0
         }
         let result = await services.hme.setSimRtc(params);
+        await services.hme.setSimRtcFunc(params.devID, params.groupID, 'init');
         console.log('setSimRtc result',result);
         result.should.be.true;
         done();
@@ -244,7 +262,7 @@ describe("hme with seriel port", () => {
           min: 11,
           sec: 5
         }
-        await services.hme.setSimRtc(params);
+        //await services.hme.setSimRtc(params);
         let result = await services.hme.getSimRtc(devID, groupID);
         console.log('getSimRtc result',result);
         //result.should.be.true;
@@ -259,8 +277,8 @@ describe("hme with seriel port", () => {
       try {
         let devID = 1;
         let groupID = 1;
-        let func = 'inti'
-        // func = 'inti', 'run', 'stop'
+        let func = 'init'
+        // func = 'init', 'run', 'stop'
 
         let result = await services.hme.setSimRtcFunc(devID, groupID, func);
         console.log('setSimRtc result',result);
@@ -368,7 +386,7 @@ describe("hme with seriel port", () => {
           Device: 1,
           Group: 0,
           Schedules: [{
-            StartDate: '2016-02-01',
+            StartDate: '2016-01-01',
             Days: 7,
             Details: [{
                         weight: 1,
@@ -1117,6 +1135,365 @@ describe("hme with seriel port", () => {
         let result = await services.hme.writeTimeTabToDevices(config, devList);
         console.log('writeTimeTabToDevices result',result);
         result.should.be.true;
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port setFastRun", async done => {
+      // 設定快轉預覽時程設定照明效果
+      try {
+        let devID = 0;
+        let groupID = 0;
+        let rate = 2000;
+        let timeTab = [{
+                    weight: 1,
+                    StartTime: '00:00',
+                    ScheduleDetailConfig: {
+                      WW: 100,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 100
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '02:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 100,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 100
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '04:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 100,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 100
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '06:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 100,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 100
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '08:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 100,
+                      CCT: 0,
+                      Bright: 100
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '10:10',
+                    ScheduleDetailConfig: {
+                      WW: 70,
+                      DB: 70,
+                      BL: 70,
+                      GR: 70,
+                      RE: 70,
+                      CCT: 70,
+                      Bright: 70
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '08:20',
+                    ScheduleDetailConfig: {
+                    WW: 85,
+                    DB: 85,
+                    BL: 85,
+                    GR: 85,
+                    RE: 85,
+                    CCT: 85,
+                    Bright: 85
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '09:30',
+                    ScheduleDetailConfig: {
+                    WW: 60,
+                    DB: 60,
+                    BL: 60,
+                    GR: 60,
+                    RE: 60,
+                    CCT: 60,
+                    Bright: 60
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '10:00',
+                    ScheduleDetailConfig: {
+                      WW: 100,
+                      DB: 100,
+                      BL: 100,
+                      GR: 100,
+                      RE: 100,
+                      CCT: 0,
+                      Bright: 100
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '11:50',
+                    ScheduleDetailConfig: {
+                      WW: 25,
+                      DB: 25,
+                      BL: 25,
+                      GR: 25,
+                      RE: 25,
+                      CCT: 25,
+                      Bright: 25
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '12:12',
+                    ScheduleDetailConfig: {
+                    WW: 15,
+                    DB: 15,
+                    BL: 15,
+                    GR: 15,
+                    RE: 15,
+                    CCT: 15,
+                    Bright: 15
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '22:00',
+                    ScheduleDetailConfig: {
+                    WW: 5,
+                    DB: 5,
+                    BL: 5,
+                    GR: 5,
+                    RE: 5,
+                    CCT: 5,
+                    Bright: 5
+                  }
+              }];
+
+        let result = await services.hme.setFastRun(devID, groupID, rate, timeTab);
+
+        let timeParams = {
+          devID: devID,
+          groupID: groupID,
+          year: 1900,
+          month: 1,
+          day: 1,
+          hour: 0,
+          min: 0,
+          sec: 0
+        }
+        let T2id = setTimeout(function(){
+          console.log('Start FastRun');
+          clearInterval(TiID);
+
+          console.log('setFastRun result',result);
+          result.should.be.true;
+          done();
+
+        },6000 );
+        let time = new Date(1900, 1, 1, 0, 0, 0);
+        let TiID = setInterval(function(){
+          time.setMinutes(time.getMinutes() + 30 );
+          timeParams.hour = time.getHours();
+          timeParams.min = time.getMinutes();
+          console.log('timeParams=', timeParams);
+          services.hme.setSimRtc(timeParams);
+        }, 1000);
+
+        let timeTab2 = [{
+                    weight: 1,
+                    StartTime: '00:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '02:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '04:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '06:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '08:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '10:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '12:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '14:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '16:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '18:00',
+                    ScheduleDetailConfig: {
+                      WW: 0,
+                      DB: 0,
+                      BL: 0,
+                      GR: 0,
+                      RE: 0,
+                      CCT: 0,
+                      Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '20:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 0
+                    }
+                  },{
+                    weight: 1,
+                    StartTime: '22:00',
+                    ScheduleDetailConfig: {
+                    WW: 0,
+                    DB: 0,
+                    BL: 0,
+                    GR: 0,
+                    RE: 0,
+                    CCT: 0,
+                    Bright: 0
+                  }
+              }];
+
+
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port accessDevice", async done => {
+
+      try {
+        let params = {
+                      u8DevID: 1,
+                      groupID: 0,
+                      sFunc: 'WordRd',
+                      u8DataNum: 2,
+                      u8Addr_Arry: [200],
+                      u8DataIn_Arry: [],
+                      u8Mask_Arry: [],
+                      RepeatNum: 2
+                    }
+        let result = await services.hme.accessDevice(params);
+        console.log('accessDevice result',result);
+        result.ramData.should.be.Array;
+        result.success.should.be.true;
         done();
       } catch (e) {
         done(e);

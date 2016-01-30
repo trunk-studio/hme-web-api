@@ -106,7 +106,7 @@ export function receivedGetScheduleList(data) {
 
 export function requestSetScheduleList(data) {
   return request
-    .post(`/rest/slave/${data.slaveId}/schedule/setOnDevice`, data)
+    .post(`/rest/master/schedule/setOnDevice`, data)
     .then(response => dispatch(receivedSetScheduleList(response.data)));
 }
 
@@ -124,7 +124,7 @@ export function requestGetSlaveSchedule(slaveId) {
       .get(`/rest/master/slave/${slaveId}/schedule/findAll`)
       .then(response => {
         dispatch(receivedGetScheduleList(response.data));
-        dispatch(updateLoadingStatus('hide'));        
+        dispatch(updateLoadingStatus('hide'));
       });
   };
 }
