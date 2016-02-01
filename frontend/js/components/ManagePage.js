@@ -9,7 +9,7 @@ import {
 } from '../actions/TestActions'
 
 import {
-  logout
+  logout, getRole
 } from '../actions/AuthActions'
 
 import {
@@ -124,8 +124,10 @@ export default class ManagePage extends React.Component {
   };
 
   componentDidMount() {
+    this.props.getRole();
     this.props.requestGetSlaveAndDeviceList();
     this.props.requestGetReportEmail();
+
     // this.props.getRole();
     // this.props.requestGetCachedDeviceList();
     // this.props.requestGetCachedSlaveList();
@@ -360,7 +362,6 @@ export default class ManagePage extends React.Component {
     if(this.props.slaveList.length > 0)  slaveList.push(...this.props.slaveList);
 
 
-    console.log('===', this.props.deviceList[this.state.setupTestSlaveID]);
     if(this.props.deviceList[this.state.setupTestSlaveID] && this.props.deviceList[this.state.setupTestSlaveID].length > 0)  setupTestDeviceList.push(...this.props.deviceList[this.state.setupTestSlaveID]);
     if(this.props.slaveList.length > 0)  setupTestSlaveList.push(...this.props.slaveList);
 
@@ -369,12 +370,70 @@ export default class ManagePage extends React.Component {
     let scanningStatus = this.props.scanning? this.props.scanning: 'hide';
     let email = this.props.reportEmail;
 
+    let scheduleList = (
+      <Tab label='Schedule List' value='1' key={'scheduleList'}>
+        <ScheduleList />
+      </Tab>
+    );
+
+    let reportEmailTab = (
+    <Tab key={'reportEmail'} label="Report Setting" value='2'>
+      <div className="self-center" style={{width: '250px'}}>
+        <div style={{display: 'inline-flex'}}>
+          <TextField
+            ref="inputReportingEmail"
+            floatingLabelText="Report Email"
+            multiLine={true}
+            value={this.state.tmpEmail}
+            onChange={this._handleEditEmail}
+            type="text" />
+        </div>
+        <div style={{display: 'inline-flex'}}>
+          <RaisedButton onTouchTap={this._saveReportingEmail} label="Save" style={{float: 'right', marginRight:'15px'}}/>
+          <RefreshIndicator
+            size={40}
+            left={10}
+            top={0}
+            status={this.props.loadingEmail}
+            style={{display: 'inline-block',
+                    position: 'relative'}} />
+        </div>
+      </div>
+    </Tab> );
+
+    let testingTab = (
+    <Tab key={'testingTab'} label="TESTING" value='3'>
+      <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
+        <div>
+          <div style={{display: 'inline-flex'}}>
+            <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
+            <RefreshIndicator
+              size={40}
+              left={10}
+              top={0}
+              status={scanningStatus}
+              style={{display: 'inline-block',
+                      position: 'relative'}} />
+          </div>
+          <div style={{marginTop: '10px'}}>
+            <SelectField labelMember="primary" menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}} />
+            <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
+          </div>
+          <div style={{marginTop: '15px'}}>
+            <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
+            <RaisedButton label="Test" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>
+          </div>
+        </div>
+      </div>
+    </Tab> );
+
+    let adminFunctionTabs = [];
+    if(this.props.role == 'engineer' || this.props.role == 'admin')
+      adminFunctionTabs.push(scheduleList, reportEmailTab, testingTab);
+
     return (
       <Tabs initialSelectedIndex={tabIndex} onChange={this._handleTabChanged}>
-        <Tab label='Schedule List' value='0'>
-          <ScheduleList />
-        </Tab>
-        <Tab label="Setup Test" value='1'>
+        <Tab label="Setup Test" value='0'>
           <div className="self-center" style={{width: '500px'}}>
             <div style={{width: '500px'}}>
               <SelectField labelMember="primary" menuItems={setupTestSlaveList} onChange={this._setupTestSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '250px'}}/>
@@ -418,53 +477,7 @@ export default class ManagePage extends React.Component {
             </div>
           </div>
         </Tab>
-        <Tab label="Report Setting" value='2'>
-          <div className="self-center" style={{width: '250px'}}>
-            <div style={{display: 'inline-flex'}}>
-              <TextField
-                ref="inputReportingEmail"
-                floatingLabelText="Report Email"
-                multiLine={true}
-                value={this.state.tmpEmail}
-                onChange={this._handleEditEmail}
-                type="text" />
-            </div>
-            <div style={{display: 'inline-flex'}}>
-              <RaisedButton onTouchTap={this._saveReportingEmail} label="Save" style={{float: 'right', marginRight:'15px'}}/>
-              <RefreshIndicator
-                size={40}
-                left={10}
-                top={0}
-                status={this.props.loadingEmail}
-                style={{display: 'inline-block',
-                        position: 'relative'}} />
-            </div>
-          </div>
-        </Tab>
-        <Tab label="TESTING" value='3'>
-          <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
-            <div>
-              <div style={{display: 'inline-flex'}}>
-                <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
-                <RefreshIndicator
-                  size={40}
-                  left={10}
-                  top={0}
-                  status={scanningStatus}
-                  style={{display: 'inline-block',
-                          position: 'relative'}} />
-              </div>
-              <div style={{marginTop: '10px'}}>
-                <SelectField labelMember="primary" menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}} />
-                <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
-              </div>
-              <div style={{marginTop: '15px'}}>
-                <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
-                <RaisedButton label="Test" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>
-              </div>
-            </div>
-          </div>
-        </Tab>
+        {adminFunctionTabs}
         <Tab label="Logout" value='logout' onTouchTap={this._logout} />
       </Tabs>
     );
@@ -472,7 +485,7 @@ export default class ManagePage extends React.Component {
 }
 
 function _injectPropsFromStore(state) {
-  let { scanDevice , manageSettings} = state;
+  let { login, scanDevice , manageSettings} = state;
   let scanResult = [],
       slaveList = [],
       groupList = [];
@@ -504,7 +517,8 @@ function _injectPropsFromStore(state) {
     slaveList: slaveList,
     scanning: scanDevice.scanning? scanDevice.scanning : 'hide',
     reportEmail: manageSettings.reportEmail,
-    loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide'
+    loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide',
+    role: login.role
   };
 }
 
@@ -524,7 +538,8 @@ const _injectPropsFromActions = {
   //report setting
   requestGetReportEmail,
   requestUpdateReportEmail,
-  // Auth
+  // Auth,
+  getRole,
   logout
 }
 

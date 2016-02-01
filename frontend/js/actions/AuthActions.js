@@ -13,7 +13,7 @@ export function requestLogin(loginData) {
       .then(response => {
         dispatch(receivedLogin(response.data))
         if(response.data.success) {
-          dispatch(getRole());
+          getRole();
         }
       });
   };
@@ -33,16 +33,15 @@ export function receivedLogin(data) {
 export function getRole() {
     const user = jwtDecode(localStorage.getItem('token'));
     const role = user.role;
-    return {
-        type: USER_ROLE,
-        role
-    };
+    return (dispatch) => {
+      dispatch({type: USER_ROLE,role});
+    }
 }
+
 
 export function logout() {
   localStorage.removeItem('token');
   return (dispatch) => {
-    console.log('test123');
     dispatch({type: LOGOUT});
   }
 }
