@@ -182,6 +182,23 @@ export default class ScheduleList extends React.Component {
         selectedSlave: (selectedIndex == 1)? null : e.target.value
       });
   };
+  _checkTime = (e) => {
+    console.log(e.target.value);
+    let sunriseTime = this.refs.sunrise;
+    let regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/g;
+    if(e.target.value.match(regex) == null) {
+      sunriseTime.setErrorText('Wrong Format');
+      this.setState({
+        isSetBtnClose: true
+      });
+      return false;
+    }else{
+      this.setState({
+        isSetBtnClose: false
+      });
+      sunriseTime.setErrorText('');
+    }
+  };
 
   render () {
     let rows = [];
@@ -298,6 +315,7 @@ export default class ScheduleList extends React.Component {
         primary={true}
         onTouchTap={this._setScheduleList} />
     ];
+    let eastDate = new Date();
     return (
       <div>
         <Dialog
@@ -312,12 +330,7 @@ export default class ScheduleList extends React.Component {
           <div className="row">
             <div style={{marginLeft: '30px', marginTop: '15px', display: 'inline-flex'}}>
               <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px'}}/>
-              {/*
-                <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
-                <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
-              */}
-              <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
-              <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
+              <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} disabled={( this.state.isSetBtnClose ||  this.state.selectedSlave == 0)} />
               <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '15px'}} />
               <RefreshIndicator
                 size={30}
@@ -325,23 +338,40 @@ export default class ScheduleList extends React.Component {
                 top={2}
                 status={this.props.loading || 'hide'}
                 style={{display: 'inline-block', position: 'relative'}} />
+            </div>
           </div>
+          <div className="row">
+            <div className="col-md-4 col-sm-4 col-xs-4">
+              <p style={{marginLeft:'40px'}}> Spring </p>
+              <RadioButtonGroup name="shipSpeed" defaultSelected="12">
+                <RadioButton value="12" label="12 Hours" />
+                <RadioButton value="18" label="18 Hours" />
+              </RadioButtonGroup>
+              <TextField ref="sunrise" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
+            </div>
+            <div className="col-md-4 col-sm-4 col-xs-4">
+              <p style={{marginLeft:'40px'}}> Summer </p>
+              <RadioButtonGroup name="shipSpeed" defaultSelected="18">
+                <RadioButton value="18" label="18 Hours" />
+                <RadioButton value="24" label="24 Hours" />
+              </RadioButtonGroup>
+              <TextField ref="sunrise" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
+            </div>
+            <div className="col-md-4 col-sm-4 col-xs-4">
+              <p style={{marginLeft:'40px'}}> Fall </p>
+              <RadioButtonGroup name="shipSpeed" defaultSelected="12">
+                <RadioButton value="12" label="12 Hours" />
+                <RadioButton value="14" label="14 Hours" />
+              </RadioButtonGroup>
+              <TextField ref="sunrise" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
+            </div>
           </div>
-          <Table selectable={false}>
-            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-              <TableRow>
-                <TableHeaderColumn >Edit</TableHeaderColumn>
-                <TableHeaderColumn >Start Date</TableHeaderColumn>
-                <TableHeaderColumn >Days</TableHeaderColumn>
-                {/*
-                  <TableHeaderColumn >Grouping setting</TableHeaderColumn>
-                */}
-              </TableRow>
-            </TableHeader>
-            <TableBody displayRowCheckbox={false} style={{height: '500px'}}>
-              {rows}
-            </TableBody>
-          </Table>
+          <div className="row">
+            <div style={{marginLeft: '30px', display: 'inline-flex'}}>
+              <TextField floatingLabelText="Start Time" defaultValue={moment(eastDate).format('YYYY-MM-DD')} onChange={this._handleDatePickChange} type="date" style={{width: '200px', marginLeft:'10px'}}/>
+              <TextField ref="sunrise" floatingLabelText="Sunrise" onChange={this._checkTime} defaultValue={moment().format("HH:DD")} style={{width: '200px', marginLeft:'10px'}}/>
+            </div>
+          </div>
           <Snackbar
             ref="snackbar"
             open={false}
