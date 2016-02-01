@@ -1,5 +1,3 @@
-'use strict';
-
 import path from 'path';
 import debug from 'debug';
 
@@ -22,12 +20,13 @@ import webpackConfig from '../webpack.config';
 import webpackDevMiddleware from 'koa-webpack-dev-middleware';
 import webpackHotMiddleware from 'koa-webpack-hot-middleware';
 import moment from 'moment';
-global.moment = moment;
 import sinon from 'sinon';
-global.sinon = sinon;
-console.log('=== config ===', config);
-global.appConfig = config;
 import fs from 'fs-extra';
+
+global.appConfig = config;
+
+global.moment = moment;
+global.sinon = sinon;
 global.fs = fs;
 
 const {environment} = appConfig;
@@ -35,9 +34,15 @@ const app = new koa();
 const convert = require('koa-convert');
 const compiler = webpack(webpackConfig);
 
+const jwt = require('koa-jwt');
+
+// do not use this secret for production
+const secret = config.secret;
 
 app.use(convert(koaBodyParser()));
-
+app.use(convert(jwt({ secret }).unless({
+path: [/^(?!\/api\/)/]
+})));
 
 // setup rest models
 global.models = (new Models()).getDb();
@@ -61,9 +66,21 @@ if (environment === 'development') {
 
 
 
-global.services = new Services();
 
+global.services = new Services();
 var controllers = new Controllers(app);
+
+
+app.use(async function (ctx, next) {
+  try {
+    await next();
+  } catch (error) {
+    await services.logger.error({error});
+    throw error;
+  }
+});
+
+
 controllers.getSlaveHostRoute()
 controllers.setupPublicRoute()
 controllers.setupAppRoute()
@@ -95,10 +112,8 @@ app.use(async function (ctx, next){
 
 var liftApp = async () => {
   try {
-    console.log('=== liftApp ===');
     await models.sequelize.sync({force: config.connection.force})
 
-    console.log('=== config ===', config);
     app.listen(config.port);
     await bootstrap();
 
@@ -112,7 +127,6 @@ var liftApp = async () => {
   return app;
 
 }
-console.log('=== environment ===', environment);
 if (environment !== 'test') liftApp();
 
 module.exports = liftApp

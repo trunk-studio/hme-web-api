@@ -75,6 +75,19 @@ export default class Routes {
     var app = this.app;
     var publicRoute = new Router()
 
+    // app.use(async function (ctx, next) {
+    //
+    //   if (false) {
+    //     await next();
+    //   } else {
+    //
+    //     console.log(ctx.request);
+    //     // ctx.redirect('/#/');
+    //
+    //   }
+    // })
+
+
     publicRoute.get('/rest/info/', async function(ctx) {
       let {APP_NAME} = process.env
       ctx.body = {APP_NAME}
@@ -154,14 +167,7 @@ export default class Routes {
     app.use(publicRoute.middleware())
 
 
-    app.use(async function (ctx, next) {
 
-      if (true || services.user.isAuthenticated(ctx)) {
-        await next();
-      } else {
-        ctx.redirect('/auth/login')
-      }
-    })
 
   }
 

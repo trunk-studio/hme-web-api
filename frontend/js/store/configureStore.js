@@ -1,8 +1,10 @@
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import createLogger from 'redux-logger'
-import { combineReducers } from 'redux'
+// import { combineReducers } from 'redux'
 import * as reducers from '../reducers'
+import createLogger from 'redux-logger';
+import thunk from 'redux-thunk';
+import { autoRehydrate, persistStore } from 'redux-persist';
 
 const rootReducer = combineReducers(reducers);
 
@@ -12,7 +14,11 @@ const createStoreWithMiddleware = applyMiddleware(
 )(createStore)
 
 export default function configureStore(initialState) {
-  const store = createStoreWithMiddleware(rootReducer, initialState)
+  const store = autoRehydrate()((dispatch) => (createStoreWithMiddleware(rootReducer, initialState)))(rootReducer);
+  persistStore(store);
+  //  const store = autoRehydrate()(createStoreWithMiddleware(rootReducer, initialState))(rootReducer)
+  // const createStoreWithMiddleware = applyMiddleware(thunk, createLogger())(createStore);
+  // const store = compose(autoRehydrate())(createStoreWithMiddleware);
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
     module.hot.accept('../reducers', () => {
