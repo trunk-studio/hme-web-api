@@ -3,7 +3,8 @@ import {connect} from 'react-redux'
 import { requestScheduleCreate, requestGetScheduleList,
    updateScheduleFirstDate, updateScheduleDay,
    requestSetScheduleList,requestGetSlaveSchedule,
-   requestUpdateScheduleList
+   requestUpdateScheduleList,requestGetEasySchedule,
+   requestUpdateEasyScheduleList
  } from '../actions/ScheduleListActions'
 import moment from 'moment';
 import {requestGetCachedSlaveList} from '../actions/TestActions';
@@ -49,7 +50,7 @@ export default class ScheduleList extends React.Component {
       isGroup: true,
       selectedSlave: 0,
       open: false,
-      isEasy: true
+      isEasy: true,
     };
   }
 
@@ -66,6 +67,7 @@ export default class ScheduleList extends React.Component {
     // });
 
     // this.setState({muiTheme: newMuiTheme});
+    this.state.easySchedule = this.props.easySchedule;
   };
 
   componentDidMount () {
@@ -96,6 +98,29 @@ export default class ScheduleList extends React.Component {
 
   _saveScheduleList = (e) => {
     this.props.requestUpdateScheduleList(this.props.scheduleList);
+    this.setState({
+      isSetBtnClose: false
+    });
+    this.refs.snackbar.setState({open: false});
+  };
+
+  _saveEasyScheduleList = (e) => {
+    this.props.requestUpdateEasyScheduleList({
+      slaveId: this.state.selectedSlave || 0 ,
+      startDate: this.refs.easyStartDate.getValue() ,
+      sunrise: this.refs.easyStartTime.getValue(),
+      season:[{
+          hour: this.refs.springHours.getSelectedValue(),
+          days: this.refs.springDay.getValue() || 0,
+        },{
+          hour: this.refs.summerHours.getSelectedValue(),
+          days: this.refs.summerDay.getValue() || 0,
+        },{
+          hour: this.refs.fallHours.getSelectedValue(),
+          days: this.refs.fallDay.getValue() || 0,
+        }
+      ]
+    });
     this.setState({
       isSetBtnClose: false
     });
@@ -168,8 +193,12 @@ export default class ScheduleList extends React.Component {
 
   _handleSlaveSelect = (e, selectedIndex) => {
     if(selectedIndex > 0) {
-      console.log(e.target.value);
-      this.props.requestGetSlaveSchedule(e.target.value);
+      console.log("!!!!!!!!!!!!!!!!",e.target.value);
+      if(this.state.isEasy){
+        this.props.requestGetEasySchedule(e.target.value || 0);
+      }else{
+        this.props.requestGetSlaveSchedule(e.target.value);
+      }
     }
 
     if(selectedIndex == 0)
@@ -345,7 +374,7 @@ export default class ScheduleList extends React.Component {
           <div className="row">
             <div className="smalllRaisedBnutton" style={{marginLeft: '30px', marginTop: '15px', display: 'inline-flex'}}>
               <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px'}}/>
-              <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{width:'60px', marginLeft: '15px'}} disabled={( this.state.isSetBtnClose ||  this.state.selectedSlave == 0)} />
+              <RaisedButton label="Save" primary={true} onTouchTap={this._saveEasyScheduleList} style={{width:'60px', marginLeft: '15px'}} disabled={( this.state.isSetBtnClose ||  this.state.selectedSlave == 0)} />
               <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{ width:'60px', marginLeft: '15px'}} />
               <RaisedButton ref="scheduleSetBtn" label="Pro" onTouchTap={this._useProView} style={{width:'60px', marginLeft: '15px'}} />
               <RefreshIndicator
@@ -359,34 +388,34 @@ export default class ScheduleList extends React.Component {
           <div className="row">
             <div className="col-md-4 col-sm-4 col-xs-4" style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Spring </p>
-              <RadioButtonGroup name="shipSpeed" defaultSelected="12">
+              <RadioButtonGroup ref="springHours"  name="shipSpeed" defaultSelected="12">
                 <RadioButton value="12" label="12 Hours" />
                 <RadioButton value="18" label="18 Hours" />
               </RadioButtonGroup>
-              <TextField ref="sunrise" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
+                <TextField ref="springDay"  hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
             </div>
             <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Summer </p>
-              <RadioButtonGroup name="shipSpeed" defaultSelected="18">
+              <RadioButtonGroup ref="summerHours" name="shipSpeed" defaultSelected="18">
                 <RadioButton value="18" label="18 Hours" />
                 <RadioButton value="24" label="24 Hours" />
               </RadioButtonGroup>
-              <TextField ref="sunrise" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
+                <TextField ref="summerDay" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
             </div>
             <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Fall </p>
-              <RadioButtonGroup name="shipSpeed" defaultSelected="12">
+              <RadioButtonGroup ref="fallHours" name="shipSpeed" defaultSelected="12">
                 <RadioButton value="12" label="12 Hours" />
                 <RadioButton value="14" label="14 Hours" />
               </RadioButtonGroup>
-              <TextField ref="sunrise" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
+                <TextField ref="fallDay" hintText="Days" value={this.props.value} type="number" style={{width: '50px', marginLeft:'40px'}}/>
             </div>
           </div>
           <div className="row">
             <div style={{marginLeft: '30px', display: 'inline-flex'}}>
-              <TextField floatingLabelText="Start Time" defaultValue={moment(eastDate).format('YYYY-MM-DD')} onChange={this._handleDatePickChange} type="date" style={{width: '200px', marginLeft:'10px'}}/>
+              <TextField ref="easyStartDate" floatingLabelText="Start Time" defaultValue={moment(eastDate).format('YYYY-MM-DD')} onChange={this._handleDatePickChange} type="date" style={{width: '200px', marginLeft:'10px'}}/>
               {/*<TextField ref="sunrise" floatingLabelText="Sunrise" onChange={this._checkTime} defaultValue={moment().format("HH:DD")} style={{width: '200px', marginLeft:'10px'}}/>*/}
-              <TextField ref="sunrise1" floatingLabelText="Sunrise" type="time" defaultValue={moment().format("HH:DD")} style={{width: '200px', marginLeft:'10px'}}/>
+              <TextField ref="easyStartTime" floatingLabelText="Sunrise" type="time" defaultValue={moment().format("HH:DD")} style={{width: '200px', marginLeft:'10px'}}/>
             </div>
           </div>
           <Snackbar
@@ -408,7 +437,7 @@ export default class ScheduleList extends React.Component {
               <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{width:'60px',marginLeft: '15px'}}/>
               <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{width:'60px',marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
               <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{width:'60px', marginLeft: '15px'}} />
-              <RaisedButton ref="scheduleSetBtn" label="Easy" onTouchTap={this._useProView} style={{width:'60px', marginLeft: '15px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Simple" onTouchTap={this._useProView} style={{width:'60px', marginLeft: '15px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}
@@ -464,7 +493,8 @@ function _injectPropsFromStore(state) {
   return {
     scheduleList: schedule.scheduleList,
     slaveList: slaveList,
-    loading: schedule.loading ? schedule.loading : 'hide'
+    loading: schedule.loading ? schedule.loading : 'hide',
+    easySchedule: schedule.easySchedule
   };
 }
 
@@ -476,7 +506,9 @@ const _injectPropsFromActions = {
   requestUpdateScheduleList,
   requestGetCachedSlaveList,
   requestSetScheduleList,
-  requestGetSlaveSchedule
+  requestGetSlaveSchedule,
+  requestGetEasySchedule,
+  requestUpdateEasyScheduleList
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleList);

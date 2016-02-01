@@ -3,7 +3,6 @@
 module.exports = (sequelize, DataTypes) => {
   var easySchedule = sequelize.define('easySchedule', {
     StartDate: DataTypes.DATE,
-    Days: DataTypes.INTEGER,
     StartTime: DataTypes.TIME,
     Season:{
       type: DataTypes.TEXT,

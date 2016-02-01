@@ -32,9 +32,45 @@ module.exports = {
 
   createEasy: async(data) => {
     try {
-      let easySchedule = await models.easySchedule.create();
+      let slaveId ={};
+      if(data.slaveId == 0){
+        await models.easySchedule.destroy({
+          where: {
+            SlaveId: null
+          }
+        });
+      }else{
+        await models.easySchedule.destroy({
+          where: {
+            SlaveId: data.slaveId
+          }
+        });
+        slaveId  = {
+          SlaveId: data.slaveId
+        }
+      }
+      let easySchedule = await models.easySchedule.create({
+        StartDate: data.startDate,
+        StartTime: data.sunrise,
+        Season: data.season,
+        ...slaveId
+      });
     } catch (e) {
       console.log(e);
+      throw e;
+    }
+  },
+
+  findEasy: async(slaveId) => {
+    try {
+      slaveId = slaveId == 0 ? null : slaveId;
+      let schedule = await models.easySchedule.findOne({
+        where: {
+          SlaveId: slaveId
+        }
+      });
+      return schedule;
+    } catch (e) {
       throw e;
     }
   },

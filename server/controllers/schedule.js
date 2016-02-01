@@ -64,6 +64,17 @@ exports.createEasySchedule = async function(ctx){
   }
 }
 
+exports.getOneEasySchedule = async function(ctx) {
+  try {
+    console.log("==== getOneEasySchedule ===");
+    let slaveId = ctx.params.slaveId;
+    let result = await services.schedule.findEasy(slaveId);
+    ctx.body =  result;
+  } catch(e) {
+    console.error(e);
+  }
+}
+
 exports.getOneSchedule = async function(ctx) {
   try {
     console.log("==== getOneSchedule ===");

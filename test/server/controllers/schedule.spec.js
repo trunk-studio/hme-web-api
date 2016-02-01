@@ -83,62 +83,6 @@ describe("Schedule", () => {
     }
   });
 
-  it.only("create all slave easy schedule", async(done) => {
-    try {
-      let data = {
-        slaveId:0,
-        startDay: "2016-02-01",
-        sunrise: '08:00',
-        season:[{
-            hour:12,
-            days: 10,
-          },{
-            hour:12,
-            days: 12,
-          },{
-            hour:12,
-            days: 13,
-          }
-        ]
-      }
-      let result = await request.post('/rest/master/schedule/easy/create')
-      .send(data);
-      result.status.should.an.equal(200);
-      done()
-    } catch (e) {
-      console.log(e);
-      done(e)
-    }
-  });
-
-  it("create one slave easy schedule", async(done) => {
-    try {
-      let data = {
-        slaveId:slaves.id,
-        startDay: "2016-02-01",
-        sunrise: '08:00',
-        season:[{
-            hour:12,
-            days: 10,
-          },{
-            hour:12,
-            days: 12,
-          },{
-            hour:12,
-            days: 13,
-          }
-        ]
-      }
-      let result = await request.post('/rest/master/schedule/easy/create')
-      .send(data);
-      result.status.should.an.equal(200);
-      done()
-    } catch (e) {
-      console.log(e);
-      done(e)
-    }
-  });
-
   it("set one slave setSimRtc", async(done) => {
     try {
       let data = {
@@ -368,5 +312,113 @@ describe("Schedule", () => {
         done(e);
       }
     });
+  });
+
+
+  describe.only("easySchedule", () => {
+    let slaves
+    before( async done => {
+      try {
+        slaves = await models.Slave.create({
+          host: "127.0.0.1",
+          description: "描述",
+          apiVersion: "0.1.0",
+        });
+        await models.easySchedule.create({
+    			"StartDate": "2016-02-01 00:00:00",
+    			"StartTime": "06:00:00",
+    			"Season": [{hour:12,days:10},{hour:12,days:12},{hour:12,days:13}],
+    			"SlaveId": slaves.id
+        });
+        await models.easySchedule.create({
+    			"StartDate": "2016-02-01 00:00:00",
+    			"StartTime": "16:00:00",
+    			"Season": [{hour:12,days:10},{hour:12,days:12},{hour:12,days:13}],
+        });
+        done();
+      } catch (e) {
+        console.log(e);
+        done(e);
+      }
+    });
+
+    it("find all slave easy schedule", async(done) => {
+      try {
+        let result = await request.get(`/rest/master/schedule/easy/0`);
+        console.log(result.body);
+        result.status.should.an.equal(200);
+        done()
+      } catch (e) {
+        done(e)
+      }
+    });
+
+    it("find one slave easy schedule", async(done) => {
+      try {
+        let result = await request.get(`/rest/master/schedule/easy/${slaves.id}`);
+        console.log(result.body);
+        result.status.should.an.equal(200);
+        done()
+      } catch (e) {
+        done(e)
+      }
+    });
+
+    it("create all slave easy schedule", async(done) => {
+      try {
+        let data = {
+          slaveId:0,
+          startDate: "2016-02-01",
+          sunrise: '08:00',
+          season:[{
+              hour:12,
+              days: 10,
+            },{
+              hour:12,
+              days: 12,
+            },{
+              hour:12,
+              days: 13,
+            }
+          ]
+        }
+        let result = await request.post('/rest/master/schedule/easy/create')
+        .send(data);
+        result.status.should.an.equal(200);
+        done()
+      } catch (e) {
+        console.log(e);
+        done(e)
+      }
+    });
+
+    it("create one slave easy schedule", async(done) => {
+      try {
+        let data = {
+          slaveId:slaves.id,
+          startDate: "2016-02-01",
+          sunrise: '08:00',
+          season:[{
+              hour:12,
+              days: 10,
+            },{
+              hour:12,
+              days: 12,
+            },{
+              hour:12,
+              days: 13,
+            }
+          ]
+        }
+        let result = await request.post('/rest/master/schedule/easy/create')
+        .send(data);
+        result.status.should.an.equal(200);
+        done()
+      } catch (e) {
+        console.log(e);
+        done(e)
+      }
+    });
+
   });
 });
