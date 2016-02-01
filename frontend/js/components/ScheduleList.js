@@ -369,7 +369,8 @@ export default class ScheduleList extends React.Component {
           <div className="row">
             <div style={{marginLeft: '30px', display: 'inline-flex'}}>
               <TextField floatingLabelText="Start Time" defaultValue={moment(eastDate).format('YYYY-MM-DD')} onChange={this._handleDatePickChange} type="date" style={{width: '200px', marginLeft:'10px'}}/>
-              <TextField ref="sunrise" floatingLabelText="Sunrise" onChange={this._checkTime} defaultValue={moment().format("HH:DD")} style={{width: '200px', marginLeft:'10px'}}/>
+              {/*<TextField ref="sunrise" floatingLabelText="Sunrise" onChange={this._checkTime} defaultValue={moment().format("HH:DD")} style={{width: '200px', marginLeft:'10px'}}/>*/}
+              <TextField ref="sunrise1" floatingLabelText="Sunrise" type="time" defaultValue={moment().format("HH:DD")} style={{width: '200px', marginLeft:'10px'}}/>
             </div>
           </div>
           <Snackbar
