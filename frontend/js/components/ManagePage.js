@@ -364,22 +364,22 @@ export default class ManagePage extends React.Component {
                   style={{display: 'inline-block',
                           position: 'relative'}} />
               </div>
-              <div style={{display: 'inline-flex'}}>
-                <SelectField labelMember="primary" menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}}/>
-                <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
+              <div>
+                <SelectField labelMember="primary" menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}} />
+                <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
               </div>
-              <div style={{display: 'inline-flex'}}>
+              <div>
                 <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
-                <RaisedButton label="Test" secondary={true} style={{marginLeft:'15px', width: '100px'}} onTouchTap={this._testOneDevice}></RaisedButton>
+                <RaisedButton label="Test" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>
               </div>
             </div>
           </div>
         </Tab>
         <Tab label="Setup Test" value='1'>
           <div className="self-center" style={{width: '500px'}}>
-            <div style={{width: '500px', display: 'inline-flex'}}>
+            <div style={{width: '500px'}}>
               <SelectField labelMember="primary" menuItems={setupTestSlaveList} onChange={this._setupTestSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '250px'}}/>
-              <SelectField labelMember="primary" onChange={this._setupTestDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={setupTestDeviceList} style={{width: '250px', marginLeft: '5px'}}/>
+              <SelectField labelMember="primary" onChange={this._setupTestDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={setupTestDeviceList} style={{width: '250px', marginLeft: '5px', position: 'absolute'}}/>
             </div>
           </div>
           <div className="row self-center" style={{width: '100%', marginTop: '15px'}}>
