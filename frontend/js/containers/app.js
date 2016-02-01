@@ -14,8 +14,7 @@ import { autoRehydrate } from 'redux-persist';
 import createLogger from 'redux-logger';
 import reducers from '../reducers'
 import configureStore from '../store/configureStore';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
+
 
 const store = configureStore();
 
