@@ -19,18 +19,19 @@ export default class LoginPage extends React.Component {
     super(props);
     this.state = {
       loadingStatus: 'ready',
-      role: 'engineer'
+      role: 'engineer',
+      sendLogin: false
     }
   }
 
   _handleRoleChanged = (e) => {
     this.setState({
-      role: e.target.value
+      role: e.target.value,
+      sendLogin: false
     });
   };
 
   _login = (e) => {
-    console.log('click');
     e.preventDefault();
     let Password = this.refs.password;
     let password = Password.getValue();
@@ -46,15 +47,18 @@ export default class LoginPage extends React.Component {
       Password.setErrorText('Please fill the password field.');
       // alert('Please fill the password field.');
     }
+    this.setState({
+      sendLogin: true
+    });
   };
 
   componentDidUpdate(prevProps, prevState) {
     // if('success' in this.props.login) {
       let Password = this.refs.password;
-      if(this.props.login.isLogin && !prevProps.login.isLogin) {
+      if(this.props.login.success && !prevProps.login.success) {
         window.location.href = "/#manage/0";
       }
-      else if( !this.props.login.success ){
+      else if( !this.props.login.success && prevState.sendLogin ){
         Password.focus();
         Password.setErrorText('Wrong Password');
       }
