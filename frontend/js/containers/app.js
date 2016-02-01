@@ -10,16 +10,17 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { browserHistory, Router, Route, Link, IndexRoute } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import { autoRehydrate } from 'redux-persist';
 import createLogger from 'redux-logger';
 import reducers from '../reducers'
 import configureStore from '../store/configureStore';
+
+
 const store = configureStore();
 
 // const history                   = createBrowserHistory();
 
-injectTapEventPlugin();
+
 
 import LoginPage from '../components/LoginPage';
 import ManagePage from '../components/ManagePage';
@@ -42,16 +43,23 @@ export default class App extends React.Component {
 
   _requireAuth = (nextState, replaceState) => {
     if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
-      console.log('fail');
       replaceState({}, '/login');
     }
+  };
+
+  _noAuth = (nextState, replaceState) => {
+    if(localStorage.getItem('token')) {
+      console.log('test');
+      replaceState({}, '/manage/0');
+    }
+
   };
 
   render() {
     return (
       <Router history={browserHistory}>
         <Route path="/" component={LoginPage}  onEnter={this._requireAuth}/>
-        <Route path="/login" component={LoginPage} />
+        <Route path="/login" component={LoginPage} onEnter={this._noAuth}/>
         <Route path="/manage/:tabIndex" component={ManagePage} onEnter={this._requireAuth}/>
         <Route path="/graph" component={SettingGraph} />
         <Route path="/schedule/list" component={ScheduleList} onEnter={this._requireAuth}/>
