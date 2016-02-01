@@ -1,7 +1,8 @@
 import {
   REQUEST_LOGIN,
   RECEIVED_LOGIN,
-  USER_ROLE
+  USER_ROLE,
+  LOGOUT
 } from '../actions/AuthActions'
 
 export function login(state = { isLogin: false }, action) {
@@ -23,6 +24,14 @@ export function login(state = { isLogin: false }, action) {
         ...state,
         role: action.role,
         isLogin: true
+      }
+    case LOGOUT:
+      return {
+        ...state,
+        role: null,
+        isLogin: false,
+        success: false,
+        jwt: ''
       }
     default:
       return state

@@ -49,16 +49,16 @@ export default class LoginPage extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if('success' in this.props.login) {
-      if(this.props.login.success && !prevProps.login.success) {
+    // if('success' in this.props.login) {
+      let Password = this.refs.password;
+      if(this.props.login.isLogin && !prevProps.login.isLogin) {
         window.location.href = "/#manage/0";
       }
-      else {
-        let Password = this.refs.password;
+      else if( !this.props.login.success ){
         Password.focus();
         Password.setErrorText('Wrong Password');
       }
-    }
+    // }
   }
 
   render() {

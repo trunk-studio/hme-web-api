@@ -9,7 +9,7 @@ import {
 } from '../actions/TestActions'
 
 import {
-  getRole
+  logout
 } from '../actions/AuthActions'
 
 import {
@@ -275,6 +275,11 @@ export default class ManagePage extends React.Component {
     this._setAll(0, 1, 1, 0, 1);
   };
 
+  _logout = (e) => {
+    this.props.logout();
+    window.location.href = "/#login";
+  };
+
   _saveReportingEmail = (e) => {
     let inputReportingEmail = this.refs.inputReportingEmail;
     console.log(inputReportingEmail.getValue());
@@ -285,6 +290,9 @@ export default class ManagePage extends React.Component {
   };
 
   _handleTabChanged = (tabIndex, tab) => {
+    console.log('===',tabIndex);
+    if(tabIndex == 'logout')
+      this._logout();
     // window.location.href = `/#/manage/${tabIndex}`;
   };
 
@@ -360,33 +368,11 @@ export default class ManagePage extends React.Component {
     let tabIndex = parseInt(this.props.params.tabIndex);
     let scanningStatus = this.props.scanning? this.props.scanning: 'hide';
     let email = this.props.reportEmail;
-    console.log(email);
 
     return (
       <Tabs initialSelectedIndex={tabIndex} onChange={this._handleTabChanged}>
-        <Tab label="TESTING" value='0'>
-          <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
-            <div>
-              <div style={{display: 'inline-flex'}}>
-                <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
-                <RefreshIndicator
-                  size={40}
-                  left={10}
-                  top={0}
-                  status={scanningStatus}
-                  style={{display: 'inline-block',
-                          position: 'relative'}} />
-              </div>
-              <div style={{marginTop: '10px'}}>
-                <SelectField labelMember="primary" menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}} />
-                <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
-              </div>
-              <div style={{marginTop: '15px'}}>
-                <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
-                <RaisedButton label="Test" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>
-              </div>
-            </div>
-          </div>
+        <Tab label='Schedule List' value='0'>
+          <ScheduleList />
         </Tab>
         <Tab label="Setup Test" value='1'>
           <div className="self-center" style={{width: '500px'}}>
@@ -455,9 +441,31 @@ export default class ManagePage extends React.Component {
             </div>
           </div>
         </Tab>
-        <Tab label='Schedule List' value='3'>
-          <ScheduleList />
+        <Tab label="TESTING" value='3'>
+          <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
+            <div>
+              <div style={{display: 'inline-flex'}}>
+                <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
+                <RefreshIndicator
+                  size={40}
+                  left={10}
+                  top={0}
+                  status={scanningStatus}
+                  style={{display: 'inline-block',
+                          position: 'relative'}} />
+              </div>
+              <div style={{marginTop: '10px'}}>
+                <SelectField labelMember="primary" menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}} />
+                <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
+              </div>
+              <div style={{marginTop: '15px'}}>
+                <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
+                <RaisedButton label="Test" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>
+              </div>
+            </div>
+          </div>
         </Tab>
+        <Tab label="Logout" value='logout' onTouchTap={this._logout} />
       </Tabs>
     );
   }
@@ -517,7 +525,7 @@ const _injectPropsFromActions = {
   requestGetReportEmail,
   requestUpdateReportEmail,
   // Auth
-  getRole
+  logout
 }
 
 

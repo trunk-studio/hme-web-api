@@ -3,6 +3,7 @@ import request from 'axios'
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
 export const RECEIVED_LOGIN = 'RECEIVED_LOGIN'
 export const USER_ROLE = 'USER_ROLE'
+export const LOGOUT = 'LOGOUT'
 import jwtDecode from 'jwt-decode'
 
 export function requestLogin(loginData) {
@@ -11,7 +12,6 @@ export function requestLogin(loginData) {
       .post('/rest/master/login', loginData)
       .then(response => {
         dispatch(receivedLogin(response.data))
-        console.log('aaaa', response.data);
         if(response.data.success) {
           dispatch(getRole());
         }
@@ -38,3 +38,17 @@ export function getRole() {
         role
     };
 }
+
+export function logout() {
+  localStorage.removeItem('token');
+  return (dispatch) => {
+    console.log('test123');
+    dispatch({type: LOGOUT});
+  }
+}
+
+// export function clearLoginStatus() {
+//   return {
+//     type: LOGOUT
+//   };
+// }
