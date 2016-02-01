@@ -1008,6 +1008,37 @@ export default class Hme {
     }
   };
 
+  async getDevState (devID)  {
+    try {
+        let accDevParams = {
+
+          u8DevID:devID,
+          groupID:0,
+          sFunc:'DiscWordRd',
+          u8DataNum:3,
+          u8Addr_Arry:[15, 16 ,30],  //Addr 15 = LED temp, 30 =fan flage
+          u8DataIn_Arry:[],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+
+        console.log('getDevTemp.accDevParams=', accDevParams);
+        let reData = await this.accessDevice(accDevParams);
+        let result = {
+          devTemp: reData.ramData[0] / 100,
+          envTemp: reData.ramData[1] / 100,
+          fanState: (reData.ramData[2] == 0),
+          success: reData.success
+        };
+
+        return (result);
+
+    } catch (e) {
+      throw e;
+    }
+  };
+
+
 
   async accessDevice ({u8DevID, groupID, sFunc, u8DataNum, u8Addr_Arry, u8DataIn_Arry, u8Mask_Arry, RepeatNum})  {
     try {
@@ -1091,6 +1122,7 @@ export default class Hme {
       throw e;
     }
   }
+
 
   _eventsSetup()  {
     let serialPort = this.serialPort;

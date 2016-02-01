@@ -373,6 +373,25 @@ describe("hme with seriel port", () => {
 
     });
 
+    it.only("serial Port getDevState", async done => {
+      // 取得燈具溫度
+      // data unit: degree centigrade
+      try {
+        let devID = 1;
+        let result = await services.hme.getDevState(devID);
+        console.log('getDevState result',result);
+        result.devTemp.should.be.above(0);
+        result.envTemp.should.be.above(0);
+        result.fanState.should.be.Boolean;
+        result.success.should.be.true;
+
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
     it("serial Port writeTimeTabToDevices", async done => {
 
       try {
@@ -1476,6 +1495,8 @@ describe("hme with seriel port", () => {
       }
 
     });
+
+
 
     it("serial Port accessDevice", async done => {
 
