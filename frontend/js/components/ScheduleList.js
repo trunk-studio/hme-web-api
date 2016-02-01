@@ -48,7 +48,8 @@ export default class ScheduleList extends React.Component {
       isAll: false,
       isGroup: true,
       selectedSlave: 0,
-      open: false
+      open: false,
+      isEasy: true
     };
   }
 
@@ -200,6 +201,12 @@ export default class ScheduleList extends React.Component {
     }
   };
 
+  _useProView = (e) => {
+    this.setState({
+      isEasy: !this.state.isEasy
+    })
+  };
+
   render () {
     let rows = [];
     let tmpScheduleList = [];
@@ -316,6 +323,14 @@ export default class ScheduleList extends React.Component {
         onTouchTap={this._setScheduleList} />
     ];
     let eastDate = new Date();
+    let easyDiv, proDiv;
+    if(this.state.isEasy){
+      easyDiv = "self-center show"
+      proDiv = "self-center hidden"
+    }else{
+      easyDiv = "self-center hidden"
+      proDiv = "self-center show"
+    }
     return (
       <div>
         <Dialog
@@ -326,12 +341,13 @@ export default class ScheduleList extends React.Component {
           onRequestClose={this._warnHandleClose}>
           The actions will clean all slave schedule.
         </Dialog>
-        <div id="easyScheduleList" className="self-center" style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
+        <div id="easyScheduleList" className={easyDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row">
-            <div style={{marginLeft: '30px', marginTop: '15px', display: 'inline-flex'}}>
+            <div className="smalllRaisedBnutton" style={{marginLeft: '30px', marginTop: '15px', display: 'inline-flex'}}>
               <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px'}}/>
-              <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} disabled={( this.state.isSetBtnClose ||  this.state.selectedSlave == 0)} />
-              <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '15px'}} />
+              <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{width:'60px', marginLeft: '15px'}} disabled={( this.state.isSetBtnClose ||  this.state.selectedSlave == 0)} />
+              <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{ width:'60px', marginLeft: '15px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Pro" onTouchTap={this._useProView} style={{width:'60px', marginLeft: '15px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}
@@ -341,7 +357,7 @@ export default class ScheduleList extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-4 col-sm-4 col-xs-4">
+            <div className="col-md-4 col-sm-4 col-xs-4" style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Spring </p>
               <RadioButtonGroup name="shipSpeed" defaultSelected="12">
                 <RadioButton value="12" label="12 Hours" />
@@ -349,7 +365,7 @@ export default class ScheduleList extends React.Component {
               </RadioButtonGroup>
               <TextField ref="sunrise" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
             </div>
-            <div className="col-md-4 col-sm-4 col-xs-4">
+            <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Summer </p>
               <RadioButtonGroup name="shipSpeed" defaultSelected="18">
                 <RadioButton value="18" label="18 Hours" />
@@ -357,7 +373,7 @@ export default class ScheduleList extends React.Component {
               </RadioButtonGroup>
               <TextField ref="sunrise" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
             </div>
-            <div className="col-md-4 col-sm-4 col-xs-4">
+            <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Fall </p>
               <RadioButtonGroup name="shipSpeed" defaultSelected="12">
                 <RadioButton value="12" label="12 Hours" />
@@ -381,17 +397,18 @@ export default class ScheduleList extends React.Component {
             autoHideDuration={3000}
           />
         </div>
-        <div id="scheduleList" className="self-center" style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
+        <div id="scheduleList" className={proDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row">
-            <div style={{marginLeft: '30px', marginTop: '15px', display: 'inline-flex'}}>
+            <div className="smalllRaisedBnutton" style={{marginLeft: '30px', marginTop: '15px', display: 'inline-flex'}}>
               <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px'}}/>
               {/*
                 <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
                 <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
               */}
-              <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
-              <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
-              <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '15px'}} />
+              <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{width:'60px',marginLeft: '15px'}}/>
+              <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{width:'60px',marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
+              <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{width:'60px', marginLeft: '15px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Easy" onTouchTap={this._useProView} style={{width:'60px', marginLeft: '15px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}

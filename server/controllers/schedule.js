@@ -53,6 +53,17 @@ exports.createSchedule = async function(ctx) {
 
 }
 
+exports.createEasySchedule = async function(ctx){
+  try {
+    console.log("==== createEasySchedule ===",ctx.request.body);
+    let easyData = ctx.request.body;
+    let result = await services.schedule.createEasy(easyData);
+    ctx.body =  "ok";
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 exports.getOneSchedule = async function(ctx) {
   try {
     console.log("==== getOneSchedule ===");
@@ -334,7 +345,7 @@ exports.slaveSetSimRtc = async function(ctx) {
       timeParams.min,
       timeParams.sec
     ]);
-    
+
     time.add(30 * count,'m');
     timeParams.year = time.year();
     timeParams.month = time.month()+1;

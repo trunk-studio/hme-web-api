@@ -30,6 +30,15 @@ module.exports = {
     }
   },
 
+  createEasy: async(data) => {
+    try {
+      let easySchedule = await models.easySchedule.create();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
+
   find: async(id) => {
     try {
       let schedule = await models.Schedule.findOne({
