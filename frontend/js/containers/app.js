@@ -10,16 +10,18 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { browserHistory, Router, Route, Link, IndexRoute } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import { autoRehydrate } from 'redux-persist';
 import createLogger from 'redux-logger';
 import reducers from '../reducers'
 import configureStore from '../store/configureStore';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
+
 const store = configureStore();
 
 // const history                   = createBrowserHistory();
 
-injectTapEventPlugin();
+
 
 import LoginPage from '../components/LoginPage';
 import ManagePage from '../components/ManagePage';
