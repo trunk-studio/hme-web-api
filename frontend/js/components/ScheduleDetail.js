@@ -21,9 +21,6 @@ const style = {
   margin: 50
 };
 
-import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
-
 const SCHEDULE_DETAILS_AMOUNT = 12,
       MAX_TIME_INTEGER = 1440,
       SLIDER_TIME_MARKS = {
