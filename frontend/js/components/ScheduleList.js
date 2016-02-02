@@ -391,27 +391,27 @@ export default class ScheduleList extends React.Component {
           <div className="row">
             <div className="col-md-4 col-sm-4 col-xs-4" style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Spring </p>
-              <RadioButtonGroup ref="springHours"  name="shipSpeed" defaultSelected={easySchedule ? season[0].hour : "12"}>
+              <RadioButtonGroup ref="springHours"  name="shipSpeed" defaultSelected="12">
                 <RadioButton value="12" label="12 Hours" />
                 <RadioButton value="18" label="18 Hours" />
               </RadioButtonGroup>
-                <TextField ref="springDay"  hintText="Days" value={easySchedule ? season[0].days : ""} type="number" style={{width: '50px', marginLeft:'40px'}}/>
+                <TextField ref="springDay"  hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
             </div>
             <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Summer </p>
-              <RadioButtonGroup ref="summerHours" name="shipSpeed" defaultSelected={easySchedule ? season[1].hour : "24"}>
+              <RadioButtonGroup ref="summerHours" name="shipSpeed" defaultSelected="24">
                 <RadioButton value="18" label="18 Hours" />
                 <RadioButton value="24" label="24 Hours" />
               </RadioButtonGroup>
-                <TextField ref="summerDay" hintText="Days" value={easySchedule ? season[1].days : ""} type="number" style={{width: '50px', marginLeft:'40px'}}/>
+                <TextField ref="summerDay" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
             </div>
             <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Fall </p>
-              <RadioButtonGroup ref="fallHours" name="shipSpeed" defaultSelected={easySchedule ? season[2].hour : "12"}>
+              <RadioButtonGroup ref="fallHours" name="shipSpeed" defaultSelected="12">
                 <RadioButton value="12" label="12 Hours" />
                 <RadioButton value="14" label="14 Hours" />
               </RadioButtonGroup>
-                <TextField ref="fallDay" hintText="Days" value={easySchedule ? season[2].days : ""} type="number" style={{width: '50px', marginLeft:'40px'}}/>
+                <TextField ref="fallDay" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
             </div>
           </div>
           <div className="row">
