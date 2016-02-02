@@ -424,7 +424,7 @@ describe("Schedule", () => {
       }
     });
 
-    it.only("create one slave easy schedule", async(done) => {
+    it("create one slave easy schedule", async(done) => {
       try {
         let data = {
           slaveId:slaves.id,
