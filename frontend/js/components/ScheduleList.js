@@ -274,7 +274,7 @@ export default class ScheduleList extends React.Component {
     // let isAddOpen = rows.length >= 5 ? true: false;
     return (
       <div id="scheduleList" style={{width: '100%', overflowY: 'hidden', minHeight: '320px', backgroundImage: "url('public/assets/images/HMEsplash.png')", backgroundSize: 'cover', backgroundAttachment: 'fixed'}}>
-        <div className="self-center" style={{width: '95%', overflowX: 'hidden', minHeight: '320px', padding: '15px', backgroundColor: 'rgba(255,255,255,0.4)'}}>
+        <div className="self-center" style={{width: '95%', overflowX: 'hidden', minHeight: '320px', padding: '15px', margin: '15px', backgroundColor: 'rgba(255,255,255,0.4)'}}>
           <div className="row">
             <div style={{marginLeft: '30px', marginTop: '15px'}}>
               <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px', float: 'left'}}/>
