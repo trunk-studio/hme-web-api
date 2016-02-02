@@ -622,6 +622,28 @@ export default class Hme {
     }
   };
 
+  async setDevID (devID, groupID, newDevID)  {
+    try {
+        let accDevParams = {
+        u8DevID:devID,
+        groupID:0,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[1030], //Device ID
+        u8DataIn_Arry:[groupID],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+
+      console.log('setDevID,accDevParams:', accDevParams);
+      let result =  await this.accessDevice(accDevParams);
+      return (result.success);
+
+    } catch (e) {
+      throw e;
+    }
+  };
+
   async setGroupID (devID, groupID)  {
     try {
         let COpParams = {
@@ -1010,17 +1032,6 @@ export default class Hme {
 
   async closeFastRun(devID, groupID)  {
     try {
-        //rate:0~2000
-        let accDevParams = {
-          u8DevID:devID,
-          groupID:groupID,
-          sFunc:'WordWt',
-          u8DataNum:1,
-          u8Addr_Arry:[61],  //Addr 61 = RTC simulate frequency divider (data: 0~2000 -> 2000Hz~1Hz)
-          u8DataIn_Arry:[(2000 - rate)],
-          u8Mask_Arry:[],
-          RepeatNum:5
-        }
 
         if(await this.setLedCtrlMode(devID, groupID, 'Normal') == false){
           console.log('setLedCtrlMode_Error');

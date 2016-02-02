@@ -316,6 +316,22 @@ describe("hme with seriel port", () => {
       }
     });
 
+    // it("serial Port setDevID", async done => {
+    //
+    //   try {
+    //     //將Device1的groupID設為6
+    //     let devID = 1;
+    //     let groupID = 0;
+    //     let newDevID = 5;
+    //     let result = await services.hme.setDevID(devID, groupID);
+    //     console.log('setDevID result',result);
+    //     result.should.be.true;
+    //     done();
+    //   } catch (e) {
+    //     done(e);
+    //   }
+    //
+    // });
 
     it("serial Port setGroupID", async done => {
 
