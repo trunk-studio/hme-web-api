@@ -365,7 +365,7 @@ describe("Schedule", () => {
       }
     });
 
-    it.only("one slve easySchedule model create to schedule", async(done) => {
+    it("one slve easySchedule model create to schedule", async(done) => {
       try {
         let result = await services.schedule.createEasyScheduleToScheduleModel(oneEasySchedule.id);
         done()
@@ -424,7 +424,7 @@ describe("Schedule", () => {
       }
     });
 
-    it("create one slave easy schedule", async(done) => {
+    it.only("create one slave easy schedule", async(done) => {
       try {
         let data = {
           slaveId:slaves.id,

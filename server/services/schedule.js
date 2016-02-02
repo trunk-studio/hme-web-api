@@ -258,31 +258,31 @@ module.exports = {
     }
   },
 
-  easyScheduleSetData: async(slave, isAll) => {
-    try {
-      let devList = await services.hme.getSlaveDeviceArray(slave.id);
-      let id = isAll ? null : slave.id ;
-      let config = await services.schedule.getCurrectSetting({
-        slaveId: id
-      });
-      let data = {
-        config,
-        devList
-      }
-      let result = await new Promise((resolve, reject) => {
-        request
-        .post(`http://${slave.host}:3000/rest/slave/${slave.id}/schedule/setOnDevice`)
-        .send(data)
-        .end((err, res) => {
-          if(err) return reject(err);
-          resolve(res.body);
-        });
-      });
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  },
+  // easyScheduleSetData: async(slave, isAll) => {
+  //   try {
+  //     let devList = await services.hme.getSlaveDeviceArray(slave.id);
+  //     let id = isAll ? null : slave.id ;
+  //     let config = await services.schedule.getCurrectSetting({
+  //       slaveId: id
+  //     });
+  //     let data = {
+  //       config,
+  //       devList
+  //     }
+  //     let result = await new Promise((resolve, reject) => {
+  //       request
+  //       .post(`http://${slave.host}:3000/rest/slave/${slave.id}/schedule/setOnDevice`)
+  //       .send(data)
+  //       .end((err, res) => {
+  //         if(err) return reject(err);
+  //         resolve(res.body);
+  //       });
+  //     });
+  //   } catch (e) {
+  //     console.log(e);
+  //     throw e;
+  //   }
+  // },
 
   scheduleSetData: async(slave, isAll) => {
     try {

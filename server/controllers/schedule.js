@@ -160,32 +160,32 @@ exports.updateScheduleDetails = async function(ctx) {
   }
 }
 
-exports.setEasyScheduleToDevice = async function(ctx) {
-  try {
-    console.log("==== setEasyScheduleToDevice ===",ctx.request);
-    let slaveId = ctx.request.body.slaveId;
-    console.log("slaveId!!",slaveId);
-    let isAll = false;
-    if(slaveId == 0){
-      let slaveList = await models.Slave.findAll();
-      isAll = true;
-      for (let slave of slaveList) {
-        try {
-          await services.schedule.easyScheduleSetData(slave, isAll);
-        } catch (e) {
-          console.log(e);
-        }
-      }
-    }else{
-      let slave = await models.Slave.findById(slaveId);
-      await services.schedule.easyScheduleSetData(slave, isAll);
-    }
-    ctx.body = true;
-  } catch(e) {
-    console.error(e);
-    ctx.body = false;
-  }
-}
+// exports.setEasyScheduleToDevice = async function(ctx) {
+//   try {
+//     console.log("==== setEasyScheduleToDevice ===",ctx.request);
+//     let slaveId = ctx.request.body.slaveId;
+//     console.log("slaveId!!",slaveId);
+//     let isAll = false;
+//     if(slaveId == 0){
+//       let slaveList = await models.Slave.findAll();
+//       isAll = true;
+//       for (let slave of slaveList) {
+//         try {
+//           await services.schedule.easyScheduleSetData(slave, isAll);
+//         } catch (e) {
+//           console.log(e);
+//         }
+//       }
+//     }else{
+//       let slave = await models.Slave.findById(slaveId);
+//       await services.schedule.easyScheduleSetData(slave, isAll);
+//     }
+//     ctx.body = true;
+//   } catch(e) {
+//     console.error(e);
+//     ctx.body = false;
+//   }
+// }
 
 exports.setScheduleListToDevice = async function(ctx) {
   try {
