@@ -97,7 +97,7 @@ module.exports = {
           for(let device of result) {
             await models.Device.findOrCreate({
               where: {
-                uid: device.devID
+                uid: device.devID,
                 SlaveId: device.SlaveId
               },
               defaults: {
