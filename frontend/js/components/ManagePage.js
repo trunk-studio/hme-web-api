@@ -399,7 +399,7 @@ export default class ManagePage extends React.Component {
     </Tab> );
 
     let testingTab = (
-    <Tab key={'testingTab'} label="TESTING" value='3'>
+    <Tab key={'testingTab'} label="Testing" value='3'>
       <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
         <div>
           <div style={{display: 'inline-flex'}}>
