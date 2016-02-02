@@ -1,6 +1,7 @@
 import { RECEIVED_CREATE_SCHEDULE, RECEIVED_SCHEDULE_LIST,
   RECEIVED_UPDATE_SCHEDULE_FIRSTDATE, RECEIVED_UPDATE_SCHEDULE_DAY,
-  RECEIVED_UPDATE_SCHEDULE_LIST, RECEIVED_SET_SCHEDULE_LIST, UPDATE_LOADING_STATUS
+  RECEIVED_UPDATE_SCHEDULE_LIST, RECEIVED_SET_SCHEDULE_LIST, UPDATE_LOADING_STATUS,
+  RECEIVED_EASY_SCHEDULE_LIST,RECEIVED_UPDATE_EASY_SCHEDULE_LIST
 } from '../actions/ScheduleListActions'
 
 export function schedule(state = { }, action) {
@@ -34,6 +35,17 @@ export function schedule(state = { }, action) {
         ...state,
         loading: action.status
       };
+    case RECEIVED_EASY_SCHEDULE_LIST:
+      console.log("!!!!!!!!!!!!!!!!",action.data);
+      return {
+        ...state,
+        easySchedule: action.data
+      }
+    case RECEIVED_UPDATE_EASY_SCHEDULE_LIST:
+    console.log("!!!!!!!!!!!!!!!!",action.data);
+      return {
+        ...state
+      }
     // case RECEIVED_UPDATE_SCHEDULE_DAY:
       // let updateScheduleList = [...state.scheduleList]
       // if(action.data)

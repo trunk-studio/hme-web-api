@@ -379,7 +379,7 @@ export default class ScheduleDetail extends React.Component {
             </div>
           </div>
           <div className="row" style={{
-            marginTop: '10px'
+            marginTop: '20px'
             }}>
             <div className="center-self justify-content" style={{
               width:'100%', padding: '5px'}}>
