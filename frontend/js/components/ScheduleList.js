@@ -194,12 +194,13 @@ export default class ScheduleList extends React.Component {
           if(tmpScheduleList[i].StartDate)
             date = new Date(tmpScheduleList[i].StartDate);
           rows.push(
-            <TableRow key={row.id}>
+            <TableRow key={row.id} style={{borderBottom: '1px solid #72737A'}}>
               <TableRowColumn>
                 <RaisedButton disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
               </TableRowColumn>
               <TableRowColumn>
                 <TextField
+                  style={{verticalAlign: 'middle'}}
                   defaultValue={moment(date).format('YYYY-MM-DD')}
                   onChange={this._handleDatePickChange}
                   type="date" />
@@ -238,9 +239,11 @@ export default class ScheduleList extends React.Component {
             date = yyyy +'/'+ (mm[1]?mm:"0"+mm[0]) +'/'+ dd;
           }
           rows.push(
-            <TableRow key={row.id}>
+            <TableRow key={row.id} style={{borderBottom: '1px solid #72737A'}}>
               <TableRowColumn>
-                <RaisedButton disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
+                <RaisedButton
+                  style={{verticalAlign: 'middle'}} 
+                  disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
               </TableRowColumn>
               <TableRowColumn style={{fontSize: '17px', color: '#AAA'}}>{date || ''}</TableRowColumn>
               <TableRowColumn>
@@ -281,9 +284,9 @@ export default class ScheduleList extends React.Component {
               <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
               <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
             */}
-            <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '10px'}}/>
-            <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '5px'}} disabled={(this.state.selectedSlave == 0)} />
-            <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '5px'}} />
+            <RaisedButton ref="scheduleAddBtn" label="ADD" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '10px'}}/>
+            <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveScheduleList} style={{marginLeft: '5px'}} disabled={(this.state.selectedSlave == 0)} />
+            <RaisedButton ref="scheduleSetBtn" labelColor="#000" backgroundColor="#70BF41" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '5px'}} />
             <RefreshIndicator
               size={30}
               left={8}
@@ -293,12 +296,12 @@ export default class ScheduleList extends React.Component {
                       position: 'relative'}} />
         </div>
         </div>
-        <Table selectable={false}>
+        <Table selectable={false} style={{backgroundColor: 'rgba(0,0,0,0)'}}>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-            <TableRow>
-              <TableHeaderColumn >Edit</TableHeaderColumn>
-              <TableHeaderColumn >Start Date</TableHeaderColumn>
-              <TableHeaderColumn >Days</TableHeaderColumn>
+            <TableRow style={{borderBottom: '1px solid #72737A'}}>
+              <TableHeaderColumn style={{color: '#000', fontSize: '16px' }}>Edit</TableHeaderColumn>
+              <TableHeaderColumn style={{color: '#000', fontSize: '16px' }} >Start Date</TableHeaderColumn>
+              <TableHeaderColumn style={{color: '#000', fontSize: '16px' }} >Days</TableHeaderColumn>
               {/*
                 <TableHeaderColumn >Grouping setting</TableHeaderColumn>
               */}
