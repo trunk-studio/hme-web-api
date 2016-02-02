@@ -37,14 +37,7 @@ import WifiSetting from '../components/WifiSetting';
 
 export default class App extends React.Component {
 
-
-  _isLogin = (replaceState) => {
-    if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
-      replaceState({}, '/login');
-    }
-  };
-
-
+  // only admin & engineer
   _requireAuth = (nextState, replaceState) => {
     if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
       replaceState({}, '/login');
