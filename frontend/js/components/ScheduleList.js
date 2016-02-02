@@ -378,15 +378,15 @@ export default class ScheduleList extends React.Component {
         </Dialog>
         <div id="easyScheduleList" className={easyDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row">
-            <div className="smalllRaisedBnutton" style={{marginLeft: '30px', marginTop: '15px', display: 'inline-flex'}}>
-              <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px'}}/>
+            <div className="smalllRaisedBnutton" style={{marginLeft: '30px', marginTop: '15px'}}>
+              <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px', float: 'left'}}/>
               <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'60px', marginLeft: '15px'}} disabled={( this.state.isSetBtnClose ||  this.state.selectedSlave == 0)} />
               <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{ width:'60px', marginLeft: '15px'}} />
               <RaisedButton ref="scheduleSetBtn" label="Pro" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._useProView} style={{width:'60px', marginLeft: '15px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}
-                top={2}
+                top={5}
                 status={this.props.loading || 'hide'}
                 style={{display: 'inline-block', position: 'relative'}} />
             </div>
