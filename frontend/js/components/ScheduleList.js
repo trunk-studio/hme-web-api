@@ -273,50 +273,48 @@ export default class ScheduleList extends React.Component {
     slaveList.push(...this.props.slaveList);
     // let isAddOpen = rows.length >= 5 ? true: false;
     return (
-      <div id="scheduleList" style={{width: '100%', overflowY: 'hidden', minHeight: '320px', backgroundImage: "url('public/assets/images/HMEsplash.png')", backgroundSize: 'cover', backgroundAttachment: 'fixed'}}>
-        <div className="self-center" style={{width: '95%', overflowX: 'hidden', minHeight: '320px', padding: '15px', margin: '15px', backgroundColor: 'rgba(255,255,255,0.4)'}}>
-          <div className="row">
-            <div style={{marginLeft: '30px', marginTop: '15px'}}>
-              <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px', float: 'left'}}/>
-              {/*
-                <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
-                <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
-              */}
-              <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '15px'}}/>
-              <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
-              <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '15px'}} />
-              <RefreshIndicator
-                size={30}
-                left={8}
-                top={2}
-                status={this.props.loading || 'hide'}
-                style={{display: 'inline-block',
-                        position: 'relative'}} />
-          </div>
-          </div>
-          <Table selectable={false}>
-            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-              <TableRow>
-                <TableHeaderColumn >Edit</TableHeaderColumn>
-                <TableHeaderColumn >Start Date</TableHeaderColumn>
-                <TableHeaderColumn >Days</TableHeaderColumn>
-                {/*
-                  <TableHeaderColumn >Grouping setting</TableHeaderColumn>
-                */}
-              </TableRow>
-            </TableHeader>
-            <TableBody displayRowCheckbox={false} style={{height: '500px'}}>
-              {rows}
-            </TableBody>
-          </Table>
-          <Snackbar
-            ref="snackbar"
-            open={false}
-            onRequestClose={this._handleRequestClose}
-            message={"已更改, 需要儲存"}
-            autoHideDuration={3000}
-          />
+      <div id="scheduleList" className="tab-content self-center" >
+        <div className="row">
+          <div style={{marginLeft: '30px', marginTop: '15px'}}>
+            <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px', float: 'left'}}/>
+            {/*
+              <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
+              <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
+            */}
+            <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '10px'}}/>
+            <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{marginLeft: '5px'}} disabled={(this.state.selectedSlave == 0)} />
+            <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '5px'}} />
+            <RefreshIndicator
+              size={30}
+              left={8}
+              top={2}
+              status={this.props.loading || 'hide'}
+              style={{display: 'inline-block',
+                      position: 'relative'}} />
         </div>
+        </div>
+        <Table selectable={false}>
+          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+            <TableRow>
+              <TableHeaderColumn >Edit</TableHeaderColumn>
+              <TableHeaderColumn >Start Date</TableHeaderColumn>
+              <TableHeaderColumn >Days</TableHeaderColumn>
+              {/*
+                <TableHeaderColumn >Grouping setting</TableHeaderColumn>
+              */}
+            </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false} style={{height: '500px'}}>
+            {rows}
+          </TableBody>
+        </Table>
+        <Snackbar
+          ref="snackbar"
+          open={false}
+          onRequestClose={this._handleRequestClose}
+          message={"已更改, 需要儲存"}
+          autoHideDuration={3000}
+        />
       </div>
     );
   };

@@ -431,48 +431,50 @@ export default class ManagePage extends React.Component {
       adminFunctionTabs.push(scheduleList, reportEmailTab, testingTab);
 
     return (
-      <Tabs initialSelectedIndex={tabIndex} onChange={this._handleTabChanged}>
+      <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} style={{minHeight: '320px', backgroundImage: "url('public/assets/images/HMEsplash.png')", backgroundSize: 'cover', backgroundAttachment: 'fixed'}}>
         <Tab label="Setup Test" value='0'>
-          <div className="self-center" style={{width: '500px'}}>
-            <div style={{width: '500px'}}>
-              <SelectField labelMember="primary" menuItems={setupTestSlaveList} onChange={this._setupTestSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '250px'}}/>
-              <SelectField labelMember="primary" onChange={this._setupTestDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={setupTestDeviceList} style={{width: '250px', marginLeft: '5px', position: 'absolute'}}/>
-            </div>
-          </div>
-          <div className="row self-center" style={{width: '100%', marginTop: '15px'}}>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <div className="row">
-                <LineChart ref="chart" data={chartData} style={{
-                  margin: '5px',
-                  width: '100%',
-                  height: 'auto'
-                  }}
-                  options={chartOptions} />
-              </div>
-              <div className="row smalllRaisedBnutton self-center" style={{width: '310px'}}>
-                <RaisedButton label="全開"  onTouchTap={this._AllOpen} style={{width: '50px'}}/>
-                <RaisedButton label="6500K" onTouchTap={this._6500k} style={{width: '50px'}}/>
-                <RaisedButton label="4600K" onTouchTap={this._4600k} style={{width: '50px'}}/>
-                <RaisedButton label="2950K" onTouchTap={this._2950k} style={{width: '50px'}}/>
-                <RaisedButton label="saving E" onTouchTap={this._saving} style={{width: '60px'}}/>
-                <RaisedButton label="B + R" onTouchTap={this._BR} style={{width: '50px'}}/>
+          <div className="tab-content self-center">
+            <div className="self-center" style={{width: '500px'}}>
+              <div style={{width: '500px'}}>
+                <SelectField labelMember="primary" menuItems={setupTestSlaveList} onChange={this._setupTestSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '250px'}}/>
+                <SelectField labelMember="primary" onChange={this._setupTestDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={setupTestDeviceList} style={{width: '250px', marginLeft: '5px', position: 'absolute'}}/>
               </div>
             </div>
-            <div className="col-md-4 col-sm-4 col-xs-4" style={{marginTop: '0px'}}>
-              <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
-              <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
-              <div style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
-              <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
-              <div style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '2px'}}>BL {this.state.blValue}</div>
-              <SliderRc ref="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
-              <div style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '2px'}}>GR {this.state.grValue}</div>
-              <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
-              <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
-              <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
-              <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
-              <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
-              <div>Bright {this.state.brightValue}</div>
-              <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider"/>
+            <div className="row self-center" style={{width: '100%', marginTop: '15px'}}>
+              <div className="col-md-8 col-sm-8 col-xs-8">
+                <div className="row">
+                  <LineChart ref="chart" data={chartData} style={{
+                    margin: '5px',
+                    width: '100%',
+                    height: 'auto'
+                    }}
+                    options={chartOptions} />
+                </div>
+                <div className="row smalllRaisedBnutton self-center" style={{width: '310px'}}>
+                  <RaisedButton label="全開"  onTouchTap={this._AllOpen} style={{width: '50px'}}/>
+                  <RaisedButton label="6500K" onTouchTap={this._6500k} style={{width: '50px'}}/>
+                  <RaisedButton label="4600K" onTouchTap={this._4600k} style={{width: '50px'}}/>
+                  <RaisedButton label="2950K" onTouchTap={this._2950k} style={{width: '50px'}}/>
+                  <RaisedButton label="saving E" onTouchTap={this._saving} style={{width: '60px'}}/>
+                  <RaisedButton label="B + R" onTouchTap={this._BR} style={{width: '50px'}}/>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-4 col-xs-4" style={{marginTop: '0px'}}>
+                <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
+                <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
+                <div style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
+                <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
+                <div style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '2px'}}>BL {this.state.blValue}</div>
+                <SliderRc ref="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
+                <div style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '2px'}}>GR {this.state.grValue}</div>
+                <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
+                <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
+                <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
+                <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
+                <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
+                <div>Bright {this.state.brightValue}</div>
+                <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider"/>
+              </div>
             </div>
           </div>
         </Tab>
