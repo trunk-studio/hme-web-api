@@ -242,7 +242,7 @@ export default class ScheduleList extends React.Component {
             <TableRow key={row.id} style={{borderBottom: '1px solid #72737A'}}>
               <TableRowColumn>
                 <RaisedButton
-                  style={{verticalAlign: 'middle'}} 
+                  style={{verticalAlign: 'middle'}}
                   disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
               </TableRowColumn>
               <TableRowColumn style={{fontSize: '17px', color: '#AAA'}}>{date || ''}</TableRowColumn>
@@ -286,7 +286,7 @@ export default class ScheduleList extends React.Component {
             */}
             <RaisedButton ref="scheduleAddBtn" label="ADD" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{marginLeft: '10px'}}/>
             <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveScheduleList} style={{marginLeft: '5px'}} disabled={(this.state.selectedSlave == 0)} />
-            <RaisedButton ref="scheduleSetBtn" labelColor="#000" backgroundColor="#70BF41" label="Set" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '5px'}} />
+            <RaisedButton ref="scheduleSetBtn" labelColor="#FFF" backgroundColor="#51A7F9" label="summit" onTouchTap={this._setScheduleList} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{marginLeft: '5px'}} />
             <RefreshIndicator
               size={30}
               left={8}
