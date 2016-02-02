@@ -21,9 +21,6 @@ const style = {
   margin: 50
 };
 
-import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
-
 const SCHEDULE_DETAILS_AMOUNT = 12,
       MAX_TIME_INTEGER = 1440,
       SLIDER_TIME_MARKS = {
@@ -316,7 +313,7 @@ export default class ScheduleDetail extends React.Component {
           style={{height: '55px', minHeight: '0px', marginTop: '-9px'}}
           titleStyle={{fontSize: '20px'}}
           iconElementLeft={
-            <IconButton onTouchTap={function() {window.location.href = '#/manage/3';}} >
+            <IconButton onTouchTap={function() {window.location.href = '#/manage/1';}} >
               <NavigationClose />
             </IconButton>
           }

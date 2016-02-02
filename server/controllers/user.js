@@ -74,7 +74,7 @@ exports.login = async function (ctx, next) {
       token = jsonWebToken.sign(user, secret, {
           issuer: 'localhost',
           audience: 'user',
-          expiresIn: '1d'
+          expiresIn: 60
       });
     }
 

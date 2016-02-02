@@ -10,16 +10,15 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { browserHistory, Router, Route, Link, IndexRoute } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import { autoRehydrate } from 'redux-persist';
 import createLogger from 'redux-logger';
 import reducers from '../reducers'
 import configureStore from '../store/configureStore';
+
+
 const store = configureStore();
 
 // const history                   = createBrowserHistory();
-
-injectTapEventPlugin();
 
 import LoginPage from '../components/LoginPage';
 import ManagePage from '../components/ManagePage';
@@ -36,25 +35,41 @@ import WifiSetting from '../components/WifiSetting';
 //   render () { return null; }
 // }
 
-
-
 export default class App extends React.Component {
 
+  // only admin & engineer
   _requireAuth = (nextState, replaceState) => {
     if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
-      console.log('fail');
       replaceState({}, '/login');
     }
+    else if(jwtDecode(localStorage.getItem('token')).role != 'engineer' && jwtDecode(localStorage.getItem('token')).role != 'admin') {
+      replaceState({}, '/manage/0');
+    }
+
+  };
+
+  _requireLogin = (nextState, replaceState) => {
+    if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
+      replaceState({}, '/login');
+    }
+  };
+
+  _noAuth = (nextState, replaceState) => {
+    if(localStorage.getItem('token')) {
+      console.log('test');
+      replaceState({}, '/manage/0');
+    }
+
   };
 
   render() {
     return (
       <Router history={browserHistory}>
-        <Route path="/" component={LoginPage}  onEnter={this._requireAuth}/>
-        <Route path="/login" component={LoginPage} />
-        <Route path="/manage/:tabIndex" component={ManagePage} onEnter={this._requireAuth}/>
+        <Route path="/" component={LoginPage}  onEnter={this._requireLogin}/>
+        <Route path="/login" component={LoginPage} onEnter={this._noAuth}/>
+        <Route path="/manage/:tabIndex" component={ManagePage} onEnter={this._requireLogin}/>
         <Route path="/graph" component={SettingGraph} />
-        <Route path="/schedule/list" component={ScheduleList} onEnter={this._requireAuth}/>
+        <Route path="/schedule/list" component={ScheduleList} onEnter={this._requireLogin}/>
         <Route path="/schedule/:slaveId/edit/:scheduleID" component={ScheduleDetail} onEnter={this._requireAuth}/>
         <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} onEnter={this._requireAuth}/>
         <Route path="/setup" component={WifiSetting} />

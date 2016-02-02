@@ -364,7 +364,7 @@ export default class ScheduleList extends React.Component {
       easySchedule = this.props.easySchedule;
     }
     return (
-      <div>
+      <div className="tab-content self-center">
         <Dialog
           title="Warning"
           actions={dialogActions}
