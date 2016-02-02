@@ -20,8 +20,6 @@ const store = configureStore();
 
 // const history                   = createBrowserHistory();
 
-
-
 import LoginPage from '../components/LoginPage';
 import ManagePage from '../components/ManagePage';
 import SettingGraph from '../components/SettingGraph';
@@ -37,11 +35,20 @@ import WifiSetting from '../components/WifiSetting';
 //   render () { return null; }
 // }
 
-
-
 export default class App extends React.Component {
 
+  // only admin & engineer
   _requireAuth = (nextState, replaceState) => {
+    if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
+      replaceState({}, '/login');
+    }
+    else if(jwtDecode(localStorage.getItem('token')).role != 'engineer' && jwtDecode(localStorage.getItem('token')).role != 'admin') {
+      replaceState({}, '/manage/0');
+    }
+
+  };
+
+  _requireLogin = (nextState, replaceState) => {
     if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
       replaceState({}, '/login');
     }
@@ -58,11 +65,11 @@ export default class App extends React.Component {
   render() {
     return (
       <Router history={browserHistory}>
-        <Route path="/" component={LoginPage}  onEnter={this._requireAuth}/>
+        <Route path="/" component={LoginPage}  onEnter={this._requireLogin}/>
         <Route path="/login" component={LoginPage} onEnter={this._noAuth}/>
-        <Route path="/manage/:tabIndex" component={ManagePage} onEnter={this._requireAuth}/>
+        <Route path="/manage/:tabIndex" component={ManagePage} onEnter={this._requireLogin}/>
         <Route path="/graph" component={SettingGraph} />
-        <Route path="/schedule/list" component={ScheduleList} onEnter={this._requireAuth}/>
+        <Route path="/schedule/list" component={ScheduleList} onEnter={this._requireLogin}/>
         <Route path="/schedule/:slaveId/edit/:scheduleID" component={ScheduleDetail} onEnter={this._requireAuth}/>
         <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} onEnter={this._requireAuth}/>
         <Route path="/setup" component={WifiSetting} />

@@ -100,3 +100,20 @@
   fill-opacity: 0 !important;
   stroke-opacity: 0 !important;
 }
+
+.tabs-container>div:first-child {
+  background-color: rgba(10, 10, 10, 0.75) !important;
+}
+
+.tab-content {
+  width: 95%;
+  overflow-x: hidden;
+  min-height: 320px;
+  padding: 15px;
+  margin: 15px;
+  background-color: rgba(255,255,255,0.5);
+}
+
+.tab-content hr {
+  border-bottom: solid 1px #000 !important;
+}
