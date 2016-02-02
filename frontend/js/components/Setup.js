@@ -34,8 +34,10 @@ export default class Setup extends React.Component  {
     });
   };
 
-  _handleTimezoneChanged = (e) => {
-    
+  _handleTimezoneChanged = (e, value) => {
+    this.setState({
+      timezoneIndex: value
+    });
   };
 
   _handleApply = (e) => {
@@ -49,7 +51,7 @@ export default class Setup extends React.Component  {
       type: this.refs.serverType.getSelectedValue(),
       reportEmail: this.refs.adminEmail.getValue(),
       masterName: this.refs.connectToMaster.getValue(),
-      timezone: timezones[this.state.timezoneIndex]
+      timezoneOffset: timezones[this.state.timezoneIndex].offset
     };
     console.log(setting);
   };
@@ -137,7 +139,7 @@ export default class Setup extends React.Component  {
         <label style={{fontSize: '18px', marginTop: '15px'}}>Timezone</label>
       </div>
       <div className="self-center" style={{width: "210px"}}>
-        <SelectField ref="timezone" menuItems={timezoneList} style={{width: '300px'}}/>
+        <SelectField ref="timezone" onChange={this._handleTimezoneChanged} menuItems={timezoneList} style={{width: '300px'}}/>
       </div>
       <div className="self-center" style={{width: "300px"}}>
         <div className='row'>
