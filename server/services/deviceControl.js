@@ -12,7 +12,8 @@ module.exports = {
         }
         newDevice = await models.Device.findOrCreate({
           where:{
-            uid: device.devID
+            uid: device.devID,
+            SlaveId: slaveId
           },
           defaults: newDevice
         });
@@ -97,6 +98,7 @@ module.exports = {
             await models.Device.findOrCreate({
               where: {
                 uid: device.devID
+                SlaveId: device.SlaveId
               },
               defaults: {
                 uid: device.devID,

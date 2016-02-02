@@ -1,4 +1,4 @@
-describe.only("logger", () => {
+describe("logger", () => {
 
   before(done => {
     sinon.stub(services.hme, 'hello', () => {

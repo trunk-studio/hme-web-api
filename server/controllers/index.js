@@ -108,9 +108,11 @@ export default class Routes {
     publicRoute.get('/rest/master/loadEmail', HmeController.loadEmail);
     publicRoute.get('/rest/master/syncAllSlaveAndDevice', HmeController.syncAllSlaveAndDevice);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
+    publicRoute.post('/rest/master/schedule/easy/create', ScheduleController.createEasySchedule);
     publicRoute.get('/rest/master/schedule/findAll', ScheduleController.getAllSchedule);
     publicRoute.get('/rest/master/slave/:slaveId/schedule/findAll', ScheduleController.getAllScheduleBySlaveId);
     publicRoute.get('/rest/master/schedule/:id', ScheduleController.getOneSchedule);
+    publicRoute.get('/rest/master/schedule/easy/:slaveId', ScheduleController.getOneEasySchedule);
     publicRoute.post('/rest/master/schedule/update/day', ScheduleController.updateScheduleDay);
     publicRoute.post('/rest/master/schedule/update/list', ScheduleController.updateScheduleList);
     publicRoute.post('/rest/master/schedule/update/detail', ScheduleController.updateScheduleDetail);
@@ -121,7 +123,6 @@ export default class Routes {
     publicRoute.post('/rest/master/schedule/setOnDevice', ScheduleController.setScheduleListToDevice);
     publicRoute.post('/rest/master/schedule/setFastRun', ScheduleController.setFastRun);
     publicRoute.post('/rest/master/schedule/setSimRtc', ScheduleController.setSimRtc);
-
     // find slave Device & Groups
     publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceListBySlave);
