@@ -26,7 +26,7 @@ import SettingGraph from '../components/SettingGraph';
 import ScheduleList from '../components/ScheduleList';
 import ScheduleDetail from '../components/ScheduleDetail';
 import ScheduleDetailConfig from '../components/ScheduleDetailConfig';
-import WifiSetting from '../components/WifiSetting';
+import Setup from '../components/Setup';
 
 // export default class RedirectToDefaultValue extends React.Component {
 //   willTransitionTo (transition, params) {
@@ -45,7 +45,6 @@ export default class App extends React.Component {
     else if(jwtDecode(localStorage.getItem('token')).role != 'engineer' && jwtDecode(localStorage.getItem('token')).role != 'admin') {
       replaceState({}, '/manage/0');
     }
-
   };
 
   _requireLogin = (nextState, replaceState) => {
@@ -59,7 +58,6 @@ export default class App extends React.Component {
       console.log('test');
       replaceState({}, '/manage/0');
     }
-
   };
 
   render() {
@@ -72,7 +70,7 @@ export default class App extends React.Component {
         <Route path="/schedule/list" component={ScheduleList} onEnter={this._requireLogin}/>
         <Route path="/schedule/:slaveId/edit/:scheduleID" component={ScheduleDetail} onEnter={this._requireAuth}/>
         <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} onEnter={this._requireAuth}/>
-        <Route path="/setup" component={WifiSetting} />
+        <Route path="/setup" component={Setup} />
       </Router>
     );
   }

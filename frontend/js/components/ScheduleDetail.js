@@ -244,13 +244,14 @@ export default class ScheduleDetail extends React.Component {
           weight: sliderWeight*100
         };
 
-    let dots=[],tickMarks=[];
+    let dots=[],tickMarks=[], timeSliderMarks={};
     for (let dot of this.props.scheduleDetails) {
       dots.push({
         x: dot.StartTimeInteger,
         y: dot.weight
       });
       tickMarks.push(dot.StartTimeInteger);
+      timeSliderMarks[dot.StartTimeInteger] = _formatMinutes(dot.StartTimeInteger);
     }
 
     let timeDuration = scheduleDetails.length? MAX_TIME_INTEGER - scheduleDetails[SCHEDULE_DETAILS_AMOUNT-1].StartTimeInteger + firstScheduleDetail.StartTimeInteger : 0;
@@ -261,23 +262,23 @@ export default class ScheduleDetail extends React.Component {
       key: 'daily schedule',
       color: '#2d7fe0',
       values: [
-        { x: 0, y: midWeight},
+        { x: 1, y: midWeight},
         ...dots,
         { x: _timeToInteger('24:00:00'), y: midWeight}
       ]
     }];
-    console.log('===', data, dots);
-
+    // console.log('===', data, dots);
+    console.log(dots, tickMarks);
     let ButtonGroup1 = [],
         ButtonGroup2 = [];
     if(scheduleDetails.length) {
       for (let i=0; i<6; i++) {
         let active = (i==this.state.currentIndex);
         ButtonGroup1.push(
-          <div className="col-xs-2" key={i}>
+          <div key={i}>
             <RaisedButton onTouchTap={function(){this._handleTimeBtnClick(i)}.bind(this)}
               fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
-              secondary={true} style={{marginLeft: '3px'}}
+              secondary={true} style={{}}
               primary={active}/>
           </div>);
       }
@@ -285,10 +286,10 @@ export default class ScheduleDetail extends React.Component {
       for (let i=6; i<SCHEDULE_DETAILS_AMOUNT; i++) {
         let active = (i==this.state.currentIndex);
         ButtonGroup2.push(
-          <div className="col-xs-2" key={i}>
+          <div key={i}>
             <RaisedButton onTouchTap={function(){this._handleTimeBtnClick(i)}.bind(this)}
               fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
-              secondary={true} style={{marginLeft: '3px'}}
+              secondary={true} style={{}}
               primary={active} />
           </div>);
       }
@@ -306,6 +307,7 @@ export default class ScheduleDetail extends React.Component {
         primary={true}
         onTouchTap={this._dialogActionReset} />
     ];
+
 
     return (
       <div>
@@ -368,7 +370,7 @@ export default class ScheduleDetail extends React.Component {
             <div style={{
               width: '85%'
             }} className="">
-              <Slider min={0} max={MAX_TIME_INTEGER} marks={SLIDER_TIME_MARKS} included={false}
+              <Slider className="timeSlider" min={0} max={MAX_TIME_INTEGER} marks={timeSliderMarks} included={false}
                 value={sliderData.time} disabled={false}
                 allowCross={false} style={{width: '10%'}}
                 onAfterChange={this._handleTimetChanged}
@@ -377,16 +379,19 @@ export default class ScheduleDetail extends React.Component {
             </div>
           </div>
           <div className="row" style={{
-            marginTop: '23px'
+            marginTop: '20px'
             }}>
-            <div className="center-self" style={{width:'100%'}}>
+            <div className="center-self justify-content" style={{
+              width:'100%', padding: '5px'}}>
               {ButtonGroup1}
             </div>
           </div>
-          <div className="row" style={{
-                marginTop: '5px'
+          <div className="row" style={{marginTop: '3px'
                 }}>
-            {ButtonGroup2}
+            <div className="center-self justify-content" style={{
+                width:'100%', padding: '5px'}}>
+              {ButtonGroup2}
+            </div>
           </div>
         </div>
         {/*

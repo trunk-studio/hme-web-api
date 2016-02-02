@@ -1,6 +1,6 @@
 import React                from 'react';
 import { connect } from 'react-redux'
-// import { requestLogin } from '../actions/AuthActions'
+import { requestUpdateSetup } from '../actions/SetupActions'
 import {
   RaisedButton,
   SelectField,
@@ -13,12 +13,13 @@ import {
 
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
 const timezones = require('../../../timezones.json');
-export default class  WifiSetting extends React.Component  {
+export default class Setup extends React.Component  {
 
   constructor(props) {
     super(props);
     this.state = {
-      type: 'slave'
+      type: 'slave',
+      timezoneIndex: 0
     }
   }
 
@@ -33,8 +34,30 @@ export default class  WifiSetting extends React.Component  {
     });
   };
 
-  render() {
+  _handleTimezoneChanged = (e, value) => {
+    this.setState({
+      timezoneIndex: value
+    });
+  };
 
+  _handleApply = (e) => {
+    let setting = {};
+    console.log(this.refs.timezone);
+    setting.wifi = {
+      ssid: this.refs.ssid.getValue(),
+      password: this.refs.password.getValue()
+    };
+    setting.system = {
+      type: this.refs.serverType.getSelectedValue(),
+      reportEmail: this.refs.adminEmail.getValue(),
+      masterName: this.refs.connectToMaster.getValue(),
+      timezoneOffset: timezones[this.state.timezoneIndex].offset
+    };
+    console.log(setting);
+    this.props.requestUpdateSetup(setting);
+  };
+
+  render() {
     let timezoneList = [];
 
     for(let timezone of timezones) {
@@ -90,7 +113,7 @@ export default class  WifiSetting extends React.Component  {
         <label style={{fontSize: '18px', marginTop: '15px'}}>System</label>
       </div>
       <div className="self-center" style={{width: "210px"}}>
-        <RadioButtonGroup name="type" defaultSelected="slave" onChange={this._handleRadioChanged}>
+        <RadioButtonGroup ref="serverType" name="type" defaultSelected="slave" onChange={this._handleRadioChanged}>
           <RadioButton
             value="master"
             label="Master"
@@ -117,11 +140,20 @@ export default class  WifiSetting extends React.Component  {
         <label style={{fontSize: '18px', marginTop: '15px'}}>Timezone</label>
       </div>
       <div className="self-center" style={{width: "210px"}}>
-        <SelectField menuItems={timezoneList} style={{width: '300px'}}/>
+        <SelectField ref="timezone" onChange={this._handleTimezoneChanged} menuItems={timezoneList} style={{width: '300px'}}/>
       </div>
       <div className="self-center" style={{width: "300px"}}>
         <div className='row'>
-          <RaisedButton label="APPLY" style={{float: 'right', marginBottom: '15px'}}/>
+        <RaisedButton label="APPLY" onTouchTap={this._handleApply} style={{float: 'right', marginBottom: '15px'}} />
+          <RefreshIndicator
+            size={40}
+            left={-10}
+            top={0}
+            status={this.props.isLoading || 'hide'}
+            style={{
+              float: 'right',
+              display: 'inline-block',
+              position: 'relative'}} />
         </div>
       </div>
     </div>
@@ -130,14 +162,16 @@ export default class  WifiSetting extends React.Component  {
 }
 
 function _injectPropsFromStore(state) {
-  // let { login, isLoading } = state;
+  let { setup } = state;
   return {
+    isLoading: setup? setup.isLoading : 'hide'
   };
 }
 
 const _injectPropsFromActions = {
   // requestLogin
+  requestUpdateSetup
 }
 
 
-export default connect(_injectPropsFromStore, _injectPropsFromActions)( WifiSetting );
+export default connect(_injectPropsFromStore, _injectPropsFromActions)( Setup );
