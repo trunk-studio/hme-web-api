@@ -292,7 +292,6 @@ export default class ManagePage extends React.Component {
   };
 
   _handleTabChanged = (tabIndex, tab) => {
-    console.log('===',tabIndex);
     if(tabIndex == 'logout')
       this._logout();
     // window.location.href = `/#/manage/${tabIndex}`;
