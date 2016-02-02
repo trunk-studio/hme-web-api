@@ -1,36 +1,20 @@
 import {
-  REQUEST_SETUP_SETTING,
-  RECEIVED_SETUP_SETTING
-} from '../actions/AuthActions'
+  RECEIVED_SETUP_SETTING,
+  UPDATE_SETUP_SETTING_LOADING_STATUS
+} from '../actions/SetupActions'
 
-export function login(state = { isLogin: false }, action) {
+export function setup(state = { isLogin: false }, action) {
   switch (action.type) {
-    case REQUEST_LOGIN:
+    case UPDATE_SETUP_SETTING_LOADING_STATUS:
       return {
         ...state,
-        isLoading: true
+        isLoading: action.status
       }
-    case RECEIVED_LOGIN:
-      return {
-        ...state,
-        ...action.data
-        // isLoading: false
-      };
-      // return action.data
-    case USER_ROLE:
-      return {
-        ...state,
-        role: action.role,
-        isLogin: true
-      }
-    case LOGOUT:
-      return {
-        ...state,
-        role: null,
-        isLogin: false,
-        success: false,
-        jwt: ''
-      }
+    // case RECEIVED_SETUP_SETTING:
+    //   return {
+    //     ...state,
+    //
+    //   }
     default:
       return state
   }

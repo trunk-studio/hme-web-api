@@ -1,6 +1,6 @@
 import React                from 'react';
 import { connect } from 'react-redux'
-import { requestLogin } from '../actions/SetupActions'
+import { requestUpdateSetup } from '../actions/SetupActions'
 import {
   RaisedButton,
   SelectField,
@@ -54,6 +54,7 @@ export default class Setup extends React.Component  {
       timezoneOffset: timezones[this.state.timezoneIndex].offset
     };
     console.log(setting);
+    this.props.requestUpdateSetup(setting);
   };
 
   render() {
@@ -143,7 +144,16 @@ export default class Setup extends React.Component  {
       </div>
       <div className="self-center" style={{width: "300px"}}>
         <div className='row'>
-          <RaisedButton label="APPLY" onTouchTap={this._handleApply} style={{float: 'right', marginBottom: '15px'}}/>
+        <RaisedButton label="APPLY" onTouchTap={this._handleApply} style={{float: 'right', marginBottom: '15px'}} />
+          <RefreshIndicator
+            size={40}
+            left={-10}
+            top={0}
+            status={this.props.isLoading || 'hide'}
+            style={{
+              float: 'right',
+              display: 'inline-block',
+              position: 'relative'}} />
         </div>
       </div>
     </div>
@@ -152,13 +162,15 @@ export default class Setup extends React.Component  {
 }
 
 function _injectPropsFromStore(state) {
-  // let { login, isLoading } = state;
+  let { setup } = state;
   return {
+    isLoading: setup? setup.isLoading : 'hide'
   };
 }
 
 const _injectPropsFromActions = {
   // requestLogin
+  requestUpdateSetup
 }
 
 

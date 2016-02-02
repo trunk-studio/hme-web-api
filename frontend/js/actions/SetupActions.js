@@ -8,9 +8,9 @@ export function requestGetSetupSetting(loginData) {
   return (dispatch) => {
     dispatch(updateSetupSettingLoadingStatus('loading'));
     return request
-      .post('/rest/master/login', loginData)
+      .get('/rest/setup')
       .then(response => {
-        dispatch(receivedLogin(response.data));
+        dispatch(receivedSetupData(response.data));
         dispatch(updateSetupSettingLoadingStatus('hide'));
       });
   };
@@ -20,21 +20,20 @@ export function requestUpdateSetup(setting) {
   return (dispatch) => {
     dispatch(updateSetupSettingLoadingStatus('loading'));
     return request
-      .post('/rest/setup', setting)
+      .post('/rest/setup/update', setting)
       .then(response => {
-        requestGetSetupSetting();
+        // requestGetSetupSetting();
         dispatch(updateSetupSettingLoadingStatus('hide'));
       });
   }
 }
 
-export function receivedSetupSetting(data) {
+export function receivedSetupData(data) {
   return {
-    type: RECEIVED_LOGIN,
+    type: RECEIVED_SETUP_SETTING,
     data
-  }
+  };
 }
-
 
 export function updateSetupSettingLoadingStatus(status) {
   return {
