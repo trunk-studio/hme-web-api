@@ -346,7 +346,7 @@ describe("Schedule", () => {
         });
         allEasySchedule = await models.easySchedule.create({
     			"StartDate": "2016-02-01 00:00:00",
-    			"StartTime": "16:00:00",
+    			"StartTime": "6:00:00",
     			"Season": [{hour:12,days:10},{hour:12,days:12},{hour:12,days:13}],
         });
         done();
@@ -356,9 +356,18 @@ describe("Schedule", () => {
       }
     });
 
-    it.only("easySchedule model create to schedule", async(done) => {
+    it("all slave easySchedule model create to schedule", async(done) => {
       try {
         let result = await services.schedule.createEasyScheduleToScheduleModel(allEasySchedule.id);
+        done()
+      } catch (e) {
+        done(e)
+      }
+    });
+
+    it.only("one slve easySchedule model create to schedule", async(done) => {
+      try {
+        let result = await services.schedule.createEasyScheduleToScheduleModel(oneEasySchedule.id);
         done()
       } catch (e) {
         done(e)

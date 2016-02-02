@@ -49,6 +49,7 @@ module.exports = {
         Season: data.season,
         ...slaveId
       });
+      await services.schedule.createEasyScheduleToScheduleModel(easySchedule.id)
     } catch (e) {
       console.log(e);
       throw e;
@@ -65,25 +66,95 @@ module.exports = {
         StartDate: easySchedule.StartDate,
         ...slave
       }
+      let i = 0;
       for(let season of easySchedule.Season){
         try {
+          if(i == 0){
+            createData.StartDate = easySchedule.StartDate;
+          }else if (i == 1) {
+            createData.StartDate = moment(easySchedule.StartDate).add(easySchedule.Season[i-1].days, 'd').format("YYYY-MM-DD");
+          }else{
+            createData.StartDate = moment(easySchedule.StartDate).add(easySchedule.Season[i-1].days, 'd').add(easySchedule.Season[i-2].days, 'd').format("YYYY-MM-DD");
+          }
           createData.Days = season.days
           let schedule = await models.Schedule.create(createData);
-          console.log("!!!!!!!!!!",easySchedule.StartTime);
           let scheduleConfig = [];
           for (let a = 1; a <= 12; a++) {
-            // let esayTime = moment(easySchedule.StartTime);
-            console.log("!!!!!!!!!!!",((season.hour*60)/12)*a);
-            let time = moment(easySchedule.StartTime).add(((season.hour*60)/12)*a, 'm').format("HH:mm:ss");
-            console.log("???????????",time);
-            scheduleConfig.push({
-              "weight": 1,
-              "StartTime": time,
+            if( a == 1){
+              let time = moment({
+                hour: easySchedule.StartTime.split(":")[0],
+                minute: easySchedule.StartTime.split(":")[1]
+              }).add(5, 'm');
+              scheduleConfig.push({
+                "weight": 1,
+                "StartTime":time.format("HH:mm:ss"),
+                "ScheduleId": schedule.id
+              });
+            }else if ( a == 12 ) {
+              let time = moment({
+                hour: easySchedule.StartTime.split(":")[0],
+                minute: easySchedule.StartTime.split(":")[1]
+              }).add(season.hour, 'h').subtract(5, 'm');
+              scheduleConfig.push({
+                "weight": 1,
+                "StartTime":time.format("HH:mm:ss"),
+                "ScheduleId": schedule.id
+              });
+            }else{
+              let time = moment({
+                hour: easySchedule.StartTime.split(":")[0],
+                minute: easySchedule.StartTime.split(":")[1]
+              }).add(((season.hour*60)/12)*a, 'm');
+              scheduleConfig.push({
+                "weight": 1,
+                "StartTime":time.format("HH:mm:ss"),
+                "ScheduleId": schedule.id
+              });
+            }
+          }
+          await models.ScheduleDetail.bulkCreate(scheduleConfig);
+          let findScheduleConfig = await models.ScheduleDetail.findAll({
+            where:{
               "ScheduleId": schedule.id
+            }
+          });
+          let scheduleConfigId = [];
+          if(i == 0){
+            findScheduleConfig.forEach(function(data,i){
+              scheduleConfigId.push({
+                WW: 66,
+                DB: 100,
+                BL: 97,
+                GR: 78,
+                RE: 13,
+                "ScheduleDetailId": data.id,
+              });
+            });
+          }else if (i == 1) {
+            findScheduleConfig.forEach(function(data,i){
+              scheduleConfigId.push({
+                WW: 100,
+                DB: 100,
+                BL: 100,
+                GR: 100,
+                RE: 100,
+                "ScheduleDetailId": data.id,
+              });
+            });
+          }else{
+            findScheduleConfig.forEach(function(data,i){
+              scheduleConfigId.push({
+                WW: 100,
+                DB: 11,
+                BL: 29,
+                GR: 34,
+                RE: 95,
+                "ScheduleDetailId": data.id,
+              });
             });
           }
-          console.log(JSON.stringify(scheduleConfig,null,2));
-          // await models.ScheduleDetail.bulkCreate(scheduleConfig);
+          await models.ScheduleDetailConfig.bulkCreate(scheduleConfigId);
+          i++;
         } catch (e) {
           console.log(e);
         }

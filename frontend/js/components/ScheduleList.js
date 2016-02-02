@@ -438,9 +438,9 @@ export default class ScheduleList extends React.Component {
                 <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
               */}
               <RaisedButton ref="scheduleAddBtn" label="ADD" primary={true} disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{width:'60px',marginLeft: '15px'}}/>
-              <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{width:'60px',marginLeft: '15px'}} disabled={(this.state.selectedSlave == 0)} />
-              <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{width:'60px', marginLeft: '15px'}} />
-              <RaisedButton ref="scheduleSetBtn" label="Simple" onTouchTap={this._useProView} style={{width:'60px', marginLeft: '15px'}} />
+              <RaisedButton label="Save" primary={true} onTouchTap={this._saveScheduleList} style={{width:'60px',marginLeft: '10px'}} disabled={(this.state.selectedSlave == 0)} />
+              <RaisedButton ref="scheduleSetBtn" label="Set" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{width:'60px', marginLeft: '5px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Simple" onTouchTap={this._useProView} style={{width:'60px', marginLeft: '5px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}
