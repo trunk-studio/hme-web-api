@@ -11,6 +11,42 @@ export default class Mail {
 
   }
 
+  async sendInfoReport(){
+    let infoMessages = await models.Message.findAll({
+      where: {
+        type: 'info',
+        sended: false
+      }
+    })
+
+    await this.send({messages: infoMessages});
+
+  }
+
+  async sendErrorReport(){
+    let errorMessages = await models.Message.findAll({
+      where: {
+        type: 'error',
+        sended: false
+      }
+    })
+
+    await this.send({messages: errorMessages});
+
+  }
+
+  async updateSended({messages}){
+    let sendedMessages = messages.map(message => {
+      message.sended = true;
+      message.to = 'smlsun@gmail.com,lyhcode@gmail.com';
+      return message;
+    });
+    await Promise.all(
+      sendedMessages.map( message => message.save())
+    );
+
+  }
+
   async send({messages}){
 
     let messagesString = messages.map(
@@ -37,7 +73,9 @@ export default class Mail {
     }
 
     try {
-      let result = await this.axios.request(config)
+      // let result = await this.axios.request(config)
+
+      await this.updateSended({messages})
 
     } catch (e) {
       throw e;
