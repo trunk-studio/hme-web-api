@@ -360,10 +360,8 @@ export default class ManagePage extends React.Component {
     if(this.props.deviceList[this.state.slaveID] && this.props.deviceList[this.state.slaveID].length > 0)  deviceList.push(...this.props.deviceList[this.state.slaveID]);
     if(this.props.slaveList.length > 0)  slaveList.push(...this.props.slaveList);
 
-
     if(this.props.deviceList[this.state.setupTestSlaveID] && this.props.deviceList[this.state.setupTestSlaveID].length > 0)  setupTestDeviceList.push(...this.props.deviceList[this.state.setupTestSlaveID]);
     if(this.props.slaveList.length > 0)  setupTestSlaveList.push(...this.props.slaveList);
-
 
     let tabIndex = parseInt(this.props.params.tabIndex);
     let scanningStatus = this.props.scanning? this.props.scanning: 'hide';
