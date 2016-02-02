@@ -53,6 +53,20 @@ describe("Schedule", () => {
     }
   });
 
+  it("set sample schedule to device", async(done) => {
+    try {
+      let data = {
+        slaveId: slaves.id,
+      }
+      let result = await request.post('/rest/master/schedule/setOnDevice')
+      .send(data);
+      done()
+    } catch (e) {
+      console.log(e);
+      done(e)
+    }
+  });
+
   it("set one slave FastRun", async(done) => {
     try {
       let data = {
@@ -315,8 +329,8 @@ describe("Schedule", () => {
   });
 
 
-  describe.only("easySchedule", () => {
-    let slaves
+  describe("easySchedule", () => {
+    let slaves,allEasySchedule,oneEasySchedule
     before( async done => {
       try {
         slaves = await models.Slave.create({
@@ -324,13 +338,13 @@ describe("Schedule", () => {
           description: "描述",
           apiVersion: "0.1.0",
         });
-        await models.easySchedule.create({
+        oneEasySchedule = await models.easySchedule.create({
     			"StartDate": "2016-02-01 00:00:00",
     			"StartTime": "06:00:00",
     			"Season": [{hour:12,days:10},{hour:12,days:12},{hour:12,days:13}],
     			"SlaveId": slaves.id
         });
-        await models.easySchedule.create({
+        allEasySchedule = await models.easySchedule.create({
     			"StartDate": "2016-02-01 00:00:00",
     			"StartTime": "16:00:00",
     			"Season": [{hour:12,days:10},{hour:12,days:12},{hour:12,days:13}],
@@ -339,6 +353,15 @@ describe("Schedule", () => {
       } catch (e) {
         console.log(e);
         done(e);
+      }
+    });
+
+    it.only("easySchedule model create to schedule", async(done) => {
+      try {
+        let result = await services.schedule.createEasyScheduleToScheduleModel(allEasySchedule.id);
+        done()
+      } catch (e) {
+        done(e)
       }
     });
 

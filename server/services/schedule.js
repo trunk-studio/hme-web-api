@@ -34,17 +34,11 @@ module.exports = {
     try {
       let slaveId ={};
       if(data.slaveId == 0){
-        await models.easySchedule.destroy({
-          where: {
-            SlaveId: null
-          }
-        });
+        await models.easySchedule.destroy({where: {SlaveId: null}});
+        await models.Schedule.destroy({where: {SlaveId: null}});
       }else{
-        await models.easySchedule.destroy({
-          where: {
-            SlaveId: data.slaveId
-          }
-        });
+        await models.easySchedule.destroy({where: {SlaveId: data.slaveId}});
+        await models.Schedule.destroy({where: {SlaveId: data.slaveId}});
         slaveId  = {
           SlaveId: data.slaveId
         }
@@ -58,6 +52,46 @@ module.exports = {
     } catch (e) {
       console.log(e);
       throw e;
+    }
+  },
+
+  createEasyScheduleToScheduleModel: async(easyScheduleId) => {
+    try {
+      let easySchedule = await models.easySchedule.findById(easyScheduleId);
+      let slave = {
+        SlaveId: easySchedule.SlaveId
+      }
+      let createData = {
+        StartDate: easySchedule.StartDate,
+        ...slave
+      }
+      for(let season of easySchedule.Season){
+        try {
+          createData.Days = season.days
+          let schedule = await models.Schedule.create(createData);
+          console.log("!!!!!!!!!!",easySchedule.StartTime);
+          let scheduleConfig = [];
+          for (let a = 1; a <= 12; a++) {
+            // let esayTime = moment(easySchedule.StartTime);
+            console.log("!!!!!!!!!!!",((season.hour*60)/12)*a);
+            let time = moment(easySchedule.StartTime).add(((season.hour*60)/12)*a, 'm').format("HH:mm:ss");
+            console.log("???????????",time);
+            scheduleConfig.push({
+              "weight": 1,
+              "StartTime": time,
+              "ScheduleId": schedule.id
+            });
+          }
+          console.log(JSON.stringify(scheduleConfig,null,2));
+          // await models.ScheduleDetail.bulkCreate(scheduleConfig);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      console.log(easySchedule);
+    } catch (e) {
+      console.log(e);
+      throw e
     }
   },
 
@@ -149,6 +183,32 @@ module.exports = {
       scheduleDetail = await scheduleDetail.save();
       return scheduleDetail;
     } catch (e) {
+      throw e;
+    }
+  },
+
+  easyScheduleSetData: async(slave, isAll) => {
+    try {
+      let devList = await services.hme.getSlaveDeviceArray(slave.id);
+      let id = isAll ? null : slave.id ;
+      let config = await services.schedule.getCurrectSetting({
+        slaveId: id
+      });
+      let data = {
+        config,
+        devList
+      }
+      let result = await new Promise((resolve, reject) => {
+        request
+        .post(`http://${slave.host}:3000/rest/slave/${slave.id}/schedule/setOnDevice`)
+        .send(data)
+        .end((err, res) => {
+          if(err) return reject(err);
+          resolve(res.body);
+        });
+      });
+    } catch (e) {
+      console.log(e);
       throw e;
     }
   },
