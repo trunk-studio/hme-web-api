@@ -32,7 +32,7 @@
 
 .nv-axisMaxMin.nv-axisMaxMin-x {
   /*display: none;*/
-  
+
 }
 
 .justify-content {
@@ -47,6 +47,9 @@
 }*/
 
 /* timeSlider tickMarks layout */
+.timeSlider span.rc-slider-mark-text {
+  color: #FF4081;
+}
 /*.timeSlider span.rc-slider-mark-text:nth-child(even) {
   margin-top: -32px;
 }*/
