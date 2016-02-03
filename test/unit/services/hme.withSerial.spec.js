@@ -391,6 +391,28 @@ describe("hme with seriel port", () => {
 
     });
 
+    it.only("serial Port getDevState", async done => {
+      // 取得燈具狀態
+      // devTemp:燈具LED溫度
+      // envTemp:燈具周圍環境溫度
+      // data unit: degree centigrade
+      // fanState:風扇狀態，true正常，false異常
+      try {
+        let devID = 1;
+        let result = await services.hme.getDevState(devID);
+        console.log('getDevState result',result);
+        result.devTemp.should.be.above(0);
+        result.envTemp.should.be.above(0);
+        result.fanState.should.be.Boolean;
+        result.success.should.be.true;
+
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
     it("serial Port writeTimeTabToDevices", async done => {
 
       try {

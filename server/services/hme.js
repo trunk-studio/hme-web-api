@@ -1038,6 +1038,7 @@ export default class Hme {
     }
   };
 
+
   async closeFastRun(devID, groupID)  {
     try {
 
@@ -1050,20 +1051,6 @@ export default class Hme {
           return (false);
         }
 
-        // let timeTab = [];
-        // for (var i = 0; i < 12; i++) {
-        //   timeTab = [
-        //     ...timeTab,
-        //     i * 2,
-        //     ...[0, 0],
-        //     ...[0, 0, 0, 0, 0]
-        //   ];
-        // }
-        // console.log('timeTab=',timeTab);
-        // if(await this.setTimeTab(devID, groupID, timeTab) == false){
-        //   console.log('clFR.setLedCtrlMode_Error');
-        //   return (false);
-        // }
         return (true);
 
     } catch (e) {
