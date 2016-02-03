@@ -686,7 +686,7 @@ export default class Hme {
 
   async writeFlashMemory (devID, groupID)  {
     try {
-        let COpParams = {
+        let accDevParams = {
         u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
@@ -696,23 +696,11 @@ export default class Hme {
         u8Mask_Arry:[],
         RepeatNum:5
       }
-      let TxParams = {
-        Comm:[],
-        RxLen:8
-      }
-      let DecodParams = {
-        FuncCT:49,
-        devID:devID,
-        u8RxDataArry:[]
-      }
 
-      TxParams.Comm = this.encode.ClientOp(COpParams);
-      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
-        return (true);
-      } else {
-        return (false);
-      };
+      console.log('writeFlashMemory.accDevParams=', accDevParams);
+      let result = await this.accessDevice(accDevParams);
+        return (result.success);
+
     } catch (e) {
       throw e;
     }
@@ -725,7 +713,7 @@ export default class Hme {
         groupID:0,
         sFunc:'WordWt',
         u8DataNum:1,
-        u8Addr_Arry:[1020],  //FMC read command
+        u8Addr_Arry:[1020],  //Addr 1020 = FMC read command
         u8DataIn_Arry:[1],
         u8Mask_Arry:[],
         RepeatNum:5
@@ -1057,8 +1045,8 @@ export default class Hme {
           console.log('clFR.setLedCtrlMode_Error');
           return (false);
         }
-        if(await this.flsahMovToRam(devID, groupID) == false){
-          console.log('clFR.flsahMovToRam_Error');
+        if(await this.ReadFlashMemory(devID, groupID) == false){
+          console.log('clFR.ReadFlashMemory_Error');
           return (false);
         }
 

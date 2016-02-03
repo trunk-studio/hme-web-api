@@ -21,17 +21,17 @@ describe("hme with seriel port", () => {
 
     });
 
-    it("serial Port ping", async done => {
-
-      try {
-        let result = await services.hme.ping();
-        result.should.be.not.null;
-        done();
-      } catch (e) {
-        done(e);
-      }
-
-    });
+    // it("serial Port ping", async done => {
+    //可能有導致其後程式接收異常的BUG，不一定可覆現
+    //   try {
+    //     let result = await services.hme.ping();
+    //     result.should.be.not.null;
+    //     done();
+    //   } catch (e) {
+    //     done(e);
+    //   }
+    //
+    // });
 
     it("serial Port UartTxRx", async done => {
 
@@ -42,7 +42,7 @@ describe("hme with seriel port", () => {
           RxLen:8
         }
         let result = await services.hme.UartTxRx(params);
-        result.should.be.equal[ 192, 1, 0, 0, 50, 115, 1, 0 ];
+        result.should.eql([ 192, 1, 0, 0, 50, 115, 1, 0 ]);
         console.log('UartTxRx result',result);
         done();
       } catch (e) {
@@ -62,6 +62,8 @@ describe("hme with seriel port", () => {
         }
         let result = await services.hme.uartDataTxRx(params);
         //result.should.be.equal[ 192, 1, 0, 0, 50, 115, 1, 0 ];
+        result.RxData.should.eql([ 192, 1, 0, 0, 50, 115, 1, 0 ]);
+        result.success.should.be.true;
         console.log('UartTxRx result',result);
         done();
       } catch (e) {
@@ -1158,7 +1160,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port ReadFlashMemory", async done => {
+    it("serial Port ReadFlashMemory", async done => {
 
       try {
         //功能:將Dev中Flash的資料搬移至RAM
@@ -1233,7 +1235,7 @@ describe("hme with seriel port", () => {
     it("serial Port setFastRun", async done => {
       // 設定快轉預覽時程設定照明效果
       try {
-        let devID = 0;
+        let devID = 1;
         let groupID = 0;
         let rate = 2000;
         let timeTab = [{
@@ -1383,7 +1385,8 @@ describe("hme with seriel port", () => {
               }];
 
         let result = await services.hme.setFastRun(devID, groupID, rate, timeTab);
-
+        console.log('setFastRun result',result);
+        result.should.be.true;
         let timeParams = {
           devID: devID,
           groupID: groupID,
@@ -1394,176 +1397,58 @@ describe("hme with seriel port", () => {
           min: 0,
           sec: 0
         }
-        let T2id = setTimeout(function(){
-          console.log('Start FastRun');
-          clearInterval(TiID);
 
-          console.log('setFastRun result',result);
-          result.should.be.true;
-          done();
-
-        },6000 );
+        console.log('Start FastRun');
         let time = new Date(1900, 1, 1, 0, 0, 0);
-        let TiID = setInterval(function(){
+        let rdRamParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordRd',
+          u8DataNum:5,
+          u8Addr_Arry:[20], //LED PWM 0 duty
+          u8DataIn_Arry:[],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+
+        for (let i = 0; i < 5; i++) {
           time.setMinutes(time.getMinutes() + 30 );
           timeParams.hour = time.getHours();
           timeParams.min = time.getMinutes();
           console.log('timeParams=', timeParams);
-          services.hme.setSimRtc(timeParams);
-        }, 1000);
+          await services.hme.setSimRtc(timeParams);
+          await services.hme.sleep(1000);
+          result = await services.hme.accessDevice(rdRamParams);
+          console.log('Data=',result.ramData)
+          result.success.should.be.true;
+        }
 
-        let timeTab2 = [{
-                    weight: 1,
-                    StartTime: '00:00',
-                    ScheduleDetailConfig: {
-                      WW: 0,
-                      DB: 0,
-                      BL: 0,
-                      GR: 0,
-                      RE: 0,
-                      CCT: 0,
-                      Bright: 0
-                    }
-                  },{
-                    weight: 1,
-                    StartTime: '02:00',
-                    ScheduleDetailConfig: {
-                      WW: 0,
-                      DB: 0,
-                      BL: 0,
-                      GR: 0,
-                      RE: 0,
-                      CCT: 0,
-                      Bright: 0
-                    }
-                  },{
-                    weight: 1,
-                    StartTime: '04:00',
-                    ScheduleDetailConfig: {
-                    WW: 0,
-                    DB: 0,
-                    BL: 0,
-                    GR: 0,
-                    RE: 0,
-                    CCT: 0,
-                    Bright: 0
-                    }
-                  },{
-                    weight: 1,
-                    StartTime: '06:00',
-                    ScheduleDetailConfig: {
-                    WW: 0,
-                    DB: 0,
-                    BL: 0,
-                    GR: 0,
-                    RE: 0,
-                    CCT: 0,
-                    Bright: 0
-                    }
-                  },{
-                    weight: 1,
-                    StartTime: '08:00',
-                    ScheduleDetailConfig: {
-                      WW: 0,
-                      DB: 0,
-                      BL: 0,
-                      GR: 0,
-                      RE: 0,
-                      CCT: 0,
-                      Bright: 0
-                    }
-                  },{
-                    weight: 1,
-                    StartTime: '10:00',
-                    ScheduleDetailConfig: {
-                      WW: 0,
-                      DB: 0,
-                      BL: 0,
-                      GR: 0,
-                      RE: 0,
-                      CCT: 0,
-                      Bright: 0
-                    }
-                  },{
-                    weight: 1,
-                    StartTime: '12:00',
-                    ScheduleDetailConfig: {
-                    WW: 0,
-                    DB: 0,
-                    BL: 0,
-                    GR: 0,
-                    RE: 0,
-                    CCT: 0,
-                    Bright: 0
-                    }
-                  },{
-                    weight: 1,
-                    StartTime: '14:00',
-                    ScheduleDetailConfig: {
-                    WW: 0,
-                    DB: 0,
-                    BL: 0,
-                    GR: 0,
-                    RE: 0,
-                    CCT: 0,
-                    Bright: 0
-                    }
-                  },{
-                    weight: 1,
-                    StartTime: '16:00',
-                    ScheduleDetailConfig: {
-                      WW: 0,
-                      DB: 0,
-                      BL: 0,
-                      GR: 0,
-                      RE: 0,
-                      CCT: 0,
-                      Bright: 0
-                    }
-                  },{
-                    weight: 1,
-                    StartTime: '18:00',
-                    ScheduleDetailConfig: {
-                      WW: 0,
-                      DB: 0,
-                      BL: 0,
-                      GR: 0,
-                      RE: 0,
-                      CCT: 0,
-                      Bright: 0
-                    }
-                  },{
-                    weight: 1,
-                    StartTime: '20:00',
-                    ScheduleDetailConfig: {
-                    WW: 0,
-                    DB: 0,
-                    BL: 0,
-                    GR: 0,
-                    RE: 0,
-                    CCT: 0,
-                    Bright: 0
-                    }
-                  },{
-                    weight: 1,
-                    StartTime: '22:00',
-                    ScheduleDetailConfig: {
-                    WW: 0,
-                    DB: 0,
-                    BL: 0,
-                    GR: 0,
-                    RE: 0,
-                    CCT: 0,
-                    Bright: 0
-                  }
-              }];
+        // 結束FastRun，還原設定
+        result = await services.hme.closeFastRun(devID, groupID);
+        console.log('closeFastRun result',result);
+        result.should.be.true;
 
+        // 檢查燈具RAM內容是否正確
+        let addr = 1200;
+        rdRamParams.u8Addr_Arry = [addr];
+        rdRamParams.u8DataNum = 8;
+        for (var i = 0; i < 12; i++) {
+          rdRamParams.u8Addr_Arry = [addr];
+          result = await services.hme.accessDevice(rdRamParams);
+          console.log('Data=',result.ramData)
+          result.ramData.should.eql([i*2,0,0,0,0,0,0,0]);
+          addr += 8;
+        }
+
+        done();
 
       } catch (e) {
         done(e);
       }
 
     });
+
+
 
     it("serial Port accessDevice", async done => {
 
@@ -1576,7 +1461,7 @@ describe("hme with seriel port", () => {
                       u8Addr_Arry: [200],
                       u8DataIn_Arry: [],
                       u8Mask_Arry: [],
-                      RepeatNum: 2
+                      RepeatNum: 5
                     }
         let result = await services.hme.accessDevice(params);
         console.log('accessDevice result',result);
