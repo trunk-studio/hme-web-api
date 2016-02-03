@@ -1158,6 +1158,78 @@ describe("hme with seriel port", () => {
 
     });
 
+    it.only("serial Port ReadFlashMemory", async done => {
+
+      try {
+        //功能:將Dev中Flash的資料搬移至RAM
+
+        // 測試:將Flash範圍內的RAM讀回一值並加一
+        // 寫回RAM後，將Flash資料複寫回RAM，檢查前後資料是否相等
+        // 讀回的值應會還原
+        let devID = 1, groupID = 0;
+        let rdRamParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordRd',
+          u8DataNum:1,
+          u8Addr_Arry:[1119],
+          u8DataIn_Arry:[],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+        let wtRamParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordWt',
+          u8DataNum:1,
+          u8Addr_Arry:[1119],
+          u8DataIn_Arry:[],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+        let result = await services.hme.accessDevice(rdRamParams);
+        result.success.should.be.true;
+        let rawData = result.ramData[0];
+        console.log('rawData=',rawData);
+        let newData = 0;
+        if (rawData != 50) {
+          newData = 50;
+        } else {
+          newData = 51;
+        }
+
+        // 讀取資料，改寫後寫回
+        wtRamParams.u8DataIn_Arry = [newData];
+        result = await services.hme.accessDevice(wtRamParams);
+        result.success.should.be.true;
+        console.log('newData=',newData)
+
+        result = await services.hme.accessDevice(rdRamParams);
+        result.success.should.be.true;
+        rawData = result.ramData[0];
+        (newData).should.be.equal(rawData);  //確認資料正確寫入
+
+        result = await services.hme.ReadFlashMemory(devID, groupID);
+        result.should.be.true;
+        console.log('flsahMovToRam result',result);
+
+
+        result = await services.hme.accessDevice(rdRamParams);
+        result.success.should.be.true;
+        rawData = result.ramData[0];
+        console.log('RAM_Data=',rawData)
+        if (newData == rawData) {
+          console.log(RdFMC_Error);
+        }
+        (newData).should.not.be.equal(rawData);  //確認資料正確寫入
+
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
     it("serial Port setFastRun", async done => {
       // 設定快轉預覽時程設定照明效果
       try {

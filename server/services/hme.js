@@ -713,7 +713,27 @@ export default class Hme {
       } else {
         return (false);
       };
+    } catch (e) {
+      throw e;
+    }
+  };
 
+  async ReadFlashMemory(devID, groupID)  {
+    try {
+      let accDevParams = {
+        u8DevID:devID,
+        groupID:0,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[1020],  //FMC read command
+        u8DataIn_Arry:[1],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+
+      console.log('ReadFlashMemory.accDevParams=', accDevParams);
+      let result = await this.accessDevice(accDevParams);
+        return (result.success);
 
     } catch (e) {
       throw e;
@@ -1034,26 +1054,29 @@ export default class Hme {
     try {
 
         if(await this.setLedCtrlMode(devID, groupID, 'Normal') == false){
-          console.log('setLedCtrlMode_Error');
+          console.log('clFR.setLedCtrlMode_Error');
+          return (false);
+        }
+        if(await this.flsahMovToRam(devID, groupID) == false){
+          console.log('clFR.flsahMovToRam_Error');
           return (false);
         }
 
-        let timeTab = [];
-        for (var i = 0; i < 12; i++) {
-          timeTab = [
-            ...timeTab,
-            i * 2,
-            ...[0, 0],
-            ...[0, 0, 0, 0, 0]
-          ];
-        }
-        if(await this.setTimeTab(devID, groupID, timeTab) == false){
-          console.log('setLedCtrlMode_Error');
-          return (false);
-        }
-
-
-        return (result);
+        // let timeTab = [];
+        // for (var i = 0; i < 12; i++) {
+        //   timeTab = [
+        //     ...timeTab,
+        //     i * 2,
+        //     ...[0, 0],
+        //     ...[0, 0, 0, 0, 0]
+        //   ];
+        // }
+        // console.log('timeTab=',timeTab);
+        // if(await this.setTimeTab(devID, groupID, timeTab) == false){
+        //   console.log('clFR.setLedCtrlMode_Error');
+        //   return (false);
+        // }
+        return (true);
 
     } catch (e) {
       throw e;
@@ -1065,7 +1088,6 @@ export default class Hme {
   async getDevState (devID)  {
     try {
         let accDevParams = {
-
           u8DevID:devID,
           groupID:0,
           sFunc:'DiscWordRd',
