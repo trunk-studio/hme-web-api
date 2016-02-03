@@ -55,7 +55,6 @@ export default class App extends React.Component {
 
   _noAuth = (nextState, replaceState) => {
     if(localStorage.getItem('token')) {
-      console.log('test');
       replaceState({}, '/manage/0');
     }
   };
