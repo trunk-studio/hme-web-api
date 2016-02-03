@@ -250,9 +250,12 @@ export default class ScheduleDetail extends React.Component {
         x: dot.StartTimeInteger,
         y: dot.weight
       });
-      tickMarks.push(dot.StartTimeInteger);
-      timeSliderMarks[dot.StartTimeInteger] = _formatMinutes(dot.StartTimeInteger);
+      tickMarks.push(tickMarks.length*120);//(dot.StartTimeInteger);
+      timeSliderMarks[dot.StartTimeInteger] = (tickMarks.length-1 == this.state.currentIndex)? _formatMinutes(dot.StartTimeInteger) : '';
     }
+    // for(let i=0; i<=MAX_TIME_INTEGER; i+=60) {
+    //   tickMarks.push(i);
+    // }
 
     let timeDuration = scheduleDetails.length? MAX_TIME_INTEGER - scheduleDetails[SCHEDULE_DETAILS_AMOUNT-1].StartTimeInteger + firstScheduleDetail.StartTimeInteger : 0;
     let weightDiff = scheduleDetails.length? firstScheduleDetail.weight - lastScheduleDetail.weight : 0;
@@ -379,7 +382,7 @@ export default class ScheduleDetail extends React.Component {
             </div>
           </div>
           <div className="row" style={{
-            marginTop: '20px'
+            marginTop: '15px'
             }}>
             <div className="center-self justify-content" style={{
               width:'100%', padding: '5px'}}>
