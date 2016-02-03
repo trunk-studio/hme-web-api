@@ -62,7 +62,7 @@ export default async (cb) => {
         console.log(e);
       }
     }
-    
+
   } catch (e) {
 
     console.log("error", e);

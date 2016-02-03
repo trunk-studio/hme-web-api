@@ -59,6 +59,22 @@ describe("hme", () => {
       }
     });
 
+    it("registered slave", async(done) => {
+      try {
+        let data = {
+          slaveHostName: '127.0.0.1'
+        }
+        let result = await request.post("/rest/master/register/slave")
+        .send(data);
+        console.log(result);
+        result.status.should.be.equal(200);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+
     it("SearchDevice", async(done) => {
       try {
         let result = await request.get("/rest/slave/0/searchDevice");
