@@ -19,7 +19,7 @@ module.exports = {
     path: path.resolve(__dirname, './public/assets/'),
     filename: 'js/bundle.js',
     //chunkFilename: '[chunkhash].js',
-    publicPath: '/'
+    publicPath: '/public/assets/'
   },
   plugins: [
     //relative to output.path
@@ -30,9 +30,9 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     // new ExtractTextPlugin("public/assets/css/bundle.css"),
-    new webpack.ResolverPlugin(
-      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
-    ),
+    // new webpack.ResolverPlugin(
+    //   new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
+    // ),
     // new BowerWebpackPlugin({
     //   excludes: /.*\.less/
     // }),

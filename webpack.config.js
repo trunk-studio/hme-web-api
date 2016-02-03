@@ -7,7 +7,7 @@ module.exports = {
   devtool: 'source-map',
   entry: [
     //js
-    'webpack-hot-middleware/client',
+    // 'webpack-hot-middleware/client',
     './frontend/js/index.js'
     // backend_app: [path.resolve(__dirname, './assets/backend/js/app.js')],
 
