@@ -1,4 +1,4 @@
-describe.only("mail", () => {
+describe("mail", () => {
 
 
   describe("send mail", () => {
@@ -97,7 +97,7 @@ describe.only("mail", () => {
 
   });
 
-  describe.only("send error mail", () => {
+  describe("send error mail", () => {
     let messages = [];
     before(async done => {
 
