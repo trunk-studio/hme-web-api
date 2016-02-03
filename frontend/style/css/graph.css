@@ -146,12 +146,13 @@
 
 .tabs-container>div:first-child {
   background-color: #032c70 !important;
+  overflow-y: hidden;
 }
 
 .tab-content {
   width: 95%;
   overflow-x: hidden;
-  min-height: 320px;
+  min-height: 240px;
   padding: 15px;
   margin: 15px;
   background-color: rgba(255,255,255,0.5);
