@@ -1060,11 +1060,11 @@ export default class Hme {
 
 
 
-  async getDevState (devID)  {
+  async getDevState (devID, groupID)  {
     try {
         let accDevParams = {
           u8DevID:devID,
-          groupID:0,
+          groupID:groupID,
           sFunc:'DiscWordRd',
           u8DataNum:3,
           u8Addr_Arry:[15, 16 ,30],  //Addr 15 = LED temp, 30 =fan flage

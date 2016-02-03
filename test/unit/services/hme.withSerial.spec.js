@@ -355,7 +355,7 @@ describe("hme with seriel port", () => {
 
       try {
         let devID = 1;
-        let groupID = 1;
+        let groupID = 0;
         // [date1[year, month, day], ..., date6[...]]
         let dayTab = [
                    ...[2016, 2, 1],
@@ -391,7 +391,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port getDevState", async done => {
+    it("serial Port getDevState", async done => {
       // 取得燈具狀態
       // devTemp:燈具LED溫度
       // envTemp:燈具周圍環境溫度
@@ -399,7 +399,8 @@ describe("hme with seriel port", () => {
       // fanState:風扇狀態，true正常，false異常
       try {
         let devID = 1;
-        let result = await services.hme.getDevState(devID);
+        let groupID = 0;
+        let result = await services.hme.getDevState(devID, groupID);
         console.log('getDevState result',result);
         result.devTemp.should.be.above(0);
         result.envTemp.should.be.above(0);
