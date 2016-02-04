@@ -106,4 +106,28 @@ describe("device", () => {
     });
   });
 
+  describe.only("setting", () => {
+    it("save", async(done) => {
+      try {
+        let data = {
+          "wifi": {
+            "ssid": "123",
+            "password": "456"
+          },
+          "system": {
+            "type": "slave",
+            "reportEmail": "",
+            "masterName": "123",
+            "timezoneOffset": -12
+          }
+        }
+        let result = await request.post('/rest/hme/setup/update').send(data);
+        result.status.should.be.equal(200);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+  });
+
 });

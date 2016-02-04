@@ -217,7 +217,24 @@ module.exports = {
       console.log(e);
       throw e
     }
-  }
+  },
+
+  saveSetting: async(saveSetting) => {
+    try{
+      fs.outputJson('./setup', saveSetting, function (err) {
+        if(err) throw new Error(err);
+      })
+      if(saveSetting.system.type === 'slave'){
+        let result = await services.deviceControl.registerSlave({
+          slaveHostName: saveSetting.system.masterName + '.local'
+        });
+      }
+      return 'ok';
+    }catch(e){
+      console.log(e);
+      throw e
+    }
+  },
 
 
 }

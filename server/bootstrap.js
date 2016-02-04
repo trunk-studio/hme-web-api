@@ -47,21 +47,21 @@ export default async (cb) => {
     //  await services.deviceControl.syncDevice();
     // }
 
-    await services.hme.pingAllSlave();
-    let slaveList = await models.Slave.findAll();
-    for (let slave of slaveList) {
-      try {
-        let result = await new Promise((resolve, reject) => {
-          request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
-            if(err) return reject(err);
-            resolve(res.body);
-          });
-        });
-        console.log(result.body);
-      } catch (e) {
-        console.log(e);
-      }
-    }
+    // await services.hme.pingAllSlave();
+    // let slaveList = await models.Slave.findAll();
+    // for (let slave of slaveList) {
+    //   try {
+    //     let result = await new Promise((resolve, reject) => {
+    //       request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
+    //         if(err) return reject(err);
+    //         resolve(res.body);
+    //       });
+    //     });
+    //     console.log(result.body);
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
+    // }
 
   } catch (e) {
 

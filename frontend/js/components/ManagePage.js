@@ -375,8 +375,8 @@ export default class ManagePage extends React.Component {
 
     let reportEmailTab = (
     <Tab key={'reportEmail'} label="Report Setting" value='2'>
-      <div className="self-center" style={{width: '250px'}}>
-        <div style={{display: 'inline-flex'}}>
+      <div className="tab-content self-center" >
+        <div className="self-center" style={{width: '250px'}}>
           <TextField
             ref="inputReportingEmail"
             floatingLabelText="Report Email"
@@ -385,8 +385,8 @@ export default class ManagePage extends React.Component {
             onChange={this._handleEditEmail}
             type="text" />
         </div>
-        <div style={{display: 'inline-flex'}}>
-          <RaisedButton onTouchTap={this._saveReportingEmail} label="Save" style={{float: 'right', marginRight:'15px'}}/>
+        <div className="self-center" style={{width: '250px'}}>
+          <RaisedButton onTouchTap={this._saveReportingEmail} label="Save" labelColor="#FFF" backgroundColor="#51A7F9" style={{float: 'right', marginRight:'15px'}}/>
           <RefreshIndicator
             size={40}
             left={10}
@@ -400,10 +400,10 @@ export default class ManagePage extends React.Component {
 
     let testingTab = (
     <Tab key={'testingTab'} label="Testing" value='3'>
-      <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
-        <div>
-          <div style={{display: 'inline-flex'}}>
-            <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
+      <div className="tab-content self-center">
+        <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
+          <div >
+            <RaisedButton label="SCAN" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._handleScan}/>
             <RefreshIndicator
               size={40}
               left={10}
@@ -414,11 +414,11 @@ export default class ManagePage extends React.Component {
           </div>
           <div style={{marginTop: '10px'}}>
             <SelectField labelMember="primary" menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}} />
-            <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
+            <RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
           </div>
           <div style={{marginTop: '15px'}}>
             <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
-            <RaisedButton label="Test" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>
+            <RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>
           </div>
         </div>
       </div>

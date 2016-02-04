@@ -31,7 +31,8 @@
 /* ========= scheduleDetail ===========*/
 
 .nv-axisMaxMin.nv-axisMaxMin-x {
-  display: none;
+  /*display: none;*/
+
 }
 
 .justify-content {
@@ -41,11 +42,14 @@
   justify-content: space-around;
 }
 
-.tick > text {
+/*.tick > text {
   display: none;
-}
+}*/
 
 /* timeSlider tickMarks layout */
+.timeSlider span.rc-slider-mark-text {
+  color: #FF4081;
+}
 /*.timeSlider span.rc-slider-mark-text:nth-child(even) {
   margin-top: -32px;
 }*/
@@ -57,6 +61,9 @@
 /*slider-handle highlight*/
 .timeSlider .rc-slider-handle {
   border: solid 2px #FF4081;
+}
+.timeSlider .rc-slider-dot {
+  display: none;
 }
 .vertical-slider .rc-slider-handle {
   border: solid 2px #FF4081;
@@ -110,7 +117,7 @@
 }
 
 .chart-container .nv-chart {
-  margin-bottom: -40px;
+  margin-bottom: -28px;
   margin-top: -20px;
   margin-left: -15px;
 }
@@ -139,12 +146,13 @@
 
 .tabs-container>div:first-child {
   background-color: #032c70 !important;
+  overflow-y: hidden;
 }
 
 .tab-content {
   width: 95%;
   overflow-x: hidden;
-  min-height: 320px;
+  min-height: 240px;
   padding: 15px;
   margin: 15px;
   background-color: rgba(255,255,255,0.5);

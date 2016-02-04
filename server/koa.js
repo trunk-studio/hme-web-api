@@ -32,7 +32,6 @@ global.fs = fs;
 const {environment} = appConfig;
 const app = new koa();
 const convert = require('koa-convert');
-const compiler = webpack(webpackConfig);
 
 const jwt = require('koa-jwt');
 
@@ -58,10 +57,21 @@ if (environment === 'production') {
 }
 
 if (environment === 'development') {
+
   // set debug environment, must be programmaticaly for windows
   debug.enable('dev,koa');
   // log when process is blocked
   require('blocked')((ms) => debug('koa')(`blocked for ${ms}ms`));
+
+  // hotReload
+  const compiler = webpack(webpackConfig);
+  app.use(
+    convert(webpackDevMiddleware(compiler, {
+      noInfo: true,
+      publicPath: webpackConfig.output.publicPath
+    })
+  ));
+  app.use(convert(webpackHotMiddleware(compiler)));
 }
 
 
@@ -84,16 +94,6 @@ app.use(async function (ctx, next) {
 controllers.getSlaveHostRoute()
 controllers.setupPublicRoute()
 controllers.setupAppRoute()
-
-if (environment === 'development') {
-  app.use(
-    convert(webpackDevMiddleware(compiler, {
-      noInfo: true,
-      publicPath: webpackConfig.output.publicPath
-    })
-  ));
-  app.use(convert(webpackHotMiddleware(compiler)));
-}
 
 app.use(async function (ctx, next){
   console.log('=== send file ===');
