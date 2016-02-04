@@ -417,7 +417,7 @@ export default class Encode {
     for (let i = 0; i < ScheduleDetailsLen; i++) {
       timePwmTab = [
         ...timePwmTab,
-        ...[0, 0, 0],  //h,m,s
+        ...[i * 2, 0, 0],  //h,m,s
         ...[0, 0, 0, 0, 0]  //CH1~CH5
       ];
     }

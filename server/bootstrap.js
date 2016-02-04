@@ -1,4 +1,6 @@
 import request from 'superagent'
+import ini from 'ini'
+
 export default async (cb) => {
 
   let visitorUser = {
@@ -42,6 +44,7 @@ export default async (cb) => {
       if(err)
         throw new Error('create email file error');
     })
+
     // without await to reduce bootstrap waiting time
     // if(connected){
     //  await services.deviceControl.syncDevice();

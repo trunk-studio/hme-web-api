@@ -1,4 +1,5 @@
 import request from 'superagent'
+import ini from 'ini'
 module.exports = {
 
   saveDevice: async(data, slaveId) => {
@@ -145,11 +146,16 @@ module.exports = {
 
   registerSlave: async({slaveHostName}) => {
     try {
-      let slave = await models.Slave.create({
-        host:slaveHostName,
-        description: 'null',
-        apiVersion: 'null'
-      })
+      let slave = await models.Slave.findOrCreate({
+        where:{
+          host:slaveHostName,
+        },
+        defaults: {
+          host:slaveHostName,
+          description: 'null',
+          apiVersion: 'null'
+        }
+      });
       await services.deviceControl.syncNewSlave();
       return slave
     } catch (e) {
@@ -220,12 +226,17 @@ module.exports = {
 
   saveSetting: async(saveSetting) => {
     try{
-      fs.outputJson('./setup', saveSetting, function (err) {
-        if(err) throw new Error(err);
-      })
-      if(saveSetting.system.type === 'slave'){
+      let result = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+      result.WIFI.SSID = saveSetting.WIFI.SSID;
+      result.WIFI.PASSWORD = saveSetting.WIFI.PASSWORD;
+      result.SYSTEM.TYPE = saveSetting.SYSTEM.TYPE;
+      result.SYSTEM.REPORT_EMAIL = saveSetting.SYSTEM.REPORT_EMAIL;
+      result.SYSTEM.MASTER_NAME = saveSetting.SYSTEM.MASTER_NAME;
+      result.SYSTEM.TIMEZONE_OFFSET = saveSetting.SYSTEM.TIMEZONE_OFFSET;
+      fs.writeFileSync(appConfig.configPath, ini.stringify(result))
+      if(saveSetting.SYSTEM.TYPE === 'slave'){
         let result = await services.deviceControl.registerSlave({
-          slaveHostName: saveSetting.system.masterName + '.local'
+          slaveHostName: saveSetting.SYSTEM.MASTER_NAME + '.local'
         });
       }
       return 'ok';
@@ -237,12 +248,7 @@ module.exports = {
 
   getSetting: async() => {
     try{
-      let result = await new Promise((resolve, reject) => {
-        fs.readJson('./setup', function (err, data) {
-          if(err) return reject(err);
-          resolve(data);
-        });
-      });
+      let result = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
       return result;
     }catch(e){
       console.log(e);
