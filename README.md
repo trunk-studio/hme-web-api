@@ -55,5 +55,8 @@ docker-compose run --rm --service-ports web-slave-01 /bin/bash -l
 
 ```
 apt-get install crudini
-. loadEnv.sh -c=hme.txt
+
+. loadEnv.sh -c=hme.txt && npm start
 ```
+
+if `-c` not set, default `/boot/hme.txt`
