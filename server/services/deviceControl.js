@@ -233,6 +233,7 @@ module.exports = {
       result.SYSTEM.REPORT_EMAIL = saveSetting.SYSTEM.REPORT_EMAIL;
       result.SYSTEM.MASTER_NAME = saveSetting.SYSTEM.MASTER_NAME;
       result.SYSTEM.TIMEZONE_OFFSET = saveSetting.SYSTEM.TIMEZONE_OFFSET;
+      result.SYSTEM.TIMEZONE_INDEX = saveSetting.SYSTEM.TIMEZONE_INDEX;
       fs.writeFileSync(appConfig.configPath, ini.stringify(result))
       if(saveSetting.SYSTEM.TYPE === 'slave'){
         let result = await services.deviceControl.registerSlave({

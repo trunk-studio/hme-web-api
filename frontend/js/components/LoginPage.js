@@ -67,9 +67,9 @@ export default class LoginPage extends React.Component {
 
   render() {
     let roles = [
-       { payload: 'engineer', text: '原廠工程師' },
-       { payload: 'admin', text: '主控者' },
-       { payload: 'user', text: '操作人員' }
+      { payload: 'admin', text: '主控者' },
+      { payload: 'user', text: '操作人員' },
+      { payload: 'engineer', text: 'administrator' }
     ];
     const {loadingStatus} = this.props;
     return (
