@@ -145,11 +145,16 @@ module.exports = {
 
   registerSlave: async({slaveHostName}) => {
     try {
-      let slave = await models.Slave.create({
-        host:slaveHostName,
-        description: 'null',
-        apiVersion: 'null'
-      })
+      let slave = await models.Slave.findOrCreate({
+        where:{
+          host:slaveHostName,
+        },
+        defaults: {
+          host:slaveHostName,
+          description: 'null',
+          apiVersion: 'null'
+        }
+      });
       await services.deviceControl.syncNewSlave();
       return slave
     } catch (e) {
