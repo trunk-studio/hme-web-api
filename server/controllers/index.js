@@ -102,6 +102,7 @@ export default class Routes {
     publicRoute.get('/rest/hme/getCachedDeviceList', HmeController.getCachedDeviceList);
     publicRoute.get('/rest/hme/getCachedSlaveAndDeviceList', HmeController.getCachedSlaveAndDeviceList);
     publicRoute.post('/rest/hme/setup/update', HmeController.saveSetting);
+    publicRoute.get('/rest/hme/setup', HmeController.getSetting);
 
     // master
     publicRoute.get('/rest/master/user/', UserController.index);

@@ -235,5 +235,19 @@ module.exports = {
     }
   },
 
+  getSetting: async() => {
+    try{
+      let result = await new Promise((resolve, reject) => {
+        fs.readJson('./setup', function (err, data) {
+          if(err) return reject(err);
+          resolve(data);
+        });
+      });
+      return result;
+    }catch(e){
+      console.log(e);
+      throw e
+    }
+  }
 
 }
