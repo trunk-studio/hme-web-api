@@ -59,7 +59,7 @@ describe("hme", () => {
       }
     });
 
-    it.only("registered slave", async(done) => {
+    it("registered slave", async(done) => {
       try {
         let data = {
           slaveHostName: '127.0.0.1'
@@ -74,7 +74,7 @@ describe("hme", () => {
       }
     });
 
-    it.only("registered slave", async(done) => {
+    it("registered slave", async(done) => {
       try {
         let data = {
           slaveHostName: '128.0.0.1'

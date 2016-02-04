@@ -130,7 +130,12 @@ export default class ScheduleDetail extends React.Component {
         fastRunStart: true
       })
     }else{
+
       clearInterval(this.state.fastRunIntervalId);
+      this.props.requestSetSimRtc({
+        slaveId: this.props.params.slaveId,
+        count: -1
+      })
       this.setState({
         fastRunLabel: 'FastRun',
         fastRunStart: false,

@@ -127,6 +127,7 @@ export default class Routes {
     publicRoute.post('/rest/master/schedule/setOnDevice', ScheduleController.setScheduleListToDevice);
     publicRoute.post('/rest/master/schedule/setFastRun', ScheduleController.setFastRun);
     publicRoute.post('/rest/master/schedule/setSimRtc', ScheduleController.setSimRtc);
+    
     // find slave Device & Groups
     publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceListBySlave);
