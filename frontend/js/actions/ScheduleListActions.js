@@ -17,6 +17,8 @@ export const RECEIVED_UPDATE_SCHEDULE_LIST = 'RECEIVED_UPDATE_SCHEDULE_LIST'
 
 export const RECEIVED_SET_SCHEDULE_LIST = 'RECEIVED_SET_SCHEDULE_LIST'
 export const UPDATE_LOADING_STATUS = 'UPDATE_LOADING_STATUS'
+export const RECEIVED_EASY_SCHEDULE_LIST = 'RECEIVED_EASY_SCHEDULE_LIST'
+export const RECEIVED_UPDATE_EASY_SCHEDULE_LIST = 'RECEIVED_UPDATE_EASY_SCHEDULE_LIST'
 
 export function requestScheduleCreate(scheduleList, slaveId) {
   let data={};
@@ -133,5 +135,43 @@ export function updateLoadingStatus(status) {
   return {
     type: UPDATE_LOADING_STATUS,
     status
+  }
+}
+
+export function requestGetEasySchedule(slaveId){
+  return (dispatch) => {
+    dispatch(updateLoadingStatus('loading'));
+    return request
+      .get(`/rest/master/schedule/easy/${slaveId}`)
+      .then(response => {
+        dispatch(receivedGetEasyScheduleList(response.data));
+        dispatch(updateLoadingStatus('hide'));
+      });
+  };
+}
+
+export function receivedGetEasyScheduleList(data) {
+  return {
+    type: RECEIVED_EASY_SCHEDULE_LIST,
+    data
+  }
+}
+
+export function requestUpdateEasyScheduleList(data){
+  return (dispatch) => {
+    dispatch(updateLoadingStatus('loading'));
+    return request
+      .post(`/rest/master/schedule/easy/create`, data)
+      .then(response => {
+        dispatch(receivedUpdateEasyScheduleList(response.data));
+        dispatch(updateLoadingStatus('hide'));
+      });
+  };
+}
+
+export function receivedUpdateEasyScheduleList(data) {
+  return {
+    type: RECEIVED_UPDATE_EASY_SCHEDULE_LIST,
+    data
   }
 }

@@ -1,14 +1,22 @@
 import request from 'superagent'
 
 exports.hello = async function (ctx) {
-  let result = await services.hme.hello()
+  try {
+    let result = await services.hme.hello()
 
-  ctx.body = {result}
+    ctx.body = {result}
+  } catch (e) {
+    throw(e);
+  }
 };
 
 exports.ping = async function (ctx) {
-  let result = await services.hme.ping();
-  ctx.body = {result}
+  try {
+    let result = await services.hme.ping();
+    ctx.body = {result}
+  } catch (e) {
+    throw(e);
+  }
 };
 
 
@@ -37,25 +45,33 @@ exports.searchDevice = async function (ctx) {
 
 exports.findAllDeviceGroups = async function (ctx) {
   // let result = await models.groups.findAll();
-  let result = [
-    {
-      id: 1
-    },
-    {
-      id: 2
-    },
-    {
-      id: 3
-    }
-  ];
-  ctx.body = result
+  try {
+    let result = [
+      {
+        id: 1
+      },
+      {
+        id: 2
+      },
+      {
+        id: 3
+      }
+    ];
+    ctx.body = result
+  } catch (e) {
+    throw(e);
+  }
 }
 
 exports.setLedDisplay = async function (ctx) {
-  let data = ctx.request.body;
-  console.log('setLedDisplay',data);
-  let result = await services.hme.setLedDisplay(data);
-  ctx.body = result
+  try {
+    let data = ctx.request.body;
+    console.log('setLedDisplay',data);
+    let result = await services.hme.setLedDisplay(data);
+    ctx.body = result
+  } catch (e) {
+    throw(e);
+  }
 };
 
 exports.previewLedColor = async function (ctx) {
@@ -125,24 +141,37 @@ exports.previewLedColor = async function (ctx) {
     ctx.body = 'ok'
   } catch (e) {
     console.log(e);
+    throw(e);
   }
 };
 
 exports.testAllDevices = async function (ctx) {
-  let result = await services.hme.testAll();
-  ctx.body = result
+  try {
+    let result = await services.hme.testAll();
+    ctx.body = result
+  } catch (e) {
+    throw e;
+  }
 }
 
 exports.testDeviceByID = async function (ctx) {
-  let devID = ctx.params.deviceId;
-  let result = await services.hme.testDevID(devID);
-  ctx.body = result
+  try {
+    let devID = ctx.params.deviceId;
+    let result = await services.hme.testDevID(devID);
+    ctx.body = result
+  } catch (e) {
+    throw e;
+  }
 }
 
 exports.testGruopByID = async function (ctx) {
-  let groupID = ctx.params.slaveId;
-  let result = await services.hme.testGroup(groupID);
-  ctx.body = result
+  try {
+    let groupID = ctx.params.slaveId;
+    let result = await services.hme.testGroup(groupID);
+    ctx.body = result
+  } catch (e) {
+
+  }
 }
 
 exports.getCachedDeviceList = async function (ctx) {
@@ -220,5 +249,36 @@ exports.loadEmail = async function (ctx) {
     ctx.body = { emails: result};
   } catch (e) {
     throw e;
+  }
+}
+
+exports.registerSlave = async function (ctx) {
+  try {
+    let data = ctx.request.body;
+    let result = await services.deviceControl.registerSlave(data);
+    ctx.body = 'ok';
+  } catch (e) {
+    throw e;
+  }
+}
+
+
+exports.slaveSyncNewSlave = async function (ctx) {
+  try {
+    let data = ctx.request.body;
+    let result = await services.deviceControl.slaveSyncNewSlave(data);
+    ctx.body = 'ok';
+  } catch (e) {
+    throw e;
+  }
+}
+
+exports.saveSetting = async function (ctx) {
+  try {
+    let data = ctx.request.body;
+    let result = await services.deviceControl.saveSetting(data);
+    ctx.body = 'ok';
+  } catch (e) {
+
   }
 }

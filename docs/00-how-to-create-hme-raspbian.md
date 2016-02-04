@@ -30,3 +30,6 @@ sudo systemctl stop serial-getty@ttyAMA0.service
 sudo systemctl disable serial-getty@ttyAMA0.service
 ```
 
+
+# master reportEmail crontab
+*/1 * * * * wget -O - localhost:3000/rest/admin/sendmail/info >log.txt 2>&1
