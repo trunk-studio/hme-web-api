@@ -330,7 +330,7 @@ exports.setSimRtc = async function(ctx) {
     ctx.body = true;
   } catch (e) {
     console.error(e);
-    ctx.body = false;
+    ctx.body = e;
   }
 }
 
@@ -369,6 +369,6 @@ exports.slaveSetSimRtc = async function(ctx) {
     ctx.body = true;
   } catch (e) {
     console.error(e);
-    ctx.body = false;
+    ctx.body = e;
   }
 }

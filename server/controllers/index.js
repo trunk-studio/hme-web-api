@@ -1,6 +1,7 @@
 import UserController from './user';
 import HmeController from './hme';
 import ScheduleController from './schedule'
+import AdminController from './admin'
 
 import Router from 'koa-router';
 import fs from 'fs';
@@ -139,6 +140,8 @@ export default class Routes {
 
     publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
 
+    //admin
+    publicRoute.get('/rest/admin/sendmail/:reportType', AdminController.sendReport);
 
 
     publicRoute.get('/', function(ctx, next) {
