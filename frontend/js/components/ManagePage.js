@@ -16,6 +16,8 @@ import {
   requestGetReportEmail, requestUpdateReportEmail
 } from '../actions/ManageActions'
 
+// import ThemeManager from 'material-ui/lib/styles/theme-manager';
+// import HmeTheme from '../hme_theme';
 const RaisedButton = require('material-ui/lib/raised-button');
 const SelectField = require('material-ui/lib/select-field');
 const TextField = require('material-ui/lib/text-field');
@@ -29,6 +31,17 @@ import SliderRc from 'rc-slider';
 import RefreshIndicator from 'material-ui/lib/refresh-indicator';
 
 export default class ManagePage extends React.Component {
+
+  // childContextTypes() {
+  //   muiTheme: React.PropTypes.object
+  // }
+  //
+  // getChildContext() {
+  //   return {
+  //     muiTheme: ThemeManager.getMuiTheme(HmeTheme),
+  //   };
+  // };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -413,11 +426,11 @@ export default class ManagePage extends React.Component {
                       position: 'relative'}} />
           </div>
           <div style={{marginTop: '10px'}}>
-            <SelectField labelMember="primary" menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}} />
+            <SelectField labelMember="primary" iconStyle={{fill: '#000'}} menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}} />
             <RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
           </div>
           <div style={{marginTop: '15px'}}>
-            <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
+            <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
             <RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>
           </div>
         </div>
@@ -429,7 +442,7 @@ export default class ManagePage extends React.Component {
       adminFunctionTabs.push(scheduleList, reportEmailTab, testingTab);
 
     return (
-      <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} style={{minHeight: '320px', backgroundImage: "url('public/assets/images/HMEsplash.png')", backgroundSize: 'cover', backgroundAttachment: 'fixed'}}>
+      <Tabs className="background-splash tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} style={{minHeight: '320px', backgroundImage: "url('public/assets/images/HMEsplash.png')"}}>
         <Tab label="Setup Test" value='0'>
           <div className="tab-content self-center">
             <div className="self-center" style={{width: '500px'}}>

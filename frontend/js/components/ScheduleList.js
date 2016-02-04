@@ -262,7 +262,7 @@ export default class ScheduleList extends React.Component {
           rows.push(
             <TableRow key={row.id} style={{borderBottom: '1px solid #72737A'}}>
               <TableRowColumn>
-                <RaisedButton disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
+                <RaisedButton disabled={this.state.isSetBtnClose} label="EDIT" style={{verticalAlign: 'middle'}}  linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
               </TableRowColumn>
               <TableRowColumn>
                 <TextField

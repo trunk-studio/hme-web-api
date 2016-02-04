@@ -159,6 +159,11 @@
   border-radius: 6px;
 }
 
+.background-splash {
+   background-size: cover;
+   background-attachment: fixed;
+}
+
 .tab-content hr {
   border-bottom: solid 1px #000 !important;
 }

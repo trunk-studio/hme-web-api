@@ -315,7 +315,7 @@ export default class ScheduleDetail extends React.Component {
     return (
       <div>
         <AppBar title="Schedule Detail"
-          style={{height: '55px', minHeight: '0px', marginTop: '-9px'}}
+          style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
           titleStyle={{fontSize: '20px'}}
           iconElementLeft={
             <IconButton onTouchTap={function() {window.location.href = '#/manage/1';}} >
@@ -337,7 +337,7 @@ export default class ScheduleDetail extends React.Component {
             </div>
           }
         />
-        <div className="self-center" style={{
+        <div className="background-splash self-center" style={{
         width: '100%',
         overflowX: 'hidden'
         }}>
@@ -382,17 +382,17 @@ export default class ScheduleDetail extends React.Component {
             </div>
           </div>
           <div className="row" style={{
-            marginTop: '15px'
+            marginTop: '17px'
             }}>
             <div className="center-self justify-content" style={{
-              width:'100%', padding: '5px'}}>
+              width:'90%', padding: '5px'}}>
               {ButtonGroup1}
             </div>
           </div>
-          <div className="row" style={{marginTop: '3px'
+          <div className="row" style={{marginTop: '-5px'
                 }}>
             <div className="center-self justify-content" style={{
-                width:'100%', padding: '5px'}}>
+                width:'90%', padding: '5px'}}>
               {ButtonGroup2}
             </div>
           </div>
