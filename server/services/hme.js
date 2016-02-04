@@ -18,9 +18,6 @@ export default class Hme {
     return new Promise(r => setTimeout(r, ms));
   };
 
-  hello(){
-    return {msg: 'world'};
-  };
 
 
 
@@ -625,6 +622,28 @@ export default class Hme {
     }
   };
 
+  async setDevID (devID, groupID, newDevID)  {
+    try {
+        let accDevParams = {
+        u8DevID:devID,
+        groupID:0,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[1030], //Device ID
+        u8DataIn_Arry:[groupID],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+
+      console.log('setDevID,accDevParams:', accDevParams);
+      let result =  await this.accessDevice(accDevParams);
+      return (result.success);
+
+    } catch (e) {
+      throw e;
+    }
+  };
+
   async setGroupID (devID, groupID)  {
     try {
         let COpParams = {
@@ -667,7 +686,7 @@ export default class Hme {
 
   async writeFlashMemory (devID, groupID)  {
     try {
-        let COpParams = {
+        let accDevParams = {
         u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
@@ -677,24 +696,32 @@ export default class Hme {
         u8Mask_Arry:[],
         RepeatNum:5
       }
-      let TxParams = {
-        Comm:[],
-        RxLen:8
-      }
-      let DecodParams = {
-        FuncCT:49,
-        devID:devID,
-        u8RxDataArry:[]
+
+      console.log('writeFlashMemory.accDevParams=', accDevParams);
+      let result = await this.accessDevice(accDevParams);
+        return (result.success);
+
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  async ReadFlashMemory(devID, groupID)  {
+    try {
+      let accDevParams = {
+        u8DevID:devID,
+        groupID:0,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[1020],  //Addr 1020 = FMC read command
+        u8DataIn_Arry:[1],
+        u8Mask_Arry:[],
+        RepeatNum:5
       }
 
-      TxParams.Comm = this.encode.ClientOp(COpParams);
-      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
-        return (true);
-      } else {
-        return (false);
-      };
-
+      console.log('ReadFlashMemory.accDevParams=', accDevParams);
+      let result = await this.accessDevice(accDevParams);
+        return (result.success);
 
     } catch (e) {
       throw e;
@@ -1011,12 +1038,33 @@ export default class Hme {
     }
   };
 
-  async getDevState (devID)  {
+
+  async closeFastRun(devID, groupID)  {
+    try {
+
+        if(await this.setLedCtrlMode(devID, groupID, 'Normal') == false){
+          console.log('clFR.setLedCtrlMode_Error');
+          return (false);
+        }
+        if(await this.ReadFlashMemory(devID, groupID) == false){
+          console.log('clFR.ReadFlashMemory_Error');
+          return (false);
+        }
+
+        return (true);
+
+    } catch (e) {
+      throw e;
+    }
+  };
+
+
+
+  async getDevState (devID, groupID)  {
     try {
         let accDevParams = {
-
           u8DevID:devID,
-          groupID:0,
+          groupID:groupID,
           sFunc:'DiscWordRd',
           u8DataNum:3,
           u8Addr_Arry:[15, 16 ,30],  //Addr 15 = LED temp, 30 =fan flage
