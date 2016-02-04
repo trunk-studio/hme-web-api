@@ -40,7 +40,7 @@ const secret = config.secret;
 
 app.use(convert(koaBodyParser()));
 app.use(convert(jwt({ secret }).unless({
-path: [/^(?!\/api\/)/]
+  path: [/^(?!\/api\/)/]
 })));
 
 // setup rest models
