@@ -1,4 +1,5 @@
-
+import jsonWebToken from 'jsonwebtoken';
+import { secret } from '../config/init'
 
 exports.index = async function(ctx) {
 
@@ -55,19 +56,33 @@ exports.delete = async function(ctx) {
 exports.login = async function (ctx, next) {
   let success = false;
   try {
-    let userData = {
-      admin: 'admin',
-      engineer: 'engineer',
-      user: 'user'
-    };
+    let userData = global.appConfig.userData;
+    console.log('userData', userData);
     let pass = false;
     let role = ctx.request.body.role;
     let password = ctx.request.body.password;
 
-    if(userData[role] == password)
+    let token;
+
+    if(userData[role] == password) {
       success = true;
 
-    ctx.body = { success }
+      const user = {
+          role: role
+      };
+
+      token = jsonWebToken.sign(user, secret, {
+          issuer: 'localhost',
+          audience: 'user',
+          expiresIn: 60
+      });
+    }
+
+    console.log({success});
+    ctx.body = {
+      success: success,
+      jwt: token
+    };
   } catch(e) {
     console.error("delete user error", e);
   }

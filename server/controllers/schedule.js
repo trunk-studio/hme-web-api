@@ -53,6 +53,28 @@ exports.createSchedule = async function(ctx) {
 
 }
 
+exports.createEasySchedule = async function(ctx){
+  try {
+    console.log("==== createEasySchedule ===",ctx.request.body);
+    let easyData = ctx.request.body;
+    let result = await services.schedule.createEasy(easyData);
+    ctx.body =  "ok";
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+exports.getOneEasySchedule = async function(ctx) {
+  try {
+    console.log("==== getOneEasySchedule ===");
+    let slaveId = ctx.params.slaveId;
+    let result = await services.schedule.findEasy(slaveId);
+    ctx.body =  result;
+  } catch(e) {
+    console.error(e);
+  }
+}
+
 exports.getOneSchedule = async function(ctx) {
   try {
     console.log("==== getOneSchedule ===");
@@ -308,7 +330,7 @@ exports.setSimRtc = async function(ctx) {
     ctx.body = true;
   } catch (e) {
     console.error(e);
-    ctx.body = false;
+    ctx.body = e;
   }
 }
 
@@ -334,7 +356,7 @@ exports.slaveSetSimRtc = async function(ctx) {
       timeParams.min,
       timeParams.sec
     ]);
-    
+
     time.add(30 * count,'m');
     timeParams.year = time.year();
     timeParams.month = time.month()+1;
@@ -347,6 +369,6 @@ exports.slaveSetSimRtc = async function(ctx) {
     ctx.body = true;
   } catch (e) {
     console.error(e);
-    ctx.body = false;
+    ctx.body = e;
   }
 }

@@ -9,6 +9,10 @@ import {
 } from '../actions/TestActions'
 
 import {
+  logout, getRole
+} from '../actions/AuthActions'
+
+import {
   requestGetReportEmail, requestUpdateReportEmail
 } from '../actions/ManageActions'
 
@@ -19,9 +23,11 @@ const Tabs = require('material-ui/lib/tabs/tabs');
 const Tab = require('material-ui/lib/tabs/tab');
 const ScheduleList = require('./ScheduleList');
 const LineChart = require("react-chartjs").Line;
-import { Slider} from 'material-ui';
+
+import { Slider } from 'material-ui';
 import SliderRc from 'rc-slider';
 import RefreshIndicator from 'material-ui/lib/refresh-indicator';
+
 export default class ManagePage extends React.Component {
   constructor(props) {
     super(props);
@@ -83,7 +89,11 @@ export default class ManagePage extends React.Component {
   };
 
   _slaveMenuIndexChanged = (e, value) => {
-    let id = this.props.slaveList[value - 1].payload;
+    console.log('slave index', value);
+
+    let id = 0;
+    if(value > 0)
+      id = this.props.slaveList[value - 1].payload;
     this.setState({
       slaveID: id
     })
@@ -96,10 +106,15 @@ export default class ManagePage extends React.Component {
   };
 
   _setupTestSlaveMenuIndexChanged = (e, value) => {
-    let id = this.props.slaveList[value - 1].payload;
+    console.log('slave index', value);
+
+    let id = 0;
+    if(value > 0)
+      id = this.props.slaveList[value - 1].payload;
+    // console.log(id);
     this.setState({
       setupTestSlaveID: id
-    })
+    });
   };
 
   _gruopMenuIndexChanged = (e, value) => {
@@ -109,8 +124,11 @@ export default class ManagePage extends React.Component {
   };
 
   componentDidMount() {
+    this.props.getRole();
     this.props.requestGetSlaveAndDeviceList();
     this.props.requestGetReportEmail();
+
+    // this.props.getRole();
     // this.props.requestGetCachedDeviceList();
     // this.props.requestGetCachedSlaveList();
     //this.props.requestScan();
@@ -259,6 +277,11 @@ export default class ManagePage extends React.Component {
     this._setAll(0, 1, 1, 0, 1);
   };
 
+  _logout = (e) => {
+    this.props.logout();
+    window.location.href = "/#login";
+  };
+
   _saveReportingEmail = (e) => {
     let inputReportingEmail = this.refs.inputReportingEmail;
     console.log(inputReportingEmail.getValue());
@@ -269,6 +292,8 @@ export default class ManagePage extends React.Component {
   };
 
   _handleTabChanged = (tabIndex, tab) => {
+    if(tabIndex == 'logout')
+      this._logout();
     // window.location.href = `/#/manage/${tabIndex}`;
   };
 
@@ -335,118 +360,131 @@ export default class ManagePage extends React.Component {
     if(this.props.deviceList[this.state.slaveID] && this.props.deviceList[this.state.slaveID].length > 0)  deviceList.push(...this.props.deviceList[this.state.slaveID]);
     if(this.props.slaveList.length > 0)  slaveList.push(...this.props.slaveList);
 
-    if(this.props.deviceList[this.state.setupTestSlaveID] && this.props.deviceList[this.state.setupTestSlaveID].length > 0)  setupTestDeviceList.push(...this.props.deviceList[this.state.setupDeviceSlaveID]);
+    if(this.props.deviceList[this.state.setupTestSlaveID] && this.props.deviceList[this.state.setupTestSlaveID].length > 0)  setupTestDeviceList.push(...this.props.deviceList[this.state.setupTestSlaveID]);
     if(this.props.slaveList.length > 0)  setupTestSlaveList.push(...this.props.slaveList);
-
 
     let tabIndex = parseInt(this.props.params.tabIndex);
     let scanningStatus = this.props.scanning? this.props.scanning: 'hide';
     let email = this.props.reportEmail;
-    console.log(email);
+
+    let scheduleList = (
+      <Tab label='Schedule List' value='1' key={'scheduleList'}>
+        <ScheduleList />
+      </Tab>
+    );
+
+    let reportEmailTab = (
+    <Tab key={'reportEmail'} label="Report Setting" value='2'>
+      <div className="tab-content self-center" >
+        <div className="self-center" style={{width: '250px'}}>
+          <TextField
+            ref="inputReportingEmail"
+            floatingLabelText="Report Email"
+            multiLine={true}
+            value={this.state.tmpEmail}
+            onChange={this._handleEditEmail}
+            type="text" />
+        </div>
+        <div className="self-center" style={{width: '250px'}}>
+          <RaisedButton onTouchTap={this._saveReportingEmail} label="Save" labelColor="#FFF" backgroundColor="#51A7F9" style={{float: 'right', marginRight:'15px'}}/>
+          <RefreshIndicator
+            size={40}
+            left={10}
+            top={0}
+            status={this.props.loadingEmail}
+            style={{display: 'inline-block',
+                    position: 'relative'}} />
+        </div>
+      </div>
+    </Tab> );
+
+    let testingTab = (
+    <Tab key={'testingTab'} label="Testing" value='3'>
+      <div className="tab-content self-center">
+        <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
+          <div >
+            <RaisedButton label="SCAN" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._handleScan}/>
+            <RefreshIndicator
+              size={40}
+              left={10}
+              top={0}
+              status={scanningStatus}
+              style={{display: 'inline-block',
+                      position: 'relative'}} />
+          </div>
+          <div style={{marginTop: '10px'}}>
+            <SelectField labelMember="primary" menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}} />
+            <RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
+          </div>
+          <div style={{marginTop: '15px'}}>
+            <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
+            <RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>
+          </div>
+        </div>
+      </div>
+    </Tab> );
+
+    let adminFunctionTabs = [];
+    if(this.props.role == 'engineer' || this.props.role == 'admin')
+      adminFunctionTabs.push(scheduleList, reportEmailTab, testingTab);
 
     return (
-      <Tabs initialSelectedIndex={tabIndex} onChange={this._handleTabChanged}>
-        <Tab label="TESTING" value='0'>
-          <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
-            <div style={{display: 'table-caption'}}>
-              <div style={{display: 'inline-flex'}}>
-                <RaisedButton label="SCAN" onTouchTap={this._handleScan}/>
-                <RefreshIndicator
-                  size={40}
-                  left={10}
-                  top={0}
-                  status={scanningStatus}
-                  style={{display: 'inline-block',
-                          position: 'relative'}} />
+      <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} style={{minHeight: '320px', backgroundImage: "url('public/assets/images/HMEsplash.png')", backgroundSize: 'cover', backgroundAttachment: 'fixed'}}>
+        <Tab label="Setup Test" value='0'>
+          <div className="tab-content self-center">
+            <div className="self-center" style={{width: '500px'}}>
+              <div style={{width: '500px'}}>
+                <SelectField labelMember="primary" menuItems={setupTestSlaveList} onChange={this._setupTestSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '250px'}}/>
+                <SelectField labelMember="primary" onChange={this._setupTestDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={setupTestDeviceList} style={{width: '250px', marginLeft: '5px', position: 'absolute'}}/>
               </div>
-              <div style={{display: 'inline-flex'}}>
-                <SelectField labelMember="primary" menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}}/>
-                <RaisedButton label="Test" secondary={true}　style={{marginLeft:'15px', width: '100px'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
+            </div>
+            <div className="row self-center" style={{width: '100%', marginTop: '15px'}}>
+              <div className="col-md-8 col-sm-8 col-xs-8">
+                <div className="row">
+                  <LineChart ref="chart" data={chartData} style={{
+                    margin: '5px',
+                    width: '100%',
+                    height: 'auto'
+                    }}
+                    options={chartOptions} />
+                </div>
+                <div className="row smalllRaisedBnutton self-center" style={{width: '310px'}}>
+                  <RaisedButton label="全開"  onTouchTap={this._AllOpen} style={{width: '50px'}}/>
+                  <RaisedButton label="6500K" onTouchTap={this._6500k} style={{width: '50px'}}/>
+                  <RaisedButton label="4600K" onTouchTap={this._4600k} style={{width: '50px'}}/>
+                  <RaisedButton label="2950K" onTouchTap={this._2950k} style={{width: '50px'}}/>
+                  <RaisedButton label="saving E" onTouchTap={this._saving} style={{width: '60px'}}/>
+                  <RaisedButton label="B + R" onTouchTap={this._BR} style={{width: '50px'}}/>
+                </div>
               </div>
-              <div style={{display: 'inline-flex'}}>
-                <SelectField labelMember="primary" onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
-                <RaisedButton label="Test" secondary={true} style={{marginLeft:'15px', width: '100px'}} onTouchTap={this._testOneDevice}></RaisedButton>
+              <div className="col-md-4 col-sm-4 col-xs-4" style={{marginTop: '0px'}}>
+                <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
+                <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
+                <div style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
+                <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
+                <div style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '2px'}}>BL {this.state.blValue}</div>
+                <SliderRc ref="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
+                <div style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '2px'}}>GR {this.state.grValue}</div>
+                <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
+                <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
+                <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
+                <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
+                <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
+                <div>Bright {this.state.brightValue}</div>
+                <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider"/>
               </div>
             </div>
           </div>
         </Tab>
-        <Tab label="Setup Test" value='1'>
-          <div className="self-center" style={{width: '500px'}}>
-            <div style={{width: '500px', display: 'inline-flex'}}>
-              <SelectField labelMember="primary" menuItems={setupTestSlaveList} onChange={this._setupTestSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '250px'}}/>
-              <SelectField labelMember="primary" onChange={this._setupTestDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={setupTestDeviceList} style={{width: '250px', marginLeft: '5px'}}/>
-            </div>
-          </div>
-          <div className="row self-center" style={{width: '100%', marginTop: '15px'}}>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <div className="row">
-                <LineChart ref="chart" data={chartData} style={{
-                  margin: '5px',
-                  width: '100%',
-                  height: 'auto'
-                  }}
-                  options={chartOptions} />
-              </div>
-              <div className="row smalllRaisedBnutton self-center" style={{width: '310px'}}>
-                <RaisedButton label="全開"  onTouchTap={this._AllOpen} style={{width: '50px'}}/>
-                <RaisedButton label="6500K" onTouchTap={this._6500k} style={{width: '50px'}}/>
-                <RaisedButton label="4600K" onTouchTap={this._4600k} style={{width: '50px'}}/>
-                <RaisedButton label="2950K" onTouchTap={this._2950k} style={{width: '50px'}}/>
-                <RaisedButton label="saving E" onTouchTap={this._saving} style={{width: '60px'}}/>
-                <RaisedButton label="B + R" onTouchTap={this._BR} style={{width: '50px'}}/>
-              </div>
-            </div>
-            <div className="col-md-4 col-sm-4 col-xs-4" style={{marginTop: '0px'}}>
-              <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
-              <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
-              <div style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
-              <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
-              <div style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '2px'}}>BL {this.state.blValue}</div>
-              <SliderRc ref="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
-              <div style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '2px'}}>GR {this.state.grValue}</div>
-              <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
-              <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
-              <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
-              <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
-              <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
-              <div>Bright {this.state.brightValue}</div>
-              <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider"/>
-            </div>
-          </div>
-        </Tab>
-        <Tab label="Report Setting" value='2'>
-          <div className="self-center" style={{width: '250px'}}>
-            <div style={{display: 'inline-flex'}}>
-              <TextField
-                ref="inputReportingEmail"
-                floatingLabelText="Report Email"
-                multiLine={true}
-                value={this.state.tmpEmail}
-                onChange={this._handleEditEmail}
-                type="text" />
-            </div>
-            <div style={{display: 'inline-flex'}}>
-              <RaisedButton onTouchTap={this._saveReportingEmail} label="Save" style={{float: 'right', marginRight:'15px'}}/>
-              <RefreshIndicator
-                size={40}
-                left={10}
-                top={0}
-                status={this.props.loadingEmail}
-                style={{display: 'inline-block',
-                        position: 'relative'}} />
-            </div>
-          </div>
-        </Tab>
-        <Tab label='Schedule List' value='3'>
-          <ScheduleList />
-        </Tab>
+        {adminFunctionTabs}
+        <Tab label="Logout" value='logout' onTouchTap={this._logout} />
       </Tabs>
     );
   }
 }
 
 function _injectPropsFromStore(state) {
-  let { scanDevice , manageSettings} = state;
+  let { login, scanDevice , manageSettings} = state;
   let scanResult = [],
       slaveList = [],
       groupList = [];
@@ -478,7 +516,8 @@ function _injectPropsFromStore(state) {
     slaveList: slaveList,
     scanning: scanDevice.scanning? scanDevice.scanning : 'hide',
     reportEmail: manageSettings.reportEmail,
-    loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide'
+    loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide',
+    role: login.role
   };
 }
 
@@ -497,7 +536,10 @@ const _injectPropsFromActions = {
   requestGetSlaveAndDeviceList,
   //report setting
   requestGetReportEmail,
-  requestUpdateReportEmail
+  requestUpdateReportEmail,
+  // Auth,
+  getRole,
+  logout
 }
 
 

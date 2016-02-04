@@ -4,9 +4,9 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-  resolve: {
-    root: [path.join(__dirname, "bower_components")]
-  },
+  // resolve: {
+  //   root: [path.join(__dirname, "bower_components")]
+  // },
   entry: [
     //js
     './frontend/js/index.js'
@@ -19,17 +19,20 @@ module.exports = {
     path: path.resolve(__dirname, './public/assets/'),
     filename: 'js/bundle.js',
     //chunkFilename: '[chunkhash].js',
-    publicPath: '/'
+    publicPath: '/public/assets/'
   },
   plugins: [
     //relative to output.path
     // new webpack.optimize.CommonsChunkPlugin('/js/chunk.js', []),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"production"'
+    }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     // new ExtractTextPlugin("public/assets/css/bundle.css"),
-    new webpack.ResolverPlugin(
-      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
-    ),
+    // new webpack.ResolverPlugin(
+    //   new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
+    // ),
     // new BowerWebpackPlugin({
     //   excludes: /.*\.less/
     // }),
@@ -49,6 +52,7 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel',
         include: [path.resolve(__dirname, './frontend/js')],
+        // exclude:' /node_modules/'
         // query: {
         //   'stage': 0,
         //   'plugins': ['react-transform'],

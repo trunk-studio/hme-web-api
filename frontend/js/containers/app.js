@@ -4,20 +4,29 @@ require('../../style/css/graph.css');
 require('../../style/css/nv.d3.css');
 require('../../style/css/slider.css');
 
+import jwtDecode from 'jwt-decode'
 import React from 'react';
-import {browserHistory, Router, Route, Link } from 'react-router';
+import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
+import { browserHistory, Router, Route, Link, IndexRoute } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+import { autoRehydrate } from 'redux-persist';
+import createLogger from 'redux-logger';
+import reducers from '../reducers'
+import configureStore from '../store/configureStore';
 
-injectTapEventPlugin();
 
-const LoginPage = require('../components/LoginPage');
-const ManagePage = require('../components/ManagePage');
-const SettingGraph = require('../components/SettingGraph');
-const ScheduleList = require('../components/ScheduleList');
-const ScheduleDetail = require('../components/ScheduleDetail');
-const ScheduleDetailConfig = require('../components/ScheduleDetailConfig');
-import WifiSetting from '../components/WifiSetting';
+const store = configureStore();
+
+// const history                   = createBrowserHistory();
+
+import LoginPage from '../components/LoginPage';
+import ManagePage from '../components/ManagePage';
+import SettingGraph from '../components/SettingGraph';
+import ScheduleList from '../components/ScheduleList';
+import ScheduleDetail from '../components/ScheduleDetail';
+import ScheduleDetailConfig from '../components/ScheduleDetailConfig';
+import Setup from '../components/Setup';
 
 // export default class RedirectToDefaultValue extends React.Component {
 //   willTransitionTo (transition, params) {
@@ -26,19 +35,41 @@ import WifiSetting from '../components/WifiSetting';
 //   render () { return null; }
 // }
 
-
-
 export default class App extends React.Component {
+
+  // only admin & engineer
+  _requireAuth = (nextState, replaceState) => {
+    if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
+      replaceState({}, '/login');
+    }
+    else if(jwtDecode(localStorage.getItem('token')).role != 'engineer' && jwtDecode(localStorage.getItem('token')).role != 'admin') {
+      replaceState({}, '/manage/0');
+    }
+  };
+
+  _requireLogin = (nextState, replaceState) => {
+    if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
+      replaceState({}, '/login');
+    }
+  };
+
+  _noAuth = (nextState, replaceState) => {
+    if(localStorage.getItem('token')) {
+      replaceState({}, '/manage/0');
+    }
+  };
+
   render() {
     return (
       <Router history={browserHistory}>
-        <Route path="/" component={LoginPage} />
-        <Route path="/manage/:tabIndex" component={ManagePage} />
+        <Route path="/" component={LoginPage}  onEnter={this._requireLogin}/>
+        <Route path="/login" component={LoginPage} onEnter={this._noAuth}/>
+        <Route path="/manage/:tabIndex" component={ManagePage} onEnter={this._requireLogin}/>
         <Route path="/graph" component={SettingGraph} />
-        <Route path="/schedule/list" component={ScheduleList} />
-        <Route path="/schedule/:slaveId/edit/:scheduleID" component={ScheduleDetail} />
-        <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} />
-        <Route path="/setup" component={WifiSetting} />
+        <Route path="/schedule/list" component={ScheduleList} onEnter={this._requireLogin}/>
+        <Route path="/schedule/:slaveId/edit/:scheduleID" component={ScheduleDetail} onEnter={this._requireAuth}/>
+        <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} onEnter={this._requireAuth}/>
+        <Route path="/setup" component={Setup} />
       </Router>
     );
   }

@@ -1,6 +1,7 @@
 import UserController from './user';
 import HmeController from './hme';
 import ScheduleController from './schedule'
+import AdminController from './admin'
 
 import Router from 'koa-router';
 import fs from 'fs';
@@ -75,6 +76,19 @@ export default class Routes {
     var app = this.app;
     var publicRoute = new Router()
 
+    // app.use(async function (ctx, next) {
+    //
+    //   if (false) {
+    //     await next();
+    //   } else {
+    //
+    //     console.log(ctx.request);
+    //     // ctx.redirect('/#/');
+    //
+    //   }
+    // })
+
+
     publicRoute.get('/rest/info/', async function(ctx) {
       let {APP_NAME} = process.env
       ctx.body = {APP_NAME}
@@ -87,17 +101,21 @@ export default class Routes {
     publicRoute.get('/rest/hme/getCachedSlaveList', HmeController.getCachedSlaveList);
     publicRoute.get('/rest/hme/getCachedDeviceList', HmeController.getCachedDeviceList);
     publicRoute.get('/rest/hme/getCachedSlaveAndDeviceList', HmeController.getCachedSlaveAndDeviceList);
+    publicRoute.post('/rest/hme/setup/update', HmeController.saveSetting);
 
     // master
     publicRoute.get('/rest/master/user/', UserController.index);
     publicRoute.post('/rest/master/login', UserController.login);
     publicRoute.post('/rest/master/saveEmail', HmeController.saveEmail);
     publicRoute.get('/rest/master/loadEmail', HmeController.loadEmail);
+    publicRoute.post('/rest/master/register/slave', HmeController.registerSlave);
     publicRoute.get('/rest/master/syncAllSlaveAndDevice', HmeController.syncAllSlaveAndDevice);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
+    publicRoute.post('/rest/master/schedule/easy/create', ScheduleController.createEasySchedule);
     publicRoute.get('/rest/master/schedule/findAll', ScheduleController.getAllSchedule);
     publicRoute.get('/rest/master/slave/:slaveId/schedule/findAll', ScheduleController.getAllScheduleBySlaveId);
     publicRoute.get('/rest/master/schedule/:id', ScheduleController.getOneSchedule);
+    publicRoute.get('/rest/master/schedule/easy/:slaveId', ScheduleController.getOneEasySchedule);
     publicRoute.post('/rest/master/schedule/update/day', ScheduleController.updateScheduleDay);
     publicRoute.post('/rest/master/schedule/update/list', ScheduleController.updateScheduleList);
     publicRoute.post('/rest/master/schedule/update/detail', ScheduleController.updateScheduleDetail);
@@ -108,7 +126,6 @@ export default class Routes {
     publicRoute.post('/rest/master/schedule/setOnDevice', ScheduleController.setScheduleListToDevice);
     publicRoute.post('/rest/master/schedule/setFastRun', ScheduleController.setFastRun);
     publicRoute.post('/rest/master/schedule/setSimRtc', ScheduleController.setSimRtc);
-
     // find slave Device & Groups
     publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceListBySlave);
@@ -119,9 +136,12 @@ export default class Routes {
     publicRoute.post('/rest/slave/:slaveId/schedule/setOnDevice', ScheduleController.slaveSetScheduleListToDevice);
     publicRoute.post('/rest/slave/:slaveId/schedule/setFastRun', ScheduleController.slaveSetFastRun);
     publicRoute.post('/rest/slave/:slaveId/schedule/setSimRtc', ScheduleController.slaveSetSimRtc);
+    publicRoute.post('/rest/slave/:slaveId/sync/slave', HmeController.slaveSyncNewSlave);
 
     publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
 
+    //admin
+    publicRoute.get('/rest/admin/sendmail/:reportType', AdminController.sendReport);
 
 
     publicRoute.get('/', function(ctx, next) {
@@ -154,14 +174,7 @@ export default class Routes {
     app.use(publicRoute.middleware())
 
 
-    app.use(async function (ctx, next) {
 
-      if (true || services.user.isAuthenticated(ctx)) {
-        await next();
-      } else {
-        ctx.redirect('/auth/login')
-      }
-    })
 
   }
 

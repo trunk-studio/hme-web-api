@@ -2,8 +2,8 @@
   "presets": ["es2015", "stage-0", "react"],
   "plugins": ["transform-react-jsx", "add-module-exports"],
   "env": {
-  "development": {
-    "presets": ["react-hmre"]
+    "development": {
+      "presets": ["react-hmre"]
+    }
   }
-}
 }
