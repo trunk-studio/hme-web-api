@@ -45,7 +45,7 @@ export default class ManagePage extends React.Component {
       blValue: 100,
       grValue: 100,
       reValue: 100,
-      cctValue: 3000,
+      cctValue: 2500,
       brightValue: 100,
       groupID: 0,
       deviceID: 0,
@@ -166,7 +166,16 @@ export default class ManagePage extends React.Component {
   _cctChanged = (value) => {
     // let value = this.refs.CCT.state.value;
     this.state.cctSliderStyle = 'slider';
-    if(value >= 3000 && value < 4000){
+    if(value >= 2500 && value < 3000){
+      this._setAll(
+        1 ,
+        0 ,
+        0.14 + (0.25 - 0.14) * ((value - 2500) / (3000 - 2500)),
+        0.3  + (0.3 - 0.185 ) * ((value - 2500) / (3000 - 2500)),
+        1 ,
+        value
+      );
+    }else if(value >= 3000 && value < 4000){
       this._setAll(
         1 ,
         0.6  * ((value - 3000) / (4000 - 3000)),
@@ -469,7 +478,7 @@ export default class ManagePage extends React.Component {
                 <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
                 <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
                 <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
-                <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
+                <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
                 <div>Bright {this.state.brightValue}</div>
                 <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider"/>
               </div>
