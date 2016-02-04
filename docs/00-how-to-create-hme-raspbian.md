@@ -16,6 +16,11 @@
 * 設置 /boot/hme.txt
 
 
+Additionals
+
+* Disable BASH history
+
+
 ### disable getty service
 
 釋放 `/dev/ttyAMA0`
