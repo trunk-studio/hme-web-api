@@ -106,7 +106,7 @@ describe("device", () => {
     });
   });
 
-  describe.only("setting", () => {
+  describe("setting", () => {
     it("save", async(done) => {
       try {
         let data = {
@@ -122,6 +122,16 @@ describe("device", () => {
           }
         }
         let result = await request.post('/rest/hme/setup/update').send(data);
+        result.status.should.be.equal(200);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    it("load", async(done) => {
+      try {
+        let result = await request.get('/rest/hme/setup');
+        console.log(result.body);
         result.status.should.be.equal(200);
         done();
       } catch (e) {

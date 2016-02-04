@@ -279,6 +279,15 @@ exports.saveSetting = async function (ctx) {
     let result = await services.deviceControl.saveSetting(data);
     ctx.body = 'ok';
   } catch (e) {
+    throw e;
+  }
+}
 
+exports.getSetting = async function (ctx) {
+  try {
+    let result = await services.deviceControl.getSetting();
+    ctx.body = result;
+  } catch (e) {
+    throw e;
   }
 }
