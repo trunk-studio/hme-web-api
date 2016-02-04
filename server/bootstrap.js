@@ -42,6 +42,21 @@ export default async (cb) => {
       if(err)
         throw new Error('create email file error');
     })
+
+    fs.outputJson('./setup', {
+      "wifi": {
+        "ssid": "",
+        "password": ""
+      },
+      "system": {
+        "type": "slave",
+        "reportEmail": "",
+        "masterName": "",
+        "timezoneOffset": -12
+      }
+    }, function (err) {
+      if(err) throw new Error(err);
+    })
     // without await to reduce bootstrap waiting time
     // if(connected){
     //  await services.deviceControl.syncDevice();
