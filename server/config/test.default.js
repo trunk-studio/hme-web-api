@@ -8,5 +8,6 @@ export default {
     'password': null,
     'database': null,
     'force': true
-  }
+  },
+  'configPath': './hme.txt'
 };

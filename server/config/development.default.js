@@ -10,5 +10,6 @@ export default {
     'port': process.env.MYSQL_PORT || "3306",
     'dialect': 'mysql',
     'force': false
-  }
+  },
+  'configPath': './hme.txt'
 };
