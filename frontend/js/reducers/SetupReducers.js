@@ -13,7 +13,7 @@ export function setup(state = { isLogin: false }, action) {
     case RECEIVED_SETUP_SETTING:
       return {
         ...state,
-        setupData: action.data
+        setupSetting: action.data
       }
     default:
       return state
