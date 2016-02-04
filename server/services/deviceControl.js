@@ -209,7 +209,6 @@ module.exports = {
           updateSlave.push(findSlave);
         } catch (e) {
           console.log(e);
-          throw e
         }
       }
       return updateSlave;
