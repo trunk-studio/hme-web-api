@@ -10,11 +10,11 @@ export function setup(state = { isLogin: false }, action) {
         ...state,
         isLoading: action.status
       }
-    // case RECEIVED_SETUP_SETTING:
-    //   return {
-    //     ...state,
-    //
-    //   }
+    case RECEIVED_SETUP_SETTING:
+      return {
+        ...state,
+        setupData: action.data
+      }
     default:
       return state
   }
