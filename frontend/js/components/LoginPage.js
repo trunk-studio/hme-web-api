@@ -73,27 +73,30 @@ export default class LoginPage extends React.Component {
     ];
     const {loadingStatus} = this.props;
     return (
-      <Tabs>
+      <Tabs className="background-splash tabs-container" style={{backgroundImage: "url('public/assets/images/HMEsplash.png')"}}>
         <Tab label="Login">
-          <div className="self-center" style={{width: "210px"}}>
-            <div className="row">
-              <SelectField
-                onChange={this._handleRoleChanged}
-                menuItems={roles}/>
-            </div>
-            <div className="row">
-              <TextField
-                ref="password"
-                hintText="Password Field"
-                type="password"
-                onEnterKeyDown={this._login}/>
-            </div>
-            <div className="row" style={{height: '40px'}}>
-              <RaisedButton label="Login" onTouchTap={this._login} style={{float:'right', marginRight:'10%'}}/>
-              {/*
-                this.props.isLoading &&
-                <RefreshIndicator size={40} left={100} top={40} status="loading" />
-              */}
+          <div className="tab-content self-center">
+            <div className="self-center" style={{width: "210px", paddingTop: '15px'}} >
+              <div className="row">
+                <SelectField
+                  iconStyle={{fill: '#000'}}
+                  onChange={this._handleRoleChanged}
+                  menuItems={roles}/>
+              </div>
+              <div className="row">
+                <TextField
+                  ref="password"
+                  hintText="Password Field"
+                  type="password"
+                  onEnterKeyDown={this._login}/>
+              </div>
+              <div className="row" style={{height: '40px'}}>
+                <RaisedButton label="Login" onTouchTap={this._login} style={{float:'right', marginRight:'10%'}}/>
+                {/*
+                  this.props.isLoading &&
+                  <RefreshIndicator size={40} left={100} top={40} status="loading" />
+                */}
+              </div>
             </div>
           </div>
         </Tab>

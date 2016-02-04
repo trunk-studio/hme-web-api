@@ -1,5 +1,5 @@
 #react-view {
-  min-height: 320px;
+  /*min-height: 400px;*/
 }
 
 /* custom */
@@ -162,6 +162,7 @@
 .background-splash {
    background-size: cover;
    background-attachment: fixed;
+   height: 100% !important;
 }
 
 .tab-content hr {
