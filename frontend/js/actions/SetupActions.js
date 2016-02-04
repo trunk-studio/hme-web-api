@@ -20,7 +20,7 @@ export function requestUpdateSetup(setting) {
   return (dispatch) => {
     dispatch(updateSetupSettingLoadingStatus('loading'));
     return request
-      .post('/rest/setup/update', setting)
+      .post('/rest/hme/setup/update', setting)
       .then(response => {
         // requestGetSetupSetting();
         dispatch(updateSetupSettingLoadingStatus('hide'));

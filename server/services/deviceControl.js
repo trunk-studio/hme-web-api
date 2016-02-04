@@ -141,5 +141,99 @@ module.exports = {
       console.log(e);
       throw e;
     }
-  }
+  },
+
+  registerSlave: async({slaveHostName}) => {
+    try {
+      let slave = await models.Slave.create({
+        host:slaveHostName,
+        description: 'null',
+        apiVersion: 'null'
+      })
+      await services.deviceControl.syncNewSlave();
+      return slave
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
+
+  syncNewSlave: async() => {
+    try {
+      let slaves = await models.Slave.findAll();
+      for (let slave of slaves) {
+        try {
+          let result = await new Promise((resolve, reject) => {
+            request.post(`http://${slave.host}:3000/rest/slave/${slave.id}/sync/slave`)
+            .send(slaves)
+            .end((err, res) => {
+              if(err) return reject(err);
+              resolve(res.body);
+            });
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
+  },
+
+  slaveSyncNewSlave: async(slaves) => {
+    try {
+      let updateSlave = []
+      for(let slave of slaves){
+        try {
+          let findSlave = await models.Slave.findById(slave.id)
+          if( ! findSlave ){
+            findSlave = await models.Slave.create(slave)
+          }
+          let isUpdate = false;
+          if(findSlave.host !== slave.host){
+            findSlave.host = slave.host;
+            isUpdate = true;
+          }
+          if(findSlave.description !== slave.description){
+            findSlave.description = slave.description;
+            isUpdate = true;
+          }
+          if(findSlave.apiVersion !== slave.apiVersion){
+            findSlave.apiVersion = slave.apiVersion;
+            isUpdate = true;
+          }
+          if(isUpdate){
+            findSlave = await findSlave.save();
+          }
+          updateSlave.push(findSlave);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      return updateSlave;
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
+  },
+
+  saveSetting: async(saveSetting) => {
+    try{
+      fs.outputJson('./setup', saveSetting, function (err) {
+        if(err) throw new Error(err);
+      })
+      if(saveSetting.system.type === 'slave'){
+        let result = await services.deviceControl.registerSlave({
+          slaveHostName: saveSetting.system.masterName + '.local'
+        });
+      }
+      return 'ok';
+    }catch(e){
+      console.log(e);
+      throw e
+    }
+  },
+
+
 }

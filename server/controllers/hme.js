@@ -251,3 +251,34 @@ exports.loadEmail = async function (ctx) {
     throw e;
   }
 }
+
+exports.registerSlave = async function (ctx) {
+  try {
+    let data = ctx.request.body;
+    let result = await services.deviceControl.registerSlave(data);
+    ctx.body = 'ok';
+  } catch (e) {
+    throw e;
+  }
+}
+
+
+exports.slaveSyncNewSlave = async function (ctx) {
+  try {
+    let data = ctx.request.body;
+    let result = await services.deviceControl.slaveSyncNewSlave(data);
+    ctx.body = 'ok';
+  } catch (e) {
+    throw e;
+  }
+}
+
+exports.saveSetting = async function (ctx) {
+  try {
+    let data = ctx.request.body;
+    let result = await services.deviceControl.saveSetting(data);
+    ctx.body = 'ok';
+  } catch (e) {
+
+  }
+}
