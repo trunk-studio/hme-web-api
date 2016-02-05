@@ -63,4 +63,6 @@ if `-c` not set, default `/boot/hme.txt`
 
 ### setup auto startup setting time zone
 
+add line to `/etc/rc.local`
+
 `. /root/hme-web-api/loadEnv.sh && rm /etc/localtime && ln -sf /usr/share/zoneinfo/Etc/$TIMEZONE_OFFSET /etc/localtime`
