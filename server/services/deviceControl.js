@@ -70,7 +70,7 @@ module.exports = {
 
   syncAllSlaveAndDevice: async() => {
     try {
-      await services.hme.pingAllSlave();
+      // await services.hme.pingAllSlave();
       let slaveList = await models.Slave.findAll();
       let devicesLists =[];
       for (let slave of slaveList) {

@@ -84,6 +84,16 @@ module.exports = {
               let time = moment({
                 hour: easySchedule.StartTime.split(":")[0],
                 minute: easySchedule.StartTime.split(":")[1]
+              });
+              scheduleConfig.push({
+                "weight": 0,
+                "StartTime":time.format("HH:mm:ss"),
+                "ScheduleId": schedule.id
+              });
+            }else if ( a == 2 ) {
+              let time = moment({
+                hour: easySchedule.StartTime.split(":")[0],
+                minute: easySchedule.StartTime.split(":")[1]
               }).add(5, 'm');
               scheduleConfig.push({
                 "weight": 1,
@@ -94,9 +104,9 @@ module.exports = {
               let time = moment({
                 hour: easySchedule.StartTime.split(":")[0],
                 minute: easySchedule.StartTime.split(":")[1]
-              }).add(season.hour, 'h').subtract(5, 'm');
+              }).add(((season.hour*60)/12)*11 + 5, 'm');
               scheduleConfig.push({
-                "weight": 1,
+                "weight": 0,
                 "StartTime":time.format("HH:mm:ss"),
                 "ScheduleId": schedule.id
               });
@@ -112,7 +122,17 @@ module.exports = {
               });
             }
           }
-          await models.ScheduleDetail.bulkCreate(scheduleConfig);
+          let timeSorted = scheduleConfig.sort(function(a,b){
+            return moment({
+                hour: a.StartTime.split(":")[0],
+                minute: a.StartTime.split(":")[1]
+              }).valueOf() - moment({
+                hour: b.StartTime.split(":")[0],
+                minute: b.StartTime.split(":")[1]
+              }).valueOf()
+          })
+          console.log("sort: ", timeSorted);
+          await models.ScheduleDetail.bulkCreate(timeSorted);
           let findScheduleConfig = await models.ScheduleDetail.findAll({
             where:{
               "ScheduleId": schedule.id
