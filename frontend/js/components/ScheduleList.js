@@ -70,11 +70,19 @@ export default class ScheduleList extends React.Component {
   };
 
   componentDidMount () {
+    if(!localStorage.getItem('HME_scheduleList_slaveIndex'))
+      localStorage.setItem('HME_scheduleList_slaveIndex', -1);
+    else if(localStorage.getItem('HME_scheduleList_slaveIndex') == 0)
+      this.setState({
+        isAll: true
+      });
+
     this.props.requestGetCachedSlaveList();
     // this.props.requestGetScheduleList();
   };
 
   componentDidUpdate(prevProps, prevState) {
+
   };
 
   _warnHandleOpen = () => {
@@ -88,7 +96,7 @@ export default class ScheduleList extends React.Component {
   };
 
   _addRow = (e) => {
-    this.props.requestScheduleCreate(this.props.scheduleList, this.state.selectedSlave);
+    this.props.requestScheduleCreate(this.props.scheduleList, (this.state.selectedSlave != 0)? this.state.selectedSlave : null);
     this.setState({
       isSetBtnClose: true
     });
@@ -191,8 +199,10 @@ export default class ScheduleList extends React.Component {
   };
 
   _handleSlaveSelect = (e, selectedIndex) => {
+    localStorage.setItem('HME_scheduleList_slaveIndex', e.target.value);
+    let slaveIndex = e.target.value;
     if(selectedIndex > 0) {
-      console.log("!!!!!!!!!!!!!!!!",e.target.value);
+      // console.log("!!!!!!!!!!!!!!!!",e.target.value);
       if(this.state.isEasy){
         this.props.requestGetEasySchedule(e.target.value || 0);
       }else{
@@ -200,17 +210,18 @@ export default class ScheduleList extends React.Component {
       }
     }
 
-    if(selectedIndex == 0)
+    if(slaveIndex == 0)
       this.setState({
-        isAll: false,
+        isAll: true,
         selectedSlave: 0
       });
     else
       this.setState({
-        isAll: (selectedIndex == 1)? true : false,
-        selectedSlave: (selectedIndex == 1)? null : e.target.value
+        isAll: false,
+        selectedSlave: e.target.value
       });
   };
+  
   _checkTime = (e) => {
     console.log(e.target.value);
     let sunriseTime = this.refs.sunrise;
@@ -335,7 +346,7 @@ export default class ScheduleList extends React.Component {
       primary: 'Select Slave',
       text: 'Select Slave'
     },{
-      payload: null,
+      payload: 0,
       primary: 'All Slave',
       text: 'All Slave'
     }];
@@ -366,6 +377,8 @@ export default class ScheduleList extends React.Component {
     if(this.props.easySchedule){
       easySchedule = this.props.easySchedule;
     }
+    let proSelectedSlaveIndex = parseInt(localStorage.getItem('HME_scheduleList_slaveIndex'));
+
     return (
       <div className="tab-content self-center">
         <Dialog
@@ -379,7 +392,7 @@ export default class ScheduleList extends React.Component {
         <div id="easyScheduleList" className={easyDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row">
             <div className="smalllRaisedBnutton" style={{marginLeft: '30px', marginTop: '15px'}}>
-              <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px', float: 'left'}}/>
+              <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px', float: 'left'}} />
               <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'75px', marginLeft: '10px'}} disabled={( this.state.isSetBtnClose ||  this.state.selectedSlave == 0)} />
               <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{ width:'75px', marginLeft: '10px'}} />
               <RaisedButton ref="scheduleSetBtn" label="Pro" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._useProView} style={{width:'75px', marginLeft: '10px'}} />
@@ -435,7 +448,7 @@ export default class ScheduleList extends React.Component {
         <div id="scheduleList" className={proDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row justify-content">
             <div className="smalllRaisedBnutton" style={{marginLeft: '-3px', marginTop: '15px'}}>
-              <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '160px', float: 'left'}}/>
+              <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '160px', float: 'left'}} value={proSelectedSlaveIndex}/>
               {/*
                 <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
                 <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
