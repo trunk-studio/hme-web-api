@@ -368,7 +368,11 @@ export default class ManagePage extends React.Component {
       pointDot: false,
       scaleShowVerticalLines: false,
       datasetStroke: false,
-      pointHitDetectionRadius: 0
+      pointHitDetectionRadius: 0,
+      scaleOverride : true,
+      scaleSteps : 1,
+      scaleStepWidth : 1,
+      scaleStartValue : 0,
     }
 
     let deviceList = [{

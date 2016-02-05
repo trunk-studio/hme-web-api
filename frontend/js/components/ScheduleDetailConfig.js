@@ -264,7 +264,11 @@ export default class ScheduleDetailConfig extends React.Component {
       pointDot: false,
       scaleShowVerticalLines: false,
       datasetStroke: false,
-      pointHitDetectionRadius: 0
+      pointHitDetectionRadius: 0,
+      scaleOverride : true,
+      scaleSteps : 1,
+      scaleStepWidth : 1,
+      scaleStartValue : 0,
     }
     let configID = this.props.params.configID,
         scheduleID = this.props.params.scheduleID;
