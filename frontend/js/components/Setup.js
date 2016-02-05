@@ -14,8 +14,7 @@ import {
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
 // const timezones = require('../../../timezones.json');
 const timezones = [
-  0, 1,  2, 3, 4, 5, 6, 8, 10, 11, 12, -3, -5, -7,  -9, -10, -12, -14
-];
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -12, -13, -14 ];
 export default class Setup extends React.Component  {
 
   constructor(props) {
