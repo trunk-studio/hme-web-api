@@ -1202,7 +1202,8 @@ export default class Hme {
     let oldMessages = await models.Message.findAll({
       where: {
         createdAt: {
-          lt: d
+          lt: d,
+          sended: 1
         }
       }
     });

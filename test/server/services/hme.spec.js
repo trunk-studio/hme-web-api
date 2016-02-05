@@ -29,7 +29,8 @@ describe("hme", () => {
       let oldMessages = await models.Message.create({
         type: 'info',
         title: 'test title5',
-        createdAt: d
+        createdAt: d,
+        sended: 1
       });
       done();
     } catch (e) {
@@ -93,7 +94,7 @@ describe("hme", () => {
     }
   });
 
-  it("clear month ago messages", async done => {
+  it.only("clear month ago messages", async done => {
     try {
       let d = new Date();
 
@@ -107,7 +108,8 @@ describe("hme", () => {
 
       let result = await models.Message.findAll({where: {
         createdAt: {
-          lt: d
+          lt: d,
+          sended: 1
         }
       }});
 
