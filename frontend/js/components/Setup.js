@@ -25,7 +25,7 @@ export default class Setup extends React.Component  {
       tmpPassword: '',
       tmpEmail: '',
       tmpMaster: '',
-      timezoneIndex: 0
+      timezoneIndex: 14
     }
   }
 
