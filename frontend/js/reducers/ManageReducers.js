@@ -1,6 +1,7 @@
 import {
   RECEIVED_REPORT_EMAIL,
-  UPDATE_EMAIL_LOADING_STATUS
+  UPDATE_EMAIL_LOADING_STATUS,
+  GET_DEVICE_STATUS
 } from '../actions/ManageActions'
 
 export function manageSettings(state = { }, action) {
@@ -14,6 +15,11 @@ export function manageSettings(state = { }, action) {
       return {
         ...state,
         loadingEmail: action.status
+      }
+    case GET_DEVICE_STATUS:
+      return {
+        ...state,
+        devStatus: action.status
       }
     default:
       return state

@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     CCT:{
       type: DataTypes.INTEGER,
-      defaultValue: 3000,
+      defaultValue: 2500,
       allowNull: false
     },
     Bright:{
