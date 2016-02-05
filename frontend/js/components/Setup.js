@@ -60,6 +60,15 @@ export default class Setup extends React.Component  {
     });
   };
 
+  _formatOffset(offset) {
+    let result;
+    if(offset < 0)
+      result = 'GMT'+offset
+    else
+      result = 'GMT+'+offset
+    return result.slice(0,5)
+  }
+
   _handleApply = (e) => {
     let setting = {};
     console.log(this.refs.timezone);
@@ -71,7 +80,7 @@ export default class Setup extends React.Component  {
       TYPE: this.refs.serverType.getSelectedValue(),
       REPORT_EMAIL: this.refs.adminEmail.getValue(),
       MASTER_NAME: this.refs.connectToMaster.getValue(),
-      TIMEZONE_OFFSET: timezones[this.state.timezoneIndex].offset,
+      TIMEZONE_OFFSET: this._formatOffset(timezones[this.state.timezoneIndex].offset),
       TIMEZONE_INDEX: this.state.timezoneIndex
     };
     console.log(setting);

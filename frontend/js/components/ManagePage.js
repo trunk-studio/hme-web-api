@@ -13,7 +13,8 @@ import {
 } from '../actions/AuthActions'
 
 import {
-  requestGetReportEmail, requestUpdateReportEmail
+  requestGetReportEmail, requestUpdateReportEmail,
+  requestGetDeviceStatus
 } from '../actions/ManageActions'
 
 const RaisedButton = require('material-ui/lib/raised-button');
@@ -45,7 +46,7 @@ export default class ManagePage extends React.Component {
       blValue: 100,
       grValue: 100,
       reValue: 100,
-      cctValue: 3000,
+      cctValue: 2500,
       brightValue: 100,
       groupID: 0,
       deviceID: 0,
@@ -53,7 +54,9 @@ export default class ManagePage extends React.Component {
       tabIndex: 0,
       tmpEmail: '',
       setupTestSlaveId: 0,
-      setupTestDeviceId: 0
+      setupTestDeviceId: 0,
+      reportSlaveID: 0,
+      reportDeviceId: 0
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -117,6 +120,32 @@ export default class ManagePage extends React.Component {
     });
   };
 
+  _reportDeviceMenuIndexChanged = (e, value) => {
+    this.setState({
+      reportDeviceId: value
+    })
+    let id = 0;
+    console.log(this.props.deviceList[this.state.reportSlaveID]);
+    if(value > 0)
+      id = this.props.deviceList[this.state.reportSlaveID][value - 1].payload;
+    this.props.requestGetDeviceStatus({
+      slaveId: this.state.reportSlaveID,
+      devId: id
+    })
+  };
+
+  _reportSlaveMenuIndexChanged = (e, value) => {
+    console.log('slave index', value);
+
+    let id = 0;
+    if(value > 0)
+      id = this.props.slaveList[value - 1].payload;
+    // console.log(id);
+    this.setState({
+      reportSlaveID: id
+    });
+  };
+
   _gruopMenuIndexChanged = (e, value) => {
     this.setState({
       groupID: value
@@ -166,7 +195,16 @@ export default class ManagePage extends React.Component {
   _cctChanged = (value) => {
     // let value = this.refs.CCT.state.value;
     this.state.cctSliderStyle = 'slider';
-    if(value >= 3000 && value < 4000){
+    if(value >= 2500 && value < 3000){
+      this._setAll(
+        1 ,
+        0 ,
+        0.14 + (0.25 - 0.14) * ((value - 2500) / (3000 - 2500)),
+        0.3  + (0.3 - 0.185 ) * ((value - 2500) / (3000 - 2500)),
+        1 ,
+        value
+      );
+    }else if(value >= 3000 && value < 4000){
       this._setAll(
         1 ,
         0.6  * ((value - 3000) / (4000 - 3000)),
@@ -330,7 +368,11 @@ export default class ManagePage extends React.Component {
       pointDot: false,
       scaleShowVerticalLines: false,
       datasetStroke: false,
-      pointHitDetectionRadius: 0
+      pointHitDetectionRadius: 0,
+      scaleOverride : true,
+      scaleSteps : 1,
+      scaleStepWidth : 1,
+      scaleStartValue : 0,
     }
 
     let deviceList = [{
@@ -357,11 +399,26 @@ export default class ManagePage extends React.Component {
       text: 'Select Slave'
     }];
 
+    let reportDeviceList = [{
+      payload: 0,
+      primary: 'Select Device',
+      text: 'Select Device'
+    }];
+
+    let reportSlaveList = [{
+      payload: 0,
+      primary: 'Select Slave',
+      text: 'Select Slave'
+    }];
+
     if(this.props.deviceList[this.state.slaveID] && this.props.deviceList[this.state.slaveID].length > 0)  deviceList.push(...this.props.deviceList[this.state.slaveID]);
     if(this.props.slaveList.length > 0)  slaveList.push(...this.props.slaveList);
 
     if(this.props.deviceList[this.state.setupTestSlaveID] && this.props.deviceList[this.state.setupTestSlaveID].length > 0)  setupTestDeviceList.push(...this.props.deviceList[this.state.setupTestSlaveID]);
     if(this.props.slaveList.length > 0)  setupTestSlaveList.push(...this.props.slaveList);
+
+    if(this.props.deviceList[this.state.reportSlaveID] && this.props.deviceList[this.state.reportSlaveID].length > 0)  reportDeviceList.push(...this.props.deviceList[this.state.reportSlaveID]);
+    if(this.props.slaveList.length > 0)  reportSlaveList.push(...this.props.slaveList);
 
     let tabIndex = parseInt(this.props.params.tabIndex);
     let scanningStatus = this.props.scanning? this.props.scanning: 'hide';
@@ -376,7 +433,7 @@ export default class ManagePage extends React.Component {
     let reportEmailTab = (
     <Tab key={'reportEmail'} label="Report Setting" value='2'>
       <div className="tab-content self-center" >
-        <div className="self-center" style={{width: '250px'}}>
+        <div className="self-center" style={{width: '500px'}}>
           <TextField
             ref="inputReportingEmail"
             floatingLabelText="Report Email"
@@ -384,16 +441,28 @@ export default class ManagePage extends React.Component {
             value={this.state.tmpEmail}
             onChange={this._handleEditEmail}
             type="text" />
-        </div>
-        <div className="self-center" style={{width: '250px'}}>
-          <RaisedButton onTouchTap={this._saveReportingEmail} label="Save" labelColor="#FFF" backgroundColor="#51A7F9" style={{float: 'right', marginRight:'15px'}}/>
+          <RaisedButton onTouchTap={this._saveReportingEmail} label="Save" labelColor="#FFF" backgroundColor="#51A7F9" style={{marginTop:'40px' ,marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}}/>
           <RefreshIndicator
             size={40}
             left={10}
             top={0}
             status={this.props.loadingEmail}
             style={{display: 'inline-block',
-                    position: 'relative'}} />
+              position: 'relative'}} />
+        </div>
+        <div className="self-center" style={{marginTop:'15px',width: '500px'}}>
+          <div style={{width: '500px'}}>
+            <SelectField labelMember="primary" menuItems={reportSlaveList} onChange={this._reportSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '250px'}}/>
+            <SelectField labelMember="primary" onChange={this._reportDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={reportDeviceList} style={{width: '250px', marginLeft: '5px', position: 'absolute'}}/>
+          </div>
+          <div>
+            <div className="row">
+              <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>溫度:</h4>
+              <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.devTemp}</h4>
+                <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>風扇:</h4>
+                <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState}</h4>
+            </div>
+          </div>
         </div>
       </div>
     </Tab> );
@@ -469,7 +538,7 @@ export default class ManagePage extends React.Component {
                 <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
                 <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
                 <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
-                <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
+                <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
                 <div>Bright {this.state.brightValue}</div>
                 <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider"/>
               </div>
@@ -517,7 +586,8 @@ function _injectPropsFromStore(state) {
     scanning: scanDevice.scanning? scanDevice.scanning : 'hide',
     reportEmail: manageSettings.reportEmail,
     loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide',
-    role: login.role
+    role: login.role,
+    devStatus: manageSettings.devStatus || {devTemp: 'selse Slave & Device', fanState: 'selse Slave & Device'},
   };
 }
 
@@ -537,6 +607,7 @@ const _injectPropsFromActions = {
   //report setting
   requestGetReportEmail,
   requestUpdateReportEmail,
+  requestGetDeviceStatus,
   // Auth,
   getRole,
   logout

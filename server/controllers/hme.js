@@ -291,3 +291,15 @@ exports.getSetting = async function (ctx) {
     throw e;
   }
 }
+
+exports.getDeviceStatus = async function (ctx) {
+  try {
+    let slaveId = ctx.params.slaveId;
+    let devId = ctx.params.deviceId;
+    let result = await services.hme.getDevState(devId);
+    ctx.body = result;
+  } catch (e) {
+    ctx.body = e;
+    throw e;
+  }
+}
