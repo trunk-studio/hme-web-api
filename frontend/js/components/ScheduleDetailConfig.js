@@ -26,7 +26,7 @@ export default class ScheduleDetailConfig extends React.Component {
       blValue: 0,
       grValue: 0,
       reValue: 0,
-      cctValue: 3000,
+      cctValue: 2500,
       brightValue: 100
     }
     this.state.DB.forEach((data,i) => {
@@ -79,7 +79,18 @@ export default class ScheduleDetailConfig extends React.Component {
   _cctChanged = (value) => {
     this.state.cctSliderStyle = 'slider';
     // let value = this.refs.CCT.state.value;
-    if(value >= 3000 && value < 4000){
+
+    if(value >= 2500 && value < 3000){
+      console.log("2");
+      this._setAll(
+        1 ,
+        0 ,
+        0.14 + (0.25 - 0.14) * ((value - 2500) / (3000 - 2500)),
+        0.3  + (0.3 - 0.185 ) * ((value - 2500) / (3000 - 2500)),
+        1 ,
+        value
+      );
+    }else if(value >= 3000 && value < 4000){
       console.log("3");
       this._setAll(
         1 ,
@@ -253,7 +264,11 @@ export default class ScheduleDetailConfig extends React.Component {
       pointDot: false,
       scaleShowVerticalLines: false,
       datasetStroke: false,
-      pointHitDetectionRadius: 0
+      pointHitDetectionRadius: 0,
+      scaleOverride : true,
+      scaleSteps : 1,
+      scaleStepWidth : 1,
+      scaleStartValue : 0,
     }
     let configID = this.props.params.configID,
         scheduleID = this.props.params.scheduleID;
@@ -304,7 +319,7 @@ export default class ScheduleDetailConfig extends React.Component {
               <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
               <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
               <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
-              <SliderRc ref="CCT" name="CCT" defaultValue={3000} min={3000} max={16000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
+              <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
               {/*<div>Bright {this.state.brightValue}</div>
               <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onChange={this._brightChanged} className="slider"/> */}
             </div>

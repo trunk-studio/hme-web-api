@@ -106,22 +106,33 @@ describe("device", () => {
     });
   });
 
-  describe.only("setting", () => {
+  describe("setting", () => {
     it("save", async(done) => {
       try {
         let data = {
-          "wifi": {
-            "ssid": "123",
-            "password": "456"
+          WIFI: {
+            SSID: '1reertert23',
+            PASSWORD: 'sdf'
           },
-          "system": {
-            "type": "slave",
-            "reportEmail": "",
-            "masterName": "123",
-            "timezoneOffset": -12
+          SYSTEM: {
+            HME_SERIAL: 'hmepi010',
+            TYPE: 'slave',
+            REPORT_EMAIL: '',
+            MASTER_NAME: '',
+            TIMEZONE_OFFSET: ''
           }
         }
         let result = await request.post('/rest/hme/setup/update').send(data);
+        result.status.should.be.equal(200);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    it("load", async(done) => {
+      try {
+        let result = await request.get('/rest/hme/setup');
+        console.log(result.body);
         result.status.should.be.equal(200);
         done();
       } catch (e) {

@@ -141,6 +141,20 @@ describe("Schedule", () => {
     }
   });
 
+  it("stop All slave slaveSetSimRtc", async(done) => {
+    try {
+      let data = {
+        count: -1
+      }
+      let result = await request.post(`/rest/slave/${slaves.id}/schedule/setSimRtc`)
+      .send(data);
+      done()
+    } catch (e) {
+      console.log(e);
+      done(e)
+    }
+  });
+
   it("find", async(done) => {
     try {
       let result = await request.get('/rest/master/schedule/' + newSchedule.id);
@@ -410,6 +424,34 @@ describe("Schedule", () => {
               days: 12,
             },{
               hour:12,
+              days: 13,
+            }
+          ]
+        }
+        let result = await request.post('/rest/master/schedule/easy/create')
+        .send(data);
+        result.status.should.an.equal(200);
+        done()
+      } catch (e) {
+        console.log(e);
+        done(e)
+      }
+    });
+
+    it.only("create all slave easy schedule over one day", async(done) => {
+      try {
+        let data = {
+          slaveId:0,
+          startDate: "2016-02-01",
+          sunrise: '12:00',
+          season:[{
+              hour:18,
+              days: 10,
+            },{
+              hour:18,
+              days: 12,
+            },{
+              hour:18,
               days: 13,
             }
           ]
