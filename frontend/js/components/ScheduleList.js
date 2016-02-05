@@ -374,7 +374,7 @@ export default class ScheduleList extends React.Component {
           modal={false}
           open={this.state.open}
           onRequestClose={this._warnHandleClose}>
-          The actions will clean all slave schedule.
+          The actions will cover all the last schedule setting.
         </Dialog>
         <div id="easyScheduleList" className={easyDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row">
