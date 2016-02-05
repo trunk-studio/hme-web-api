@@ -19,7 +19,7 @@ export default class LoginPage extends React.Component {
     super(props);
     this.state = {
       loadingStatus: 'ready',
-      role: 'engineer',
+      role: 'admin',
       sendLogin: false
     }
   }
