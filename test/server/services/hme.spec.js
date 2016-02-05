@@ -17,6 +17,20 @@ describe("hme", () => {
         description: 'testDesc',
         apiVersion: 'testAPIversion'
       });
+
+      let d = new Date();
+
+      // Set it to one month ago
+      d.setMonth(d.getMonth() - 1);
+      d.setDate(d.getDate() -1);
+      // Zero the hours
+      d.setHours(0,0,0)
+
+      let oldMessages = await models.Message.create({
+        type: 'info',
+        title: 'test title5',
+        createdAt: d
+      });
       done();
     } catch (e) {
       done(e);
@@ -73,6 +87,33 @@ describe("hme", () => {
     try {
       let result = await services.hme.pingAllSlave();
       result[0].dataValues.should.have.any.keys('host', 'description', 'apiVersion');
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
+
+  it("clear month ago messages", async done => {
+    try {
+      let d = new Date();
+
+      // Set it to one month ago
+      d.setMonth(d.getMonth() - 1);
+
+      // Zero the hours
+      d.setHours(0,0,0);
+
+      await services.hme.clearOldMessages();
+
+      let result = await models.Message.findAll({where: {
+        createdAt: {
+          lt: d
+        }
+      }});
+
+      console.log("==== old messages ====", JSON.stringify(result, null, 4));
+
+      result.length.should.be.equal(0);
       done();
     } catch (e) {
       done(e);

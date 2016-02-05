@@ -1193,4 +1193,24 @@ export default class Hme {
 
   };
 
+  async clearOldMessages()  {
+    let d = new Date();
+    // Set it to one month ago
+    d.setMonth(d.getMonth() - 1);
+    // Zero the hours
+    d.setHours(0,0,0);
+    let oldMessages = await models.Message.findAll({
+      where: {
+        createdAt: {
+          lt: d
+        }
+      }
+    });
+    // oldMessages.destroy();
+    oldMessages.map((message) => {
+      message.destroy();
+    });
+    return true
+  }
+
 }
