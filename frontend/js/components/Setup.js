@@ -12,7 +12,10 @@ import {
 } from 'material-ui'
 
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
-const timezones = require('../../../timezones.json');
+// const timezones = require('../../../timezones.json');
+const timezones = [
+  0, 1,  2, 3, 4, 5, 6, 8, 10, 11, 12, -3, -5, -7,  -9, -10, -12, -14
+];
 export default class Setup extends React.Component  {
 
   constructor(props) {
@@ -80,7 +83,7 @@ export default class Setup extends React.Component  {
       TYPE: this.refs.serverType.getSelectedValue(),
       REPORT_EMAIL: this.refs.adminEmail.getValue(),
       MASTER_NAME: this.refs.connectToMaster.getValue(),
-      TIMEZONE_OFFSET: this._formatOffset(timezones[this.state.timezoneIndex].offset),
+      TIMEZONE_OFFSET: this._formatOffset(timezones[this.state.timezoneIndex]),
       TIMEZONE_INDEX: this.state.timezoneIndex
     };
     console.log(setting);
@@ -117,8 +120,8 @@ export default class Setup extends React.Component  {
 
     for(let timezone of timezones) {
       timezoneList.push({
-        payload: timezoneList.length,
-        text: timezone.value
+        payload: timezone,
+        text: this._formatOffset(timezone)
       });
     }
     const {loadingStatus} = this.props;
@@ -215,7 +218,7 @@ export default class Setup extends React.Component  {
         <label style={{fontSize: '18px', marginTop: '15px'}}>Timezone</label>
       </div>
       <div className="self-center" style={{width: "210px"}}>
-        <SelectField ref="timezone" onChange={this._handleTimezoneChanged} menuItems={timezoneList} style={{width: '300px'}} value={this.state.timezoneIndex} />
+        <SelectField ref="timezone" onChange={this._handleTimezoneChanged} menuItems={timezoneList} style={{width: '300px'}} value={timezones[this.state.timezoneIndex]} />
       </div>
       <div className="self-center" style={{width: "300px"}}>
         <div className='row'>
