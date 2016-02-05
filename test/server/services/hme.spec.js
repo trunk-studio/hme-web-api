@@ -94,7 +94,7 @@ describe("hme", () => {
     }
   });
 
-  it.only("clear month ago messages", async done => {
+  it("clear month ago messages", async done => {
     try {
       let d = new Date();
 

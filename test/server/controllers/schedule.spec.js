@@ -438,6 +438,34 @@ describe("Schedule", () => {
       }
     });
 
+    it("create all slave easy schedule over one day", async(done) => {
+      try {
+        let data = {
+          slaveId:0,
+          startDate: "2016-02-01",
+          sunrise: '12:00',
+          season:[{
+              hour:18,
+              days: 10,
+            },{
+              hour:18,
+              days: 12,
+            },{
+              hour:18,
+              days: 13,
+            }
+          ]
+        }
+        let result = await request.post('/rest/master/schedule/easy/create')
+        .send(data);
+        result.status.should.an.equal(200);
+        done()
+      } catch (e) {
+        console.log(e);
+        done(e)
+      }
+    });
+
     it("create one slave easy schedule", async(done) => {
       try {
         let data = {
