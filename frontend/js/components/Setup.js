@@ -68,7 +68,7 @@ export default class Setup extends React.Component  {
       result = 'GMT'+offset
     else
       result = 'GMT+'+offset
-    return result.slice(0,5)
+    return result
   }
 
   _handleApply = (e) => {
