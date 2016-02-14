@@ -29,7 +29,7 @@ export default class Routes {
       '/rest/slave/:slaveId/test',
       '/rest/slave/:slaveId/device/:deviceId/setLedDisplay',
       '/rest/slave/:slaveId/schedule/setOnDevice',
-      '/rest/slave/:slaveId/findAllDeviceGroups'
+      '/rest/slave/:slaveId/findAllDeviceGroups',
       ],
       async function (ctx, next){
         try {
@@ -109,6 +109,7 @@ export default class Routes {
     publicRoute.post('/rest/master/login', UserController.login);
     publicRoute.post('/rest/master/saveEmail', HmeController.saveEmail);
     publicRoute.get('/rest/master/loadEmail', HmeController.loadEmail);
+    publicRoute.post('/rest/master/updateTime', HmeController.updateAllSlaveTime);
     publicRoute.post('/rest/master/register/slave', HmeController.registerSlave);
     publicRoute.get('/rest/master/syncAllSlaveAndDevice', HmeController.syncAllSlaveAndDevice);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
@@ -140,6 +141,7 @@ export default class Routes {
     publicRoute.post('/rest/slave/:slaveId/schedule/setSimRtc', ScheduleController.slaveSetSimRtc);
     publicRoute.post('/rest/slave/:slaveId/sync/slave', HmeController.slaveSyncNewSlave);
     publicRoute.get('/rest/slave/:slaveId/device/:deviceId/getStatus', HmeController.getDeviceStatus);
+    publicRoute.post('/rest/slave/:slaveId/updateTime', HmeController.updateTime);
 
     publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
 

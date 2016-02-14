@@ -141,4 +141,40 @@ describe("device", () => {
     });
   });
 
+  describe.only("setting", () => {
+    before( async done => {
+      try {
+        let data = {
+          WIFI: {
+            SSID: '1reertert23',
+            PASSWORD: 'sdf'
+          },
+          SYSTEM: {
+            HME_SERIAL: 'hmepi010',
+            TYPE: 'slave',
+            REPORT_EMAIL: '',
+            MASTER_NAME: 'hmepi099',
+            TIMEZONE_OFFSET: 'GMT+8',
+            TIMEZONE_INDEX: '22'
+          }
+        }
+        let result = await request.post('/rest/hme/setup/update').send(data);
+        done();
+      } catch (e) {
+        console.log(e);
+        done(e)
+      }
+    });
+
+    it("updateTime", async(done) => {
+      try {
+        let result = await services.deviceControl.getMasterTimeAndUpdate();
+        console.log(result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+  });
+
 });

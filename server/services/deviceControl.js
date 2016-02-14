@@ -1,5 +1,8 @@
 import request from 'superagent'
 import ini from 'ini'
+import ping from 'ping';
+var exec = require('child_process').exec;
+
 module.exports = {
 
   saveDevice: async(data, slaveId) => {
@@ -239,6 +242,7 @@ module.exports = {
         let result = await services.deviceControl.registerSlave({
           slaveHostName: saveSetting.SYSTEM.MASTER_NAME + '.local'
         });
+        await services.deviceControl.getMasterTimeAndUpdate();
       }
       return 'ok';
     }catch(e){
@@ -254,6 +258,35 @@ module.exports = {
     }catch(e){
       console.log(e);
       throw e
+    }
+  },
+
+  getMasterTimeAndUpdate: async() => {
+    try {
+      let config =  await services.deviceControl.getSetting();
+      if(config.SYSTEM.TYPE === 'slave'){
+        let host = config.SYSTEM.MASTER_NAME + '.local'
+        let exist = await new Promise((done) => {
+          ping.sys.probe(host, function (res) {
+            done(res);
+          });
+        });
+        console.log(exist, host);
+        if(exist){
+          let cmd = `ntpdate ${host} && hwclock -w`;
+          exec(cmd, function(error, stdout, stderr) {
+            if (error ||  stderr) {
+              console.log(error, stderr);
+              throw error,stderr;
+            }
+            console.log(stdout);
+          });
+        }
+      }
+      return 'ok'
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
   }
 
