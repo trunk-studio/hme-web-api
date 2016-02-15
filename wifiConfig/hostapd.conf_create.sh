@@ -7,6 +7,10 @@ password=$(crudini --get ${CONFIG} SYSTEM AP_PASSWORD)
 # ssid=DEMO
 # password=DEMODEMO
 
+echo "ssid=${ssid}"
+echo "password=${password}"
+
+
 cat > hostapd.conf << EOF1
 interface=wlan0
 driver=rtl871xdrv
