@@ -141,7 +141,7 @@ describe("device", () => {
     });
   });
 
-  describe.only("setting", () => {
+  describe("setting", () => {
     before( async done => {
       try {
         let data = {

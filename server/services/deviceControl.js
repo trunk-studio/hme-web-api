@@ -1,8 +1,6 @@
 import request from 'superagent'
 import ini from 'ini'
 import ping from 'ping';
-// var exec = require('child_process').exec;
-// var execSync = require('child_process').execSync;
 import {exec, execSync} from 'child_process';
 
 module.exports = {
