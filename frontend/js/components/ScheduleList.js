@@ -58,7 +58,7 @@ export default class ScheduleList extends React.Component {
       fallDays: null,
       fallHour: null,
       simpleStartDate: new Date(),
-      simpleSunriseTime: moment(new Date()).format("HH:mm")
+      simpleSunriseTime: moment().format("HH:mm")
     };
   }
 
