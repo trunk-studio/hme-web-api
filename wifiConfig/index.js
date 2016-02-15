@@ -18,8 +18,11 @@ function lightA(err, state) {
 
     var cmd = 'make ap_mode && sudo /sbin/reboot';
 
+    console.log('=== cmd ===', cmd);
     exec(cmd, function(error, stdout, stderr) {
+      console.log(error);
       console.log(stdout);
+      console.log(stderr);
       ledA.writeSync(0);
     });
 
