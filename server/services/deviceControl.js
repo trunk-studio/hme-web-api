@@ -273,7 +273,7 @@ module.exports = {
         });
         console.log(exist, host);
         if(exist){
-          let cmd = `service ntp stop && ntpdate ${host} && hwclock -w`;
+          let cmd = `service ntp stop && ntpdate ${host} && hwclock -w && hwclock -s`;
           exec(cmd, function(error, stdout, stderr) {
             if (error ||  stderr) {
               console.log(error, stderr);
