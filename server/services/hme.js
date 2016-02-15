@@ -1089,11 +1089,46 @@ export default class Hme {
       }
 
       result =  await this.accessDevice(accDevParams);
+      await this.sleep(500);  // wait RTC write
       return (result.success);
     } catch (e) {
       throw e;
     }
   };
+
+  async getDevRTC (devID, groupID)  {
+    try {
+        let accDevParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordRd',
+          u8DataNum:6,
+          u8Addr_Arry:[40],  //Addr 40~45 = RTC:Y,M,D,h,m,s
+          u8DataIn_Arry:[],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+
+        console.log('getDevRTC.accDevParams=', accDevParams);
+        let reData = await this.accessDevice(accDevParams);
+        let result = {
+          year: reData.ramData[0],
+          month: reData.ramData[1],
+          day: reData.ramData[2],
+          hour: reData.ramData[3],
+          min: reData.ramData[4],
+          sec: reData.ramData[5],
+          success: reData.success
+        };
+
+        return (result);
+
+    } catch (e) {
+      throw e;
+    }
+  };
+
+
 
   async getDevState (devID, groupID)  {
     try {

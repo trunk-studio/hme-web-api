@@ -1468,22 +1468,37 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port setDevRTC", async done => {
+    it("serial Port setDevRTC", async done => {
       try {
-        let params = {
-          devID: 1,
-          groupID: 0,
-          year: 2016,
-          month: 3,
-          day: 15,
-          hour: 7,
-          min: 12,
-          sec: 5
-        }
+        let devID = 1;
+        let groupID = 0;
+        let result = await services.hme.getDevRTC(devID, groupID);
+        result.success.should.be.true;
+        console.log('getDevRTC result',result);
+        let rawYear = result.year;
 
-        let result = await services.hme.setDevRTC(params);
+        let params = {
+          year: rawYear + 1,
+          month: result.month,
+          day: result.day,
+          hour: result.hour,
+          min: result.min,
+          sec: result.sec
+        }
+        result = await services.hme.setDevRTC(params);
         console.log('setDevRTC result',result);
         result.should.be.true;
+
+        result = await services.hme.getDevRTC(devID, groupID);
+        console.log('getDevRTC(2) result',result);
+        result.success.should.be.true;
+        (params.year).should.equal(result.year);
+
+        params.year = rawYear;
+        result = await services.hme.setDevRTC(params);
+        console.log('setDevRTC(2) result',result);
+        result.should.be.true;
+
         done();
       } catch (e) {
         done(e);
