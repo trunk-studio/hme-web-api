@@ -16,7 +16,7 @@ function lightA(err, state) {
     // turn LED on
     ledA.writeSync(0);
 
-    var cmd = 'make ap_mode && sudo /sbin/reboot';
+    var cmd = 'cd /root/hme-web-api/wifiConfig && make ap_mode && sudo /sbin/reboot';
 
     console.log('=== cmd ===', cmd);
     exec(cmd, function(error, stdout, stderr) {
