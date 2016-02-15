@@ -70,14 +70,18 @@ export default class ScheduleList extends React.Component {
   };
 
   componentDidMount () {
-    if(!localStorage.getItem('HME_scheduleList_slaveIndex'))
+    let pro_slaveIndex = localStorage.getItem('HME_scheduleList_slaveIndex');
+    if(!pro_slaveIndex)
       localStorage.setItem('HME_scheduleList_slaveIndex', -1);
-    else if(localStorage.getItem('HME_scheduleList_slaveIndex') == 0)
+    else if(pro_slaveIndex == 0)
       this.setState({
-        isAll: true
+        isAll: true,
+        selectedSlave: pro_slaveIndex
       });
-
     this.props.requestGetCachedSlaveList();
+    this.setState({
+      selectedSlave: localStorage.getItem('HME_scheduleList_slaveIndex')
+    });
     // this.props.requestGetScheduleList();
   };
 
@@ -247,6 +251,8 @@ export default class ScheduleList extends React.Component {
   };
 
   render () {
+    let proSelectedSlaveIndex = parseInt(localStorage.getItem('HME_scheduleList_slaveIndex'));
+
     let rows = [];
     let tmpScheduleList = [];
 
@@ -377,7 +383,8 @@ export default class ScheduleList extends React.Component {
     if(this.props.easySchedule){
       easySchedule = this.props.easySchedule;
     }
-    let proSelectedSlaveIndex = parseInt(localStorage.getItem('HME_scheduleList_slaveIndex'));
+
+    let slaveSelectFieldIndex = (this.state.selectedSlave === null)? 0 : parseInt(this.state.selectedSlave) ;
 
     return (
       <div className="tab-content self-center">
@@ -392,7 +399,7 @@ export default class ScheduleList extends React.Component {
         <div id="easyScheduleList" className={easyDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row">
             <div className="smalllRaisedBnutton" style={{marginLeft: '30px', marginTop: '15px'}}>
-              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px', float: 'left'}}/>
+              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px', float: 'left'}} value={slaveSelectFieldIndex} />
               <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'75px', marginLeft: '10px'}} disabled={( this.state.isSetBtnClose ||  this.state.selectedSlave == 0)} />
               <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{ width:'75px', marginLeft: '10px'}} />
               <RaisedButton ref="scheduleSetBtn" label="Pro" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._useProView} style={{width:'75px', marginLeft: '10px'}} />
@@ -448,7 +455,7 @@ export default class ScheduleList extends React.Component {
         <div id="scheduleList" className={proDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row justify-content">
             <div className="smalllRaisedBnutton" style={{marginLeft: '-3px', marginTop: '15px'}}>
-              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '160px', float: 'left'}} value={proSelectedSlaveIndex}/>
+              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '160px', float: 'left'}} value={slaveSelectFieldIndex} />
               {/*
                 <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
                 <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
