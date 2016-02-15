@@ -133,7 +133,7 @@ export default class ScheduleList extends React.Component {
         fallDays: null,
         fallHour: null,
         simpleStartDate: new Date(),
-        simpleSunriseTime: moment(new Date()).format("YYYY-MM-DD")
+        simpleSunriseTime: moment().format("HH:mm")
       });
     }
   };
@@ -310,8 +310,9 @@ export default class ScheduleList extends React.Component {
     }
   };
 
-  _useProView = (e) => {
+  _switchView = (e) => {
     this.props.requestGetSlaveSchedule(this.state.selectedSlave? this.state.selectedSlave: null);
+    this.props.requestGetEasySchedule(this.state.selectedSlave || 0);
     this.setState({
       isEasy: !this.state.isEasy
     })
@@ -476,7 +477,7 @@ export default class ScheduleList extends React.Component {
               <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '200px', float: 'left'}} value={slaveSelectFieldIndex} />
               <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'75px', marginLeft: '10px'}} />
               <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} style={{ width:'75px', marginLeft: '10px'}} />
-              <RaisedButton ref="scheduleSetBtn" label="Pro" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._useProView} style={{width:'75px', marginLeft: '10px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Pro" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'75px', marginLeft: '10px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}
@@ -537,7 +538,7 @@ export default class ScheduleList extends React.Component {
               <RaisedButton ref="scheduleAddBtn" label="ADD" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{width:'60px',marginLeft: '10px'}}/>
               <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveScheduleList} style={{width:'70px',marginLeft: '5px'}} disabled={(this.state.selectedSlave == 0)} />
               <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{width:'80px', marginLeft: '5px'}} />
-              <RaisedButton ref="scheduleSetBtn" label="Simple" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._useProView} style={{width:'70px', marginLeft: '5px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Simple" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'70px', marginLeft: '5px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}
