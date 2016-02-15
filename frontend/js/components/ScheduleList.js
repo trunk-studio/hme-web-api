@@ -48,9 +48,17 @@ export default class ScheduleList extends React.Component {
       muiTheme: ThemeManager.getMuiTheme(LightRawTheme),
       isAll: false,
       isGroup: true,
-      selectedSlave: 0,
+      selectedSlave: -1,
       open: false,
       isEasy: true,
+      springDays: null,
+      springHour: null,
+      summerDays: null,
+      summerHour: null,
+      fallDays: null,
+      fallHour: null,
+      simpleStartDate: new Date(),
+      simpleSunriseTime: moment(new Date()).format("HH:mm")
     };
   }
 
@@ -82,11 +90,61 @@ export default class ScheduleList extends React.Component {
     this.setState({
       selectedSlave: localStorage.getItem('HME_scheduleList_slaveIndex')
     });
+
+    this.props.requestGetEasySchedule(pro_slaveIndex  || 0);
+    this.props.requestGetSlaveSchedule(pro_slaveIndex);
     // this.props.requestGetScheduleList();
   };
 
   componentDidUpdate(prevProps, prevState) {
 
+    if( !prevProps.easySchedule && this.props.easySchedule ) {
+      this.setState({
+        springDays: this.props.easySchedule.Season[0].days,
+        springHour: this.props.easySchedule.Season[0].hour,
+        summerDays: this.props.easySchedule.Season[1].days,
+        summerHour: this.props.easySchedule.Season[1].hour,
+        fallDays: this.props.easySchedule.Season[2].days,
+        fallHour: this.props.easySchedule.Season[2].hour ,
+        simpleStartDate: this.props.easySchedule.StartDate,
+        simpleSunriseTime: this.props.easySchedule.StartTime
+      });
+    }
+    if(prevProps.easySchedule && this.props.easySchedule) {
+      if(prevProps.easySchedule.SlaveId != this.props.easySchedule.SlaveId) {
+        this.setState({
+          springDays: this.props.easySchedule.Season[0].days,
+          springHour: this.props.easySchedule.Season[0].hour,
+          summerDays: this.props.easySchedule.Season[1].days,
+          summerHour: this.props.easySchedule.Season[1].hour,
+          fallDays: this.props.easySchedule.Season[2].days,
+          fallHour: this.props.easySchedule.Season[2].hour ,
+          simpleStartDate: this.props.easySchedule.StartDate,
+          simpleSunriseTime: this.props.easySchedule.StartTime
+        });
+      }
+    }
+    if( prevProps.easySchedule && !this.props.easySchedule ) {
+      this.setState({
+        springDays: null,
+        springHour: null,
+        summerDays: null,
+        summerHour: null,
+        fallDays: null,
+        fallHour: null,
+        simpleStartDate: new Date(),
+        simpleSunriseTime: moment(new Date()).format("YYYY-MM-DD")
+      });
+    }
+  };
+
+
+  _handleEditTextField = (stateKey, e) => {
+    console.log(stateKey, e);
+    let obj = {};
+    obj[stateKey] = e.target.value;
+    console.log(obj);
+    this.setState(obj);
   };
 
   _warnHandleOpen = () => {
@@ -205,6 +263,7 @@ export default class ScheduleList extends React.Component {
   _handleSlaveSelect = (e, selectedIndex) => {
     localStorage.setItem('HME_scheduleList_slaveIndex', e.target.value);
     let slaveIndex = e.target.value;
+    console.log('ssss', slaveIndex);
     if(selectedIndex > 0) {
       // console.log("!!!!!!!!!!!!!!!!",e.target.value);
       if(this.state.isEasy){
@@ -213,16 +272,23 @@ export default class ScheduleList extends React.Component {
         this.props.requestGetSlaveSchedule(e.target.value);
       }
     }
-
-    if(slaveIndex == 0)
+    if(slaveIndex < 0)
+      this.setState({
+        isAll: false,
+        selectedSlave: -1,
+        isSetBtnClose: true
+      });
+    else if(slaveIndex == 0)
       this.setState({
         isAll: true,
-        selectedSlave: 0
+        selectedSlave: null,
+        isSetBtnClose: false
       });
     else
       this.setState({
         isAll: false,
-        selectedSlave: e.target.value
+        selectedSlave: e.target.value,
+        isSetBtnClose: false
       });
   };
 
@@ -250,7 +316,14 @@ export default class ScheduleList extends React.Component {
     })
   };
 
+  _modifyLabel = (e) => {
+    this.setState({
+
+    });
+  };
+
   render () {
+    console.log('======', this.props);
     let proSelectedSlaveIndex = parseInt(localStorage.getItem('HME_scheduleList_slaveIndex'));
 
     let rows = [];
@@ -399,7 +472,7 @@ export default class ScheduleList extends React.Component {
         <div id="easyScheduleList" className={easyDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row">
             <div className="smalllRaisedBnutton" style={{marginLeft: '30px', marginTop: '15px'}}>
-              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px', float: 'left'}} value={slaveSelectFieldIndex} />
+              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '200px', float: 'left'}} value={slaveSelectFieldIndex} />
               <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'75px', marginLeft: '10px'}} disabled={( this.state.isSetBtnClose ||  this.state.selectedSlave == 0)} />
               <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{ width:'75px', marginLeft: '10px'}} />
               <RaisedButton ref="scheduleSetBtn" label="Pro" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._useProView} style={{width:'75px', marginLeft: '10px'}} />
@@ -414,34 +487,34 @@ export default class ScheduleList extends React.Component {
           <div className="row">
             <div className="col-md-4 col-sm-4 col-xs-4" style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Spring </p>
-              <RadioButtonGroup ref="springHours"  name="shipSpeed" defaultSelected="12">
+              <RadioButtonGroup ref="springHours"  name="shipSpeed" valueSelected={ this.state.springHour } onChange={this._handleEditTextField.bind({}, 'springHour')} >
                 <RadioButton value="12" label="12 Hours" />
                 <RadioButton value="18" label="18 Hours" />
               </RadioButtonGroup>
-                <TextField ref="springDay"  hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
+                <TextField ref="springDay" hintText="Days" min={0} max={9999} type="number" style={{width: '50px', marginLeft:'40px'}} value={this.state.springDays} onChange={this._handleEditTextField.bind({},　'springDays')}　/>
             </div>
             <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Summer </p>
-              <RadioButtonGroup ref="summerHours" name="shipSpeed" defaultSelected="24">
+              <RadioButtonGroup ref="summerHours" name="shipSpeed" valueSelected={ this.state.summerHour }  onChange={this._handleEditTextField.bind({}, 'summerHour')}>
                 <RadioButton value="18" label="18 Hours" />
                 <RadioButton value="24" label="24 Hours" />
               </RadioButtonGroup>
-                <TextField ref="summerDay" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
+                <TextField ref="summerDay" hintText="Days" min={0} max={9999} type="number" style={{width: '50px', marginLeft:'40px'}} value={this.state.summerDays} onChange={this._handleEditTextField.bind({},　'summerDays')}　/>
             </div>
             <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Fall </p>
-              <RadioButtonGroup ref="fallHours" name="shipSpeed" defaultSelected="12">
+              <RadioButtonGroup ref="fallHours" name="shipSpeed" valueSelected={ this.state.fallHour }  onChange={this._handleEditTextField.bind({}, 'fallHour')} >
                 <RadioButton value="12" label="12 Hours" />
                 <RadioButton value="14" label="14 Hours" />
               </RadioButtonGroup>
-                <TextField ref="fallDay" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
+                <TextField ref="fallDay" hintText="Days" min={0} max={9999} type="number" style={{width: '50px', marginLeft:'40px'}} value={this.state.fallDays} onChange={this._handleEditTextField.bind({},　'fallDays')}　/>
             </div>
           </div>
           <div className="row">
-            <div style={{marginLeft: '30px', display: 'inline-flex'}}>
-              <TextField ref="easyStartDate" floatingLabelText="Start Time" defaultValue={moment(eastDate).format('YYYY-MM-DD')} onChange={this._handleDatePickChange} type="date" style={{width: '200px', marginLeft:'10px'}}/>
+            <div style={{marginLeft: '30px'}}>
+              <TextField ref="easyStartDate" floatingLabelText="Start Date" value={moment(this.state.simpleStartDate).format('YYYY-MM-DD')} type="date" style={{width: '200px', marginLeft:'10px'}} onChange={this._handleEditTextField.bind({}, 'simpleStartDate')} />
               {/*<TextField ref="sunrise" floatingLabelText="Sunrise" onChange={this._checkTime} defaultValue={moment().format("HH:DD")} style={{width: '200px', marginLeft:'10px'}}/>*/}
-              <TextField ref="easyStartTime" floatingLabelText="Sunrise" type="time" defaultValue={moment().format("HH:DD")} style={{width: '200px', marginLeft:'10px'}}/>
+              <TextField ref="easyStartTime" floatingLabelText="Sunrise" type="time" value={this.state.simpleSunriseTime} style={{width: '200px', marginLeft:'10px'}} onChange={this._handleEditTextField.bind({}, 'simpleSunriseTime')} />
             </div>
           </div>
           <Snackbar

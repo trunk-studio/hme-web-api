@@ -436,6 +436,7 @@ export default class ManagePage extends React.Component {
     if(this.props.slaveList.length > 0)  reportSlaveList.push(...this.props.slaveList);
 
     let tabIndex = parseInt(localStorage.getItem('HME_manage_tabIndex'));
+    console.log('----tabIndex', tabIndex);
     let scanningStatus = this.props.scanning? this.props.scanning: 'hide';
     let email = this.props.reportEmail;
 
