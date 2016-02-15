@@ -1,7 +1,9 @@
 import request from 'superagent'
 import ini from 'ini'
 import ping from 'ping';
-var exec = require('child_process').exec;
+// var exec = require('child_process').exec;
+// var execSync = require('child_process').execSync;
+import {exec, execSync} from 'child_process';
 
 module.exports = {
 
@@ -242,8 +244,9 @@ module.exports = {
         let result = await services.deviceControl.registerSlave({
           slaveHostName: saveSetting.SYSTEM.MASTER_NAME + '.local'
         });
-        await services.deviceControl.getMasterTimeAndUpdate();
       }
+      execSync('cd /root/hme-web-api/wifiConfig && make client_mode && cd -');
+      execSync('sudo /sbin/reboot');
       return 'ok';
     }catch(e){
       console.log(e);
