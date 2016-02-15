@@ -1,7 +1,7 @@
 #!/bin/bash
 CONFIG="${CONFIG:=/boot/hme.txt}"
 
-ssid=$HME_SERIAL
+ssid=$(crudini --get ${CONFIG} SYSTEM HME_SERIAL)
 password=$(crudini --get ${CONFIG} SYSTEM AP_PASSWORD)
 
 # ssid=DEMO
