@@ -263,15 +263,15 @@ export default class ScheduleList extends React.Component {
   _handleSlaveSelect = (e, selectedIndex) => {
     localStorage.setItem('HME_scheduleList_slaveIndex', e.target.value);
     let slaveIndex = e.target.value;
-    console.log('ssss', slaveIndex);
     if(selectedIndex > 0) {
       // console.log("!!!!!!!!!!!!!!!!",e.target.value);
       if(this.state.isEasy){
         this.props.requestGetEasySchedule(e.target.value || 0);
       }else{
-        this.props.requestGetSlaveSchedule(e.target.value);
+        this.props.requestGetSlaveSchedule(e.target.value? e.target.value : null);
       }
     }
+
     if(slaveIndex < 0)
       this.setState({
         isAll: false,
@@ -311,6 +311,7 @@ export default class ScheduleList extends React.Component {
   };
 
   _useProView = (e) => {
+    this.props.requestGetSlaveSchedule(this.state.selectedSlave? this.state.selectedSlave: null);
     this.setState({
       isEasy: !this.state.isEasy
     })
@@ -473,8 +474,8 @@ export default class ScheduleList extends React.Component {
           <div className="row">
             <div className="smalllRaisedBnutton" style={{marginLeft: '30px', marginTop: '15px'}}>
               <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '200px', float: 'left'}} value={slaveSelectFieldIndex} />
-              <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'75px', marginLeft: '10px'}} disabled={( this.state.isSetBtnClose ||  this.state.selectedSlave == 0)} />
-              <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{ width:'75px', marginLeft: '10px'}} />
+              <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'75px', marginLeft: '10px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} style={{ width:'75px', marginLeft: '10px'}} />
               <RaisedButton ref="scheduleSetBtn" label="Pro" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._useProView} style={{width:'75px', marginLeft: '10px'}} />
               <RefreshIndicator
                 size={30}
@@ -528,7 +529,7 @@ export default class ScheduleList extends React.Component {
         <div id="scheduleList" className={proDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row justify-content">
             <div className="smalllRaisedBnutton" style={{marginLeft: '-3px', marginTop: '15px'}}>
-              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '160px', float: 'left'}} value={slaveSelectFieldIndex} />
+              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '160px', float: 'left'}} value={slaveSelectFieldIndex} />
               {/*
                 <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
                 <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
