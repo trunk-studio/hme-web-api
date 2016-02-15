@@ -1058,7 +1058,42 @@ export default class Hme {
     }
   };
 
+  async setDevRTC ({year, month, day, hour, min, sec})  {
+    try {
+        let accDevParams = {
+        u8DevID:0,
+        groupID:0,
+        sFunc:'WordWt',
+        u8DataNum:6,
+        u8Addr_Arry:[50], //RTC set[50~55]
+        u8DataIn_Arry:[year, month, day, hour, min, sec],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
 
+      console.log('setDevRTC,accDevParams:', accDevParams);
+      let result =  await this.accessDevice(accDevParams);
+      if (result.success == false) {
+        return(false)
+      }
+
+      accDevParams = {
+        u8DevID:0,
+        groupID:0,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[59],  //Addr 59 = RTC set comm
+        u8DataIn_Arry:[1],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+
+      result =  await this.accessDevice(accDevParams);
+      return (result.success);
+    } catch (e) {
+      throw e;
+    }
+  };
 
   async getDevState (devID, groupID)  {
     try {

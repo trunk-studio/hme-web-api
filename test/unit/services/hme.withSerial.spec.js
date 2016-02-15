@@ -292,9 +292,6 @@ describe("hme with seriel port", () => {
 
     });
 
-
-
-
     it("serial Port setLedDisplay", async done => {
       // 即時改變LED燈亮度
       // 同時設定為Interact模式
@@ -1465,6 +1462,29 @@ describe("hme with seriel port", () => {
 
         done();
 
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it.only("serial Port setDevRTC", async done => {
+      try {
+        let params = {
+          devID: 1,
+          groupID: 0,
+          year: 2016,
+          month: 3,
+          day: 15,
+          hour: 7,
+          min: 12,
+          sec: 5
+        }
+
+        let result = await services.hme.setDevRTC(params);
+        console.log('setDevRTC result',result);
+        result.should.be.true;
+        done();
       } catch (e) {
         done(e);
       }
