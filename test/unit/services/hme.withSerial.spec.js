@@ -1506,6 +1506,31 @@ describe("hme with seriel port", () => {
 
     });
 
+    it("serial Port setSysTimeToDevRTC", async done => {
+
+      try {
+
+        let result = await services.hme.setSysTimeToDevRTC();
+        console.log('setSysTimeToDevRTC result',result);
+        result.should.be.true;
+
+        let d = new Date;
+        let devID = 1;
+        let groupID = 0;
+        result = await services.hme.getDevRTC(devID, groupID);
+        result.success.should.be.true;
+        console.log('getDevRTC result',result);
+        (d.getFullYear()).should.equal(result.year)
+
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+
+
 
 
     it("serial Port accessDevice", async done => {

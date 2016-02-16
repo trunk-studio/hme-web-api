@@ -1128,6 +1128,27 @@ export default class Hme {
     }
   };
 
+  async setSysTimeToDevRTC ()  {
+    try {
+      let d = new Date;
+      let params = {
+        year: d.getFullYear(),
+        month: d.getMonth() + 1,
+        day: d.getDate(),
+        hour: d.getHours(),
+        min: d.getMinutes(),
+        sec: d.getSeconds()
+      }
+
+        console.log('setSysTimeToDevRTC.params=', params);
+        let result = await this.setDevRTC(params);
+        return (result);
+
+    } catch (e) {
+      throw e;
+    }
+  };
+
 
 
   async getDevState (devID, groupID)  {
