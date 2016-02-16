@@ -385,4 +385,36 @@ describe("schedule", () => {
 
   });
 
+  describe("delete simple schedule through slaveId", async done => {
+    let oneEasySchedule, slave;
+    before( async done => {
+      try {
+        slave = await models.Slave.create({
+          host: "127.0.0.1",
+          description: "描述",
+          apiVersion: "0.1.0",
+        });
+        oneEasySchedule = await models.easySchedule.create({
+          "StartDate": "2016-02-01 00:00:00",
+          "StartTime": "06:00:00",
+          "Season": [{hour:12,days:10},{hour:12,days:12},{hour:12,days:13}],
+          "SlaveId": slave.id
+        });
+        done()
+      } catch (e) {
+        done(e)
+      }
+    });
+    it("delete simple schedule", async done => {
+      try {
+        let simpleSchedule = await services.schedule.deleteSimpleScheduleBySlaveId(slave.id);
+        let result = await models.easySchedule.find({where: {SlaveId: slave.id}});
+        (result === null).should.be.true;
+        done()
+      } catch (e) {
+        done(e)
+      }
+    });
+  });
+
 });

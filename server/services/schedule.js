@@ -389,7 +389,15 @@ module.exports = {
       throw e;
     }
   },
-
+  deleteSimpleScheduleBySlaveId: async(slaveId) => {
+    try {
+      let simpleSchedule = await models.easySchedule.find({where:{SlaveId: slaveId}});
+      simpleSchedule.destroy();
+      return ;
+    } catch (e) {
+      throw e;
+    }
+  },
   exportJsonConfig: async({id, name, description}) => {
     try {
       console.log(id, name, description);
