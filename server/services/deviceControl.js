@@ -232,11 +232,13 @@ module.exports = {
       let result = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
       result.WIFI.SSID = saveSetting.WIFI.SSID;
       result.WIFI.PASSWORD = saveSetting.WIFI.PASSWORD;
+      result.WIFI.MODE = 'CLIENT';
       result.SYSTEM.TYPE = saveSetting.SYSTEM.TYPE;
       result.SYSTEM.REPORT_EMAIL = saveSetting.SYSTEM.REPORT_EMAIL;
       result.SYSTEM.MASTER_NAME = saveSetting.SYSTEM.MASTER_NAME;
       result.SYSTEM.TIMEZONE_OFFSET = saveSetting.SYSTEM.TIMEZONE_OFFSET;
       result.SYSTEM.TIMEZONE_INDEX = saveSetting.SYSTEM.TIMEZONE_INDEX;
+      result.SYSTEM.SETTED = true;
       fs.writeFileSync(appConfig.configPath, ini.stringify(result))
       if(saveSetting.SYSTEM.TYPE === 'slave'){
         let result = await services.deviceControl.registerSlave({
