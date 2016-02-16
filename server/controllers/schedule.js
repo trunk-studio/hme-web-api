@@ -123,6 +123,7 @@ exports.updateScheduleList = async function(ctx) {
   try {
     console.log("==== updateScheduleList ===");
     let data = ctx.request.body;
+    console.log(data);
     let result = await services.schedule.updateScheduleList(data);
     ctx.body =  result;
   } catch(e) {
@@ -374,5 +375,14 @@ exports.slaveSetSimRtc = async function(ctx) {
   } catch (e) {
     console.error(e);
     ctx.body = e;
+  }
+}
+
+exports.deleteSimpleScheduleBySlaveId = async function(ctx) {
+  try {
+    await services.schedule.deleteSimpleScheduleBySlaveId(ctx.request.body.slaveId);
+    ctx.body = true
+  } catch (e) {
+    throw e;
   }
 }
