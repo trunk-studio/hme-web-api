@@ -16,6 +16,20 @@
 * 設置 /boot/hme.txt
 
 
+### 設定 Avahi
+
+解決 SSH 以 *.local 連線緩慢的問題
+
+路徑
+
+* /etc/avahi/avahi-daemon.conf
+
+設定
+
+use-ipv6=no
+
+
+
 Additionals
 
 * Disable BASH history
