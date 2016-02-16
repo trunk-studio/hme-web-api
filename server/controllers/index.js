@@ -115,9 +115,11 @@ export default class Routes {
     publicRoute.post('/rest/master/schedule/easy/create', ScheduleController.createEasySchedule);
     publicRoute.get('/rest/master/schedule/findAll', ScheduleController.getAllSchedule);
     publicRoute.get('/rest/master/slave/:slaveId/schedule/findAll', ScheduleController.getAllScheduleBySlaveId);
+    publicRoute.post('/rest/master/simpleSchedule/delete', ScheduleController.deleteSimpleScheduleBySlaveId);
+
     publicRoute.get('/rest/master/schedule/:id', ScheduleController.getOneSchedule);
     publicRoute.get('/rest/master/schedule/easy/:slaveId', ScheduleController.getOneEasySchedule);
-    publicRoute.post('/rest/master/schedule/update/day', ScheduleController.updateScheduleDay);
+    // publicRoute.post('/rest/master/schedule/update/day', ScheduleController.updateScheduleDay);
     publicRoute.post('/rest/master/schedule/update/list', ScheduleController.updateScheduleList);
     publicRoute.post('/rest/master/schedule/update/detail', ScheduleController.updateScheduleDetail);
     publicRoute.post('/rest/master/schedule/update/details', ScheduleController.updateScheduleDetails);

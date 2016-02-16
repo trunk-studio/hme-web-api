@@ -43,7 +43,7 @@ export default class App extends React.Component {
       replaceState({}, '/login');
     }
     else if(jwtDecode(localStorage.getItem('token')).role != 'engineer' && jwtDecode(localStorage.getItem('token')).role != 'admin') {
-      replaceState({}, '/manage/0');
+      replaceState({}, '/manage');
     }
   };
 
@@ -55,7 +55,7 @@ export default class App extends React.Component {
 
   _noAuth = (nextState, replaceState) => {
     if(localStorage.getItem('token')) {
-      replaceState({}, '/manage/0');
+      replaceState({}, '/manage');
     }
   };
 
@@ -64,7 +64,7 @@ export default class App extends React.Component {
       <Router history={browserHistory}>
         <Route path="/" component={LoginPage}  onEnter={this._requireLogin}/>
         <Route path="/login" component={LoginPage} onEnter={this._noAuth}/>
-        <Route path="/manage/:tabIndex" component={ManagePage} onEnter={this._requireLogin}/>
+        <Route path="/manage" component={ManagePage} onEnter={this._requireLogin}/>
         <Route path="/graph" component={SettingGraph} />
         <Route path="/schedule/list" component={ScheduleList} onEnter={this._requireLogin}/>
         <Route path="/schedule/:slaveId/edit/:scheduleID" component={ScheduleDetail} onEnter={this._requireAuth}/>
