@@ -19,7 +19,7 @@ export default class LoginPage extends React.Component {
     super(props);
     this.state = {
       loadingStatus: 'ready',
-      role: 'engineer',
+      role: 'admin',
       sendLogin: false
     }
   }
@@ -56,7 +56,7 @@ export default class LoginPage extends React.Component {
     // if('success' in this.props.login) {
       let Password = this.refs.password;
       if(this.props.login.success && !prevProps.login.success) {
-        window.location.href = "/#manage/0";
+        window.location.href = "/#manage";
       }
       else if( !this.props.login.success && prevState.sendLogin ){
         Password.focus();
@@ -67,33 +67,36 @@ export default class LoginPage extends React.Component {
 
   render() {
     let roles = [
-       { payload: 'engineer', text: '原廠工程師' },
-       { payload: 'admin', text: '主控者' },
-       { payload: 'user', text: '操作人員' }
+      { payload: 'admin', text: '主控者' },
+      { payload: 'user', text: '操作人員' },
+      { payload: 'engineer', text: 'administrator' }
     ];
     const {loadingStatus} = this.props;
     return (
-      <Tabs>
+      <Tabs className="background-splash tabs-container" style={{backgroundImage: "url('public/assets/images/HMEsplash.png')"}}>
         <Tab label="Login">
-          <div className="self-center" style={{width: "210px"}}>
-            <div className="row">
-              <SelectField
-                onChange={this._handleRoleChanged}
-                menuItems={roles}/>
-            </div>
-            <div className="row">
-              <TextField
-                ref="password"
-                hintText="Password Field"
-                type="password"
-                onEnterKeyDown={this._login}/>
-            </div>
-            <div className="row" style={{height: '40px'}}>
-              <RaisedButton label="Login" onTouchTap={this._login} style={{float:'right', marginRight:'10%'}}/>
-              {/*
-                this.props.isLoading &&
-                <RefreshIndicator size={40} left={100} top={40} status="loading" />
-              */}
+          <div className="tab-content self-center">
+            <div className="self-center" style={{width: "210px", paddingTop: '15px'}} >
+              <div className="row">
+                <SelectField
+                  iconStyle={{fill: '#000'}}
+                  onChange={this._handleRoleChanged}
+                  menuItems={roles}/>
+              </div>
+              <div className="row">
+                <TextField
+                  ref="password"
+                  hintText="Password Field"
+                  type="password"
+                  onEnterKeyDown={this._login}/>
+              </div>
+              <div className="row" style={{height: '40px'}}>
+                <RaisedButton label="Login" onTouchTap={this._login} style={{float:'right', marginRight:'10%'}}/>
+                {/*
+                  this.props.isLoading &&
+                  <RefreshIndicator size={40} left={100} top={40} status="loading" />
+                */}
+              </div>
             </div>
           </div>
         </Tab>

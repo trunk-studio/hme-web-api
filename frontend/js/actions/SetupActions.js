@@ -8,7 +8,7 @@ export function requestGetSetupSetting(loginData) {
   return (dispatch) => {
     dispatch(updateSetupSettingLoadingStatus('loading'));
     return request
-      .get('/rest/setup')
+      .get('/rest/hme/setup')
       .then(response => {
         dispatch(receivedSetupData(response.data));
         dispatch(updateSetupSettingLoadingStatus('hide'));

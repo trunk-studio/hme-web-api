@@ -48,9 +48,17 @@ export default class ScheduleList extends React.Component {
       muiTheme: ThemeManager.getMuiTheme(LightRawTheme),
       isAll: false,
       isGroup: true,
-      selectedSlave: 0,
+      selectedSlave: -1,
       open: false,
       isEasy: true,
+      springDays: null,
+      springHour: null,
+      summerDays: null,
+      summerHour: null,
+      fallDays: null,
+      fallHour: null,
+      simpleStartDate: new Date(),
+      simpleSunriseTime: moment().format("HH:mm")
     };
   }
 
@@ -70,11 +78,73 @@ export default class ScheduleList extends React.Component {
   };
 
   componentDidMount () {
+    let pro_slaveIndex = localStorage.getItem('HME_scheduleList_slaveIndex');
+    if(!pro_slaveIndex)
+      localStorage.setItem('HME_scheduleList_slaveIndex', -1);
+    else if(pro_slaveIndex == 0)
+      this.setState({
+        isAll: true,
+        selectedSlave: pro_slaveIndex
+      });
     this.props.requestGetCachedSlaveList();
+    this.setState({
+      selectedSlave: localStorage.getItem('HME_scheduleList_slaveIndex')
+    });
+
+    this.props.requestGetEasySchedule(pro_slaveIndex  || 0);
+    this.props.requestGetSlaveSchedule(pro_slaveIndex);
     // this.props.requestGetScheduleList();
   };
 
   componentDidUpdate(prevProps, prevState) {
+
+    if( !prevProps.easySchedule && this.props.easySchedule ) {
+      this.setState({
+        springDays: this.props.easySchedule.Season[0].days,
+        springHour: this.props.easySchedule.Season[0].hour,
+        summerDays: this.props.easySchedule.Season[1].days,
+        summerHour: this.props.easySchedule.Season[1].hour,
+        fallDays: this.props.easySchedule.Season[2].days,
+        fallHour: this.props.easySchedule.Season[2].hour ,
+        simpleStartDate: this.props.easySchedule.StartDate,
+        simpleSunriseTime: this.props.easySchedule.StartTime
+      });
+    }
+    if(prevProps.easySchedule && this.props.easySchedule) {
+      if(prevProps.easySchedule.SlaveId != this.props.easySchedule.SlaveId) {
+        this.setState({
+          springDays: this.props.easySchedule.Season[0].days,
+          springHour: this.props.easySchedule.Season[0].hour,
+          summerDays: this.props.easySchedule.Season[1].days,
+          summerHour: this.props.easySchedule.Season[1].hour,
+          fallDays: this.props.easySchedule.Season[2].days,
+          fallHour: this.props.easySchedule.Season[2].hour ,
+          simpleStartDate: this.props.easySchedule.StartDate,
+          simpleSunriseTime: this.props.easySchedule.StartTime
+        });
+      }
+    }
+    if( prevProps.easySchedule && !this.props.easySchedule ) {
+      this.setState({
+        springDays: null,
+        springHour: null,
+        summerDays: null,
+        summerHour: null,
+        fallDays: null,
+        fallHour: null,
+        simpleStartDate: new Date(),
+        simpleSunriseTime: moment().format("HH:mm")
+      });
+    }
+  };
+
+
+  _handleEditTextField = (stateKey, e) => {
+    // console.log(stateKey, e);
+    let obj = {};
+    obj[stateKey] = e.target.value;
+    // console.log(obj);
+    this.setState(obj);
   };
 
   _warnHandleOpen = () => {
@@ -88,7 +158,7 @@ export default class ScheduleList extends React.Component {
   };
 
   _addRow = (e) => {
-    this.props.requestScheduleCreate(this.props.scheduleList, this.state.selectedSlave);
+    this.props.requestScheduleCreate(this.props.scheduleList, (this.state.selectedSlave != 0)? this.state.selectedSlave : null);
     this.setState({
       isSetBtnClose: true
     });
@@ -96,7 +166,7 @@ export default class ScheduleList extends React.Component {
   };
 
   _saveScheduleList = (e) => {
-    this.props.requestUpdateScheduleList(this.props.scheduleList);
+    this.props.requestUpdateScheduleList(this.props.scheduleList, this.state.selectedSlave);
     this.setState({
       isSetBtnClose: false
     });
@@ -129,7 +199,7 @@ export default class ScheduleList extends React.Component {
   _setScheduleList = (e) => {
     this._warnHandleClose()
     let slaveId = this.state.selectedSlave || 0 ;
-    console.log(slaveId);
+    // console.log(slaveId);
     this.props.requestSetScheduleList({
       slaveId: slaveId
     })
@@ -191,28 +261,39 @@ export default class ScheduleList extends React.Component {
   };
 
   _handleSlaveSelect = (e, selectedIndex) => {
+    localStorage.setItem('HME_scheduleList_slaveIndex', e.target.value);
+    let slaveIndex = e.target.value;
     if(selectedIndex > 0) {
-      console.log("!!!!!!!!!!!!!!!!",e.target.value);
+      // console.log("!!!!!!!!!!!!!!!!",e.target.value);
       if(this.state.isEasy){
         this.props.requestGetEasySchedule(e.target.value || 0);
       }else{
-        this.props.requestGetSlaveSchedule(e.target.value);
+        this.props.requestGetSlaveSchedule(e.target.value? e.target.value : null);
       }
     }
 
-    if(selectedIndex == 0)
+    if(slaveIndex < 0)
       this.setState({
         isAll: false,
-        selectedSlave: 0
+        selectedSlave: -1,
+        isSetBtnClose: true
+      });
+    else if(slaveIndex == 0)
+      this.setState({
+        isAll: true,
+        selectedSlave: null,
+        isSetBtnClose: false
       });
     else
       this.setState({
-        isAll: (selectedIndex == 1)? true : false,
-        selectedSlave: (selectedIndex == 1)? null : e.target.value
+        isAll: false,
+        selectedSlave: e.target.value,
+        isSetBtnClose: false
       });
   };
+
   _checkTime = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     let sunriseTime = this.refs.sunrise;
     let regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/g;
     if(e.target.value.match(regex) == null) {
@@ -229,13 +310,24 @@ export default class ScheduleList extends React.Component {
     }
   };
 
-  _useProView = (e) => {
+  _switchView = (e) => {
+    this.props.requestGetSlaveSchedule(this.state.selectedSlave? this.state.selectedSlave: null);
+    this.props.requestGetEasySchedule(this.state.selectedSlave || 0);
     this.setState({
       isEasy: !this.state.isEasy
     })
   };
 
+  _modifyLabel = (e) => {
+    this.setState({
+
+    });
+  };
+
   render () {
+    // console.log('======', this.props);
+    let proSelectedSlaveIndex = parseInt(localStorage.getItem('HME_scheduleList_slaveIndex'));
+
     let rows = [];
     let tmpScheduleList = [];
 
@@ -262,7 +354,7 @@ export default class ScheduleList extends React.Component {
           rows.push(
             <TableRow key={row.id} style={{borderBottom: '1px solid #72737A'}}>
               <TableRowColumn>
-                <RaisedButton disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
+                <RaisedButton disabled={this.state.isSetBtnClose} label="EDIT" style={{verticalAlign: 'middle'}}  linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
               </TableRowColumn>
               <TableRowColumn>
                 <TextField
@@ -335,7 +427,7 @@ export default class ScheduleList extends React.Component {
       primary: 'Select Slave',
       text: 'Select Slave'
     },{
-      payload: null,
+      payload: 0,
       primary: 'All Slave',
       text: 'All Slave'
     }];
@@ -366,6 +458,9 @@ export default class ScheduleList extends React.Component {
     if(this.props.easySchedule){
       easySchedule = this.props.easySchedule;
     }
+
+    let slaveSelectFieldIndex = (this.state.selectedSlave === null)? 0 : parseInt(this.state.selectedSlave) ;
+
     return (
       <div className="tab-content self-center">
         <Dialog
@@ -374,15 +469,15 @@ export default class ScheduleList extends React.Component {
           modal={false}
           open={this.state.open}
           onRequestClose={this._warnHandleClose}>
-          The actions will clean all slave schedule.
+          The actions will cover all the last schedule setting.
         </Dialog>
         <div id="easyScheduleList" className={easyDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row">
             <div className="smalllRaisedBnutton" style={{marginLeft: '30px', marginTop: '15px'}}>
-              <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '200px', float: 'left'}}/>
-              <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'75px', marginLeft: '10px'}} disabled={( this.state.isSetBtnClose ||  this.state.selectedSlave == 0)} />
-              <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{ width:'75px', marginLeft: '10px'}} />
-              <RaisedButton ref="scheduleSetBtn" label="Pro" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._useProView} style={{width:'75px', marginLeft: '10px'}} />
+              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '200px', float: 'left'}} value={slaveSelectFieldIndex} />
+              <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'75px', marginLeft: '10px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} style={{ width:'75px', marginLeft: '10px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Pro" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'75px', marginLeft: '10px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}
@@ -394,34 +489,34 @@ export default class ScheduleList extends React.Component {
           <div className="row">
             <div className="col-md-4 col-sm-4 col-xs-4" style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Spring </p>
-              <RadioButtonGroup ref="springHours"  name="shipSpeed" defaultSelected="12">
+              <RadioButtonGroup ref="springHours"  name="shipSpeed" valueSelected={ this.state.springHour } onChange={this._handleEditTextField.bind({}, 'springHour')} >
                 <RadioButton value="12" label="12 Hours" />
                 <RadioButton value="18" label="18 Hours" />
               </RadioButtonGroup>
-                <TextField ref="springDay"  hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
+                <TextField ref="springDay" hintText="Days" min={0} max={9999} type="number" style={{width: '50px', marginLeft:'40px'}} value={this.state.springDays} onChange={this._handleEditTextField.bind({},　'springDays')}　/>
             </div>
             <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Summer </p>
-              <RadioButtonGroup ref="summerHours" name="shipSpeed" defaultSelected="24">
+              <RadioButtonGroup ref="summerHours" name="shipSpeed" valueSelected={ this.state.summerHour }  onChange={this._handleEditTextField.bind({}, 'summerHour')}>
                 <RadioButton value="18" label="18 Hours" />
                 <RadioButton value="24" label="24 Hours" />
               </RadioButtonGroup>
-                <TextField ref="summerDay" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
+                <TextField ref="summerDay" hintText="Days" min={0} max={9999} type="number" style={{width: '50px', marginLeft:'40px'}} value={this.state.summerDays} onChange={this._handleEditTextField.bind({},　'summerDays')}　/>
             </div>
             <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px'}}>
               <p style={{marginLeft:'40px'}}> Fall </p>
-              <RadioButtonGroup ref="fallHours" name="shipSpeed" defaultSelected="12">
+              <RadioButtonGroup ref="fallHours" name="shipSpeed" valueSelected={ this.state.fallHour }  onChange={this._handleEditTextField.bind({}, 'fallHour')} >
                 <RadioButton value="12" label="12 Hours" />
                 <RadioButton value="14" label="14 Hours" />
               </RadioButtonGroup>
-                <TextField ref="fallDay" hintText="Days" type="number" style={{width: '50px', marginLeft:'40px'}}/>
+                <TextField ref="fallDay" hintText="Days" min={0} max={9999} type="number" style={{width: '50px', marginLeft:'40px'}} value={this.state.fallDays} onChange={this._handleEditTextField.bind({},　'fallDays')}　/>
             </div>
           </div>
           <div className="row">
-            <div style={{marginLeft: '30px', display: 'inline-flex'}}>
-              <TextField ref="easyStartDate" floatingLabelText="Start Time" defaultValue={moment(eastDate).format('YYYY-MM-DD')} onChange={this._handleDatePickChange} type="date" style={{width: '200px', marginLeft:'10px'}}/>
+            <div style={{marginLeft: '30px'}}>
+              <TextField ref="easyStartDate" floatingLabelText="Start Date" value={moment(this.state.simpleStartDate).format('YYYY-MM-DD')} type="date" style={{width: '200px', marginLeft:'10px'}} onChange={this._handleEditTextField.bind({}, 'simpleStartDate')} />
               {/*<TextField ref="sunrise" floatingLabelText="Sunrise" onChange={this._checkTime} defaultValue={moment().format("HH:DD")} style={{width: '200px', marginLeft:'10px'}}/>*/}
-              <TextField ref="easyStartTime" floatingLabelText="Sunrise" type="time" defaultValue={moment().format("HH:DD")} style={{width: '200px', marginLeft:'10px'}}/>
+              <TextField ref="easyStartTime" floatingLabelText="Sunrise" type="time" value={this.state.simpleSunriseTime} style={{width: '200px', marginLeft:'10px'}} onChange={this._handleEditTextField.bind({}, 'simpleSunriseTime')} />
             </div>
           </div>
           <Snackbar
@@ -435,7 +530,7 @@ export default class ScheduleList extends React.Component {
         <div id="scheduleList" className={proDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row justify-content">
             <div className="smalllRaisedBnutton" style={{marginLeft: '-3px', marginTop: '15px'}}>
-              <SelectField labelMember="primary" onChange={this._handleSlaveSelect} disabled={this.state.isSetBtnClose} menuItems={slaveList} style={{width: '160px', float: 'left'}}/>
+              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '160px', float: 'left'}} value={slaveSelectFieldIndex} />
               {/*
                 <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
                 <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
@@ -443,7 +538,7 @@ export default class ScheduleList extends React.Component {
               <RaisedButton ref="scheduleAddBtn" label="ADD" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{width:'60px',marginLeft: '10px'}}/>
               <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveScheduleList} style={{width:'70px',marginLeft: '5px'}} disabled={(this.state.selectedSlave == 0)} />
               <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{width:'80px', marginLeft: '5px'}} />
-              <RaisedButton ref="scheduleSetBtn" label="Simple" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._useProView} style={{width:'70px', marginLeft: '5px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Simple" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'70px', marginLeft: '5px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}

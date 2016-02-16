@@ -1,6 +1,6 @@
 import React                from 'react';
 import { connect } from 'react-redux'
-import { requestUpdateSetup } from '../actions/SetupActions'
+import { requestUpdateSetup, requestGetSetupSetting } from '../actions/SetupActions'
 import {
   RaisedButton,
   SelectField,
@@ -12,62 +12,131 @@ import {
 } from 'material-ui'
 
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
-const timezones = require('../../../timezones.json');
+// const timezones = require('../../../timezones.json');
+const timezones = [
+   -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ];
 export default class Setup extends React.Component  {
 
   constructor(props) {
     super(props);
     this.state = {
       type: 'slave',
-      timezoneIndex: 0
+      tmpSSID: '',
+      tmpPassword: '',
+      tmpEmail: '',
+      tmpMaster: '',
+      timezoneIndex: 14
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidMount() {
 
+  }
+  componentWillMount() {
+    this.props.requestGetSetupSetting();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(prevProps.setupSetting !=  this.props.setupSetting) {
+      this.setState({
+        tmpSSID: this.props.setupSetting.WIFI.SSID,
+        tmpPassword: this.props.setupSetting.WIFI.PASSWORD,
+        tmpEmail: this.props.setupSetting.SYSTEM.REPORT_EMAIL,
+        tmpMaster: this.props.setupSetting.SYSTEM.MASTER_NAME,
+        timezoneIndex: parseInt(this.props.setupSetting.SYSTEM.TIMEZONE_INDEX) || 0
+      });
+    }
   }
 
   _handleRadioChanged = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     this.setState({
       type: e.target.value
     });
   };
 
-  _handleTimezoneChanged = (e, value) => {
+  _handleTimezoneChanged = (e, index) => {
+    // console.log('obj', e);
     this.setState({
-      timezoneIndex: value
+      timezoneIndex: index
     });
   };
+
+  _formatOffset(offset) {
+    let result;
+    if(offset < 0)
+      result = 'GMT'+offset
+    else
+      result = 'GMT+'+offset
+    return result
+  }
 
   _handleApply = (e) => {
     let setting = {};
     console.log(this.refs.timezone);
-    setting.wifi = {
-      ssid: this.refs.ssid.getValue(),
-      password: this.refs.password.getValue()
+    setting.WIFI = {
+      SSID: this.refs.ssid.getValue(),
+      PASSWORD: this.refs.password.getValue()
     };
-    setting.system = {
-      type: this.refs.serverType.getSelectedValue(),
-      reportEmail: this.refs.adminEmail.getValue(),
-      masterName: this.refs.connectToMaster.getValue(),
-      timezoneOffset: timezones[this.state.timezoneIndex].offset
+    setting.SYSTEM = {
+      TYPE: this.refs.serverType.getSelectedValue(),
+      REPORT_EMAIL: this.refs.adminEmail.getValue(),
+      MASTER_NAME: this.refs.connectToMaster.getValue(),
+      TIMEZONE_OFFSET: this._formatOffset(timezones[this.state.timezoneIndex]),
+      TIMEZONE_INDEX: this.state.timezoneIndex
     };
     console.log(setting);
     this.props.requestUpdateSetup(setting);
   };
+
+  _handleEditSSID = (e) => {
+    this.setState({
+      tmpSSID: e.target.value
+    })
+  };
+
+  _handleEditPassword = (e) => {
+    this.setState({
+      tmpPassword: e.target.value
+    })
+  };
+
+  _handleEditEmail = (e) => {
+    this.setState({
+      tmpEmail: e.target.value
+    })
+  };
+
+  _handleEditMaster = (e) => {
+    this.setState({
+      tmpMaster: e.target.value
+    })
+  };
+
 
   render() {
     let timezoneList = [];
 
     for(let timezone of timezones) {
       timezoneList.push({
-        payload: timezone.offset,
-        text: timezone.value
+        payload: timezone,
+        text: this._formatOffset(timezone)
       });
     }
-
     const {loadingStatus} = this.props;
+    let setupData = this.props.setupSetting || {
+      WIFI: {
+        SSID: '',
+        PASSWORD: ''
+      },
+      SYSTEM: {
+        HME_SERIAL: '',
+        TYPE: '',
+        REPORT_EMAIL: '',
+        MASTER_NAME: '',
+        TIMEZONE_OFFSET: '0'
+      }
+    };
 
     return (
       <div style={{width: '100%', overflowX: 'hidden'}}>
@@ -81,7 +150,7 @@ export default class Setup extends React.Component  {
           }
         />
       <div className="row" style={{marginLeft: '25%'}}>
-        <label style={{fontSize: '18px', marginTop: '15px'}}>S/N: HMEPI001</label>
+        <label style={{fontSize: '18px', marginTop: '15px'}}>S/N: {setupData.SYSTEM.HME_SERIAL}</label>
       </div>
       <div className="row" style={{marginLeft: '25%'}}>
         <label style={{fontSize: '18px', marginTop: '15px'}}>Wifi Setting</label>
@@ -92,14 +161,18 @@ export default class Setup extends React.Component  {
             ref="ssid"
             floatingLabelText="SSID"
             hintText="SSID"
-            type="text" />
+            type="text"
+            value={this.state.tmpSSID}
+            onChange={this._handleEditSSID} />
         </div>
         <div className="row">
           <TextField
             ref="password"
             floatingLabelText="Password"
             hintText="Password"
-            type="password" />
+            type="password"
+            value={this.state.tmpPassword}
+            onChange={this._handleEditPassword} />
         </div>
         <div className="row" style={{display: 'none'}}>
           <TextField
@@ -113,7 +186,7 @@ export default class Setup extends React.Component  {
         <label style={{fontSize: '18px', marginTop: '15px'}}>System</label>
       </div>
       <div className="self-center" style={{width: "210px"}}>
-        <RadioButtonGroup ref="serverType" name="type" defaultSelected="slave" onChange={this._handleRadioChanged}>
+        <RadioButtonGroup ref="serverType" name="type" defaultSelected={setupData.SYSTEM.TYPE || "slave" } onChange={this._handleRadioChanged}>
           <RadioButton
             value="master"
             label="Master"
@@ -128,19 +201,23 @@ export default class Setup extends React.Component  {
           ref="adminEmail"
           floatingLabelText="Administrator Email"
           hintText="Administrator Email"
-          type="text" />
+          type="text"
+          onChange={this._handleEditEmail}
+          value={this.state.tmpEmail} />
         <TextField
           style={{ display: (this.state.type == 'slave')? 'block' : 'none'}}
           ref="connectToMaster"
           floatingLabelText="Connect to Master"
           hintText="Connect to Master"
-          type="text" />
+          type="text"
+          onChange={this._handleEditMaster}
+          value={this.state.tmpMaster} />
       </div>
       <div className="row" style={{marginLeft: '25%'}}>
         <label style={{fontSize: '18px', marginTop: '15px'}}>Timezone</label>
       </div>
       <div className="self-center" style={{width: "210px"}}>
-        <SelectField ref="timezone" onChange={this._handleTimezoneChanged} menuItems={timezoneList} style={{width: '300px'}}/>
+        <SelectField ref="timezone" onChange={this._handleTimezoneChanged} menuItems={timezoneList} style={{width: '300px'}} value={timezones[this.state.timezoneIndex]} />
       </div>
       <div className="self-center" style={{width: "300px"}}>
         <div className='row'>
@@ -163,14 +240,17 @@ export default class Setup extends React.Component  {
 
 function _injectPropsFromStore(state) {
   let { setup } = state;
+  console.log('set', setup);
   return {
-    isLoading: setup? setup.isLoading : 'hide'
+    isLoading: setup? setup.isLoading : 'hide',
+    setupSetting: setup.setupSetting || null
   };
 }
 
 const _injectPropsFromActions = {
   // requestLogin
-  requestUpdateSetup
+  requestUpdateSetup,
+  requestGetSetupSetting
 }
 
 

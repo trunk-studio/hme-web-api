@@ -2,6 +2,7 @@ import request from 'axios'
 
 export const RECEIVED_REPORT_EMAIL = 'RECEIVED_REPORT_EMAIL'
 export const UPDATE_EMAIL_LOADING_STATUS = 'UPDATE_EMAIL_LOADING_STATUS'
+export const GET_DEVICE_STATUS = 'GET_DEVICE_STATUS'
 
 export function requestGetReportEmail() {
   return (dispatch) => {
@@ -38,5 +39,25 @@ export function updateEmailLoadingStatus(status) {
   return {
     type: UPDATE_EMAIL_LOADING_STATUS,
     status
+  }
+}
+
+export function requestGetDeviceStatus({slaveId, devId}) {
+  // console.log("!!!!!!!!!!",slaveId, devId);
+  return (dispatch) => {
+    dispatch(updateEmailLoadingStatus('loading'));
+    return request
+      .get(`/rest/slave/${slaveId}/device/${devId}/getStatus`)
+      .then(response => {
+        dispatch(receivedGetDeviceStatus(response.data))
+        dispatch(updateEmailLoadingStatus('hide'));
+      });
+  };
+}
+
+export function receivedGetDeviceStatus(data) {
+  return {
+    type: GET_DEVICE_STATUS,
+    data
   }
 }

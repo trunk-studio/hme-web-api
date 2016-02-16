@@ -46,6 +46,8 @@ exports.createSchedule = async function(ctx) {
     console.log("==== createSchedule ===");
     let newSchedule = ctx.request.body;
     let result = await services.schedule.create(newSchedule);
+    //delete simple Schedule
+    await services.schedule.deleteSimpleScheduleBySlaveId(newSchedule.SlaveId);
     ctx.body =  result;
   } catch(e) {
     console.error(e);
@@ -123,6 +125,7 @@ exports.updateScheduleList = async function(ctx) {
   try {
     console.log("==== updateScheduleList ===");
     let data = ctx.request.body;
+    console.log(data);
     let result = await services.schedule.updateScheduleList(data);
     ctx.body =  result;
   } catch(e) {
@@ -338,37 +341,50 @@ exports.slaveSetSimRtc = async function(ctx) {
   try {
     console.log("==== slaveSetSimRtc ===",ctx.request.body);
     let count = ctx.request.body.count
-    let timeParams = {
-      devID: 0,
-      groupID: 0,
-      year: 1900,
-      month: 1,
-      day: 1,
-      hour: 0,
-      min: 0,
-      sec: 0
+    if( count >= 0){
+      let timeParams = {
+        devID: 0,
+        groupID: 0,
+        year: 1900,
+        month: 1,
+        day: 1,
+        hour: 0,
+        min: 0,
+        sec: 0
+      }
+      let time = moment([
+        timeParams.year,
+        timeParams.month - 1,
+        timeParams.day,
+        timeParams.hour,
+        timeParams.min,
+        timeParams.sec
+      ]);
+
+      time.add(30 * count,'m');
+      timeParams.year = time.year();
+      timeParams.month = time.month()+1;
+      timeParams.day = time.date();
+      timeParams.hour = time.hour();
+      timeParams.min = time.minute();
+
+      services.hme.setSimRtc(timeParams);
+    }else{
+      await services.hme.closeFastRun(0, 0);
     }
-    let time = moment([
-      timeParams.year,
-      timeParams.month - 1,
-      timeParams.day,
-      timeParams.hour,
-      timeParams.min,
-      timeParams.sec
-    ]);
-
-    time.add(30 * count,'m');
-    timeParams.year = time.year();
-    timeParams.month = time.month()+1;
-    timeParams.day = time.date();
-    timeParams.hour = time.hour();
-    timeParams.min = time.minute();
-
-    services.hme.setSimRtc(timeParams);
 
     ctx.body = true;
   } catch (e) {
     console.error(e);
     ctx.body = e;
+  }
+}
+
+exports.deleteSimpleScheduleBySlaveId = async function(ctx) {
+  try {
+    await services.schedule.deleteSimpleScheduleBySlaveId(ctx.request.body.slaveId);
+    ctx.body = true
+  } catch (e) {
+    throw e;
   }
 }

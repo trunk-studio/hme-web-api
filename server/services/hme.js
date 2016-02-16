@@ -1058,6 +1058,97 @@ export default class Hme {
     }
   };
 
+  async setDevRTC ({year, month, day, hour, min, sec})  {
+    try {
+        let accDevParams = {
+        u8DevID:0,
+        groupID:0,
+        sFunc:'WordWt',
+        u8DataNum:6,
+        u8Addr_Arry:[50], //RTC set[50~55]
+        u8DataIn_Arry:[year, month, day, hour, min, sec],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+
+      console.log('setDevRTC,accDevParams:', accDevParams);
+      let result =  await this.accessDevice(accDevParams);
+      if (result.success == false) {
+        return(false)
+      }
+
+      accDevParams = {
+        u8DevID:0,
+        groupID:0,
+        sFunc:'WordWt',
+        u8DataNum:1,
+        u8Addr_Arry:[59],  //Addr 59 = RTC set comm
+        u8DataIn_Arry:[1],
+        u8Mask_Arry:[],
+        RepeatNum:5
+      }
+
+      result =  await this.accessDevice(accDevParams);
+      await this.sleep(500);  // wait RTC write
+      return (result.success);
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  async getDevRTC (devID, groupID)  {
+    try {
+        let accDevParams = {
+          u8DevID:devID,
+          groupID:groupID,
+          sFunc:'WordRd',
+          u8DataNum:6,
+          u8Addr_Arry:[40],  //Addr 40~45 = RTC:Y,M,D,h,m,s
+          u8DataIn_Arry:[],
+          u8Mask_Arry:[],
+          RepeatNum:5
+        }
+
+        console.log('getDevRTC.accDevParams=', accDevParams);
+        let reData = await this.accessDevice(accDevParams);
+        let result = {
+          year: reData.ramData[0],
+          month: reData.ramData[1],
+          day: reData.ramData[2],
+          hour: reData.ramData[3],
+          min: reData.ramData[4],
+          sec: reData.ramData[5],
+          success: reData.success
+        };
+
+        return (result);
+
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  async setSysTimeToDevRTC ()  {
+    try {
+      let d = new Date;
+      let params = {
+        year: d.getFullYear(),
+        month: d.getMonth() + 1,
+        day: d.getDate(),
+        hour: d.getHours(),
+        min: d.getMinutes(),
+        sec: d.getSeconds()
+      }
+
+        console.log('setSysTimeToDevRTC.params=', params);
+        let result = await this.setDevRTC(params);
+        return (result);
+
+    } catch (e) {
+      throw e;
+    }
+  };
+
 
 
   async getDevState (devID, groupID)  {
@@ -1192,5 +1283,26 @@ export default class Hme {
     });
 
   };
+
+  async clearOldMessages()  {
+    let d = new Date();
+    // Set it to one month ago
+    d.setMonth(d.getMonth() - 1);
+    // Zero the hours
+    d.setHours(0,0,0);
+    let oldMessages = await models.Message.findAll({
+      where: {
+        createdAt: {
+          lt: d,
+          sended: 1
+        }
+      }
+    });
+    // oldMessages.destroy();
+    oldMessages.map((message) => {
+      message.destroy();
+    });
+    return true
+  }
 
 }
