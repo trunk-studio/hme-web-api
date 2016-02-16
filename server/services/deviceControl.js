@@ -275,13 +275,17 @@ module.exports = {
         console.log(exist, host);
         if(exist){
           let cmd = `service ntp stop && ntpdate ${host} && hwclock -w && hwclock -s`;
-          exec(cmd, function(error, stdout, stderr) {
-            if (error ||  stderr) {
-              console.log(error, stderr);
-              throw error,stderr;
-            }
-            console.log(stdout);
+          let updateSysRtc = await new Promise((done) => {
+            exec(cmd, function(error, stdout, stderr) {
+              if (error ||  stderr) {
+                console.log(error, stderr);
+                throw error,stderr;
+              }
+              console.log(stdout);
+              done(stdout);
+            });
           });
+          await services.hme.setSysTimeToDevRTC();
         }
         let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; } | crontab -'
         exec(crontab, function(error, stdout, stderr) {
