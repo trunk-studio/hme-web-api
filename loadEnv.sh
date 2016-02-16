@@ -13,7 +13,7 @@ case $i in
 esac
 done
 
-export CONFIG="${CONFIG:='/boot/hme.txt'}"
+export CONFIG="${CONFIG:=/boot/hme.txt}"
 echo "CONFIG=${CONFIG}"
 
 export HME_SERIAL=$(crudini --get ${CONFIG} SYSTEM HME_SERIAL)
