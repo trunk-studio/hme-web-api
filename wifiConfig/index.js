@@ -16,7 +16,8 @@ function lightA(err, state) {
     // turn LED on
     ledA.writeSync(0);
 
-    var updateIniCmd = 'crudini --set --existing ../hme.txt SYSTEM SETTED false &&  crudini --set --existing ../hme.txt WIFI MODE AP';
+    var updateIniCmd = 'crudini --set --existing /root/hme-web-api/hme.txt SYSTEM SETTED false &&'+
+    'crudini --set --existing /root/hme-web-api/hme.txt WIFI MODE AP';
 
     console.log('=== updateIniCmd ===', updateIniCmd);
     exec(updateIniCmd, function(error, stdout, stderr) {
