@@ -292,9 +292,6 @@ describe("hme with seriel port", () => {
 
     });
 
-
-
-
     it("serial Port setLedDisplay", async done => {
       // 即時改變LED燈亮度
       // 同時設定為Interact模式
@@ -1470,6 +1467,69 @@ describe("hme with seriel port", () => {
       }
 
     });
+
+    it("serial Port setDevRTC", async done => {
+      try {
+        let devID = 1;
+        let groupID = 0;
+        let result = await services.hme.getDevRTC(devID, groupID);
+        result.success.should.be.true;
+        console.log('getDevRTC result',result);
+        let rawYear = result.year;
+
+        let params = {
+          year: rawYear + 1,
+          month: result.month,
+          day: result.day,
+          hour: result.hour,
+          min: result.min,
+          sec: result.sec
+        }
+        result = await services.hme.setDevRTC(params);
+        console.log('setDevRTC result',result);
+        result.should.be.true;
+
+        result = await services.hme.getDevRTC(devID, groupID);
+        console.log('getDevRTC(2) result',result);
+        result.success.should.be.true;
+        (params.year).should.equal(result.year);
+
+        params.year = rawYear;
+        result = await services.hme.setDevRTC(params);
+        console.log('setDevRTC(2) result',result);
+        result.should.be.true;
+
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it("serial Port setSysTimeToDevRTC", async done => {
+
+      try {
+
+        let result = await services.hme.setSysTimeToDevRTC();
+        console.log('setSysTimeToDevRTC result',result);
+        result.should.be.true;
+
+        let d = new Date;
+        let devID = 1;
+        let groupID = 0;
+        result = await services.hme.getDevRTC(devID, groupID);
+        result.success.should.be.true;
+        console.log('getDevRTC result',result);
+        (d.getFullYear()).should.equal(result.year)
+
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+
 
 
 
