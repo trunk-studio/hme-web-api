@@ -51,8 +51,9 @@ export function receivedScheduleCreate(data) {
   }
 }
 
-export function requestUpdateScheduleList(scheduleList) {
+export function requestUpdateScheduleList(scheduleList, slaveId) {
   return (dispatch) => {
+    request.post('/rest/master/simpleSchedule/delete', {slaveId: slaveId});
     return request
       .post('/rest/master/schedule/update/list',scheduleList)
       .then(response => dispatch(receivedUpdateScheduleList(response.data)));

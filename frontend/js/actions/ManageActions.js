@@ -43,7 +43,7 @@ export function updateEmailLoadingStatus(status) {
 }
 
 export function requestGetDeviceStatus({slaveId, devId}) {
-  console.log("!!!!!!!!!!",slaveId, devId);
+  // console.log("!!!!!!!!!!",slaveId, devId);
   return (dispatch) => {
     dispatch(updateEmailLoadingStatus('loading'));
     return request
@@ -54,6 +54,7 @@ export function requestGetDeviceStatus({slaveId, devId}) {
       });
   };
 }
+
 export function receivedGetDeviceStatus(data) {
   return {
     type: GET_DEVICE_STATUS,

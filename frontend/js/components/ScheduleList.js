@@ -166,7 +166,7 @@ export default class ScheduleList extends React.Component {
   };
 
   _saveScheduleList = (e) => {
-    this.props.requestUpdateScheduleList(this.props.scheduleList);
+    this.props.requestUpdateScheduleList(this.props.scheduleList, this.state.selectedSlave);
     this.setState({
       isSetBtnClose: false
     });

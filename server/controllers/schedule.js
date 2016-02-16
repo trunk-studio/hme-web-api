@@ -46,6 +46,8 @@ exports.createSchedule = async function(ctx) {
     console.log("==== createSchedule ===");
     let newSchedule = ctx.request.body;
     let result = await services.schedule.create(newSchedule);
+    //delete simple Schedule
+    await services.schedule.deleteSimpleScheduleBySlaveId(newSchedule.SlaveId);
     ctx.body =  result;
   } catch(e) {
     console.error(e);
