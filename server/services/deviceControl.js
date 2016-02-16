@@ -283,6 +283,14 @@ module.exports = {
             console.log(stdout);
           });
         }
+        let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; } | crontab -'
+        exec(crontab, function(error, stdout, stderr) {
+          if (error ||  stderr) {
+            console.log(error, stderr);
+            throw error,stderr;
+          }
+          console.log(stdout);
+        });
       }
       return 'ok'
     } catch (e) {
