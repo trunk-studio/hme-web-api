@@ -25,7 +25,7 @@ function lightA(err, state) {
     });
 
     // turn LED blinking
-    let ledInterval = setInterval(function(){
+    var ledInterval = setInterval(function(){
       ledA.writeSync(ledA.readSync() === 0 ? 1 : 0)
     }, 100);
 
