@@ -48,6 +48,10 @@ export default class App extends React.Component {
   };
 
   _requireLogin = (nextState, replaceState) => {
+    // console.log('====', $('#react-view').data('page'));
+    if( $('#react-view').data('page') == 'setup' ) {
+      replaceState({}, '/setup');
+    }
     if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
       replaceState({}, '/login');
     }
@@ -55,6 +59,12 @@ export default class App extends React.Component {
 
   _noAuth = (nextState, replaceState) => {
     if(localStorage.getItem('token')) {
+      replaceState({}, '/manage');
+    }
+  };
+
+  _alreadySetup = (nextState, replaceState) => {
+    if($('#react-view').data('page') != 'setup' ) {
       replaceState({}, '/manage');
     }
   };
@@ -69,7 +79,7 @@ export default class App extends React.Component {
         <Route path="/schedule/list" component={ScheduleList} onEnter={this._requireLogin}/>
         <Route path="/schedule/:slaveId/edit/:scheduleID" component={ScheduleDetail} onEnter={this._requireAuth}/>
         <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} onEnter={this._requireAuth}/>
-        <Route path="/setup" component={Setup} />
+        <Route path="/setup" component={Setup} onEnter={this._alreadySetup} />
       </Router>
     );
   }
