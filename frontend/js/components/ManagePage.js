@@ -104,7 +104,7 @@ export default class ManagePage extends React.Component {
   };
 
   _slaveMenuIndexChanged = (e, value) => {
-    console.log('slave index', value);
+    // console.log('slave index', value);
 
     let id = 0;
     if(value > 0)
@@ -121,7 +121,7 @@ export default class ManagePage extends React.Component {
   };
 
   _setupTestSlaveMenuIndexChanged = (e, value) => {
-    console.log('slave index', value);
+    // console.log('slave index', value);
 
     let id = 0;
     if(value > 0)
@@ -137,7 +137,7 @@ export default class ManagePage extends React.Component {
       reportDeviceId: value
     })
     let id = 0;
-    console.log(this.props.deviceList[this.state.reportSlaveID]);
+    // console.log(this.props.deviceList[this.state.reportSlaveID]);
     if(value > 0)
       id = this.props.deviceList[this.state.reportSlaveID][value - 1].payload;
     this.props.requestGetDeviceStatus({
@@ -147,7 +147,7 @@ export default class ManagePage extends React.Component {
   };
 
   _reportSlaveMenuIndexChanged = (e, value) => {
-    console.log('slave index', value);
+    // console.log('slave index', value);
 
     let id = 0;
     if(value > 0)
@@ -336,7 +336,7 @@ export default class ManagePage extends React.Component {
 
   _saveReportingEmail = (e) => {
     let inputReportingEmail = this.refs.inputReportingEmail;
-    console.log(inputReportingEmail.getValue());
+    // console.log(inputReportingEmail.getValue());
     let emailObj = {
       emails: inputReportingEmail.getValue()
     };
@@ -436,7 +436,7 @@ export default class ManagePage extends React.Component {
     if(this.props.slaveList.length > 0)  reportSlaveList.push(...this.props.slaveList);
 
     let tabIndex = parseInt(localStorage.getItem('HME_manage_tabIndex'));
-    console.log('----tabIndex', tabIndex);
+    // console.log('----tabIndex', tabIndex);
     let scanningStatus = this.props.scanning? this.props.scanning: 'hide';
     let email = this.props.reportEmail;
 

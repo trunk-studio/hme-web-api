@@ -140,10 +140,10 @@ export default class ScheduleList extends React.Component {
 
 
   _handleEditTextField = (stateKey, e) => {
-    console.log(stateKey, e);
+    // console.log(stateKey, e);
     let obj = {};
     obj[stateKey] = e.target.value;
-    console.log(obj);
+    // console.log(obj);
     this.setState(obj);
   };
 
@@ -199,7 +199,7 @@ export default class ScheduleList extends React.Component {
   _setScheduleList = (e) => {
     this._warnHandleClose()
     let slaveId = this.state.selectedSlave || 0 ;
-    console.log(slaveId);
+    // console.log(slaveId);
     this.props.requestSetScheduleList({
       slaveId: slaveId
     })
@@ -293,7 +293,7 @@ export default class ScheduleList extends React.Component {
   };
 
   _checkTime = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     let sunriseTime = this.refs.sunrise;
     let regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/g;
     if(e.target.value.match(regex) == null) {
@@ -325,7 +325,7 @@ export default class ScheduleList extends React.Component {
   };
 
   render () {
-    console.log('======', this.props);
+    // console.log('======', this.props);
     let proSelectedSlaveIndex = parseInt(localStorage.getItem('HME_scheduleList_slaveIndex'));
 
     let rows = [];
