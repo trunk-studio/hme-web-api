@@ -2,6 +2,8 @@ import request from 'superagent'
 import ini from 'ini'
 import ping from 'ping';
 import {exec, execSync} from 'child_process';
+const Gpio = require('onoff').Gpio;
+const ledA = new GPIO(8, 'out');
 
 module.exports = {
 
@@ -245,7 +247,12 @@ module.exports = {
           slaveHostName: saveSetting.SYSTEM.MASTER_NAME + '.local'
         });
       }
+      var ledInterval = setInterval(function(){
+        ledA.writeSync(ledA.readSync() === 0 ? 1 : 0)
+      }, 100);
       execSync('cd /root/hme-web-api/wifiConfig && make client_mode && cd -');
+      clearInterval(ledInterval);
+      ledA.writeSync(0);
       execSync('sudo /sbin/reboot');
       return 'ok';
     }catch(e){
