@@ -116,9 +116,11 @@ export default class Routes {
     publicRoute.post('/rest/master/schedule/easy/create', ScheduleController.createEasySchedule);
     publicRoute.get('/rest/master/schedule/findAll', ScheduleController.getAllSchedule);
     publicRoute.get('/rest/master/slave/:slaveId/schedule/findAll', ScheduleController.getAllScheduleBySlaveId);
+    publicRoute.post('/rest/master/simpleSchedule/delete', ScheduleController.deleteSimpleScheduleBySlaveId);
+
     publicRoute.get('/rest/master/schedule/:id', ScheduleController.getOneSchedule);
     publicRoute.get('/rest/master/schedule/easy/:slaveId', ScheduleController.getOneEasySchedule);
-    publicRoute.post('/rest/master/schedule/update/day', ScheduleController.updateScheduleDay);
+    // publicRoute.post('/rest/master/schedule/update/day', ScheduleController.updateScheduleDay);
     publicRoute.post('/rest/master/schedule/update/list', ScheduleController.updateScheduleList);
     publicRoute.post('/rest/master/schedule/update/detail', ScheduleController.updateScheduleDetail);
     publicRoute.post('/rest/master/schedule/update/details', ScheduleController.updateScheduleDetails);
@@ -149,7 +151,11 @@ export default class Routes {
     publicRoute.get('/rest/admin/sendmail/:reportType', AdminController.sendReport);
 
 
-    publicRoute.get('/', function(ctx, next) {
+    publicRoute.get('/', async function(ctx, next) {
+      let setting = await services.deviceControl.getSetting();
+      let setupPage = '';
+      if(setting.WIFI.MODE == 'AP')
+        setupPage = 'setup';
       const HTML = `
       <!DOCTYPE html>
       <html>
@@ -165,7 +171,7 @@ export default class Routes {
           rel="stylesheet">-->
         </head>
         <body>
-          <div id="react-view"></div>
+          <div id="react-view" data-page="${setupPage}" ></div>
           <script type="application/javascript" src="/public/assets/js/bundle.js"></script>
           <!--<script>
             document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });

@@ -144,7 +144,7 @@ export default class Setup extends React.Component  {
           style={{height: '55px', minHeight: '0px', marginTop: '-9px'}}
           titleStyle={{fontSize: '20px'}}
           iconElementLeft={
-            <IconButton onTouchTap={function() {window.location.href = '#/manage/3';}} >
+            <IconButton onTouchTap={function() {window.location.href = '#/manage';}} >
               <NavigationClose />
             </IconButton>
           }
