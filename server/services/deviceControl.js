@@ -285,9 +285,9 @@ module.exports = {
         }
         let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; } | crontab -'
         exec(crontab, function(error, stdout, stderr) {
-          if (error ||  stderr) {
-            console.log(error, stderr);
-            throw error,stderr;
+          if (error) {
+            console.log(error);
+            throw error;
           }
           console.log(stdout);
         });
