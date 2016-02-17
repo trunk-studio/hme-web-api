@@ -331,7 +331,7 @@ export default class ManagePage extends React.Component {
 
   _logout = (e) => {
     this.props.logout();
-    window.location.href = "/#login";
+    window.location.href = "/#/close";
   };
 
   _saveReportingEmail = (e) => {

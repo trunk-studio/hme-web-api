@@ -81,6 +81,7 @@ export default class App extends React.Component {
         <Route path="/schedule/:slaveId/edit/:scheduleID" component={ScheduleDetail} onEnter={this._requireAuth}/>
         <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} onEnter={this._requireAuth}/>
         <Route path="/setup" component={Setup} onEnter={this._alreadySetup} />
+        <Route path="/close" component={LoginPage} />
       </Router>
     );
   }
