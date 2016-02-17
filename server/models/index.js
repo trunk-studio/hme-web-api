@@ -6,7 +6,7 @@ var fs        = require("fs");
 var path      = require("path");
 var Sequelize = require("sequelize");
 
-var {connection} = config.default
+var {connection} = config
 
 export default class Models {
 

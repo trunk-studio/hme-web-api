@@ -51,6 +51,8 @@ export default async (cb) => {
     }
 
     services.deviceControl.getMasterTimeAndUpdate();
+
+
     // await services.hme.pingAllSlave();
     // let slaveList = await models.Slave.findAll();
     // for (let slave of slaveList) {
