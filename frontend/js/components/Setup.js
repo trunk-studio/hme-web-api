@@ -8,7 +8,8 @@ import {
   Tabs,
   Tab,
   RefreshIndicator,
-  AppBar, IconButton, FlatButton, RadioButton, RadioButtonGroup
+  AppBar, IconButton, FlatButton, RadioButton, RadioButtonGroup,
+  Snackbar
 } from 'material-ui'
 
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
@@ -73,6 +74,7 @@ export default class Setup extends React.Component  {
 
   _handleApply = (e) => {
     let setting = {};
+    this.refs.snackbar.setState({open: true});
     console.log(this.refs.timezone);
     setting.WIFI = {
       SSID: this.refs.ssid.getValue(),
@@ -233,6 +235,11 @@ export default class Setup extends React.Component  {
               position: 'relative'}} />
         </div>
       </div>
+      <Snackbar
+        ref="snackbar"
+        open={false}
+        message={"The device is rebooting for seeting. please wait for 2 mins and refresh this page."}
+      />
     </div>
     );
   }

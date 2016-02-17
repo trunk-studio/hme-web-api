@@ -52,9 +52,10 @@ export default class App extends React.Component {
     if( $('#react-view').data('page') == 'setup' ) {
       replaceState({}, '/setup');
     }
-    if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
-      replaceState({}, '/login');
-    }
+    else
+      if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
+        replaceState({}, '/login');
+      }
   };
 
   _noAuth = (nextState, replaceState) => {

@@ -5,16 +5,17 @@ let config;
 
 try {
   config = require(`./${env}`);
-  config.environment = env;
-  config.userData = {
+  console.log(config);
+  config.default.environment = env;
+  config.default.userData = {
     admin: md5('admin'),
     engineer: md5('engineer'),
     user: md5('user')
   };
-  config.secret = 'supersecret';
+  config.default.secret = 'supersecret';
 }
 catch (error) {
   debug('dev')(`No specific configuration for env ${env}`);
 }
 
-export default config;
+export default config.default;

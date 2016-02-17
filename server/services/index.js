@@ -7,7 +7,6 @@ import LoggerService from './logger';
 import MailService from './mail';
 import SystemService from './system';
 
-
 export default class Services {
 
     constructor () {
