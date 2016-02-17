@@ -6,7 +6,7 @@ import deviceControl from './deviceControl';
 import LoggerService from './logger';
 import MailService from './mail';
 import SystemService from './system';
-
+import LedGpidService from './ledGpio';
 
 export default class Services {
 
@@ -18,6 +18,7 @@ export default class Services {
       this.logger = new LoggerService();
       this.mail = new MailService();
       this.system = new SystemService();
+      this.ledGpio = new LedGpidService();
 
       global.logger = this.logger;
 
