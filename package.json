@@ -42,7 +42,6 @@
     "mysql": "^2.9.0",
     "numeral": "^1.5.3",
     "nvd3": "^1.8.1",
-    "onoff": "^1.0.4",
     "ping": "^0.1.10",
     "rc-slider": "https://github.com/kyoyadmoon/rc-slider-tmp.git",
     "react": "^0.14.3",
