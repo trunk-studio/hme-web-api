@@ -158,7 +158,13 @@ export default class ScheduleList extends React.Component {
   };
 
   _addRow = (e) => {
-    this.props.requestScheduleCreate(this.props.scheduleList, (this.state.selectedSlave != 0)? this.state.selectedSlave : null);
+    let selectedSlave = (this.state.selectedSlave != 0)? this.state.selectedSlave : null;
+    console.log(selectedSlave, this.props.scheduleList[0].SlaveId);
+    if(this.props.scheduleList[0].SlaveId === selectedSlave){
+      this.props.requestScheduleCreate(this.props.scheduleList, selectedSlave);
+    }else {
+      this.props.requestScheduleCreate([], selectedSlave);
+    }
     this.setState({
       isSetBtnClose: true
     });
@@ -332,18 +338,18 @@ export default class ScheduleList extends React.Component {
     let tmpScheduleList = [];
 
     if(this.props.scheduleList) {
-      if(this.state.isAll) {
+      // if(this.state.isAll) {
         this.props.scheduleList.forEach((schedule, i) => {
-          if (schedule.SlaveId == null)
+          // if (schedule.SlaveId == null)
             tmpScheduleList.push(schedule);
         });
-      }
-      else {
-        this.props.scheduleList.forEach((schedule, i) => {
-          if (schedule.SlaveId == this.state.selectedSlave)
-            tmpScheduleList.push(schedule);
-        });
-      }
+      // }
+      // else {
+      //   this.props.scheduleList.forEach((schedule, i) => {
+      //     if (schedule.SlaveId == this.state.selectedSlave)
+      //       tmpScheduleList.push(schedule);
+      //   });
+      // }
     }
     if(tmpScheduleList) {
       tmpScheduleList.forEach((row,i) => {
