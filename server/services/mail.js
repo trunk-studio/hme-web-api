@@ -3,9 +3,7 @@ import axios from 'axios'
 
 export default class Mail {
   constructor () {
-
     this.axios = axios.create({
-     baseURL: 'http://www.aquariumlightings.com',
      timeout: 1000
     })
 
@@ -35,10 +33,10 @@ export default class Mail {
 
   }
 
-  async updateSended({messages}){
+  async updateSended({messages,data}){
     let sendedMessages = messages.map(message => {
       message.sended = true;
-      message.to = 'smlsun@gmail.com,lyhcode@gmail.com';
+      message.to = data.to;
       return message;
     });
     await Promise.all(
@@ -56,26 +54,28 @@ export default class Mail {
     let content = messagesString.join('<br />');
 
     console.log('=== content ===', content);
-
+    let iniConfig =  await services.deviceControl.getSetting();
+    console.log(iniConfig);
     let data = {
       action: 'SendEmail',
-      key: 'd3d84e39646bfe257e1334b7d99cb2ce',
-      from: 'smlsun@gmail.com',
-      to: 'smlsun@gmail.com,lyhcode@gmail.com',
+      key: iniConfig.SMTP.KEY,
+      from: iniConfig.SMTP.FROM,
+      to: iniConfig.SMTP.TO,
       subject: 'logger report',
       body: content
     }
 
     let config = {
+      baseURL: iniConfig.SMTP.URL,
       method: 'get',
       url: '/cloud/api',
       params: data
     }
 
     try {
-      // let result = await this.axios.request(config)
+      let result = await this.axios.request(config);
 
-      await this.updateSended({messages})
+      await this.updateSended({messages,data})
 
     } catch (e) {
       throw e;
