@@ -41,7 +41,7 @@ export default class App extends React.Component {
     if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
       replaceState({}, '/login');
     }
-    else if(jwtDecode(localStorage.getItem('token')).role != 'engineer' && jwtDecode(localStorage.getItem('token')).role != 'admin') {
+    else if(jwtDecode(localStorage.getItem('token')).role != 'engineer' && jwtDecode(localStorage.getItem('token')).role != 'administrator') {
       replaceState({}, '/manage');
     }
   };
