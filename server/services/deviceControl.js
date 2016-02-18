@@ -244,6 +244,10 @@ module.exports = {
         let result = await services.deviceControl.registerSlave({
           slaveHostName: saveSetting.SYSTEM.MASTER_NAME + '.local'
         });
+      }else{
+        let result = await services.deviceControl.registerSlave({
+          slaveHostName: result.SYSTEM.HME_SERIAL + '.local'
+        });
       }
       execSync('cd /root/hme-web-api/wifiConfig && make client_mode && cd -');
       execSync('sudo /sbin/reboot');
