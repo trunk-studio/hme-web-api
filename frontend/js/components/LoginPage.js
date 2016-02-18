@@ -19,7 +19,7 @@ export default class LoginPage extends React.Component {
     super(props);
     this.state = {
       loadingStatus: 'ready',
-      role: 'admin',
+      role: 'operator',
       sendLogin: false
     }
   }
@@ -67,9 +67,9 @@ export default class LoginPage extends React.Component {
 
   render() {
     let roles = [
-      { payload: 'admin', text: '主控者' },
-      { payload: 'user', text: '操作人員' },
-      { payload: 'engineer', text: 'administrator' }
+      { payload: 'operator', text: 'operator' },
+      { payload: 'administrator', text: 'administrator' },
+      { payload: 'engineer', text: 'engineer' }
     ];
     const {loadingStatus} = this.props;
     return (

@@ -1,5 +1,5 @@
 #react-view {
-  /*min-height: 400px;*/
+  /*min-height: 320px !important;*/
 }
 
 /* custom */
@@ -163,6 +163,7 @@
    background-size: cover;
    background-attachment: fixed;
    height: 100% !important;
+   min-height: 320px;
 }
 
 .tab-content hr {
