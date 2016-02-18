@@ -12,3 +12,9 @@ MASTER_NAME=master12
 SETTED=true
 TIMEZONE_OFFSET=GMT-13
 TIMEZONE_INDEX=1
+
+[SMTP]
+URL=http://www.aquariumlightings.com
+KEY=d3d84e39646bfe257e1334b7d99cb2ce
+FROM=smlsun@gmail.com
+TO=smlsunAAA@gmail.com,lyhcodeasd@gmail.com
