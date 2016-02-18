@@ -15,7 +15,6 @@ import createLogger from 'redux-logger';
 import reducers from '../reducers'
 import configureStore from '../store/configureStore';
 
-
 const store = configureStore();
 
 // const history                   = createBrowserHistory();
@@ -72,7 +71,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <Router history={browserHistory}>
+      <Router history={browserHistory} >
         <Route path="/" component={LoginPage}  onEnter={this._requireLogin}/>
         <Route path="/login" component={LoginPage} onEnter={this._noAuth}/>
         <Route path="/manage" component={ManagePage} onEnter={this._requireLogin}/>
