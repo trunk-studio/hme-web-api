@@ -510,7 +510,7 @@ export default class ManagePage extends React.Component {
     </Tab> );
 
     let adminFunctionTabs = [];
-    if(this.props.role == 'engineer' || this.props.role == 'admin')
+    if(this.props.role == 'engineer' || this.props.role == 'administrator')
       adminFunctionTabs.push(scheduleList, reportEmailTab, testingTab);
 
     return (
