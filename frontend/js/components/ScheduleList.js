@@ -148,9 +148,9 @@ export default class ScheduleList extends React.Component {
   };
 
   _warnHandleOpen = () => {
-    if(!this.state.selectedSlave){
-      this.setState({open: true});
-    }
+    // if(!this.state.selectedSlave){
+    this.setState({open: true});
+    // }
   };
 
   _warnHandleClose = () => {
