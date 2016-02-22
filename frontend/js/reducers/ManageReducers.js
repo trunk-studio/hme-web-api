@@ -19,7 +19,7 @@ export function manageSettings(state = { }, action) {
     case GET_DEVICE_STATUS:
       return {
         ...state,
-        devStatus: action.status
+        devStatus: action.data
       }
     default:
       return state
