@@ -73,8 +73,8 @@ export default class LoginPage extends React.Component {
     ];
     const {loadingStatus} = this.props;
     return (
-      <Tabs className="background-splash tabs-container" style={{backgroundImage: "url('public/assets/images/HMEsplash.png')"}}>
-        <Tab label="Login">
+      <Tabs className="tabs-container"  tabItemContainerStyle={{backgroundColor: "#032c70", marginTop: '-15px'}} contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0)'}}>
+        <Tab label="Login" className="tab-item">
           <div className="tab-content self-center">
             <div className="self-center" style={{width: "210px", paddingTop: '15px'}} >
               <div className="row">
