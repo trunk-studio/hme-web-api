@@ -105,6 +105,7 @@ export default class Routes {
     publicRoute.get('/rest/hme/setup', HmeController.getSetting);
 
     // master
+    publicRoute.get('/rest/master/status', HmeController.status);
     publicRoute.get('/rest/master/user/', UserController.index);
     publicRoute.post('/rest/master/login', UserController.login);
     publicRoute.post('/rest/master/saveEmail', HmeController.saveEmail);
