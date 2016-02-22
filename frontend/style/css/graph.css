@@ -1,5 +1,25 @@
+html, body, #react-view, div.background-splash {
+  width: 100%;
+  height: 100%;
+  /*backgroundImage: "url('public/assets/images/HMEsplash.png')"*/
+}
+
+html {
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+body, #react-view {
+  background-color: rgba(0,0,0,0);
+}
+
 #react-view {
-  /*min-height: 400px;*/
+  /*min-height: 320px !important;*/
+  /*.background-splash {*/
+   height: 100% !important;
+   min-height: 320px;
+   /*background-image: url("../../../public/assets/images/HMEsplash.png");*/
+/*}*/
 }
 
 /* custom */
@@ -83,7 +103,7 @@
 
 /* schedule detail Slider*/
 .slider {
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 .notActiveSlider {
   margin-bottom: 15px;
@@ -100,20 +120,18 @@
 /* ========= End scheduleDetail ===========*/
 
 
-.smalllRaisedBnutton > div {
+.smalllRaisedButton > div {
   min-width: 0px !important;
+  /*border: 1px solid #DDD;*/
 }
-.smalllRaisedBnutton span {
-  padding: 5px !important;
+.smalllRaisedButton span {
+  padding: 3px !important;
 }
 .vertical-slider .rc-slider-mark-text {
   /* IE 9 */
   -webkit-transform: rotate(90deg);
   /* Chrome, Safari, Opera */
   transform: rotate(90deg);
-}
-
-#react-view {
 }
 
 .chart-container .nv-chart {
@@ -145,26 +163,37 @@
 }
 
 .tabs-container>div:first-child {
-  background-color: #032c70 !important;
+  /*background-color: #032c70 !important;*/
   overflow-y: hidden;
+  height: 30px;
 }
 
 .tab-content {
   width: 95%;
   overflow-x: hidden;
   min-height: 240px;
-  padding: 15px;
-  margin: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   background-color: rgba(255,255,255,0.5);
   border-radius: 6px;
+}
+
+.tab-item {
+  padding-top: 15px;
 }
 
 .background-splash {
    background-size: cover;
    background-attachment: fixed;
    height: 100% !important;
+   min-height: 320px;
 }
 
 .tab-content hr {
   border-bottom: solid 1px #000 !important;
 }
+
+/*style={{minHeight: '320px', backgroundImage: "url('public/assets/images/HMEsplash.png')"}} */
