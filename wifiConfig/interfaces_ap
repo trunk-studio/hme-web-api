@@ -10,5 +10,5 @@ iface eth0 inet dhcp
 
 allow-hotplug wlan0
 iface wlan0 inet static
-  address 192.168.42.1
+  address 192.168.255.249
   netmask 255.255.255.0
