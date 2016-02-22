@@ -41,6 +41,16 @@ module.exports = {
     }
   },
 
+  delete: async(scheduleId) => {
+    try {
+      await models.Schedule.destroy({where:{id: scheduleId}});
+      await models.ScheduleDetail.destroy({where: {ScheduleId: null}});
+      await models.ScheduleDetailConfig.destroy({where: {ScheduleDetailId: null}});
+    } catch (e) {
+      throw e;
+    }
+  },
+
   createEasy: async(data) => {
     try {
       let slaveId ={};
