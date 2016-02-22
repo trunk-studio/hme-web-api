@@ -8,9 +8,9 @@ try {
   console.log(config);
   config.default.environment = env;
   config.default.userData = {
-    admin: md5('admin'),
+    administrator: md5('administrator'),
     engineer: md5('engineer'),
-    user: md5('user')
+    operator: md5('operator')
   };
   config.default.secret = 'supersecret';
 }
