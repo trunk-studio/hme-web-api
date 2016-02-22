@@ -32,6 +32,56 @@ describe("schedule", () => {
   });
 
 
+  describe("schedule", () => {
+    let newSlaveId, schedule,schedule2;
+    before( async done => {
+      try {
+        let newSlave = {
+    			"host": "testHost",
+    			"description": "testDesc",
+    			"apiVersion": "testAPIversion"
+        };
+        let result = models.Slave.create(newSlave);
+        newSlaveId = result.id;
+        let newSchedule = {
+          StartDate: moment('2015/11/10','YYYY/MM/DD'),
+          Days: 15,
+          newSlaveId
+        };
+        schedule = await services.schedule.create(newSchedule);
+        newSchedule = {
+          StartDate: moment('2015/11/10','YYYY/MM/DD'),
+          Days: 15,
+          newSlaveId
+        };
+        schedule2 = await services.schedule.create(newSchedule);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    it("del Last", async(done) => {
+      try {
+        await services.schedule.delete(schedule.id);
+        done()
+      } catch (e) {
+        done(e)
+      }
+    });
+    it.only("del Last controller", async(done) => {
+      try {
+        let result = await request.post('/rest/master/schedule/delete/' + schedule2.id)
+        .send({
+          slaveId: newSlaveId
+        });
+        done()
+      } catch (e) {
+        console.log(e);
+        done(e)
+      }
+    });
+  });
+
   describe("query", async done => {
     before( async done => {
       try {

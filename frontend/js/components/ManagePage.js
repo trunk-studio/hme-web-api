@@ -534,7 +534,7 @@ export default class ManagePage extends React.Component {
                     options={chartOptions} />
                 </div>
                 <div className="smalllRaisedButton self-center" style={{width: '325px', marginTop: '-15px'}}>
-                  <RaisedButton label="全開"  onTouchTap={this._AllOpen} style={{width: '50px', border: '1px solid #DDD'}}/>
+                  <RaisedButton label="FUll"  onTouchTap={this._AllOpen} style={{width: '50px', border: '1px solid #DDD'}}/>
                   <RaisedButton label="6500K" onTouchTap={this._6500k} style={{width: '50px', border: '1px solid #DDD'}}/>
                   <RaisedButton label="4600K" onTouchTap={this._4600k} style={{width: '50px', border: '1px solid #DDD'}}/>
                   <RaisedButton label="2950K" onTouchTap={this._2950k} style={{width: '50px', border: '1px solid #DDD'}}/>

@@ -4,7 +4,7 @@ import { requestScheduleCreate, requestGetScheduleList,
    updateScheduleFirstDate, updateScheduleDay,
    requestSetScheduleList,requestGetSlaveSchedule,
    requestUpdateScheduleList,requestGetEasySchedule,
-   requestUpdateEasyScheduleList
+   requestUpdateEasyScheduleList,requestScheduleDeleteLast
  } from '../actions/ScheduleListActions'
 import moment from 'moment';
 import {requestGetCachedSlaveList} from '../actions/TestActions';
@@ -140,9 +140,15 @@ export default class ScheduleList extends React.Component {
 
 
   _handleEditTextField = (stateKey, e) => {
-    // console.log(stateKey, e);
+    // console.log("!!!!!!!!!!!!!!!",stateKey, e, e.target.value);
+    let value = e.target.value;
+    if( stateKey == 'springDays' || stateKey == 'summerDays' || stateKey == 'fallDays'){
+      if(parseInt(value, 10) > 9999){
+        value = 9999
+      }
+    }
     let obj = {};
-    obj[stateKey] = e.target.value;
+    obj[stateKey] = value;
     // console.log(obj);
     this.setState(obj);
   };
@@ -159,8 +165,8 @@ export default class ScheduleList extends React.Component {
 
   _addRow = (e) => {
     let selectedSlave = (this.state.selectedSlave != 0)? this.state.selectedSlave : null;
-    console.log(selectedSlave, this.props.scheduleList[0].SlaveId);
-    if(this.props.scheduleList[0].SlaveId === selectedSlave){
+    // console.log(selectedSlave, this.props.scheduleList[0].SlaveId);
+    if(this.props.scheduleList.length > 0  && this.props.scheduleList[0].SlaveId === selectedSlave){
       this.props.requestScheduleCreate(this.props.scheduleList, selectedSlave);
     }else {
       this.props.requestScheduleCreate([], selectedSlave);
@@ -170,6 +176,20 @@ export default class ScheduleList extends React.Component {
     });
     this.refs.snackbar.setState({open: true});
   };
+
+  _deleteLastRow = (e) => {
+    let selectedSlave = (this.state.selectedSlave != 0)? this.state.selectedSlave : null;
+    let scheduleList = this.props.scheduleList;
+    if(this.props.scheduleList[0].SlaveId === selectedSlave){
+      this.props.requestScheduleDeleteLast(scheduleList[scheduleList.length-1].id,selectedSlave)
+    }else {
+      this.props.requestScheduleDeleteLast(scheduleList[scheduleList.length-1].id,null)
+    }
+    this.setState({
+      isSetBtnClose: true
+    });
+    this.refs.snackbar.setState({open: true});
+  }
 
   _saveScheduleList = (e) => {
     this.props.requestUpdateScheduleList(this.props.scheduleList, this.state.selectedSlave);
@@ -357,6 +377,7 @@ export default class ScheduleList extends React.Component {
           let date;
           if(tmpScheduleList[i].StartDate)
             date = new Date(tmpScheduleList[i].StartDate);
+          console.log(tmpScheduleList[i]);
           rows.push(
             <TableRow key={row.id} style={{borderBottom: '1px solid #72737A'}}>
               <TableRowColumn>
@@ -383,7 +404,7 @@ export default class ScheduleList extends React.Component {
                 <TextField
                   type="number"
                   onChange={this._calculateDate.bind({}, i)}
-                  defaultValue={tmpScheduleList[i].Days}
+                  value={tmpScheduleList[i].Days}
                 />
               </TableRowColumn>
               {/*
@@ -414,7 +435,7 @@ export default class ScheduleList extends React.Component {
                 <TextField
                   type="number"
                   onChange={this._calculateDate.bind({}, i)}
-                  defaultValue={tmpScheduleList[i].Days}
+                  value={tmpScheduleList[i].Days}
                 />
               </TableRowColumn>
               {/*
@@ -542,6 +563,7 @@ export default class ScheduleList extends React.Component {
                 <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
               */}
               <RaisedButton ref="scheduleAddBtn" label="ADD" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{width:'60px',marginLeft: '10px'}}/>
+              <RaisedButton ref="scheduleAddBtn" label="Delete" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == 0)} onTouchTap={this._deleteLastRow} style={{width:'60px',marginLeft: '10px'}}/>
               <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveScheduleList} style={{width:'70px',marginLeft: '5px'}} disabled={(this.state.selectedSlave == 0)} />
               <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == 0)} style={{width:'80px', marginLeft: '5px'}} />
               <RaisedButton ref="scheduleSetBtn" label="Simple" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'70px', marginLeft: '5px'}} />
@@ -615,7 +637,8 @@ const _injectPropsFromActions = {
   requestSetScheduleList,
   requestGetSlaveSchedule,
   requestGetEasySchedule,
-  requestUpdateEasyScheduleList
+  requestUpdateEasyScheduleList,
+  requestScheduleDeleteLast
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleList);
