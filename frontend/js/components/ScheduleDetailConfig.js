@@ -325,7 +325,7 @@ export default class ScheduleDetailConfig extends React.Component {
             </div>
           </div>
           <div className="row smalllRaisedButton" style={{marginLeft:'30px'}}>
-            <RaisedButton label="全開"  onTouchTap={this._AllOpen}/>
+            <RaisedButton label="FULL"  onTouchTap={this._AllOpen}/>
             <RaisedButton label="6500K" onTouchTap={this._6500k}/>
             <RaisedButton label="4600K" onTouchTap={this._4600k}/>
             <RaisedButton label="2950K" onTouchTap={this._2950k}/>

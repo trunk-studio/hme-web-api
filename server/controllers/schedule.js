@@ -55,6 +55,22 @@ exports.createSchedule = async function(ctx) {
 
 }
 
+exports.deleteLastSchedule = async function(ctx) {
+  try {
+    console.log("==== deleteLastSchedule ===");
+    let slaveId = ctx.request.body.slaveId;
+    let scheduleId = ctx.params.id;
+    let result = await services.schedule.delete(scheduleId);
+    //delete simple Schedule
+    await services.schedule.deleteSimpleScheduleBySlaveId(slaveId);
+    ctx.body =  result;
+  } catch(e) {
+    console.error(e);
+  }
+
+}
+
+
 exports.createEasySchedule = async function(ctx){
   try {
     console.log("==== createEasySchedule ===",ctx.request.body);

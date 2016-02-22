@@ -196,4 +196,13 @@ body, #react-view {
   border-bottom: solid 1px #000 !important;
 }
 
+::-webkit-inner-spin-button { display: none; }
+::-webkit-calendar-picker-indicator { display: none; }
+input[type="time"]::-webkit-clear-button {
+    display: none;
+}
+input[type="date"]::-webkit-clear-button {
+    display: none;
+}
+
 /*style={{minHeight: '320px', backgroundImage: "url('public/assets/images/HMEsplash.png')"}} */

@@ -50,7 +50,7 @@ export default async (cb) => {
      await services.deviceControl.syncDevice();
     }
 
-    services.deviceControl.getMasterTimeAndUpdate();
+    await services.deviceControl.getMasterTimeAndUpdate();
 
 
     // await services.hme.pingAllSlave();

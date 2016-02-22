@@ -44,6 +44,14 @@ export function requestScheduleCreate(scheduleList, slaveId) {
   };
 }
 
+export function requestScheduleDeleteLast(scheduleId, slaveId) {
+  return (dispatch) => {
+    return request
+      .post('/rest/master/schedule/delete/'+scheduleId,{slaveId: slaveId})
+      .then(response => dispatch(requestGetSlaveSchedule(slaveId)));
+  };
+}
+
 export function receivedScheduleCreate(data) {
   return {
     type: RECEIVED_CREATE_SCHEDULE,
