@@ -13,21 +13,8 @@ function lightA(err, state) {
   // check the state of the button
   // 1 == pressed, 0 == not pressed
   if(state == 1) {
-
-    var updateIniCmd = 'crudini --set --existing /root/hme-web-api/hme.txt SYSTEM SETTED false &&'+
-    'crudini --set --existing /root/hme-web-api/hme.txt WIFI MODE AP';
-
-    console.log('=== updateIniCmd ===', updateIniCmd);
-    exec(updateIniCmd, function(error, stdout, stderr) {
-      console.log(error);
-      console.log(stdout);
-      console.log(stderr);
-    });
-
-    // turn LED blinking
-    var ledInterval = setInterval(function(){
-      ledA.writeSync(ledA.readSync() === 0 ? 1 : 0)
-    }, 100);
+    // turn LED on
+    ledA.writeSync(0);
 
     var cmd = 'cd /root/hme-web-api/wifiConfig && make ap_mode && sudo /sbin/reboot';
 
@@ -36,7 +23,6 @@ function lightA(err, state) {
       console.log(error);
       console.log(stdout);
       console.log(stderr);
-      clearInterval(ledInterval);
       ledA.writeSync(0);
     });
 

@@ -1,8 +1,5 @@
 import request from 'superagent'
 import ini from 'ini'
-import ping from 'ping';
-import {exec, execSync} from 'child_process';
-
 module.exports = {
 
   saveDevice: async(data, slaveId) => {
@@ -232,25 +229,17 @@ module.exports = {
       let result = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
       result.WIFI.SSID = saveSetting.WIFI.SSID;
       result.WIFI.PASSWORD = saveSetting.WIFI.PASSWORD;
-      result.WIFI.MODE = 'CLIENT';
       result.SYSTEM.TYPE = saveSetting.SYSTEM.TYPE;
       result.SYSTEM.REPORT_EMAIL = saveSetting.SYSTEM.REPORT_EMAIL;
       result.SYSTEM.MASTER_NAME = saveSetting.SYSTEM.MASTER_NAME;
       result.SYSTEM.TIMEZONE_OFFSET = saveSetting.SYSTEM.TIMEZONE_OFFSET;
       result.SYSTEM.TIMEZONE_INDEX = saveSetting.SYSTEM.TIMEZONE_INDEX;
-      result.SYSTEM.SETTED = true;
       fs.writeFileSync(appConfig.configPath, ini.stringify(result))
       if(saveSetting.SYSTEM.TYPE === 'slave'){
         let result = await services.deviceControl.registerSlave({
           slaveHostName: saveSetting.SYSTEM.MASTER_NAME + '.local'
         });
-      }else{
-        let result = await services.deviceControl.registerSlave({
-          slaveHostName: result.SYSTEM.HME_SERIAL + '.local'
-        });
       }
-      execSync('cd /root/hme-web-api/wifiConfig && make client_mode && cd -');
-      execSync('sudo /sbin/reboot');
       return 'ok';
     }catch(e){
       console.log(e);
@@ -265,47 +254,6 @@ module.exports = {
     }catch(e){
       console.log(e);
       throw e
-    }
-  },
-
-  getMasterTimeAndUpdate: async() => {
-    try {
-      let config =  await services.deviceControl.getSetting();
-      if(config.SYSTEM.TYPE === 'slave'){
-        let host = config.SYSTEM.MASTER_NAME + '.local'
-        let exist = await new Promise((done) => {
-          ping.sys.probe(host, function (res) {
-            done(res);
-          });
-        });
-        console.log(exist, host);
-        if(exist){
-          let cmd = `service ntp stop && ntpdate ${host} && hwclock -w && hwclock -s`;
-          let updateSysRtc = await new Promise((done) => {
-            exec(cmd, function(error, stdout, stderr) {
-              if (error ||  stderr) {
-                console.log(error, stderr);
-                throw error,stderr;
-              }
-              console.log(stdout);
-              done(stdout);
-            });
-          });
-          await services.hme.setSysTimeToDevRTC();
-        }
-        let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; } | crontab -'
-        exec(crontab, function(error, stdout, stderr) {
-          if (error) {
-            console.log(error);
-            throw error;
-          }
-          console.log(stdout);
-        });
-      }
-      return 'ok'
-    } catch (e) {
-      console.log(e);
-      throw e;
     }
   }
 

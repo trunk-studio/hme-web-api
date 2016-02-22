@@ -303,33 +303,3 @@ exports.getDeviceStatus = async function (ctx) {
     throw e;
   }
 }
-
-exports.updateAllSlaveTime = async function (ctx) {
-  try {
-    let slaveList = await models.Slave.findAll();
-    for (let slave of slaveList) {
-      let result = await new Promise((resolve, reject) => {
-        request
-        .post(`http://${slave.host}:3000/rest/slave/${slave.id}/updateTime`)
-        .end((err, res) => {
-          if(err) return reject(err);
-          resolve(res.body);
-        });
-      });
-    }
-    ctx.body = 'ok';
-  } catch (e) {
-    ctx.body = e;
-    throw e;
-  }
-}
-
-exports.updateTime = async function (ctx) {
-  try {
-    let result = await services.deviceControl.getMasterTimeAndUpdate();
-    ctx.body = result;
-  } catch (e) {
-    ctx.body = e;
-    throw e;
-  }
-}

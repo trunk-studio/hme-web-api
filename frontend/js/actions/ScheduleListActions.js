@@ -40,7 +40,7 @@ export function requestScheduleCreate(scheduleList, slaveId) {
   return (dispatch) => {
     return request
       .post('/rest/master/schedule/create',data)
-      .then(response => dispatch(requestGetSlaveSchedule(slaveId)));
+      .then(response => dispatch(requestGetScheduleList()));
   };
 }
 

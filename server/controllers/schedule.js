@@ -170,15 +170,6 @@ exports.setScheduleListToDevice = async function(ctx) {
     console.log("slaveId!!",slaveId);
     let isAll = false;
     if(slaveId == 0){
-      await models.Schedule.destroy({
-        where: {
-          SlaveId: {
-            $ne: null
-          }
-        }
-      });
-      await models.ScheduleDetail.destroy({where: {ScheduleId: null}});
-      await models.ScheduleDetailConfig.destroy({where: {ScheduleDetailId: null}});
       let slaveList = await models.Slave.findAll();
       isAll = true;
       for (let slave of slaveList) {

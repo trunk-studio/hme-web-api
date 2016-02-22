@@ -158,13 +158,7 @@ export default class ScheduleList extends React.Component {
   };
 
   _addRow = (e) => {
-    let selectedSlave = (this.state.selectedSlave != 0)? this.state.selectedSlave : null;
-    console.log(selectedSlave, this.props.scheduleList[0].SlaveId);
-    if(this.props.scheduleList[0].SlaveId === selectedSlave){
-      this.props.requestScheduleCreate(this.props.scheduleList, selectedSlave);
-    }else {
-      this.props.requestScheduleCreate([], selectedSlave);
-    }
+    this.props.requestScheduleCreate(this.props.scheduleList, (this.state.selectedSlave != 0)? this.state.selectedSlave : null);
     this.setState({
       isSetBtnClose: true
     });
@@ -338,18 +332,18 @@ export default class ScheduleList extends React.Component {
     let tmpScheduleList = [];
 
     if(this.props.scheduleList) {
-      // if(this.state.isAll) {
+      if(this.state.isAll) {
         this.props.scheduleList.forEach((schedule, i) => {
-          // if (schedule.SlaveId == null)
+          if (schedule.SlaveId == null)
             tmpScheduleList.push(schedule);
         });
-      // }
-      // else {
-      //   this.props.scheduleList.forEach((schedule, i) => {
-      //     if (schedule.SlaveId == this.state.selectedSlave)
-      //       tmpScheduleList.push(schedule);
-      //   });
-      // }
+      }
+      else {
+        this.props.scheduleList.forEach((schedule, i) => {
+          if (schedule.SlaveId == this.state.selectedSlave)
+            tmpScheduleList.push(schedule);
+        });
+      }
     }
     if(tmpScheduleList) {
       tmpScheduleList.forEach((row,i) => {
@@ -479,7 +473,7 @@ export default class ScheduleList extends React.Component {
         </Dialog>
         <div id="easyScheduleList" className={easyDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row">
-            <div className="smalllRaisedButton" style={{marginLeft: '30px', marginTop: '15px'}}>
+            <div className="smalllRaisedBnutton" style={{marginLeft: '30px', marginTop: '15px'}}>
               <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '200px', float: 'left'}} value={slaveSelectFieldIndex} />
               <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'75px', marginLeft: '10px'}} />
               <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} style={{ width:'75px', marginLeft: '10px'}} />
@@ -535,7 +529,7 @@ export default class ScheduleList extends React.Component {
         </div>
         <div id="scheduleList" className={proDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row justify-content">
-            <div className="smalllRaisedButton" style={{marginLeft: '-3px', marginTop: '15px'}}>
+            <div className="smalllRaisedBnutton" style={{marginLeft: '-3px', marginTop: '15px'}}>
               <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '160px', float: 'left'}} value={slaveSelectFieldIndex} />
               {/*
                 <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />

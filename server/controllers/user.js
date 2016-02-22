@@ -1,4 +1,5 @@
 import jsonWebToken from 'jsonwebtoken';
+import { secret } from '../config/init'
 
 exports.index = async function(ctx) {
 
@@ -56,8 +57,7 @@ exports.login = async function (ctx, next) {
   let success = false;
   try {
     let userData = global.appConfig.userData;
-    let secret = global.appConfig.secret
-    console.log('userData secret', userData,secret);
+    console.log('userData', userData);
     let pass = false;
     let role = ctx.request.body.role;
     let password = ctx.request.body.password;
