@@ -551,7 +551,7 @@ export default class ScheduleList extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-4 col-sm-4 col-xs-4" style={{paddingLeft:'30px'}}>
+            <div className="col-md-4 col-sm-4 col-xs-4" style={{paddingLeft:'30px', backgroundSize: 'cover', backgroundImage: 'url(/public/assets/images/spring.png)',backgroundRepeat: 'no-repeat', backgroundOrigin: 'content-box'}}>
               <p style={{marginLeft:'40px'}}> Spring </p>
               <RadioButtonGroup ref="springHours"  name="shipSpeed" valueSelected={ this.state.springHour } onChange={this._handleEditTextField.bind({}, 'springHour')} >
                 <RadioButton value="12" label="12 Hours" />
@@ -559,7 +559,7 @@ export default class ScheduleList extends React.Component {
               </RadioButtonGroup>
                 <TextField ref="springDay" hintText="Days" min={0} max={9999} type="number" style={{width: '50px', marginLeft:'40px'}} value={this.state.springDays} onChange={this._handleEditTextField.bind({},　'springDays')}　/>
             </div>
-            <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px'}}>
+            <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px', backgroundSize: 'cover', backgroundImage: 'url(/public/assets/images/summer.png)',backgroundRepeat: 'no-repeat', backgroundOrigin: 'content-box'}}>
               <p style={{marginLeft:'40px'}}> Summer </p>
               <RadioButtonGroup ref="summerHours" name="shipSpeed" valueSelected={ this.state.summerHour }  onChange={this._handleEditTextField.bind({}, 'summerHour')}>
                 <RadioButton value="18" label="18 Hours" />
@@ -567,7 +567,7 @@ export default class ScheduleList extends React.Component {
               </RadioButtonGroup>
                 <TextField ref="summerDay" hintText="Days" min={0} max={9999} type="number" style={{width: '50px', marginLeft:'40px'}} value={this.state.summerDays} onChange={this._handleEditTextField.bind({},　'summerDays')}　/>
             </div>
-            <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px'}}>
+            <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px', backgroundSize: 'cover', backgroundImage: 'url(/public/assets/images/fall.png)',backgroundRepeat: 'no-repeat', backgroundOrigin: 'content-box'}}>
               <p style={{marginLeft:'40px'}}> Fall </p>
               <RadioButtonGroup ref="fallHours" name="shipSpeed" valueSelected={ this.state.fallHour }  onChange={this._handleEditTextField.bind({}, 'fallHour')} >
                 <RadioButton value="12" label="12 Hours" />
