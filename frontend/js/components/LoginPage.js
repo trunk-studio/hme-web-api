@@ -19,7 +19,7 @@ export default class LoginPage extends React.Component {
     super(props);
     this.state = {
       loadingStatus: 'ready',
-      role: 'operator',
+      role: 'admin',
       sendLogin: false
     }
   }
@@ -67,14 +67,14 @@ export default class LoginPage extends React.Component {
 
   render() {
     let roles = [
-      { payload: 'operator', text: 'operator' },
-      { payload: 'administrator', text: 'administrator' },
-      { payload: 'engineer', text: 'engineer' }
+      { payload: 'admin', text: '主控者' },
+      { payload: 'user', text: '操作人員' },
+      { payload: 'engineer', text: 'administrator' }
     ];
     const {loadingStatus} = this.props;
     return (
-      <Tabs className="tabs-container"  tabItemContainerStyle={{backgroundColor: "#032c70", marginTop: '-15px'}} contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0)'}}>
-        <Tab label="Login" className="tab-item">
+      <Tabs className="background-splash tabs-container" style={{backgroundImage: "url('public/assets/images/HMEsplash.png')"}}>
+        <Tab label="Login">
           <div className="tab-content self-center">
             <div className="self-center" style={{width: "210px", paddingTop: '15px'}} >
               <div className="row">

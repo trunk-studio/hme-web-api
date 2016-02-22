@@ -158,7 +158,7 @@ export default class Routes {
         setupPage = 'setup';
       const HTML = `
       <!DOCTYPE html>
-      <html style="background-image: url('/public/assets/images/HMEsplash.png')">
+      <html>
         <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -171,7 +171,7 @@ export default class Routes {
           rel="stylesheet">-->
         </head>
         <body>
-          <div id="react-view" data-page="${setupPage}"></div>
+          <div id="react-view" data-page="${setupPage}" ></div>
           <script type="application/javascript" src="/public/assets/js/bundle.js"></script>
           <!--<script>
             document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
