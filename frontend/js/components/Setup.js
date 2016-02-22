@@ -215,10 +215,10 @@ export default class Setup extends React.Component  {
           onChange={this._handleEditMaster}
           value={this.state.tmpMaster} />
       </div>
-      <div className="row" style={{marginLeft: '25%', display: (this.state.type == 'master')? 'block' : 'none' }}>
+      <div className="row" style={{marginLeft: '25%'}}>
         <label style={{fontSize: '18px', marginTop: '15px'}}>Timezone</label>
       </div>
-      <div className="self-center" style={{width: "210px", display: (this.state.type == 'master')? 'block' : 'none'}} >
+      <div className="self-center" style={{width: "210px"}}>
         <SelectField ref="timezone" onChange={this._handleTimezoneChanged} menuItems={timezoneList} style={{width: '300px'}} value={timezones[this.state.timezoneIndex]} />
       </div>
       <div className="self-center" style={{width: "300px"}}>
