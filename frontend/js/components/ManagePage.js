@@ -89,10 +89,6 @@ export default class ManagePage extends React.Component {
     this.props.requestTestOneDevice(this.state.deviceID, this.state.slaveID);
   };
 
-  _testGroupDevice = (e) => {
-    this.props.requestTestGroupDevices(this.state.groupID);
-  };
-
   _testSlaveDevice = (e) => {
     this.props.requestTestGroupDevices(this.state.slaveID);
   };
