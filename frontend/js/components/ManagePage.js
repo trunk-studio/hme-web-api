@@ -331,7 +331,7 @@ export default class ManagePage extends React.Component {
 
   _logout = (e) => {
     this.props.logout();
-    window.location.href = "/#login";
+    window.location.href = "/#/close";
   };
 
   _saveReportingEmail = (e) => {
@@ -365,7 +365,7 @@ export default class ManagePage extends React.Component {
 
   render() {
     let chartData = {
-        labels: ["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],
+        labels: ["380","","","","","","","","","","","","","","","","","","","460","","","","","","","","","","","","","","","","","","","","540","","","","","","","","","","","","","","","","","","","","620","","","","","","","","","","","","","","","","","","","","700","","","","","","","","","","","","","","","","","","","","","780"],
         datasets: [
             {
                 label: "My Second dataset",
@@ -441,13 +441,13 @@ export default class ManagePage extends React.Component {
     let email = this.props.reportEmail;
 
     let scheduleList = (
-      <Tab label='Schedule List' value='1' key={'scheduleList'}>
+      <Tab label='Schedule' value='1' key={'scheduleList'} className="tab-item">
         <ScheduleList />
       </Tab>
     );
 
     let reportEmailTab = (
-    <Tab key={'reportEmail'} label="Report Setting" value='2'>
+    <Tab key={'reportEmail'} label="Report" value='2' className="tab-item">
       <div className="tab-content self-center" >
         <div className="self-center" style={{width: '500px'}}>
           <TextField
@@ -484,7 +484,7 @@ export default class ManagePage extends React.Component {
     </Tab> );
 
     let testingTab = (
-    <Tab key={'testingTab'} label="Testing" value='3'>
+    <Tab key={'testingTab'} label="Testing" value='3' className="tab-item">
       <div className="tab-content self-center">
         <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
           <div >
@@ -510,21 +510,21 @@ export default class ManagePage extends React.Component {
     </Tab> );
 
     let adminFunctionTabs = [];
-    if(this.props.role == 'engineer' || this.props.role == 'admin')
+    if(this.props.role == 'engineer' || this.props.role == 'administrator')
       adminFunctionTabs.push(scheduleList, reportEmailTab, testingTab);
 
     return (
-      <Tabs className="background-splash tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} style={{minHeight: '320px', backgroundImage: "url('public/assets/images/HMEsplash.png')"}}>
-        <Tab label="Setup Test" value='0'>
+      <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} tabItemContainerStyle={{backgroundColor: "#032c70", marginTop: '-15px'}} contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0)'}}>
+        <Tab label="Setup" value='0' className="tab-item">
           <div className="tab-content self-center">
-            <div className="self-center" style={{width: '500px'}}>
-              <div style={{width: '500px'}}>
-                <SelectField labelMember="primary" iconStyle={{fill: '#000'}} menuItems={setupTestSlaveList} onChange={this._setupTestSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '250px'}}/>
-                <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._setupTestDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={setupTestDeviceList} style={{width: '250px', marginLeft: '5px', position: 'absolute'}}/>
+            <div className="self-center" style={{width: '420px'}}>
+              <div style={{width: '420px'}}>
+                <SelectField labelMember="primary" iconStyle={{fill: '#000'}} menuItems={setupTestSlaveList} onChange={this._setupTestSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '210px'}}/>
+                <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._setupTestDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={setupTestDeviceList} style={{width: '210px', marginLeft: '5px', position: 'absolute'}}/>
               </div>
             </div>
-            <div className="row self-center" style={{width: '100%', marginTop: '15px'}}>
-              <div className="col-md-8 col-sm-8 col-xs-8">
+            <div className="row self-center" style={{width: '100%', marginTop: '-10px'}}>
+              <div className="col-md-9 col-sm-9 col-xs-9" style={{padding: '0px', marginTop: '-12px'}}>
                 <div className="row">
                   <LineChart ref="chart" data={chartData} style={{
                     margin: '5px',
@@ -533,16 +533,16 @@ export default class ManagePage extends React.Component {
                     }}
                     options={chartOptions} />
                 </div>
-                <div className="row smalllRaisedBnutton self-center" style={{width: '310px'}}>
-                  <RaisedButton label="全開"  onTouchTap={this._AllOpen} style={{width: '50px'}}/>
-                  <RaisedButton label="6500K" onTouchTap={this._6500k} style={{width: '50px'}}/>
-                  <RaisedButton label="4600K" onTouchTap={this._4600k} style={{width: '50px'}}/>
-                  <RaisedButton label="2950K" onTouchTap={this._2950k} style={{width: '50px'}}/>
-                  <RaisedButton label="saving E" onTouchTap={this._saving} style={{width: '60px'}}/>
-                  <RaisedButton label="B + R" onTouchTap={this._BR} style={{width: '50px'}}/>
+                <div className="smalllRaisedButton self-center" style={{width: '325px', marginTop: '-15px'}}>
+                  <RaisedButton label="全開"  onTouchTap={this._AllOpen} style={{width: '50px', border: '1px solid #DDD'}}/>
+                  <RaisedButton label="6500K" onTouchTap={this._6500k} style={{width: '50px', border: '1px solid #DDD'}}/>
+                  <RaisedButton label="4600K" onTouchTap={this._4600k} style={{width: '50px', border: '1px solid #DDD'}}/>
+                  <RaisedButton label="2950K" onTouchTap={this._2950k} style={{width: '50px', border: '1px solid #DDD'}}/>
+                  <RaisedButton label="saving E" onTouchTap={this._saving} style={{width: '80px', border: '1px solid #DDD'}}/>
+                  <RaisedButton label="B+R" onTouchTap={this._BR} style={{width: '45px', border: '1px solid #DDD'}}/>
                 </div>
               </div>
-              <div className="col-md-4 col-sm-4 col-xs-4" style={{marginTop: '0px'}}>
+              <div className="col-md-3 col-sm-3 col-xs-3" style={{marginTop: '0px', paddingRight: '0px', paddingLeft: '21px'}}>
                 <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
                 <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
                 <div style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
@@ -554,15 +554,15 @@ export default class ManagePage extends React.Component {
                 <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
                 <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
                 <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
-                <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
-                <div>Bright {this.state.brightValue}</div>
-                <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider"/>
+                <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle+" slider"} />
+                <div style={{marginTop: '-8px'}}>Bright {this.state.brightValue}</div>
+                <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider" />
               </div>
             </div>
           </div>
         </Tab>
         {adminFunctionTabs}
-        <Tab label="Logout" value='logout' onTouchTap={this._logout} />
+        <Tab label="Logout" value='logout' onTouchTap={this._logout}  className="tab-item"/>
       </Tabs>
     );
   }

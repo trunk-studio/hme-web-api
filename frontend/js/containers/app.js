@@ -15,7 +15,6 @@ import createLogger from 'redux-logger';
 import reducers from '../reducers'
 import configureStore from '../store/configureStore';
 
-
 const store = configureStore();
 
 // const history                   = createBrowserHistory();
@@ -42,15 +41,20 @@ export default class App extends React.Component {
     if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
       replaceState({}, '/login');
     }
-    else if(jwtDecode(localStorage.getItem('token')).role != 'engineer' && jwtDecode(localStorage.getItem('token')).role != 'admin') {
+    else if(jwtDecode(localStorage.getItem('token')).role != 'engineer' && jwtDecode(localStorage.getItem('token')).role != 'administrator') {
       replaceState({}, '/manage');
     }
   };
 
   _requireLogin = (nextState, replaceState) => {
-    if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
-      replaceState({}, '/login');
+    // console.log('====', $('#react-view').data('page'));
+    if( $('#react-view').data('page') == 'setup' ) {
+      replaceState({}, '/setup');
     }
+    else
+      if(!localStorage.getItem('token') || jwtDecode(localStorage.getItem('token')).aud != 'user') {
+        replaceState({}, '/login');
+      }
   };
 
   _noAuth = (nextState, replaceState) => {
@@ -59,9 +63,15 @@ export default class App extends React.Component {
     }
   };
 
+  _alreadySetup = (nextState, replaceState) => {
+    if($('#react-view').data('page') != 'setup' ) {
+      replaceState({}, '/manage');
+    }
+  };
+
   render() {
     return (
-      <Router history={browserHistory}>
+      <Router history={browserHistory} >
         <Route path="/" component={LoginPage}  onEnter={this._requireLogin}/>
         <Route path="/login" component={LoginPage} onEnter={this._noAuth}/>
         <Route path="/manage" component={ManagePage} onEnter={this._requireLogin}/>
@@ -69,7 +79,8 @@ export default class App extends React.Component {
         <Route path="/schedule/list" component={ScheduleList} onEnter={this._requireLogin}/>
         <Route path="/schedule/:slaveId/edit/:scheduleID" component={ScheduleDetail} onEnter={this._requireAuth}/>
         <Route path="/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} onEnter={this._requireAuth}/>
-        <Route path="/setup" component={Setup} />
+        <Route path="/setup" component={Setup} onEnter={this._alreadySetup} />
+        <Route path="/close" component={LoginPage} />
       </Router>
     );
   }

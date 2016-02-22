@@ -114,6 +114,7 @@ var liftApp = async () => {
   try {
     await models.sequelize.sync({force: config.connection.force})
 
+    console.log(config);
     app.listen(config.port);
     await bootstrap();
 

@@ -8,7 +8,8 @@ import {
   Tabs,
   Tab,
   RefreshIndicator,
-  AppBar, IconButton, FlatButton, RadioButton, RadioButtonGroup
+  AppBar, IconButton, FlatButton, RadioButton, RadioButtonGroup,
+  Snackbar
 } from 'material-ui'
 
 const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js');
@@ -73,6 +74,7 @@ export default class Setup extends React.Component  {
 
   _handleApply = (e) => {
     let setting = {};
+    this.refs.snackbar.setState({open: true});
     console.log(this.refs.timezone);
     setting.WIFI = {
       SSID: this.refs.ssid.getValue(),
@@ -144,7 +146,7 @@ export default class Setup extends React.Component  {
           style={{height: '55px', minHeight: '0px', marginTop: '-9px'}}
           titleStyle={{fontSize: '20px'}}
           iconElementLeft={
-            <IconButton onTouchTap={function() {window.location.href = '#/manage/3';}} >
+            <IconButton onTouchTap={function() {window.location.href = '#/manage';}} >
               <NavigationClose />
             </IconButton>
           }
@@ -213,10 +215,10 @@ export default class Setup extends React.Component  {
           onChange={this._handleEditMaster}
           value={this.state.tmpMaster} />
       </div>
-      <div className="row" style={{marginLeft: '25%'}}>
+      <div className="row" style={{marginLeft: '25%', display: (this.state.type == 'master')? 'block' : 'none' }}>
         <label style={{fontSize: '18px', marginTop: '15px'}}>Timezone</label>
       </div>
-      <div className="self-center" style={{width: "210px"}}>
+      <div className="self-center" style={{width: "210px", display: (this.state.type == 'master')? 'block' : 'none'}} >
         <SelectField ref="timezone" onChange={this._handleTimezoneChanged} menuItems={timezoneList} style={{width: '300px'}} value={timezones[this.state.timezoneIndex]} />
       </div>
       <div className="self-center" style={{width: "300px"}}>
@@ -233,6 +235,11 @@ export default class Setup extends React.Component  {
               position: 'relative'}} />
         </div>
       </div>
+      <Snackbar
+        ref="snackbar"
+        open={false}
+        message={"The device is rebooting for seeting. please wait for 2 mins and refresh this page."}
+      />
     </div>
     );
   }

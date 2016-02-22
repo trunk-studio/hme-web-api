@@ -246,7 +246,7 @@ export default class ScheduleDetailConfig extends React.Component {
        { payload: '5', text: 'Weekly' },
     ];
     let chartData = {
-        labels: ["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],
+        labels: ["380","","","","","","","","","","","","","","","","","","","460","","","","","","","","","","","","","","","","","","","","540","","","","","","","","","","","","","","","","","","","","620","","","","","","","","","","","","","","","","","","","","700","","","","","","","","","","","","","","","","","","","","","780"],
         datasets: [
             {
                 label: "My Second dataset",
@@ -324,7 +324,7 @@ export default class ScheduleDetailConfig extends React.Component {
               <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onChange={this._brightChanged} className="slider"/> */}
             </div>
           </div>
-          <div className="row smalllRaisedBnutton" style={{marginLeft:'30px'}}>
+          <div className="row smalllRaisedButton" style={{marginLeft:'30px'}}>
             <RaisedButton label="全開"  onTouchTap={this._AllOpen}/>
             <RaisedButton label="6500K" onTouchTap={this._6500k}/>
             <RaisedButton label="4600K" onTouchTap={this._4600k}/>

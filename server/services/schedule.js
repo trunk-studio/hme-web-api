@@ -2,6 +2,17 @@ import request from 'superagent'
 module.exports = {
   create: async(data) => {
     try {
+      if(! data.SlaveId){
+        await models.Schedule.destroy({
+          where: {
+            SlaveId: {
+              $ne: null
+            }
+          }
+        });
+        await models.ScheduleDetail.destroy({where: {ScheduleId: null}});
+        await models.ScheduleDetailConfig.destroy({where: {ScheduleDetailId: null}});
+      }
       let schedule = await models.Schedule.create(data);
       let scheduleConfig = [];
       for (let a = 0; a < 24; a += 2) {
@@ -34,11 +45,29 @@ module.exports = {
     try {
       let slaveId ={};
       if(data.slaveId == 0){
-        await models.easySchedule.destroy({where: {SlaveId: null}});
-        await models.Schedule.destroy({where: {SlaveId: null}});
+        // await models.easySchedule.destroy({where: {SlaveId: null}});
+        // await models.Schedule.destroy({where: {SlaveId: null}});
+        await models.easySchedule.destroy({
+          where: {
+            id: {
+              $gte: 1
+            }
+          }
+        });
+        await models.Schedule.destroy({
+          where: {
+            id: {
+              $gte: 1
+            }
+          }
+        });
+        await models.ScheduleDetail.destroy({where: {ScheduleId: null}});
+        await models.ScheduleDetailConfig.destroy({where: {ScheduleDetailId: null}});
       }else{
         await models.easySchedule.destroy({where: {SlaveId: data.slaveId}});
         await models.Schedule.destroy({where: {SlaveId: data.slaveId}});
+        await models.ScheduleDetail.destroy({where: {ScheduleId: null}});
+        await models.ScheduleDetailConfig.destroy({where: {ScheduleDetailId: null}});
         slaveId  = {
           SlaveId: data.slaveId
         }
@@ -194,6 +223,13 @@ module.exports = {
           SlaveId: slaveId
         }
       });
+      if( ! schedule){
+        schedule = await models.easySchedule.findOne({
+        where: {
+          SlaveId: null
+        }
+      });
+      }
       return schedule;
     } catch (e) {
       throw e;
@@ -230,6 +266,13 @@ module.exports = {
           SlaveId: (slaveId == 'null')? null : slaveId//isNaN(slaveId)? slaveId : null
         }
       });
+      if(schedules.length == 0){
+        schedules = await models.Schedule.findAll({
+          where: {
+            SlaveId: null
+          }
+        });
+      }
       return schedules;
     } catch (e) {
       throw e;

@@ -29,7 +29,7 @@ export default class Routes {
       '/rest/slave/:slaveId/test',
       '/rest/slave/:slaveId/device/:deviceId/setLedDisplay',
       '/rest/slave/:slaveId/schedule/setOnDevice',
-      '/rest/slave/:slaveId/findAllDeviceGroups'
+      '/rest/slave/:slaveId/findAllDeviceGroups',
       ],
       async function (ctx, next){
         try {
@@ -109,6 +109,7 @@ export default class Routes {
     publicRoute.post('/rest/master/login', UserController.login);
     publicRoute.post('/rest/master/saveEmail', HmeController.saveEmail);
     publicRoute.get('/rest/master/loadEmail', HmeController.loadEmail);
+    publicRoute.post('/rest/master/updateTime', HmeController.updateAllSlaveTime);
     publicRoute.post('/rest/master/register/slave', HmeController.registerSlave);
     publicRoute.get('/rest/master/syncAllSlaveAndDevice', HmeController.syncAllSlaveAndDevice);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
@@ -142,6 +143,7 @@ export default class Routes {
     publicRoute.post('/rest/slave/:slaveId/schedule/setSimRtc', ScheduleController.slaveSetSimRtc);
     publicRoute.post('/rest/slave/:slaveId/sync/slave', HmeController.slaveSyncNewSlave);
     publicRoute.get('/rest/slave/:slaveId/device/:deviceId/getStatus', HmeController.getDeviceStatus);
+    publicRoute.post('/rest/slave/:slaveId/updateTime', HmeController.updateTime);
 
     publicRoute.get('/rest/slave/:slaveId/findAllDeviceGroups', HmeController.findAllDeviceGroups);
 
@@ -149,10 +151,14 @@ export default class Routes {
     publicRoute.get('/rest/admin/sendmail/:reportType', AdminController.sendReport);
 
 
-    publicRoute.get('/', function(ctx, next) {
+    publicRoute.get('/', async function(ctx, next) {
+      let setting = await services.deviceControl.getSetting();
+      let setupPage = '';
+      if(setting.WIFI.MODE == 'AP')
+        setupPage = 'setup';
       const HTML = `
       <!DOCTYPE html>
-      <html>
+      <html style="background-image: url('/public/assets/images/HMEsplash.png')">
         <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -165,7 +171,7 @@ export default class Routes {
           rel="stylesheet">-->
         </head>
         <body>
-          <div id="react-view"></div>
+          <div id="react-view" data-page="${setupPage}"></div>
           <script type="application/javascript" src="/public/assets/js/bundle.js"></script>
           <!--<script>
             document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
