@@ -1,5 +1,13 @@
 import request from 'superagent'
 
+exports.status = async function (ctx) {
+  try {
+    ctx.body = {hme: 'ready'};
+  } catch (e) {
+    throw e;
+  }
+};
+
 exports.hello = async function (ctx) {
   try {
     let result = await services.hme.hello()
