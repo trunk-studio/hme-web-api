@@ -392,6 +392,8 @@ export default class ManagePage extends React.Component {
     };
     let chartOptions = {
       pointDot: false,
+      pointDotRadius: 0,
+      pointDotStrokeWidth : 0,
       scaleShowVerticalLines: false,
       datasetStroke: false,
       pointHitDetectionRadius: 0,
