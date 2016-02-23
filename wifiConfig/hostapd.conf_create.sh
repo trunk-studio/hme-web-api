@@ -16,8 +16,7 @@ interface=wlan0
 driver=rtl871xdrv
 bridge=br0
 ssid=$ssid
-channel=1
-wmm_enabled=0
+channel=6
 wpa=1
 wpa_passphrase=$password
 wpa_key_mgmt=WPA-PSK
@@ -25,4 +24,7 @@ wpa_pairwise=TKIP
 rsn_pairwise=CCMP
 auth_algs=1
 macaddr_acl=0
+ieee80211n=1
+wmm_enabled=1
+hw_mode=g
 EOF1
