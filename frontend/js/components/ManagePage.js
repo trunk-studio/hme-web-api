@@ -120,7 +120,8 @@ export default class ManagePage extends React.Component {
     if(value > 0)
       id = this.props.slaveList[value - 1].payload;
     this.setState({
-      slaveID: id
+      slaveID: id,
+      deviceID: 0
     })
   };
 
