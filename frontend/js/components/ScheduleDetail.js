@@ -61,7 +61,9 @@ export default class ScheduleDetail extends React.Component {
       fastRunLabel: 'FastRun',
       fastRunIntervalId: '',
       fastRunStart: false,
-      count: 0
+      count: 0,
+      needSave: false,
+      open: false
     }
   }
 
@@ -70,8 +72,13 @@ export default class ScheduleDetail extends React.Component {
   }
 
   _handleTimeBtnClick(index) {
-    if(index == this.state.currentIndex)
-      window.location.href = `#/schedule/${this.props.params.scheduleID}/config/${this.props.scheduleDetails[index].id}`;
+    if(index == this.state.currentIndex){
+      if(this.state.needSave){
+        this.setState({open: true});
+      }else{
+        window.location.href = `#/schedule/${this.props.params.scheduleID}/config/${this.props.scheduleDetails[index].id}`;
+      }
+    }
     this.setState({currentIndex: index});
   };
 
@@ -82,6 +89,10 @@ export default class ScheduleDetail extends React.Component {
     $(`.nv-point-${this.state.currentIndex+1}`).attr('stroke', 'rgba(255, 55, 36, 0.82)').attr('fill', 'rgba(255, 55, 36, 0.82)');
   }
 
+  _saveDialogHandleClose = () => {
+    this.setState({open: false});
+  };
+
   _handleWeightChanged = (val) => {
     let weight = val/100;
     let dailySchedules = [];
@@ -90,6 +101,7 @@ export default class ScheduleDetail extends React.Component {
     this.props.modifySchedule({
       schedules: dailySchedules
     });
+    this.setState({needSave: true});
   };
 
   _handleTimetChanged = (val) => {
@@ -111,11 +123,13 @@ export default class ScheduleDetail extends React.Component {
      this.props.modifySchedule({
        schedules: dailySchedules
      });
+     this.setState({needSave: true});
   };
 
   _saveScheduleDetails = (e) => {
     // console.log('save',this.props.scheduleDetails);
     this.props.requestUpdateScheduleDetails(this.props.scheduleDetails);
+    this.setState({needSave: false});
   };
 
   _fastRun = (e) => {
@@ -316,9 +330,25 @@ export default class ScheduleDetail extends React.Component {
         onTouchTap={this._dialogActionReset} />
     ];
 
+    let dialog = [
+      <FlatButton
+        label="OK"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={this._saveDialogHandleClose}
+      />
+    ];
 
     return (
       <div>
+        <Dialog
+          title="Warning"
+          actions={dialog}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this._saveDialogHandleClose}>
+          Settings have been changed, remember to Save.
+        </Dialog>
         <AppBar title="Schedule Detail"
           style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
           titleStyle={{fontSize: '20px'}}
