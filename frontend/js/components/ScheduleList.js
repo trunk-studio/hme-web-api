@@ -79,6 +79,17 @@ export default class ScheduleList extends React.Component {
   };
 
   componentDidMount () {
+    let isEasy = localStorage.getItem('HME_scheduleList_mode');
+    if(isEasy !== null){
+      if( isEasy == 'sample' ){
+        isEasy = true
+      }else{
+        isEasy = false
+      }
+    }else{
+      isEasy = true
+      localStorage.setItem('HME_scheduleList_mode', 'sample');
+    }
     let pro_slaveIndex = localStorage.getItem('HME_scheduleList_slaveIndex');
     if(!pro_slaveIndex)
       localStorage.setItem('HME_scheduleList_slaveIndex', -1);
@@ -89,7 +100,8 @@ export default class ScheduleList extends React.Component {
       });
     this.props.requestGetCachedSlaveList();
     this.setState({
-      selectedSlave: localStorage.getItem('HME_scheduleList_slaveIndex')
+      selectedSlave: localStorage.getItem('HME_scheduleList_slaveIndex'),
+      isEasy: isEasy
     });
 
     this.props.requestGetEasySchedule(pro_slaveIndex  || 0);
@@ -360,6 +372,9 @@ export default class ScheduleList extends React.Component {
   _switchView = (e) => {
     this.props.requestGetSlaveSchedule(this.state.selectedSlave? this.state.selectedSlave: null);
     this.props.requestGetEasySchedule(this.state.selectedSlave || 0);
+    let isEasy = localStorage.getItem('HME_scheduleList_mode');
+    localStorage.setItem('HME_scheduleList_mode', isEasy=='sample' ? 'pro':'sample');
+    isEasy = isEasy=='sample' ? true : false;
     this.setState({
       isEasy: !this.state.isEasy
     })
