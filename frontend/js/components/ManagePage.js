@@ -93,6 +93,20 @@ export default class ManagePage extends React.Component {
     this.props.requestTestGroupDevices(this.state.slaveID);
   };
 
+  _test = (e) => {
+    if( this.state.slaveID == 0){
+      this.props.requestTestGroupDevices(this.state.slaveID);
+    }else{
+      if(this.state.deviceID == 0 ){
+        this.props.slaveList.forEach((slave,i) => {
+          this.props.requestTestGroupDevices(slave.payload);
+        });
+      }else{
+        this.props.requestTestOneDevice(this.state.deviceID, this.state.slaveID);
+      }
+    }
+  };
+
   _deviceMenuIndexChanged = (e, value) => {
     this.setState({
       deviceID: value
@@ -388,14 +402,14 @@ export default class ManagePage extends React.Component {
 
     let deviceList = [{
       payload: 0,
-      primary: 'Select Device',
-      text: 'Select Device'
+      primary: 'All Device',
+      text: 'All Device'
     }];
 
     let slaveList = [{
       payload: 0,
-      primary: 'Select Slave',
-      text: 'Select Slave'
+      primary: 'All Slave',
+      text: 'All Slave'
     }];
 
     let setupTestDeviceList = [{
@@ -472,7 +486,7 @@ export default class ManagePage extends React.Component {
               <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>溫度:</h4>
               <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.devTemp}</h4>
                 <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>風扇:</h4>
-                <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState}</h4>
+                <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState.toString()}</h4>
             </div>
           </div>
         </div>
@@ -495,11 +509,12 @@ export default class ManagePage extends React.Component {
           </div>
           <div style={{marginTop: '10px'}}>
             <SelectField labelMember="primary" iconStyle={{fill: '#000'}} menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}} />
-            <RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
+            {/*<RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>*/}
+            <RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._test}></RaisedButton>
           </div>
           <div style={{marginTop: '15px'}}>
             <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
-            <RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>
+            {/*<RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>*/}
           </div>
         </div>
       </div>
@@ -599,7 +614,7 @@ function _injectPropsFromStore(state) {
     reportEmail: manageSettings.reportEmail,
     loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide',
     role: login.role,
-    devStatus: manageSettings.devStatus || {devTemp: 'selse Slave & Device', fanState: 'selse Slave & Device'},
+    devStatus: manageSettings.devStatus || {devTemp: 'Selse Slave & Device', fanState: 'Selse Slave & Device'},
   };
 }
 
