@@ -454,7 +454,7 @@ export default class ManagePage extends React.Component {
     let email = this.props.reportEmail;
 
     let scheduleList = (
-      <Tab label='Schedule' value='1' key={'scheduleList'} className="tab-item">
+      <Tab label='Schedule' value='2' key={'scheduleList'} className="tab-item">
         <ScheduleList />
       </Tab>
     );
@@ -523,9 +523,29 @@ export default class ManagePage extends React.Component {
       </div>
     </Tab> );
 
-    let adminFunctionTabs = [];
-    if(this.props.role == 'engineer' || this.props.role == 'administrator')
-      adminFunctionTabs.push(scheduleList, reportEmailTab, testingTab);
+    let adminFunctionTabs = [], reportEmailForm = null;
+    if(this.props.role == 'engineer' || this.props.role == 'administrator') {
+      adminFunctionTabs.push(scheduleList, testingTab);
+      reportEmailForm = (
+       <div className="self-center" style={{width: '500px'}} key={'reportForm'}>
+         <TextField
+           ref="inputReportingEmail"
+           floatingLabelText="Report Email"
+           multiLine={true}
+           value={this.state.tmpEmail}
+           onChange={this._handleEditEmail}
+           type="text" />
+         <RaisedButton onTouchTap={this._saveReportingEmail} label="Save" labelColor="#FFF" backgroundColor="#51A7F9" style={{marginTop:'40px' ,marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}}/>
+         <RefreshIndicator
+           size={40}
+           left={10}
+           top={0}
+           status={this.props.loadingEmail}
+           style={{display: 'inline-block',
+             position: 'relative'}} />
+         </div>
+       );
+    }
 
     return (
       <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} tabItemContainerStyle={{backgroundColor: "#032c70", marginTop: '-15px'}} contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0)'}}>
@@ -571,6 +591,24 @@ export default class ManagePage extends React.Component {
                 <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle+" slider"} />
                 <div style={{marginTop: '-8px'}}>Bright {this.state.brightValue}</div>
                 <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider" />
+              </div>
+            </div>
+          </div>
+        </Tab>
+        <Tab key={'reportEmail'} label="Report" value='1' className="tab-item">
+          <div className="tab-content self-center" >
+            <div className="self-center" style={{marginTop:'15px',width: '420px'}}>
+              <div style={{width: '420px'}}>
+                <SelectField labelMember="primary" menuItems={reportSlaveList} onChange={this._reportSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '210px'}}/>
+                <SelectField labelMember="primary" onChange={this._reportDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={reportDeviceList} style={{width: '210px', marginLeft: '5px', position: 'absolute'}}/>
+              </div>
+              <div>
+                <div className="row">
+                  <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>溫度:</h4>
+                  <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.devTemp}</h4>
+                    <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>風扇:</h4>
+                    <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState}</h4>
+                </div>
               </div>
             </div>
           </div>

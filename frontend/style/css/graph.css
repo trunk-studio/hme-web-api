@@ -11,13 +11,18 @@ html {
 
 body, #react-view {
   background-color: rgba(0,0,0,0);
+  margin: 0px ;
+}
+
+body {
 }
 
 #react-view {
   /*min-height: 320px !important;*/
   /*.background-splash {*/
-   height: 100% !important;
-   min-height: 320px;
+
+  height: 100% !important;
+  min-height: 320px;
    /*background-image: url("../../../public/assets/images/HMEsplash.png");*/
 /*}*/
 }
@@ -49,6 +54,15 @@ body, #react-view {
 }
 
 /* ========= scheduleDetail ===========*/
+
+
+.schedule-detail-pro {
+  display: -webkit-flex; /* Safari */
+  -webkit-justify-content: space-around; /* Safari 6.1+ */
+  display: flex;
+  justify-content: space-around;
+}
+
 
 .nv-axisMaxMin.nv-axisMaxMin-x {
   /*display: none;*/
@@ -169,12 +183,12 @@ body, #react-view {
 }
 
 .tab-content {
-  width: 95%;
+  width: 96%;
   overflow-x: hidden;
   min-height: 240px;
   padding-left: 15px;
-  padding-right: 15px;
-  padding-bottom: 15px;
+  padding-right: 10px;
+  padding-bottom: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
   background-color: rgba(255,255,255,0.5);
