@@ -1,7 +1,7 @@
 require("jquery");
-require('../../../node_modules/bootstrap/dist/css/bootstrap.min.css');
-require('../../style/css/graph.css');
+require('../../../public/assets/css/bootstrap-grid-only_css.css');
 require('../../style/css/nv.d3.css');
+require('../../style/css/graph.css');
 require('../../style/css/slider.css');
 
 import jwtDecode from 'jwt-decode'
