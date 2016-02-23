@@ -22,6 +22,8 @@ import webpackHotMiddleware from 'koa-webpack-hot-middleware';
 import moment from 'moment';
 import sinon from 'sinon';
 import fs from 'fs-extra';
+import staticCache from 'koa-static-cache';
+import compress from 'koa-compress';
 
 global.appConfig = config;
 
@@ -74,6 +76,7 @@ if (environment === 'development') {
   app.use(convert(webpackHotMiddleware(compiler)));
 }
 
+app.use(convert(staticCache(path.join(__dirname, '../public'), {maxAge: 365 * 24 * 60 * 60, gzip: true}, {})));
 
 
 
@@ -91,9 +94,11 @@ app.use(async function (ctx, next) {
 });
 
 
+
 controllers.getSlaveHostRoute()
 controllers.setupPublicRoute()
 controllers.setupAppRoute()
+
 
 app.use(async function (ctx, next){
   console.log('=== send file ===');
