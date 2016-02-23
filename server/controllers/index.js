@@ -160,7 +160,7 @@ export default class Routes {
         setupPage = 'setup';
       const HTML = `
       <!DOCTYPE html>
-      <html style="background-image: url('/public/assets/images/HMEsplash.png')">
+      <html style="background-image: url('/public/assets/images/HMEsplash_60.jpg')">
         <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
