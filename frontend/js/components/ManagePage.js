@@ -542,11 +542,10 @@ export default class ManagePage extends React.Component {
         </Tab>
         <Tab key={'reportEmail'} label="Report" value='1' className="tab-item">
           <div className="tab-content self-center" >
-
-            <div className="self-center" style={{marginTop:'15px',width: '500px'}}>
-              <div style={{width: '500px'}}>
-                <SelectField labelMember="primary" menuItems={reportSlaveList} onChange={this._reportSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '250px'}}/>
-                <SelectField labelMember="primary" onChange={this._reportDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={reportDeviceList} style={{width: '250px', marginLeft: '5px', position: 'absolute'}}/>
+            <div className="self-center" style={{marginTop:'15px',width: '420px'}}>
+              <div style={{width: '420px'}}>
+                <SelectField labelMember="primary" menuItems={reportSlaveList} onChange={this._reportSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '210px'}}/>
+                <SelectField labelMember="primary" onChange={this._reportDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={reportDeviceList} style={{width: '210px', marginLeft: '5px', position: 'absolute'}}/>
               </div>
               <div>
                 <div className="row">
