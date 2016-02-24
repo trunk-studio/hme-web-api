@@ -1,5 +1,6 @@
 import React                from 'react';
 import { connect } from 'react-redux'
+import moment from 'moment';
 import {
   requestScan, requestDeviceGroup, requestTestOneDevice,
   requestTestGroupDevices, requestTestAllDevices,
@@ -14,7 +15,7 @@ import {
 
 import {
   requestGetReportEmail, requestUpdateReportEmail,
-  requestGetDeviceStatus
+  requestGetDeviceStatus,requestGetLogs
 } from '../actions/ManageActions'
 
 // import ThemeManager from 'material-ui/lib/styles/theme-manager';
@@ -181,7 +182,8 @@ export default class ManagePage extends React.Component {
     this.props.getRole();
     this.props.requestGetSlaveAndDeviceList();
     this.props.requestGetReportEmail();
-
+    this._reloadLogs();
+    setInterval(this._reloadLogs, 60000);
     // this.props.getRole();
     // this.props.requestGetCachedDeviceList();
     // this.props.requestGetCachedSlaveList();
@@ -190,6 +192,10 @@ export default class ManagePage extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+  }
+
+  _reloadLogs = (e) =>{
+    this.props.requestGetLogs();
   }
 
   _wwChanged = (value) => {
@@ -459,6 +465,19 @@ export default class ManagePage extends React.Component {
       </Tab>
     );
 
+    let logs = [];
+    if(this.props.logs.length > 0){
+      this.props.logs.forEach((item, i) => {
+        logs.push(
+          <h5 >{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')} [{item.type}] {item.title}</h5>
+        )
+      });
+    }else{
+      logs.push(
+        <h5 >No error message.</h5>
+      )
+    }
+
     let reportEmailTab = (
     <Tab key={'reportEmail'} label="Report" value='2' className="tab-item">
       <div className="tab-content self-center" >
@@ -576,6 +595,13 @@ export default class ManagePage extends React.Component {
           </div>
         </Tab>
         {adminFunctionTabs}
+        <Tab label="Logs" value='4' className="tab-item">
+          <div className="tab-content self-center">
+            <div className="self-center" style={{width: '415px', marginTop: '15px', wordBreak:'break-all'}}>
+              {logs}
+            </div>
+          </div>
+        </Tab>
         <Tab label="Logout" value='logout' onTouchTap={this._logout}  className="tab-item"/>
       </Tabs>
     );
@@ -608,7 +634,6 @@ function _injectPropsFromStore(state) {
       });
     }
   }
-
   return {
     deviceList: scanResult,
     groupList: groupList,
@@ -618,6 +643,8 @@ function _injectPropsFromStore(state) {
     loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide',
     role: login.role,
     devStatus: manageSettings.devStatus || {devTemp: 'Selse Slave & Device', fanState: 'Selse Slave & Device'},
+    logs: manageSettings.logs || []
+
   };
 }
 
@@ -640,7 +667,8 @@ const _injectPropsFromActions = {
   requestGetDeviceStatus,
   // Auth,
   getRole,
-  logout
+  logout,
+  requestGetLogs
 }
 
 

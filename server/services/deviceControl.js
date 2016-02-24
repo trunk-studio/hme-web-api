@@ -307,6 +307,22 @@ module.exports = {
       console.log(e);
       throw e;
     }
-  }
+  },
+
+  getLogs: async() => {
+    try{
+      let logs = await models.Message.findAll({
+        where:{
+          type: 'error'
+        },
+        order: 'id DESC',
+        limit: 100
+      })
+      return logs;
+    }catch(e){
+      console.log(e);
+      throw e
+    }
+  },
 
 }
