@@ -321,7 +321,7 @@ export default class ScheduleDetail extends React.Component {
       <div>
         <AppBar title="Schedule Detail"
           style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
-          titleStyle={{fontSize: '16px'}}
+          titleStyle={{fontSize: '18px'}}
           iconElementLeft={
             <IconButton onTouchTap={function() {window.location.href = '#/manage';}} >
               <NavigationClose />

@@ -279,8 +279,8 @@ export default class ScheduleDetailConfig extends React.Component {
       <div style={{overflowX: 'hidden'}}>
         <AppBar
           title="Schedule Detail Confing"
-          style={{height: '55px', minHeight: '0px', marginTop: '-9px'}}
-          titleStyle={{fontSize: '20px'}}
+          style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
+          titleStyle={{fontSize: '18px'}}
           iconElementLeft={
             <IconButton onTouchTap={this._goBack} >
               <NavigationClose />
@@ -296,20 +296,22 @@ export default class ScheduleDetailConfig extends React.Component {
                 style={{display: 'inline-block', position: 'relative'}} />
             </FlatButton>
           }
+          iconStyleRight={{overflowX: 'hidden', position: 'absolute', right: '0px', marginRight:'0px'}}
           onLeftIconButtonTouchTap={this.backClick} />
         <div className="self-center" style={{width: '100%', marginTop: '5px'}}>
           <div className="row">
-            <div className="col-md-8 col-sm-8 col-xs-8">
+            <div className="col-md-9 col-sm-9 col-xs-9">
               <div className="row">
                 <LineChart ref="chart" data={chartData} style={{
-                  margin: '0 0 0 18px',
+                  margin: '-10px 0 -17px 18px',
                   width: '100%',
-                  height: '250px'
+                  height: '250px',
+                  paddingRight: '15px',
                   }}
                   options={chartOptions} />
               </div>
             </div>
-            <div className="col-md-4 col-sm-4 col-xs-4" style={{marginLeft: '-3px'}}>
+            <div className="col-md-3 col-sm-3 col-xs-3" style={{marginLeft: '-8px'}}>
               <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
               <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
               <div style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
@@ -321,18 +323,18 @@ export default class ScheduleDetailConfig extends React.Component {
               <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
               <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
               <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
-              <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle}/>
+              <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle + " slider"}/>
               {/*<div>Bright {this.state.brightValue}</div>
               <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onChange={this._brightChanged} className="slider"/> */}
             </div>
           </div>
-          <div className="row smalllRaisedButton" style={{marginLeft:'30px'}}>
-            <RaisedButton label="FULL"  onTouchTap={this._AllOpen}/>
-            <RaisedButton label="6500K" onTouchTap={this._6500k}/>
-            <RaisedButton label="4600K" onTouchTap={this._4600k}/>
-            <RaisedButton label="2950K" onTouchTap={this._2950k}/>
-            <RaisedButton label="saving E" onTouchTap={this._saving}/>
-            <RaisedButton label="B + R" onTouchTap={this._BR}/>
+          <div className="self-center smalllRaisedButton" style={{width: '325px', marginTop: '-0px', paddingBottom: '15px'}}>
+            <RaisedButton label="FUll"  onTouchTap={this._AllOpen} style={{width: '50px', border: '1px solid #DDD'}}/>
+            <RaisedButton label="6500K" onTouchTap={this._6500k} style={{width: '50px', border: '1px solid #DDD'}}/>
+            <RaisedButton label="4600K" onTouchTap={this._4600k} style={{width: '50px', border: '1px solid #DDD'}}/>
+            <RaisedButton label="2950K" onTouchTap={this._2950k} style={{width: '50px', border: '1px solid #DDD'}}/>
+            <RaisedButton label="saving E" onTouchTap={this._saving} style={{width: '80px', border: '1px solid #DDD'}}/>
+            <RaisedButton label="B+R" onTouchTap={this._BR} style={{width: '45px', border: '1px solid #DDD'}}/>
           </div>
         </div>
       </div>
