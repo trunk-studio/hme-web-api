@@ -2,6 +2,7 @@ import {SerialPort} from "serialport";
 import Encode from "./encode";
 
 
+
 let ping = require('ping');
 
 export default class Hme {
@@ -283,6 +284,51 @@ export default class Hme {
       throw e;
     }
   };
+
+//   async resetID ()  {
+//   try {
+//     let serialPort = this.serialPort;
+//     let Rxarry = this.RxBufArry ;
+//     Rxarry.length = 0;
+//     console.log('resetID');
+//     let restartNum = 5;
+//     let success = false;
+//
+//     // do {
+//     //   await this.hmegpio.gpioPulse(5);
+//     //   await this.sleep(15);
+//     //   serialPort.write([1,0], function(err, results) {
+//     //     if(err) return reject(err);
+//     //   });
+//
+//     //   await this.sleep(30);
+//     //   let RxLeng = 0;
+//     //
+//     //
+//     //
+//     //   do {
+//     //     await this.sleep(30);
+//     //     RxLen = Rxarry.length;
+//     //   } while (RxLen != 0);
+//     //
+//     // } while (true);
+//
+//     await this.hmegpio.gpioPulse(5);
+//     await this.sleep(15);
+//     serialPort.write([1,0], function(err, results) {
+//       if(err) return reject(err);
+//     });
+//
+//
+//     await this.sleep(100);
+//     console.log("Rxarry:", Rxarry);
+//     console.log("Rxarry.length:", Rxarry.length);
+//     return Rxarry[0];
+//
+//   } catch (e) {
+//     throw e;
+//   }
+// };
 
   async getSlaveDeviceArray (slaveId)  {
     try {

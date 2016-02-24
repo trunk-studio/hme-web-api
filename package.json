@@ -59,6 +59,7 @@
     "serialport": "^2.0.5",
     "sqlite3": "^3.0.8",
     "superagent": "^1.7.1",
+    "onoff": "^1.0.4",
     "vertical-rc-slider": "https://github.com/kyoyadmoon/vertical-slider-tmp.git"
   },
   "devDependencies": {
