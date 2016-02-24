@@ -469,12 +469,12 @@ export default class ManagePage extends React.Component {
     if(this.props.logs.length > 0){
       this.props.logs.forEach((item, i) => {
         logs.push(
-          <h5 >{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')} [{item.type}] {item.title}</h5>
+          <h5 key={i} >{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')} [{item.type}] {item.title}</h5>
         )
       });
     }else{
       logs.push(
-        <h5 >No error message.</h5>
+        <h5 key={0} >No error message.</h5>
       )
     }
 
