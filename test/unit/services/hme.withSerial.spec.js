@@ -388,6 +388,20 @@ describe("hme with seriel port", () => {
 
     });
 
+    it.only("serial Port resetID", async done => {
+      try {
+        for (var i = 0; i < 1000000; i++) {
+          let result = await services.hme.resetID();
+          console.log('resetID result',result);
+          result.should.be.equal(2)
+        }
+
+        done();
+      } catch (e) {
+        done(e);
+      }
+  });
+
     it("serial Port getDevState", async done => {
       // 取得燈具狀態
       // devTemp:燈具LED溫度

@@ -17,7 +17,7 @@ export default class Services {
       this.logger = new LoggerService();
       this.mail = new MailService();
       this.system = new SystemService();
-      this.Hmegpio = new Hmegpio();
+      this.hmegpio = new Hmegpio();
 
       global.logger = this.logger;
 
