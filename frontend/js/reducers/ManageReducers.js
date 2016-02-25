@@ -1,7 +1,8 @@
 import {
   RECEIVED_REPORT_EMAIL,
   UPDATE_EMAIL_LOADING_STATUS,
-  GET_DEVICE_STATUS
+  GET_DEVICE_STATUS,
+  GET_LOGS
 } from '../actions/ManageActions'
 
 export function manageSettings(state = { }, action) {
@@ -20,6 +21,11 @@ export function manageSettings(state = { }, action) {
       return {
         ...state,
         devStatus: action.data
+      }
+    case GET_LOGS:
+      return {
+        ...state,
+        logs: action.data
       }
     default:
       return state
