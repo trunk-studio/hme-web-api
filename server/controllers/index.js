@@ -187,20 +187,8 @@ export default class Routes {
     // publicRoute.get('/', MainController.index);
     publicRoute.get('/main', async function(ctx, next) {
       try {
-        // let html = await new Promise((done) => {
-        //   let landing =  path.join('./../views/index.html');
-        //   console.log('land', landing);
-        //   console.log("!!!!!!!!!",__dirname + '/../test.js');
-        //   fs.readFile(__dirname + '/../views/index.html' ,function(err, data){
-        //     if(!err){
-        //       console.log("err",err);
-        //       throw err
-        //     }
-        //     console.log('OK',data);
-        //     done(data);
-        //   });
-        // });
-        // console.log('HTML',html);
+        let config =  await services.deviceControl.getSetting();
+        let host = config.SYSTEM.MASTER_NAME + '.local';
         const HTML = `
         <!DOCTYPE html>
         <html>
@@ -225,7 +213,7 @@ export default class Routes {
                   <div class="col-lg-12 col-md-12 col-xs-12 text-center">
                     <div class="ipad-wrapper"><img src="/public/assets/images/ipad.png" alt="ipad gallery background" class="img-responsive" /></div>
                     <div class="ipad-inner">
-                      <iframe src="http://localhost:3000" class="ipad-inner-frame"></iframe>
+                      <iframe src="http://${host}:3000" class="ipad-inner-frame"></iframe>
                     </div>
                   </div>
                 </div>
