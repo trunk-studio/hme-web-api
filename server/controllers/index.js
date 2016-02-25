@@ -183,8 +183,81 @@ export default class Routes {
       </html>
       `;
       ctx.body = HTML
-    })
+    });
     // publicRoute.get('/', MainController.index);
+    publicRoute.get('/main', async function(ctx, next) {
+      try {
+        // let html = await new Promise((done) => {
+        //   let landing =  path.join('./../views/index.html');
+        //   console.log('land', landing);
+        //   console.log("!!!!!!!!!",__dirname + '/../test.js');
+        //   fs.readFile(__dirname + '/../views/index.html' ,function(err, data){
+        //     if(!err){
+        //       console.log("err",err);
+        //       throw err
+        //     }
+        //     console.log('OK',data);
+        //     done(data);
+        //   });
+        // });
+        // console.log('HTML',html);
+        const HTML = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta name="description" content="HME HLP 600 Master" />
+            <title>HLP 600 Master - HM ELECTRONICS CO., LTD.</title>
+            <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon-144-precomposed.png" />
+            <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114-precomposed.png" />
+            <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72-precomposed.png" />
+            <link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png" />
+            <link rel="shortcut icon" href="favicon.ico" />
+            <link rel="stylesheet" href="/public/assets/css/barnaul.css" type="text/css" />
+            <link rel="stylesheet" href="/public/assets/css/custom.css" type="text/css" />
+          </head>
+          <body data-spy="scroll" data-target=".navbar-collapse" data-offset="76">
+
+            <section class="ipad">
+              <div class="container">
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-xs-12 text-center">
+                    <div class="ipad-wrapper"><img src="/public/assets/images/ipad.png" alt="ipad gallery background" class="img-responsive" /></div>
+                    <div class="ipad-inner">
+                      <iframe src="http://localhost:3000" class="ipad-inner-frame"></iframe>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="description">
+              <div class="container">
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-xs-12 text-center">
+                    <div class="stickers">
+                      <img src="/public/assets/images/download.png" alt="ipad gallery background" class="img-responsive sticker1" /></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- <footer>
+              <div class="container">
+                <div class="row">
+                </div>
+              </div>
+            </footer> -->
+          </body>
+        </html>
+        `;
+        ctx.body = HTML;
+
+      } catch (e) {
+        console.log(e);
+      }
+    });
     app.use(publicRoute.middleware())
 
 
