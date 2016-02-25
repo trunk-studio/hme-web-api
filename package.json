@@ -29,6 +29,7 @@
     "jwt-decode": "^1.5.1",
     "koa": "^2.0.0-alpha.3",
     "koa-bodyparser": "^2.0.1",
+    "koa-compress": "^1.0.9",
     "koa-convert": "^1.2.0",
     "koa-jwt": "^1.1.2",
     "koa-logger": "^2.0.0",
@@ -36,6 +37,7 @@
     "koa-response-time": "^1.0.2",
     "koa-router": "^7.0.0",
     "koa-send": "^3.1.0",
+    "koa-static-cache": "^3.1.4",
     "material-ui": "0.14.0-rc1",
     "md5": "^2.0.0",
     "moment": "^2.10.6",
@@ -60,7 +62,7 @@
     "sqlite3": "^3.0.8",
     "superagent": "^1.7.1",
     "onoff": "^1.0.4",
-    "vertical-rc-slider": "https://github.com/kyoyadmoon/vertical-slider-tmp.git"
+    "vertical-rc-slider": "git@github.com:kyoyadmoon/slider.git#3.3.4-vertical"
   },
   "devDependencies": {
     "babel-core": "^6.3.15",

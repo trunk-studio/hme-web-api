@@ -68,7 +68,7 @@ describe("schedule", () => {
         done(e)
       }
     });
-    it.only("del Last controller", async(done) => {
+    it("del Last controller", async(done) => {
       try {
         let result = await request.post('/rest/master/schedule/delete/' + schedule2.id)
         .send({

@@ -14,7 +14,7 @@ const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js')
 
 import numeral from 'numeral'
 import NVD3Chart from 'react-nvd3';
-import VerticalSlider from'vertical-rc-slider';
+import VerticalSlider from 'vertical-rc-slider';
 import Slider from 'rc-slider';
 const style = {
   width: 400,
@@ -321,7 +321,7 @@ export default class ScheduleDetail extends React.Component {
       <div>
         <AppBar title="Schedule Detail"
           style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
-          titleStyle={{fontSize: '20px'}}
+          titleStyle={{fontSize: '18px'}}
           iconElementLeft={
             <IconButton onTouchTap={function() {window.location.href = '#/manage';}} >
               <NavigationClose />
@@ -329,9 +329,9 @@ export default class ScheduleDetail extends React.Component {
           }
           iconElementRight={
             <div>
-              <FlatButton label={this.state.fastRunLabel} ref="fastRun" onTouchTap={this._fastRun} style={{marginTop:'4px',marginRight:'10px',marginLeft:'auto', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
-              <FlatButton label="RESET" onTouchTap={this._handleDialogOpen} style={{marginTop:'4px',marginRight:'10px',marginLeft:'auto', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
-              <FlatButton label="save" onTouchTap={this._saveScheduleDetails} style={{didFlip:'true',marginTop:'4px',marginRight:'10px',marginLeft:'auto', backgroundColor: 'rgba(0,0,0,0)', color: '#fff'}} >
+              <FlatButton label={this.state.fastRunLabel} ref="fastRun" onTouchTap={this._fastRun} style={{marginTop:'4px', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
+              <FlatButton label="RESET" onTouchTap={this._handleDialogOpen} style={{marginTop:'4px',marginRight:'10px', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
+              <FlatButton label="save" onTouchTap={this._saveScheduleDetails} style={{didFlip:'true',marginTop:'4px', backgroundColor: 'rgba(0,0,0,0)', color: '#fff'}} >
                 <RefreshIndicator
                   size={28}
                   left={0}
@@ -341,13 +341,14 @@ export default class ScheduleDetail extends React.Component {
               </FlatButton>
             </div>
           }
+          iconStyleRight={{overflowX: 'hidden', position: 'absolute', right: '0px', marginRight:'0px'}}
         />
         <div className="background-splash self-center" style={{
         width: '100%',
         overflowX: 'hidden'
         }}>
           <div className="row">
-            <div className="center-self" style={{position: 'relative'}}>
+            <div className="center-self">
               <div className="col-md-11 col-sm-11 col-xs-11 chart-container">
                 <NVD3Chart
                   type="lineChart"
@@ -363,11 +364,10 @@ export default class ScheduleDetail extends React.Component {
                   }}
                   forceY={[0,1]} />
               </div>
-              <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '85px',
-                position: 'absolute', right: '-60px'}}>
-                <VerticalSlider className="vertical-slider"
+              <div className="col-md-1 col-sm-1 col-xs-1" style={{marginTop: '12px', height: '150px', marginLeft: '-20px'}}>
+                <VerticalSlider className="bright-slider"
                   min={0} max={100} marks={SLIDER_WEIGHT_MARKS}
-                  included={false} style={{float: 'right'}}
+                  included={false}
                   value={sliderData.weight} onAfterChange={this._handleWeightChanged}
                   tipFormatter={function(v){return v+'%';}}
                   />

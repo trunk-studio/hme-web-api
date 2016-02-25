@@ -341,3 +341,13 @@ exports.updateTime = async function (ctx) {
     throw e;
   }
 }
+
+exports.logs = async function (ctx) {
+  try {
+    let logs = await services.deviceControl.getLogs();
+    ctx.body = logs;
+  } catch (e) {
+    ctx.body = e;
+    throw e;
+  }
+}
