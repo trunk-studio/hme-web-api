@@ -230,13 +230,24 @@ export default class Hme {
     }
   };
 
+  async SearchDevice () {
+    try {
+
+      let result = await this.resetID();
+
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  };
 
 
-  async SearchDevice ()  {
+
+  async pollingSearchDevice ()  {
     try {
       let ReDevArry = [];
       let ReDataArry = [];
-      const MAXSECHDEVNUM = 10;
+      const MAXSECHDEVNUM = 100;
 
       let params = {
         u8DevID:1,
@@ -295,6 +306,7 @@ export default class Hme {
     let success = false;
 
     let RxRawArry = [];
+    let ReDevArry = []; //[[devID1, gID1],[devID2, gID2]]
 
     do {
       Rxarry.length = 0;
@@ -313,9 +325,11 @@ export default class Hme {
         await this.sleep(20);
         console.log("Rxarry:", Rxarry);
         console.log("Rxarry.length:", Rxarry.length);
-        console.log('Rxarry:', Rxarry,'oldRxLen');
+        console.log('Rxarry:', Rxarry,'oldRxLen:',oldRxLen);
 
-        waitFlag = (Rxarry.length != oldRxLen && RxRawArry[0] == 2);
+        waitFlag = (Rxarry.length > oldRxLen && Rxarry[0] != 1 );
+        console.log('Rxarry[0]:',Rxarry[0]);
+        console.log('waitFlag:',waitFlag);
         oldRxLen = Rxarry.length;
       } while (waitFlag);
 
@@ -323,23 +337,18 @@ export default class Hme {
       console.log("restartNum:", restartNum);
     } while (!(restartNum <= 0 || Rxarry[0] === 2));
 
+
     if (Rxarry.length != 0 && (Rxarry.length % 2) == 0) {
-      console.log('OK');
+      for (var i = 0; i < Math.ceil(Rxarry.length/2); i++) {
+        let DevData = {
+          devID:Rxarry[i * 2] + (Rxarry[(i * 2) + 1] * 255) - 1,
+          DevGroup:0
+        }
+        ReDevArry.push(DevData); //0 is counterfeit
+      }
     }
 
-    return Rxarry[0];
-
-    // await services.hmegpio.gpioPulse(5);
-    // await this.sleep(15);
-    // serialPort.write([1,0], function(err, results) {
-    //   if(err) return reject(err);
-    // });
-    //
-    //
-    // await this.sleep(20);
-    // console.log("Rxarry:", Rxarry);
-    // console.log("Rxarry.length:", Rxarry.length);
-    // return Rxarry[0];
+    return ReDevArry;
 
   } catch (e) {
     throw e;

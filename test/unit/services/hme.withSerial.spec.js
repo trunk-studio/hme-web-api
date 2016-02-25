@@ -373,14 +373,16 @@ describe("hme with seriel port", () => {
 
     });
 
-    it("serial Port SearchDevice", async done => {
+    it.only("serial Port SearchDevice", async done => {
 
       try {
+
         let result = await services.hme.SearchDevice();
         console.log('SearchDevice result',result);
         result.should.be.Array;
         result[0].should.have.any.keys('devID');
         result[0].should.have.any.keys('DevGroup');
+
         done();
       } catch (e) {
         done(e);
@@ -388,19 +390,19 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port resetID", async done => {
-      try {
-        for (var i = 0; i < 1000000; i++) {
-          let result = await services.hme.resetID();
-          console.log('resetID result',result);
-          result.should.be.equal(2)
-        }
-
-        done();
-      } catch (e) {
-        done(e);
-      }
-  });
+  //   it("serial Port resetID", async done => {
+  //     try {
+  //       for (var i = 0; i < 10000; i++) {
+  //         let result = await services.hme.resetID();
+  //         console.log('resetID result',result);
+  //         result.should.be.Array;
+  //       }
+  //
+  //       done();
+  //     } catch (e) {
+  //       done(e);
+  //     }
+  // });
 
     it("serial Port getDevState", async done => {
       // 取得燈具狀態
