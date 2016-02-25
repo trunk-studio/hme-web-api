@@ -76,9 +76,9 @@ if (environment === 'development') {
   app.use(convert(webpackHotMiddleware(compiler)));
 }
 
-app.use(convert(staticCache(path.join(__dirname, '../public'), {maxAge: 365 * 24 * 60 * 60, gzip: true}, {})));
-
-
+// cache files
+app.use(convert(mount('/public/assets/js', staticCache(path.join(__dirname, '../public/assets/js/'), {maxAge: 30 * 24 * 60 * 60}))));
+app.use(convert(mount('/public/assets/images', staticCache(path.join(__dirname, '../public/assets/images/'), {maxAge: 30 * 24 * 60 * 60}))));
 
 global.services = new Services();
 var controllers = new Controllers(app);
