@@ -177,4 +177,54 @@ describe("device", () => {
     });
   });
 
+
+  describe("logs", () => {
+    before( async done => {
+      try {
+        messages = [
+          {
+            title: 'test message 1',
+            type: 'info'
+          },{
+            title: 'test message 2',
+            type: 'info'
+          },{
+            title: 'test error message 1',
+            type: 'error'
+          },{
+            title: 'test error message 2',
+            type: 'error'
+          }
+        ]
+        let messages = await Promise.all(
+          messages.map( message => models.Message.create(message))
+        );
+        done();
+      } catch (e) {
+        console.log(e);
+        done(e)
+      }
+    });
+
+    it("get Error", async(done) => {
+      try {
+        let result = await services.deviceControl.getLogs();
+        console.log(result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+
+    it("get Error use get", async(done) => {
+      try {
+        let result = await request.get('/rest/master/logs');
+        console.log(result.body);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+  });
+
 });

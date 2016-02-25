@@ -79,6 +79,17 @@ export default class ScheduleList extends React.Component {
   };
 
   componentDidMount () {
+    let isEasy = localStorage.getItem('HME_scheduleList_mode');
+    if(isEasy !== null){
+      if( isEasy == 'sample' ){
+        isEasy = true
+      }else{
+        isEasy = false
+      }
+    }else{
+      isEasy = true
+      localStorage.setItem('HME_scheduleList_mode', 'sample');
+    }
     let pro_slaveIndex = localStorage.getItem('HME_scheduleList_slaveIndex');
     if(!pro_slaveIndex)
       localStorage.setItem('HME_scheduleList_slaveIndex', -1);
@@ -89,7 +100,8 @@ export default class ScheduleList extends React.Component {
       });
     this.props.requestGetCachedSlaveList();
     this.setState({
-      selectedSlave: localStorage.getItem('HME_scheduleList_slaveIndex')
+      selectedSlave: localStorage.getItem('HME_scheduleList_slaveIndex'),
+      isEasy: isEasy
     });
 
     this.props.requestGetEasySchedule(pro_slaveIndex  || 0);
@@ -360,6 +372,9 @@ export default class ScheduleList extends React.Component {
   _switchView = (e) => {
     this.props.requestGetSlaveSchedule(this.state.selectedSlave? this.state.selectedSlave: null);
     this.props.requestGetEasySchedule(this.state.selectedSlave || 0);
+    let isEasy = localStorage.getItem('HME_scheduleList_mode');
+    localStorage.setItem('HME_scheduleList_mode', isEasy=='sample' ? 'pro':'sample');
+    isEasy = isEasy=='sample' ? true : false;
     this.setState({
       isEasy: !this.state.isEasy
     })
@@ -537,11 +552,11 @@ export default class ScheduleList extends React.Component {
         </Dialog>
         <div id="easyScheduleList" className={easyDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row">
-            <div className="smalllRaisedButton" style={{marginLeft: '30px', marginTop: '15px'}}>
-              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '200px', float: 'left'}} value={slaveSelectFieldIndex} />
-              <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'75px', marginLeft: '10px'}} />
+            <div className="smalllRaisedButton" style={{marginLeft: '15px', marginTop: '15px'}}>
+              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '160px', float: 'left'}} value={slaveSelectFieldIndex} />
+              <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'65px', marginLeft: '10px'}} />
               <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose} style={{ width:'75px', marginLeft: '10px'}} />
-              <RaisedButton ref="scheduleSetBtn" label="Pro" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'75px', marginLeft: '10px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Pro" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'65px', marginLeft: '10px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}
@@ -593,17 +608,20 @@ export default class ScheduleList extends React.Component {
         </div>
         <div id="scheduleList" className={proDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
           <div className="row justify-content">
-            <div className="smalllRaisedButton" style={{marginLeft: '-3px', marginTop: '15px'}}>
-              <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '160px', float: 'left'}} value={slaveSelectFieldIndex} />
+            <div className="row schedule-detail-pro" style={{marginTop: '15px'}}>
+              <div className="smalllRaisedButton" >
+                <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '150px'}} value={slaveSelectFieldIndex} />
+              </div>
+              <div className="smalllRaisedButton">
               {/*
                 <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
                 <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
               */}
-              <RaisedButton ref="scheduleAddBtn" label="ADD" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{width:'60px',marginLeft: '10px'}}/>
-              <RaisedButton ref="scheduleAddBtn" label="Delete" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == 0)} onTouchTap={this._deleteLastRow} style={{width:'60px',marginLeft: '10px'}}/>
-              <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveScheduleList} style={{width:'70px',marginLeft: '5px'}} disabled={(this.state.selectedSlave == 0)} />
-              <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose} style={{width:'80px', marginLeft: '5px'}} />
-              <RaisedButton ref="scheduleSetBtn" label="Simple" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'70px', marginLeft: '5px'}} />
+              <RaisedButton ref="scheduleAddBtn" label="Add" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{width:'50px',marginLeft: '10px'}}/>
+              <RaisedButton ref="scheduleAddBtn" label="Del" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == 0)} onTouchTap={this._deleteLastRow} style={{width:'50px',marginLeft: '10px'}}/>
+              <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveScheduleList} style={{width:'50px',marginLeft: '10px'}} disabled={(this.state.selectedSlave == 0)} />
+              <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose} style={{width:'60px', marginLeft: '10px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Simple" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'60px', marginLeft: '10px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}
@@ -611,6 +629,7 @@ export default class ScheduleList extends React.Component {
                 status={this.props.loading || 'hide'}
                 style={{display: 'inline-block',
                         position: 'relative'}} />
+                </div>
           </div>
           </div>
           <Table selectable={false} style={{backgroundColor: 'rgba(0,0,0,0)'}}>

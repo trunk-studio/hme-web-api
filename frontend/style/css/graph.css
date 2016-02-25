@@ -1,6 +1,7 @@
 html, body, #react-view, div.background-splash {
   width: 100%;
   height: 100%;
+  overflow-x: hidden;
   /*backgroundImage: "url('public/assets/images/HMEsplash.png')"*/
 }
 
@@ -11,13 +12,18 @@ html {
 
 body, #react-view {
   background-color: rgba(0,0,0,0);
+  margin: 0px ;
+}
+
+body {
 }
 
 #react-view {
   /*min-height: 320px !important;*/
   /*.background-splash {*/
-   height: 100% !important;
-   min-height: 320px;
+
+  height: 100% !important;
+  min-height: 320px;
    /*background-image: url("../../../public/assets/images/HMEsplash.png");*/
 /*}*/
 }
@@ -50,6 +56,19 @@ body, #react-view {
 
 /* ========= scheduleDetail ===========*/
 
+
+.rc-tooltip-inner, .rc-tooltip-inner>span {
+  width: 100%;
+}
+
+.schedule-detail-pro {
+  display: -webkit-flex; /* Safari */
+  -webkit-justify-content: space-around; /* Safari 6.1+ */
+  display: flex;
+  justify-content: space-around;
+}
+
+
 .nv-axisMaxMin.nv-axisMaxMin-x {
   /*display: none;*/
 
@@ -60,6 +79,10 @@ body, #react-view {
   -webkit-justify-content: space-around; /* Safari 6.1+ */
   display: flex;
   justify-content: space-around;
+}
+
+.bright-slider .vertical-rc-slider-mark-text {
+  color: #FFF;
 }
 
 /*.tick > text {
@@ -85,7 +108,8 @@ body, #react-view {
 .timeSlider .rc-slider-dot {
   display: none;
 }
-.vertical-slider .rc-slider-handle {
+.vertical-slider .rc-slider-handle,
+.bright-slider.vertical-rc-slider .vertical-rc-slider-handle {
   border: solid 2px #FF4081;
 }
 
@@ -169,12 +193,12 @@ body, #react-view {
 }
 
 .tab-content {
-  width: 95%;
+  width: 96%;
   overflow-x: hidden;
   min-height: 240px;
   padding-left: 15px;
-  padding-right: 15px;
-  padding-bottom: 15px;
+  padding-right: 10px;
+  padding-bottom: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
   background-color: rgba(255,255,255,0.5);
