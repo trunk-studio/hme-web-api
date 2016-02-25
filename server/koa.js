@@ -22,6 +22,8 @@ import webpackHotMiddleware from 'koa-webpack-hot-middleware';
 import moment from 'moment';
 import sinon from 'sinon';
 import fs from 'fs-extra';
+import staticCache from 'koa-static-cache';
+import compress from 'koa-compress';
 
 global.appConfig = config;
 
@@ -74,8 +76,9 @@ if (environment === 'development') {
   app.use(convert(webpackHotMiddleware(compiler)));
 }
 
-
-
+// cache files
+app.use(convert(mount('/public/assets/js', staticCache(path.join(__dirname, '../public/assets/js/'), {maxAge: 30 * 24 * 60 * 60}))));
+app.use(convert(mount('/public/assets/images', staticCache(path.join(__dirname, '../public/assets/images/'), {maxAge: 30 * 24 * 60 * 60}))));
 
 global.services = new Services();
 var controllers = new Controllers(app);
@@ -91,9 +94,11 @@ app.use(async function (ctx, next) {
 });
 
 
+
 controllers.getSlaveHostRoute()
 controllers.setupPublicRoute()
 controllers.setupAppRoute()
+
 
 app.use(async function (ctx, next){
   console.log('=== send file ===');

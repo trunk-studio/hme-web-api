@@ -1,0 +1,6 @@
+@media screen and (max-device-width: 480px) {
+  /* For width less than iPhone 4s */
+  .schedule-detail-pro {
+    display: block;
+  }
+}
