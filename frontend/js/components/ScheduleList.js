@@ -101,6 +101,7 @@ export default class ScheduleList extends React.Component {
     this.props.requestGetCachedSlaveList();
     this.setState({
       selectedSlave: localStorage.getItem('HME_scheduleList_slaveIndex'),
+      isSetBtnClose: localStorage.getItem('HME_scheduleList_slaveIndex')? false : true,
       isEasy: isEasy
     });
 
@@ -393,7 +394,7 @@ export default class ScheduleList extends React.Component {
     let rows = [];
     let tmpScheduleList = [];
 
-    if(this.props.scheduleList) {
+    if(this.props.scheduleList && (this.state.selectedSlave != -1)) {
       // if(this.state.isAll) {
         this.props.scheduleList.forEach((schedule, i) => {
           // if (schedule.SlaveId == null)
@@ -617,10 +618,10 @@ export default class ScheduleList extends React.Component {
                 <RaisedButton label="Slave" disabled={this.state.isGroup} onTouchTap={this._groupScheduleBtn} secondary={true} style={{marginLeft: '15px'}} />
                 <RaisedButton label="ALL" disabled={this.state.isAll} onTouchTap={this._allScheduleBtn} secondary={true} style={{marginLeft: '15px'}}/>
               */}
-              <RaisedButton ref="scheduleAddBtn" label="Add" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == 0)} onTouchTap={this._addRow} style={{width:'50px',marginLeft: '10px'}}/>
-              <RaisedButton ref="scheduleAddBtn" label="Del" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == 0)} onTouchTap={this._deleteLastRow} style={{width:'50px',marginLeft: '10px'}}/>
-              <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveScheduleList} style={{width:'50px',marginLeft: '10px'}} disabled={(this.state.selectedSlave == 0)} />
-              <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose} style={{width:'60px', marginLeft: '10px'}} />
+              <RaisedButton ref="scheduleAddBtn" label="Add" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == -1)} onTouchTap={this._addRow} style={{width:'50px',marginLeft: '10px'}}/>
+              <RaisedButton ref="scheduleAddBtn" label="Del" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == -1)} onTouchTap={this._deleteLastRow} style={{width:'50px',marginLeft: '10px'}}/>
+              <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveScheduleList} style={{width:'50px',marginLeft: '10px'}} disabled={(this.state.selectedSlave == -1)} />
+              <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == -1)} style={{width:'60px', marginLeft: '10px'}} />
               <RaisedButton ref="scheduleSetBtn" label="Simple" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'60px', marginLeft: '10px'}} />
               <RefreshIndicator
                 size={30}
