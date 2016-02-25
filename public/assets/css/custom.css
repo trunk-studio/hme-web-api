@@ -2,8 +2,8 @@
 
 body {
   background-image: url("/public/assets/images/bg.jpg");
-  background-position: 50% -120px;
-  background-size: cover;
+  background-position: 50% -250px;
+  background-size: 140%;
   background-color: rgb(106, 184, 16);
   /*overflow: hidden;*/
 }
@@ -33,64 +33,49 @@ body::-webkit-scrollbar-thumb {
 
 /* Super-Large Screen */
 
+section.ipad {
+  margin-bottom: 0px;
+}
 .ipad-wrapper {
-  width: 990px;
-  margin: 48px auto 0;
+  width: 890px;
+  margin: 32px auto 0;
 }
 .ipad-inner {
   position: absolute;
   left: 49.8%;
   transform: translateX(-50%);
-  width: 785px;
-  top: 135px;
+  width: 708px;
+  top: 110px;
 }
 .ipad-inner-frame {
   width: 100%;
   margin-left: -10px;
-  height: 588px;
+  height: 528px;
 }
 
 /* download platform stickers */
 
+.float {
+  position: fixed;
+  top: calc(45% + 200px);
+  left: calc(57% - 150px);
+}
 .stickers {
+  margin-bottom: 0px;
+}
+.sticker-wrapper {
   margin: -90px auto;
 }
 .sticker1 {
-  margin: 0 66%;
-  width: 200px;
+  margin: 0 auto;
+  width: 150px;
 }
 
-/* Max Screen 1440px */
+/* Screen 1440px */
 
-@media (max-width: 1440px) {
+@media (max-width: 1348px) {
   body {
-    background-position: 50% -120px;
-  }
-  .ipad-wrapper {
-    width: 890px;
-    margin: 48px auto 0;
-    z-index: 999;
-  }
-  .ipad-inner {
-    position: absolute;
-    left: 49.8%;
-    transform: translateX(-50%);
-    width: 700px;
-    top: 128px;
-    /*z-index: -1;*/
-  }
-  .ipad-inner-frame {
-    width: 100%;
-    margin-left: -8px;
-    height: 525px;
-  }
-}
-
-/* Max Screen 1199px */
-
-@media (max-width: 1199px) {
-  body {
-    background-position: 50% -180px;
+    background-position: 50% -250px;
   }
   .ipad-wrapper {
     width: 790px;
@@ -100,21 +85,63 @@ body::-webkit-scrollbar-thumb {
     position: absolute;
     left: 49.8%;
     transform: translateX(-50%);
-    width: 622px;
+    width: 624px;
+    top: 89px;
+  }
+  .ipad-inner-frame {
+    width: 100%;
+    margin-left: -5px;
+    height: 475px;
+  }
+  .float {
+    position: fixed;
+    top: calc(45% + 200px);
+    left: calc(55% - 150px);
+  }
+}
+
+/* Screen 1280px */
+
+@media (max-width: 1199px) {
+  body {
+    background-position: 50% -250px;
+    background-size: 150%;
+  }
+  section.ipad {
+    margin-bottom: 72px;
+  }
+  .ipad-wrapper {
+    width: 790px;
+    margin: 20px auto 0;
+  }
+  .ipad-inner {
+    position: absolute;
+    left: 49.8%;
+    transform: translateX(-50%);
+    width: 624px;
     top: 90px;
   }
   .ipad-inner-frame {
     width: 100%;
-    margin-left: -8px;
+    margin-left: -6px;
     height: 468px;
+  }
+  .float {
+    position: relative;
+    top: 0;
+    left: 0;
   }
 }
 
-/* Max Screen 991px */
+/* Screen 1024px */
 
 @media (max-width: 991px) {
   body {
-    background-position: 50% -120px;
+    background-position: 50% -150px;
+    background-size: 150%;
+  }
+  section.ipad {
+    margin-bottom: 72px;
   }
   .ipad-wrapper {
     width: 690px;
@@ -130,6 +157,11 @@ body::-webkit-scrollbar-thumb {
   .ipad-inner-frame {
     width: 100%;
     height: 408px;
+  }
+  .float {
+    position: relative;
+    top: 0;
+    left: 0;
   }
 }
 
@@ -137,7 +169,11 @@ body::-webkit-scrollbar-thumb {
 
 @media (max-width: 767px) {
   body {
-    background-position: 50% -60px;
+    background-position: 50% 0px;
+    background-size: 150%;
+  }
+  section.ipad {
+    margin-bottom: 72px;
   }
   .ipad-wrapper {
     width: 690px;
@@ -153,5 +189,10 @@ body::-webkit-scrollbar-thumb {
   .ipad-inner-frame {
     width: 100%;
     height: 408px;
+  }
+  .float {
+    position: relative;
+    top: 0;
+    left: 0;
   }
 }

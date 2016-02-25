@@ -27,8 +27,7 @@ const Tabs = require('material-ui/lib/tabs/tabs');
 const Tab = require('material-ui/lib/tabs/tab');
 const ScheduleList = require('./ScheduleList');
 const LineChart = require("react-chartjs").Line;
-
-import { Slider } from 'material-ui';
+import { Slider} from 'material-ui';
 import SliderRc from 'rc-slider';
 import RefreshIndicator from 'material-ui/lib/refresh-indicator';
 
@@ -351,6 +350,16 @@ export default class ManagePage extends React.Component {
     window.location.href = "/#/close";
   };
 
+  _onLogActive = (e) => {
+    let logsLength = this.props.logs.length;
+    if(logsLength > 0){
+      localStorage.setItem('HME_Logs_Id',this.props.logs[0].id);
+      var notify = document.getElementsByClassName('logNotify')[0]
+      if(notify)
+        notify.parentNode.removeChild(notify);
+    }
+  };
+
   _saveReportingEmail = (e) => {
     let inputReportingEmail = this.refs.inputReportingEmail;
     // console.log(inputReportingEmail.getValue());
@@ -546,6 +555,13 @@ export default class ManagePage extends React.Component {
     if(this.props.role == 'engineer' || this.props.role == 'administrator')
       adminFunctionTabs.push(scheduleList, reportEmailTab, testingTab);
 
+    let logsId = localStorage.getItem('HME_Logs_Id');
+    let notify = document.getElementsByClassName('logsTab')[0]
+    if(notify && this.props.logs.length > 0){
+      if(logsId != this.props.logs[0].id && document.getElementsByClassName('logNotify').length < 1){
+        notify.innerHTML = notify.innerHTML + "<img class='logNotify'></img>"
+      }
+    }
     return (
       <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} tabItemContainerStyle={{backgroundColor: "#032c70", marginTop: '-15px'}} contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0)'}}>
         <Tab label="Setup" value='0' className="tab-item">
@@ -595,7 +611,8 @@ export default class ManagePage extends React.Component {
           </div>
         </Tab>
         {adminFunctionTabs}
-        <Tab label="Logs" value='4' className="tab-item">
+        <Tab label="Logs" value='4' className="tab-item logsTab"
+          onActive={this._onLogActive}>
           <div className="tab-content self-center">
             <div className="self-center" style={{width: '415px', marginTop: '15px', wordBreak:'break-all'}}>
               {logs}
