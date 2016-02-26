@@ -62,7 +62,7 @@
     "sqlite3": "^3.0.8",
     "superagent": "^1.7.1",
     "onoff": "^1.0.4",
-    "vertical-rc-slider": "git@github.com:kyoyadmoon/slider.git#3.3.4-vertical"
+    "vertical-rc-slider": "https://github.com/kyoyadmoon/slider.git#3.3.4-vertical"
   },
   "devDependencies": {
     "babel-core": "^6.3.15",
