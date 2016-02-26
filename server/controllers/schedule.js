@@ -185,7 +185,7 @@ exports.setScheduleListToDevice = async function(ctx) {
     let slaveId = ctx.request.body.slaveId;
     console.log("slaveId!!",slaveId);
     let isAll = false;
-    if(slaveId == 0){
+    if(slaveId == 0) {
       await models.Schedule.destroy({
         where: {
           SlaveId: {
@@ -199,14 +199,38 @@ exports.setScheduleListToDevice = async function(ctx) {
       isAll = true;
       for (let slave of slaveList) {
         try {
-          await services.schedule.scheduleSetData(slave, isAll);
+          let res = await services.schedule.scheduleSetData(slave, isAll);
+          if(res.success) {
+            let slaveSchedules = await models.Schedule.findAll({where: {SlaveId: slave.id}});
+            for( let schedule of slaveSchedules) {
+              schedule.Summit = true;
+              await schedule.save();
+            }
+          }
+
         } catch (e) {
           console.log(e);
         }
       }
     }else{
       let slave = await models.Slave.findById(slaveId);
-      await services.schedule.scheduleSetData(slave, isAll);
+      let res = await services.schedule.scheduleSetData(slave, isAll);
+      if(res.success) {
+        let slaveSchedules = await models.Schedule.findAll({where: {SlaveId: slave.id}});
+        for( let schedule of slaveSchedules) {
+          schedule.Summit = true;
+          await schedule.save();
+        }
+      }
+
+      // console.log('kkkkkkk', JSON.stringify(slaveSchedules, null, 4));
+      // let newScheduleList =  await Promise.all(scheduleArray.map( async (item) => {
+      //   let schedule = await models.Schedule.findById(item.id);
+      //     schedule.Days = item.Days || 0;
+      //     schedule.StartDate = item.StartDate;
+      //     schedule = await schedule.save();
+      //     return schedule;
+      //   }));
     }
     ctx.body = true;
   } catch(e) {
@@ -223,7 +247,8 @@ exports.slaveSetScheduleListToDevice = async function(ctx) {
     let devList = data.devList;
     let result = await services.hme.writeTimeTabToDevices(config, {devIDs: devList});
     console.log("success:",result);
-    ctx.body = true;
+    ctx.body = {success: result};
+
   } catch (e) {
     console.error(e);
     ctx.body = false;
