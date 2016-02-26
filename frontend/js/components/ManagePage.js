@@ -182,7 +182,7 @@ export default class ManagePage extends React.Component {
     this.props.requestGetSlaveAndDeviceList();
     this.props.requestGetReportEmail();
     this._reloadLogs();
-    setInterval(this._reloadLogs, 600000);
+    setInterval(this._reloadLogs, 60000);
     // this.props.getRole();
     // this.props.requestGetCachedDeviceList();
     // this.props.requestGetCachedSlaveList();
