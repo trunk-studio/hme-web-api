@@ -47,7 +47,7 @@ export default async (cb) => {
 
     // without await to reduce bootstrap waiting time
     if(connected){
-     await services.deviceControl.syncDevice();
+     //await services.deviceControl.syncDevice();
     }
 
     await services.deviceControl.getMasterTimeAndUpdate();
