@@ -182,7 +182,7 @@ export default class ManagePage extends React.Component {
     this.props.requestGetSlaveAndDeviceList();
     this.props.requestGetReportEmail();
     this._reloadLogs();
-    setInterval(this._reloadLogs, 60000);
+    setInterval(this._reloadLogs, 600000);
     // this.props.getRole();
     // this.props.requestGetCachedDeviceList();
     // this.props.requestGetCachedSlaveList();
@@ -354,7 +354,7 @@ export default class ManagePage extends React.Component {
     let logsLength = this.props.logs.length;
     if(logsLength > 0){
       localStorage.setItem('HME_Logs_Id',this.props.logs[0].id);
-      var notify = document.getElementsByClassName('logNotify')[0]
+      var notify = document.getElementById('logNotify')
       if(notify)
         notify.parentNode.removeChild(notify);
     }
@@ -578,8 +578,8 @@ export default class ManagePage extends React.Component {
     let logsId = localStorage.getItem('HME_Logs_Id');
     let notify = document.getElementsByClassName('logsTab')[0]
     if(notify && this.props.logs.length > 0){
-      if(logsId != this.props.logs[0].id && document.getElementsByClassName('logNotify').length < 1){
-        notify.innerHTML = notify.innerHTML + "<img class='logNotify'></img>"
+      if(logsId != this.props.logs[0].id && document.getElementById('logNotify') === null){
+        notify.innerHTML = notify.innerHTML + "<img id='logNotify'></img>"
       }
     }
     return (
