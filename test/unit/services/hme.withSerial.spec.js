@@ -373,7 +373,7 @@ describe("hme with seriel port", () => {
 
     });
 
-    it.only("serial Port SearchDevice", async done => {
+    it("serial Port SearchDevice", async done => {
 
       try {
 
@@ -415,8 +415,8 @@ describe("hme with seriel port", () => {
         let groupID = 0;
         let result = await services.hme.getDevState(devID, groupID);
         console.log('getDevState result',result);
-        result.devTemp.should.be.above(0);
-        result.envTemp.should.be.above(0);
+        result.devTemp.should.be.above(-1);
+        result.envTemp.should.be.above(-1);
         result.fanState.should.be.Boolean;
         result.success.should.be.true;
 

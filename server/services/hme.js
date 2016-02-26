@@ -801,7 +801,7 @@ export default class Hme {
 
   async setDayTab (devID, groupID, dayTab)  {
     try {
-        let COpParams = {
+        let accDevParams = {
         u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
@@ -811,24 +811,10 @@ export default class Hme {
         u8Mask_Arry:[],
         RepeatNum:5
       }
-      let TxParams = {
-        Comm:[],
-        RxLen:8
-      }
-      let DecodParams = {
-        FuncCT:49,
-        devID:devID,
-        u8RxDataArry:[]
-      }
 
-      TxParams.Comm = this.encode.ClientOp(COpParams);
-      console.log('setDayTab.COpParams =', COpParams);
-      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
-        return (true);
-      } else {
-        return (false);
-      };
+      console.log('setDayTab.COpParams =', accDevParams);
+      let result =  await this.accessDevice(accDevParams);
+      return (result.success);
 
 
     } catch (e) {
@@ -910,7 +896,7 @@ export default class Hme {
     try {
         let modeIndex = {'cycle': 0, 'fullPower': 1, '6500k': 2, '4600k': 3,
                 '2950k': 4, 'savingE': 5, 'blueRed': 6}
-        let COpParams = {
+        let accDevParams = {
         u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
@@ -920,28 +906,9 @@ export default class Hme {
         u8Mask_Arry:[],
         RepeatNum:5
       }
-      let TxParams = {
-        Comm:[],
-        RxLen:8
-      }
-      let DecodParams = {
-        FuncCT:49,
-        devID:devID,
-        u8RxDataArry:[]
-      }
 
-      TxParams.Comm = this.encode.ClientOp(COpParams);
-      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
-        if (await this.writeFlashMemory(devID, 0)){
-          return (true);
-        }else {
-          return (false);
-        }
-      } else {
-        return (false);
-      };
-
+      let result =  await this.accessDevice(accDevParams);
+      return (result.success);
 
     } catch (e) {
       throw e;
@@ -983,16 +950,7 @@ export default class Hme {
           u8Mask_Arry:[],
           RepeatNum:5
         }
-        let TxParams = {
-          Comm:[],
-          RxLen:26
-        }
-        let DecodParams = {
-          FuncCT:33,
-          devID:devID,
-          u8RxDataArry:[]
-        }
-        console.log('u3ByteToWord=', DecodParams.u8RxDataArry);
+
         let result =  await this.accessDevice(accDevParams);
 
         if(result.success){
