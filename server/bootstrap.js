@@ -52,10 +52,15 @@ export default async (cb) => {
 
     let config =  await services.deviceControl.getSetting();
     console.log("hme.txt",config);
+    if(config.SYSTEM.HME_SERIAL){
+      await services.deviceControl.registerSlave({
+        slaveHostName: config.SYSTEM.HME_SERIAL + '.local'
+      });
+    }
     if(config.SYSTEM.TYPE === 'slave' && config.SYSTEM.SETTED == true){
       console.log("ok!");
-      await services.deviceControl.getMasterTimeAndUpdate();
       await services.deviceControl.syncNewSlave();
+      await services.deviceControl.getMasterTimeAndUpdate();
     }
 
 
