@@ -1,4 +1,5 @@
 import request from 'superagent'
+import ini from 'ini'
 
 exports.status = async function (ctx) {
   try {
@@ -285,7 +286,7 @@ exports.saveSetting = async function (ctx) {
   try {
     let data = ctx.request.body;
     let result = await services.deviceControl.saveSetting(data);
-    ctx.body = 'ok';
+    ctx.body = result;
   } catch (e) {
     throw e;
   }
@@ -346,6 +347,27 @@ exports.logs = async function (ctx) {
   try {
     let logs = await services.deviceControl.getLogs();
     ctx.body = logs;
+  } catch (e) {
+    ctx.body = e;
+    throw e;
+  }
+}
+
+exports.reboot = async function (ctx) {
+  try {
+    let saveSetting = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+    if(saveSetting.SYSTEM.TYPE === 'slave'){
+      let result = await services.deviceControl.registerSlave({
+        slaveHostName: saveSetting.SYSTEM.MASTER_NAME + '.local'
+      });
+    }else{
+      let result = await services.deviceControl.registerSlave({
+        slaveHostName: result.SYSTEM.HME_SERIAL + '.local'
+      });
+    }
+    execSync('cd /root/hme-web-api/wifiConfig && make client_mode && cd -');
+    execSync('sudo /sbin/reboot');
+    ctx.body = 'ok';
   } catch (e) {
     ctx.body = e;
     throw e;
