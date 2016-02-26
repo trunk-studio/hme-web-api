@@ -159,7 +159,7 @@ module.exports = {
           apiVersion: 'null'
         }
       });
-      await services.deviceControl.syncNewSlave();
+      // await services.deviceControl.syncNewSlave();
       return slave
     } catch (e) {
       console.log(e);

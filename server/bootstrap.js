@@ -50,7 +50,13 @@ export default async (cb) => {
      //await services.deviceControl.syncDevice();
     }
 
-    await services.deviceControl.getMasterTimeAndUpdate();
+    let config =  await services.deviceControl.getSetting();
+    console.log("hme.txt",config);
+    if(config.SYSTEM.TYPE === 'slave' && config.SYSTEM.SETTED == true){
+      console.log("ok!");
+      await services.deviceControl.getMasterTimeAndUpdate();
+      await services.deviceControl.syncNewSlave();
+    }
 
 
     // await services.hme.pingAllSlave();
