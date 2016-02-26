@@ -241,11 +241,11 @@ module.exports = {
       result.SYSTEM.SETTED = true;
       fs.writeFileSync(appConfig.configPath, ini.stringify(result))
       if(saveSetting.SYSTEM.TYPE === 'slave'){
-        let result = await services.deviceControl.registerSlave({
+        await services.deviceControl.registerSlave({
           slaveHostName: saveSetting.SYSTEM.MASTER_NAME + '.local'
         });
       }else{
-        let result = await services.deviceControl.registerSlave({
+        await services.deviceControl.registerSlave({
           slaveHostName: result.SYSTEM.HME_SERIAL + '.local'
         });
       }
