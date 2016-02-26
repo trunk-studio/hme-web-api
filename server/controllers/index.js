@@ -188,7 +188,7 @@ export default class Routes {
     publicRoute.get('/main', async function(ctx, next) {
       try {
         let config =  await services.deviceControl.getSetting();
-        let host = config.SYSTEM.MASTER_NAME ;
+        let host = config.SYSTEM.MASTER_NAME + '.local';
         const HTML = `
         <!DOCTYPE html>
         <html>
