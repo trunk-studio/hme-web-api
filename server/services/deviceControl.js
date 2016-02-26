@@ -285,7 +285,7 @@ module.exports = {
             exec(cmd, function(error, stdout, stderr) {
               if (error ||  stderr) {
                 console.log(error, stderr);
-                throw error,stderr;
+                throw error;
               }
               console.log(stdout);
               done(stdout);
