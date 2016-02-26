@@ -658,7 +658,7 @@ function _injectPropsFromStore(state) {
       scanResult[slave.id] = [];
       slaveList.push({
         payload: slave.id,
-        primary: `Slave host: ${slave.host}`,
+        primary: `${slave.host}`,
         text: slave.host,
       });
     }
@@ -668,7 +668,7 @@ function _injectPropsFromStore(state) {
     for(let device of scanDevice.deviceList) {
       scanResult[device.SlaveId].push({
         payload: device.devID,
-        primary: `DeviceID: ${device.devID}`,
+        primary: `${device.devID}`,
         text: device.devID
       });
     }
