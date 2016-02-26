@@ -159,7 +159,7 @@ module.exports = {
           apiVersion: 'null'
         }
       });
-      await services.deviceControl.syncNewSlave();
+      // await services.deviceControl.syncNewSlave();
       return slave
     } catch (e) {
       console.log(e);
@@ -232,7 +232,7 @@ module.exports = {
       let result = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
       result.WIFI.SSID = saveSetting.WIFI.SSID;
       result.WIFI.PASSWORD = saveSetting.WIFI.PASSWORD;
-      result.WIFI.MODE = 'CLIENT';
+      result.SYSTEM.MODE = 'CLIENT';
       result.SYSTEM.TYPE = saveSetting.SYSTEM.TYPE;
       result.SYSTEM.REPORT_EMAIL = saveSetting.SYSTEM.REPORT_EMAIL;
       result.SYSTEM.MASTER_NAME = saveSetting.SYSTEM.MASTER_NAME;
@@ -241,11 +241,11 @@ module.exports = {
       result.SYSTEM.SETTED = true;
       fs.writeFileSync(appConfig.configPath, ini.stringify(result))
       if(saveSetting.SYSTEM.TYPE === 'slave'){
-        let result = await services.deviceControl.registerSlave({
+        await services.deviceControl.registerSlave({
           slaveHostName: saveSetting.SYSTEM.MASTER_NAME + '.local'
         });
       }else{
-        let result = await services.deviceControl.registerSlave({
+        await services.deviceControl.registerSlave({
           slaveHostName: result.SYSTEM.HME_SERIAL + '.local'
         });
       }
@@ -285,7 +285,7 @@ module.exports = {
             exec(cmd, function(error, stdout, stderr) {
               if (error ||  stderr) {
                 console.log(error, stderr);
-                throw error,stderr;
+                throw error;
               }
               console.log(stdout);
               done(stdout);
