@@ -16,6 +16,9 @@ const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js')
 // const timezones = require('../../../timezones.json');
 const timezones = [
    -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ];
+
+const APPLY_FAILED = 'Apply failed, Please try again.';
+const APPLY_SUCCESS = "The device is rebooting for seeting. please wait for 2 mins and enter serial number again.";
 export default class Setup extends React.Component  {
 
   constructor(props) {
@@ -26,7 +29,8 @@ export default class Setup extends React.Component  {
       tmpPassword: '',
       tmpEmail: '',
       tmpMaster: '',
-      timezoneIndex: 14
+      timezoneIndex: 14,
+      message: null,
     }
   }
 
@@ -35,6 +39,20 @@ export default class Setup extends React.Component  {
   }
   componentWillMount() {
     this.props.requestGetSetupSetting();
+  }
+
+  componentWillUpdate(nextProps, nextStates) {
+    if(nextProps.isApply == 'failed' && this.state.message != APPLY_FAILED )  {
+      this.setState({message: APPLY_FAILED });
+    }
+
+    if(nextProps.isApply == 'success' && this.state.message != APPLY_SUCCESS ) {
+      console.log('!!!!!!!!!!!!!!!!!!!obj');
+      setTimeout(function() {
+        window.location.href = "/#/close";
+      }, 8000);
+      this.setState({message: APPLY_SUCCESS });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -89,10 +107,6 @@ export default class Setup extends React.Component  {
     };
     console.log(setting);
     this.props.requestUpdateSetup(setting);
-
-    setTimeout(function() {
-      window.location.href = "/#/close";
-    }, 8000);
 
   };
 
@@ -151,7 +165,7 @@ export default class Setup extends React.Component  {
           style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
           titleStyle={{fontSize: '20px'}}
           iconElementLeft={
-            <IconButton onTouchTap={function() {window.location.href = '#/manage';}} >
+            <IconButton onTouchTap={function() { window.location.href = "/#/close"; }} >
               <NavigationClose />
             </IconButton>
           }
@@ -245,7 +259,7 @@ export default class Setup extends React.Component  {
       <Snackbar
         ref="snackbar"
         open={false}
-        message={"The device is rebooting for seeting. please wait for 2 mins and enter serial number again."}
+        message={this.state.message || ' '}
       />
     </div>
     );
@@ -257,6 +271,7 @@ function _injectPropsFromStore(state) {
   console.log('set', setup);
   return {
     isLoading: setup? setup.isLoading : 'hide',
+    isApply: setup? setup.isApply : '',
     setupSetting: setup.setupSetting || null
   };
 }
