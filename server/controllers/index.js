@@ -157,7 +157,7 @@ export default class Routes {
     publicRoute.get('/', async function(ctx, next) {
       let setting = await services.deviceControl.getSetting();
       let setupPage = '';
-      if(setting.WIFI.MODE == 'AP')
+      if(setting.SYSTEM.MODE == 'AP')
         setupPage = 'setup';
       const HTML = `
       <!DOCTYPE html>
