@@ -158,7 +158,7 @@ export default class Routes {
     publicRoute.get('/', async function(ctx, next) {
       let setting = await services.deviceControl.getSetting();
       let setupPage = '';
-      if(setting.WIFI.MODE == 'AP')
+      if(setting.SYSTEM.MODE == 'AP')
         setupPage = 'setup';
       const HTML = `
       <!DOCTYPE html>
@@ -184,8 +184,60 @@ export default class Routes {
       </html>
       `;
       ctx.body = HTML
-    })
+    });
     // publicRoute.get('/', MainController.index);
+    publicRoute.get('/main', async function(ctx, next) {
+      try {
+        let config =  await services.deviceControl.getSetting();
+        let host = config.SYSTEM.MASTER_NAME + '.local';
+        const HTML = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <meta name="description" content="HME HLP 600 Master" />
+          <title>HLP 600 Master - HM ELECTRONICS CO., LTD.</title>
+          <link rel="shortcut icon" href="favicon.ico" />
+          <link rel="stylesheet" href="/public/assets/css/barnaul.css" type="text/css" />
+          <link rel="stylesheet" href="/public/assets/css/custom.css" type="text/css" />
+        </head>
+
+        <body data-spy="scroll" data-target=".navbar-collapse" data-offset="76">
+          <section class="ipad">
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-12 col-md-12 col-xs-12 text-center">
+                  <div class="ipad-wrapper">
+                    <img src="/public/assets/images/ipad.png" alt="ipad gallery background" class="img-responsive ipad" /></div>
+                  <div class="ipad-inner">
+                    <iframe src="http://${host}:3000" class="ipad-inner-frame"></iframe>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="stickers float">
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-12 col-md-12 col-xs-12 text-center">
+                  <div class="sticker-wrapper">
+                    <img src="/public/assets/images/download.png" alt="ipad gallery background" class="img-responsive sticker1" /></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </body>
+        </html>
+        `;
+        ctx.body = HTML;
+
+      } catch (e) {
+        console.log(e);
+      }
+    });
     app.use(publicRoute.middleware())
 
 
