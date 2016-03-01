@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   var Device = sequelize.define('Device', {
     uid: {
       type: DataTypes.INTEGER,
-      unique: true
+      // unique: true
     }
   }, {
     classMethods: {

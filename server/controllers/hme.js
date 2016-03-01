@@ -1,5 +1,6 @@
 import request from 'superagent'
 import ini from 'ini'
+import {exec, execSync} from 'child_process';
 
 exports.status = async function (ctx) {
   try {
@@ -176,7 +177,7 @@ exports.testDeviceByID = async function (ctx) {
 exports.testGruopByID = async function (ctx) {
   try {
     let groupID = ctx.params.slaveId;
-    let result = await services.hme.testGroup(groupID);
+    let result = await services.hme.testGroup(0);
     ctx.body = result
   } catch (e) {
 
@@ -286,7 +287,7 @@ exports.saveSetting = async function (ctx) {
   try {
     let data = ctx.request.body;
     let result = await services.deviceControl.saveSetting(data);
-    ctx.body = result;
+    ctx.body = {result};
   } catch (e) {
     throw e;
   }
@@ -362,7 +363,7 @@ exports.reboot = async function (ctx) {
       });
     }else{
       await services.deviceControl.registerSlave({
-        slaveHostName: result.SYSTEM.HME_SERIAL + '.local'
+        slaveHostName: saveSetting.SYSTEM.HME_SERIAL + '.local'
       });
     }
     execSync('cd /root/hme-web-api/wifiConfig && make client_mode && cd -');

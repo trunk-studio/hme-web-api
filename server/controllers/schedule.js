@@ -243,7 +243,7 @@ exports.slaveSetScheduleListToDevice = async function(ctx) {
 
   } catch (e) {
     console.error(e);
-    ctx.body = false;
+    ctx.body = {success: false};
   }
 }
 
