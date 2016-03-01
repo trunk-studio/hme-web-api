@@ -223,14 +223,6 @@ exports.setScheduleListToDevice = async function(ctx) {
         }
       }
 
-      // console.log('kkkkkkk', JSON.stringify(slaveSchedules, null, 4));
-      // let newScheduleList =  await Promise.all(scheduleArray.map( async (item) => {
-      //   let schedule = await models.Schedule.findById(item.id);
-      //     schedule.Days = item.Days || 0;
-      //     schedule.StartDate = item.StartDate;
-      //     schedule = await schedule.save();
-      //     return schedule;
-      //   }));
     }
     ctx.body = true;
   } catch(e) {
