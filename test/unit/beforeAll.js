@@ -1,5 +1,7 @@
 import Services from '../../server/services'
-import config from '../../server/config/init';
+// import config from '../../server/config/init';
+import config from '../../server/config/test';
+
 global.appConfig = config;
 
 var chai = require('chai');
