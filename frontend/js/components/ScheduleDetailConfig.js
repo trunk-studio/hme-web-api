@@ -312,17 +312,17 @@ export default class ScheduleDetailConfig extends React.Component {
               </div>
             </div>
             <div className="col-md-3 col-sm-3 col-xs-3" style={{marginLeft: '-8px'}}>
-              <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
+              <div className="unSelectable" style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
               <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
-              <div style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
+              <div className="unSelectable" style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
               <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
-              <div style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '2px'}}>BL {this.state.blValue}</div>
+              <div className="unSelectable" style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '2px'}}>BL {this.state.blValue}</div>
               <SliderRc ref="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
-              <div style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '2px'}}>GR {this.state.grValue}</div>
+              <div className="unSelectable" style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '2px'}}>GR {this.state.grValue}</div>
               <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
-              <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
+              <div className="unSelectable" style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
               <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
-              <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
+              <div className="unSelectable" style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
               <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle + " slider"}/>
               {/*<div>Bright {this.state.brightValue}</div>
               <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onChange={this._brightChanged} className="slider"/> */}

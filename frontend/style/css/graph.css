@@ -248,4 +248,13 @@ input[type="date"]::-webkit-clear-button {
   content: url("/public/assets/images/warning.png");
 }
 
+
+.unSelectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 /*style={{minHeight: '320px', backgroundImage: "url('public/assets/images/HMEsplash.png')"}} */
