@@ -16,6 +16,9 @@ const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js')
 // const timezones = require('../../../timezones.json');
 const timezones = [
    -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ];
+
+const APPLY_FAILED = 'Apply failed, Please try again.';
+const APPLY_SUCCESS = "The device is rebooting for seeting. please wait for 2 mins and enter serial number again.";
 export default class Setup extends React.Component  {
 
   constructor(props) {
@@ -26,7 +29,8 @@ export default class Setup extends React.Component  {
       tmpPassword: '',
       tmpEmail: '',
       tmpMaster: '',
-      timezoneIndex: 14
+      timezoneIndex: 14,
+      message: null,
     }
   }
 
@@ -35,6 +39,20 @@ export default class Setup extends React.Component  {
   }
   componentWillMount() {
     this.props.requestGetSetupSetting();
+  }
+
+  componentWillUpdate(nextProps, nextStates) {
+    if(nextProps.isApply == 'failed' && this.state.message != APPLY_FAILED )  {
+      this.setState({message: APPLY_FAILED });
+    }
+
+    if(nextProps.isApply == 'success' && this.state.message != APPLY_SUCCESS ) {
+      console.log('!!!!!!!!!!!!!!!!!!!obj');
+      setTimeout(function() {
+        window.location.href = "/#/close";
+      }, 8000);
+      this.setState({message: APPLY_SUCCESS });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -89,6 +107,7 @@ export default class Setup extends React.Component  {
     };
     console.log(setting);
     this.props.requestUpdateSetup(setting);
+
   };
 
   _handleEditSSID = (e) => {
@@ -143,102 +162,104 @@ export default class Setup extends React.Component  {
     return (
       <div style={{width: '100%', overflowX: 'hidden'}}>
         <AppBar title="Setup"
-          style={{height: '55px', minHeight: '0px', marginTop: '-9px'}}
+          style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
           titleStyle={{fontSize: '20px'}}
           iconElementLeft={
-            <IconButton onTouchTap={function() {window.location.href = '#/manage';}} >
+            <IconButton onTouchTap={function() { window.location.href = "/#/close"; }} >
               <NavigationClose />
             </IconButton>
           }
         />
-      <div className="row" style={{marginLeft: '25%'}}>
-        <label style={{fontSize: '18px', marginTop: '15px'}}>S/N: {setupData.SYSTEM.HME_SERIAL}</label>
-      </div>
-      <div className="row" style={{marginLeft: '25%'}}>
-        <label style={{fontSize: '18px', marginTop: '15px'}}>Wifi Setting</label>
-      </div>
-      <div className="self-center" style={{width: "210px"}}>
-        <div className="row">
+      <div className="tab-content self-center" style={{width: '96%', paddingTop: '2px'}}>
+        <div className="row" style={{marginLeft: '25%'}}>
+          <label style={{fontSize: '18px', marginTop: '15px'}}>S/N: {setupData.SYSTEM.HME_SERIAL}</label>
+        </div>
+        <div className="row" style={{marginLeft: '25%'}}>
+          <label style={{fontSize: '18px', marginTop: '15px'}}>Wifi Setting</label>
+        </div>
+        <div className="self-center" style={{width: "210px"}}>
+          <div className="row">
+            <TextField
+              ref="ssid"
+              floatingLabelText="SSID"
+              hintText="SSID"
+              type="text"
+              value={this.state.tmpSSID}
+              onChange={this._handleEditSSID} />
+          </div>
+          <div className="row">
+            <TextField
+              ref="password"
+              floatingLabelText="Password"
+              hintText="Password"
+              type="password"
+              value={this.state.tmpPassword}
+              onChange={this._handleEditPassword} />
+          </div>
+          <div className="row" style={{display: 'none'}}>
+            <TextField
+              ref="pinCode"
+              floatingLabelText="PIN CODE"
+              hintText="PIN CODE"
+              type="text" />
+          </div>
+        </div>
+        <div className="row" style={{marginLeft: '25%'}}>
+          <label style={{fontSize: '18px', marginTop: '15px'}}>System</label>
+        </div>
+        <div className="self-center" style={{width: "210px"}}>
+          <RadioButtonGroup ref="serverType" name="type" defaultSelected={setupData.SYSTEM.TYPE || "slave" } onChange={this._handleRadioChanged}>
+            <RadioButton
+              value="master"
+              label="Master"
+            />
+            <RadioButton
+              value="slave"
+              label="Slave"
+            />
+          </RadioButtonGroup>
           <TextField
-            ref="ssid"
-            floatingLabelText="SSID"
-            hintText="SSID"
+            style={{ display: (this.state.type == 'master')? 'block' : 'none'}}
+            ref="adminEmail"
+            floatingLabelText="Administrator Email"
+            hintText="Administrator Email"
             type="text"
-            value={this.state.tmpSSID}
-            onChange={this._handleEditSSID} />
-        </div>
-        <div className="row">
+            onChange={this._handleEditEmail}
+            value={this.state.tmpEmail} />
           <TextField
-            ref="password"
-            floatingLabelText="Password"
-            hintText="Password"
-            type="password"
-            value={this.state.tmpPassword}
-            onChange={this._handleEditPassword} />
+            style={{ display: (this.state.type == 'slave')? 'block' : 'none'}}
+            ref="connectToMaster"
+            floatingLabelText="Connect to Master"
+            hintText="Connect to Master"
+            type="text"
+            onChange={this._handleEditMaster}
+            value={this.state.tmpMaster} />
         </div>
-        <div className="row" style={{display: 'none'}}>
-          <TextField
-            ref="pinCode"
-            floatingLabelText="PIN CODE"
-            hintText="PIN CODE"
-            type="text" />
+        <div className="row" style={{marginLeft: '25%', display: (this.state.type == 'master')? 'block' : 'none' }}>
+          <label style={{fontSize: '18px', marginTop: '15px'}}>Timezone</label>
         </div>
-      </div>
-      <div className="row" style={{marginLeft: '25%'}}>
-        <label style={{fontSize: '18px', marginTop: '15px'}}>System</label>
-      </div>
-      <div className="self-center" style={{width: "210px"}}>
-        <RadioButtonGroup ref="serverType" name="type" defaultSelected={setupData.SYSTEM.TYPE || "slave" } onChange={this._handleRadioChanged}>
-          <RadioButton
-            value="master"
-            label="Master"
-          />
-          <RadioButton
-            value="slave"
-            label="Slave"
-          />
-        </RadioButtonGroup>
-        <TextField
-          style={{ display: (this.state.type == 'master')? 'block' : 'none'}}
-          ref="adminEmail"
-          floatingLabelText="Administrator Email"
-          hintText="Administrator Email"
-          type="text"
-          onChange={this._handleEditEmail}
-          value={this.state.tmpEmail} />
-        <TextField
-          style={{ display: (this.state.type == 'slave')? 'block' : 'none'}}
-          ref="connectToMaster"
-          floatingLabelText="Connect to Master"
-          hintText="Connect to Master"
-          type="text"
-          onChange={this._handleEditMaster}
-          value={this.state.tmpMaster} />
-      </div>
-      <div className="row" style={{marginLeft: '25%', display: (this.state.type == 'master')? 'block' : 'none' }}>
-        <label style={{fontSize: '18px', marginTop: '15px'}}>Timezone</label>
-      </div>
-      <div className="self-center" style={{width: "210px", display: (this.state.type == 'master')? 'block' : 'none'}} >
-        <SelectField ref="timezone" onChange={this._handleTimezoneChanged} menuItems={timezoneList} style={{width: '300px'}} value={timezones[this.state.timezoneIndex]} />
-      </div>
-      <div className="self-center" style={{width: "300px"}}>
-        <div className='row'>
-        <RaisedButton label="APPLY" onTouchTap={this._handleApply} style={{float: 'right', marginBottom: '15px'}} />
-          <RefreshIndicator
-            size={40}
-            left={-10}
-            top={0}
-            status={this.props.isLoading || 'hide'}
-            style={{
-              float: 'right',
-              display: 'inline-block',
-              position: 'relative'}} />
+        <div className="self-center" style={{width: "210px", display: (this.state.type == 'master')? 'block' : 'none'}} >
+          <SelectField ref="timezone" onChange={this._handleTimezoneChanged} menuItems={timezoneList} style={{width: '300px'}} value={timezones[this.state.timezoneIndex]} />
+        </div>
+        <div className="self-center" style={{width: "300px"}}>
+          <div className='row'>
+          <RaisedButton label="APPLY" onTouchTap={this._handleApply} style={{float: 'right', marginBottom: '15px'}} />
+            <RefreshIndicator
+              size={40}
+              left={-10}
+              top={0}
+              status={this.props.isLoading || 'hide'}
+              style={{
+                float: 'right',
+                display: 'inline-block',
+                position: 'relative'}} />
+          </div>
         </div>
       </div>
       <Snackbar
         ref="snackbar"
         open={false}
-        message={"The device is rebooting for seeting. please wait for 2 mins and refresh this page."}
+        message={this.state.message || ' '}
       />
     </div>
     );
@@ -250,6 +271,7 @@ function _injectPropsFromStore(state) {
   console.log('set', setup);
   return {
     isLoading: setup? setup.isLoading : 'hide',
+    isApply: setup? setup.isApply : '',
     setupSetting: setup.setupSetting || null
   };
 }

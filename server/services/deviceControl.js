@@ -240,20 +240,11 @@ module.exports = {
       result.SYSTEM.TIMEZONE_INDEX = saveSetting.SYSTEM.TIMEZONE_INDEX;
       result.SYSTEM.SETTED = true;
       fs.writeFileSync(appConfig.configPath, ini.stringify(result))
-      if(saveSetting.SYSTEM.TYPE === 'slave'){
-        await services.deviceControl.registerSlave({
-          slaveHostName: saveSetting.SYSTEM.MASTER_NAME + '.local'
-        });
-      }else{
-        await services.deviceControl.registerSlave({
-          slaveHostName: result.SYSTEM.HME_SERIAL + '.local'
-        });
-      }
-      execSync('cd /root/hme-web-api/wifiConfig && make client_mode && cd -');
-      execSync('sudo /sbin/reboot');
-      return 'ok';
+      return true;
+      
     }catch(e){
       console.log(e);
+      return false;
       throw e
     }
   },

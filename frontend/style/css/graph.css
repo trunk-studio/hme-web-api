@@ -56,6 +56,13 @@ body {
 
 /* ========= scheduleDetail ===========*/
 
+.chart-container text {
+  fill: #FFF;
+}
+
+.chart-container path.domain {
+  stroke: #FFF !important;
+}
 
 .rc-tooltip-inner, .rc-tooltip-inner>span {
   width: 100%;
@@ -227,6 +234,11 @@ input[type="time"]::-webkit-clear-button {
 }
 input[type="date"]::-webkit-clear-button {
     display: none;
+}
+
+.btn-logout {
+  background-color: #341c78;
+  color: #fff8aa !important;
 }
 
 #logNotify {

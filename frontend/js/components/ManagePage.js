@@ -514,9 +514,9 @@ export default class ManagePage extends React.Component {
           </div>
           <div>
             <div className="row">
-              <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>溫度:</h4>
+              <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Temp:</h4>
               <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.devTemp}</h4>
-                <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>風扇:</h4>
+                <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Fan:</h4>
                 <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState.toString()}</h4>
             </div>
           </div>
@@ -632,6 +632,7 @@ export default class ManagePage extends React.Component {
         </Tab>
         <Tab key={'reportEmail'} label="Report" value='1' className="tab-item">
           <div className="tab-content self-center" >
+            {reportEmailForm}
             <div className="self-center" style={{marginTop:'15px',width: '420px'}}>
               <div style={{width: '420px'}}>
                 <SelectField labelMember="primary" iconStyle={{fill: '#000'}} menuItems={reportSlaveList} onChange={this._reportSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '210px'}}/>
@@ -657,7 +658,7 @@ export default class ManagePage extends React.Component {
             </div>
           </div>
         </Tab>
-        <Tab label="Logout" value='logout' onTouchTap={this._logout}  className="tab-item"/>
+        <Tab label="Logout" value='logout' onTouchTap={this._logout}  className="tab-item btn-logout" />
       </Tabs>
     );
   }
@@ -674,7 +675,7 @@ function _injectPropsFromStore(state) {
       scanResult[slave.id] = [];
       slaveList.push({
         payload: slave.id,
-        primary: `Slave host: ${slave.host}`,
+        primary: `${slave.host}`,
         text: slave.host,
       });
     }
@@ -684,7 +685,7 @@ function _injectPropsFromStore(state) {
     for(let device of scanDevice.deviceList) {
       scanResult[device.SlaveId].push({
         payload: device.devID,
-        primary: `DeviceID: ${device.devID}`,
+        primary: `${device.devID}`,
         text: device.devID
       });
     }

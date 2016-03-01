@@ -8,7 +8,8 @@ export function setup(state = { isLogin: false }, action) {
     case UPDATE_SETUP_SETTING_LOADING_STATUS:
       return {
         ...state,
-        isLoading: action.status
+        isLoading: action.status.loading,
+        isApply: action.status.update
       }
     case RECEIVED_SETUP_SETTING:
       return {

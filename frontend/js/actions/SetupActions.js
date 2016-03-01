@@ -18,12 +18,19 @@ export function requestGetSetupSetting(loginData) {
 
 export function requestUpdateSetup(setting) {
   return (dispatch) => {
-    dispatch(updateSetupSettingLoadingStatus('loading'));
+    dispatch(updateSetupSettingLoadingStatus({loading: 'loading', update: ''}));
     return request
       .post('/rest/hme/setup/update', setting)
       .then(response => {
         // requestGetSetupSetting();
-        dispatch(updateSetupSettingLoadingStatus('hide'));
+        // console.log('!!!!response', response);
+        if(response.data) {
+          dispatch(updateSetupSettingLoadingStatus({loading: 'hide', update: 'success'}));
+          request.post('/rest/hme/reboot');
+        }
+        else {
+          dispatch(updateSetupSettingLoadingStatus({loading: 'hide', update: 'failed'}));
+        }
       });
   }
 }
