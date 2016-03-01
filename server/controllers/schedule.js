@@ -201,7 +201,7 @@ exports.setScheduleListToDevice = async function(ctx) {
         try {
           let res = await services.schedule.scheduleSetData(slave, isAll);
           if(res.success) {
-            let slaveSchedules = await models.Schedule.findAll({where: {SlaveId: slave.id}});
+            let slaveSchedules = await models.Schedule.findAll({where: {SlaveId: null}});
             for( let schedule of slaveSchedules) {
               schedule.Summit = true;
               await schedule.save();
