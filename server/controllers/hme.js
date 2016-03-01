@@ -357,11 +357,11 @@ exports.reboot = async function (ctx) {
   try {
     let saveSetting = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
     if(saveSetting.SYSTEM.TYPE === 'slave'){
-      let result = await services.deviceControl.registerSlave({
+      await services.deviceControl.registerSlave({
         slaveHostName: saveSetting.SYSTEM.MASTER_NAME + '.local'
       });
     }else{
-      let result = await services.deviceControl.registerSlave({
+      await services.deviceControl.registerSlave({
         slaveHostName: result.SYSTEM.HME_SERIAL + '.local'
       });
     }
