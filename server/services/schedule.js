@@ -347,9 +347,13 @@ module.exports = {
         .post(`http://${slave.host}:3000/rest/slave/${slave.id}/schedule/setOnDevice`)
         .send(data)
         .end((err, res) => {
-          if(err) throw err;
+          if(err) {
+            console.log(err);
+            done(false);
+          }
           // resolve(res.body);
-          done(res.body);
+          else
+            done(res.body);
         });
       });
       return result;

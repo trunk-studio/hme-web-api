@@ -416,7 +416,7 @@ export default class ScheduleList extends React.Component {
             date = new Date(tmpScheduleList[i].StartDate);
           console.log(tmpScheduleList[i]);
           rows.push(
-            <TableRow key={row.id} style={{borderBottom: '1px solid #72737A'}}>
+            <TableRow key={row.id} style={{borderBottom: '1px solid #72737A', backgroundColor: (tmpScheduleList[i].Summit)? '' : 'red' }}>
               <TableRowColumn>
                 <RaisedButton disabled={this.state.isSetBtnClose} label="EDIT" style={{verticalAlign: 'middle'}}  linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
               </TableRowColumn>
@@ -461,7 +461,7 @@ export default class ScheduleList extends React.Component {
             date = yyyy +'/'+ (mm[1]?mm:"0"+mm[0]) +'/'+ dd;
           }
           rows.push(
-            <TableRow key={row.id} style={{borderBottom: '1px solid #72737A'}}>
+            <TableRow key={row.id} style={{borderBottom: '1px solid #72737A', backgroundColor: (tmpScheduleList[i].Summit)? '' : 'red' }}>
               <TableRowColumn>
                 <RaisedButton
                   style={{verticalAlign: 'middle'}}
