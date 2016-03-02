@@ -241,7 +241,7 @@ module.exports = {
       result.SYSTEM.SETTED = true;
       fs.writeFileSync(appConfig.configPath, ini.stringify(result))
       return true;
-      
+
     }catch(e){
       console.log(e);
       return false;
@@ -276,7 +276,7 @@ module.exports = {
             exec(cmd, function(error, stdout, stderr) {
               if (error ||  stderr) {
                 console.log(error, stderr);
-                throw error;
+                // throw error;
               }
               console.log(stdout);
               done(stdout);

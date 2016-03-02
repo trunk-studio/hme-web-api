@@ -353,7 +353,7 @@ module.exports = {
           }
           // resolve(res.body);
           else
-            done(res.body);
+            done(true);
         });
       });
       return result;
