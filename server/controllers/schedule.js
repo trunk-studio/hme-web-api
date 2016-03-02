@@ -369,8 +369,8 @@ exports.setSimRtc = async function(ctx) {
         }
       }
     }else{
-      let slave = await models.Slave.findById(slaveId, count);
-      await services.schedule.setSimRtc(slave);
+      let slave = await models.Slave.findById(slaveId);
+      await services.schedule.setSimRtc(slave, count);
     }
     ctx.body = true;
   } catch (e) {
