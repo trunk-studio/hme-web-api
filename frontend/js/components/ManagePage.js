@@ -103,7 +103,7 @@ export default class ManagePage extends React.Component {
       }
     }else{
       if(this.state.deviceID == 0 ){
-        this.props.requestTestGroupDevices(slave.payload);
+        this.props.requestTestGroupDevices(this.state.slaveID);
       }else{
         this.props.requestTestOneDevice(this.state.deviceID, this.state.slaveID);
       }
