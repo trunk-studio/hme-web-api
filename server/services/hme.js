@@ -676,8 +676,8 @@ export default class Hme {
           groupID:groupID,
           Led1Bgt: DB * Bright,
           Led2Bgt: BL * Bright,
-          Led3Bgt: GR * Bright,
-          Led4Bgt: RE * Bright,
+          Led3Bgt: RE * Bright,
+          Led4Bgt: GR * Bright,
           Led5Bgt: WW * Bright
         }
 
