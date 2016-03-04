@@ -297,14 +297,14 @@ export default class ManagePage extends React.Component {
     });
     this.props.requestTestSetLedDisplay({
       devID:this.state.setupTestDeviceID,
-      groupID:this.state.groupID,
+      groupID: 0,
       WW: this.state.wwValue,
       DB: this.state.dbValue,
       BL: this.state.blValue,
       GR: this.state.grValue,
       RE: this.state.reValue,
       Bright: this.state.brightValue,
-      slaveID: this.state.slaveID
+      slaveID: this.state.setupTestSlaveID
     })
   };
 
