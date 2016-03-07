@@ -183,16 +183,14 @@ export default class ManagePage extends React.Component {
     if(!localStorage.getItem('HME_manage_tabIndex'))
       localStorage.setItem('HME_manage_tabIndex', 0);
     this.props.getRole();
+    let getTemperatureUnit = localStorage.getItem('HME_manage_isCentigrade');
+    if(getTemperatureUnit == null){
+      localStorage.setItem('HME_manage_isCentigrade', true);
+    }
     this.props.requestGetSlaveAndDeviceList();
     this.props.requestGetReportEmail();
     this._reloadLogs();
     setInterval(this._reloadLogs, 60000);
-    let getTemperatureUnit = localStorage.getItem('HME_manage_isCentigrade');
-    if(getTemperatureUnit){
-      this.setState({
-        isCentigrade: getTemperatureUnit
-      });
-    }
     // this.props.getRole();
     // this.props.requestGetCachedDeviceList();
     // this.props.requestGetCachedSlaveList();
@@ -204,11 +202,11 @@ export default class ManagePage extends React.Component {
   }
 
   _changeTemperatureUnit = (e) => {
-    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    localStorage.setItem('HME_manage_isCentigrade', !this.state.isCentigrade);
-    this.setState({
-      isCentigrade: !this.state.isCentigrade
-    });
+    let getTemperatureUnit =  JSON.parse(localStorage.getItem('HME_manage_isCentigrade'))
+    localStorage.setItem('HME_manage_isCentigrade', !getTemperatureUnit);
+    // this.setState({
+    //   isCentigrade: !getTemperatureUnit
+    // });
   }
 
   _reloadLogs = (e) =>{
@@ -601,9 +599,10 @@ export default class ManagePage extends React.Component {
       }
     }
 
+    let toggleDefault = JSON.parse(localStorage.getItem('HME_manage_isCentigrade'));
     let deviceTemp
     if( this.props.devStatus.devTemp != 'Selse Slave & Device'){
-      if(this.state.isCentigrade){
+      if(toggleDefault){
         deviceTemp = this.props.devStatus.devTemp+'°C'
       }else{
         deviceTemp = (this.props.devStatus.devTemp*1.8+32)+'°F'
@@ -676,8 +675,8 @@ export default class ManagePage extends React.Component {
                 </div>
                 <div className="row">
                   <Toggle
-                    label= {this.state.isCentigrade ? 'Centigrade': 'Fahrenheit'}
-                    defaultToggled={this.state.isCentigrade}
+                    defaultToggled={toggleDefault}
+                    label= {toggleDefault ? 'Centigrade': 'Fahrenheit'}
                     style={{width: '150px'}}
                     onToggle= {this._changeTemperatureUnit}
                   />
@@ -735,7 +734,7 @@ function _injectPropsFromStore(state) {
     reportEmail: manageSettings.reportEmail,
     loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide',
     role: login.role,
-    devStatus: manageSettings.devStatus || {devTemp: 'Selse Slave & Device', fanState: 'Selse Slave & Device'},
+    devStatus: manageSettings.devStatus || {devTemp: 28, fanState: true},
     logs: manageSettings.logs || []
 
   };
