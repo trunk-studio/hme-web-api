@@ -204,9 +204,6 @@ export default class ManagePage extends React.Component {
   _changeTemperatureUnit = (e) => {
     let getTemperatureUnit =  JSON.parse(localStorage.getItem('HME_manage_isCentigrade'))
     localStorage.setItem('HME_manage_isCentigrade', !getTemperatureUnit);
-    // this.setState({
-    //   isCentigrade: !getTemperatureUnit
-    // });
   }
 
   _reloadLogs = (e) =>{
@@ -734,7 +731,7 @@ function _injectPropsFromStore(state) {
     reportEmail: manageSettings.reportEmail,
     loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide',
     role: login.role,
-    devStatus: manageSettings.devStatus || {devTemp: 28, fanState: true},
+    devStatus: manageSettings.devStatus || {devTemp: 'Selse Slave & Device', fanState: 'Selse Slave & Device'},
     logs: manageSettings.logs || []
 
   };
