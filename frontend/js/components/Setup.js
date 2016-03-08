@@ -47,7 +47,7 @@ export default class Setup extends React.Component  {
     }
 
     if(nextProps.isApply == 'success' && this.state.message != APPLY_SUCCESS ) {
-      console.log('!!!!!!!!!!!!!!!!!!!obj');
+      // console.log('!!!!!!!!!!!!!!!!!!!obj');
       setTimeout(function() {
         window.location.href = "/#/close";
       }, 8000);
@@ -102,7 +102,7 @@ export default class Setup extends React.Component  {
       TYPE: this.refs.serverType.getSelectedValue(),
       REPORT_EMAIL: this.refs.adminEmail.getValue(),
       MASTER_NAME: this.refs.connectToMaster.getValue(),
-      TIMEZONE_OFFSET: this._formatOffset(timezones[this.state.timezoneIndex]),
+      TIMEZONE_OFFSET: this._formatOffset(timezones[this.state.timezoneIndex] * -1),
       TIMEZONE_INDEX: this.state.timezoneIndex
     };
     console.log(setting);
@@ -268,7 +268,7 @@ export default class Setup extends React.Component  {
 
 function _injectPropsFromStore(state) {
   let { setup } = state;
-  console.log('set', setup);
+  // console.log('set', setup);
   return {
     isLoading: setup? setup.isLoading : 'hide',
     isApply: setup? setup.isApply : '',
