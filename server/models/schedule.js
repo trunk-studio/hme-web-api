@@ -1,7 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
   var Schedule = sequelize.define('Schedule', {
     StartDate: DataTypes.DATE,
-    Days: DataTypes.INTEGER
+    Days: DataTypes.INTEGER,
+    Summit: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    }
   }, {
     classMethods: {
       associate: (models) => {

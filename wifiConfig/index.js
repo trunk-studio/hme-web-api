@@ -14,8 +14,8 @@ function lightA(err, state) {
   // 1 == pressed, 0 == not pressed
   if(state == 1) {
 
-    var updateIniCmd = 'crudini --set --existing /root/hme-web-api/hme.txt SYSTEM SETTED false &&'+
-    'crudini --set --existing /root/hme-web-api/hme.txt WIFI MODE AP';
+    var updateIniCmd = 'crudini --set --existing /boot/hme.txt SYSTEM SETTED false &&'+
+    'crudini --set --existing /boot/hme-web-api/hme.txt SYSTEM MODE AP';
 
     console.log('=== updateIniCmd ===', updateIniCmd);
     exec(updateIniCmd, function(error, stdout, stderr) {

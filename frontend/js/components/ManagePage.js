@@ -1,5 +1,6 @@
 import React                from 'react';
 import { connect } from 'react-redux'
+import moment from 'moment';
 import {
   requestScan, requestDeviceGroup, requestTestOneDevice,
   requestTestGroupDevices, requestTestAllDevices,
@@ -14,7 +15,7 @@ import {
 
 import {
   requestGetReportEmail, requestUpdateReportEmail,
-  requestGetDeviceStatus
+  requestGetDeviceStatus,requestGetLogs
 } from '../actions/ManageActions'
 
 // import ThemeManager from 'material-ui/lib/styles/theme-manager';
@@ -26,11 +27,10 @@ const Tabs = require('material-ui/lib/tabs/tabs');
 const Tab = require('material-ui/lib/tabs/tab');
 const ScheduleList = require('./ScheduleList');
 const LineChart = require("react-chartjs").Line;
-
-import { Slider } from 'material-ui';
+import { Slider} from 'material-ui';
 import SliderRc from 'rc-slider';
 import RefreshIndicator from 'material-ui/lib/refresh-indicator';
-
+import Toggle from 'material-ui/lib/toggle';
 export default class ManagePage extends React.Component {
 
   // childContextTypes() {
@@ -68,7 +68,8 @@ export default class ManagePage extends React.Component {
       setupTestSlaveId: 0,
       setupTestDeviceId: 0,
       reportSlaveID: 0,
-      reportDeviceId: 0
+      reportDeviceId: 0,
+      isCentigrade: true,
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -89,12 +90,25 @@ export default class ManagePage extends React.Component {
     this.props.requestTestOneDevice(this.state.deviceID, this.state.slaveID);
   };
 
-  _testGroupDevice = (e) => {
-    this.props.requestTestGroupDevices(this.state.groupID);
-  };
-
   _testSlaveDevice = (e) => {
     this.props.requestTestGroupDevices(this.state.slaveID);
+  };
+
+  _test = (e) => {
+    console.log(this.state.slaveID);
+    if( this.state.slaveID == 0){
+      if(this.state.deviceID == 0 ){
+        this.props.slaveList.forEach((slave,i) => {
+          this.props.requestTestGroupDevices(slave.payload);
+        });
+      }
+    }else{
+      if(this.state.deviceID == 0 ){
+        this.props.requestTestGroupDevices(this.state.slaveID);
+      }else{
+        this.props.requestTestOneDevice(this.state.deviceID, this.state.slaveID);
+      }
+    }
   };
 
   _deviceMenuIndexChanged = (e, value) => {
@@ -110,7 +124,8 @@ export default class ManagePage extends React.Component {
     if(value > 0)
       id = this.props.slaveList[value - 1].payload;
     this.setState({
-      slaveID: id
+      slaveID: id,
+      deviceID: 0
     })
   };
 
@@ -168,9 +183,14 @@ export default class ManagePage extends React.Component {
     if(!localStorage.getItem('HME_manage_tabIndex'))
       localStorage.setItem('HME_manage_tabIndex', 0);
     this.props.getRole();
+    let getTemperatureUnit = localStorage.getItem('HME_manage_isCentigrade');
+    if(getTemperatureUnit == null){
+      localStorage.setItem('HME_manage_isCentigrade', true);
+    }
     this.props.requestGetSlaveAndDeviceList();
     this.props.requestGetReportEmail();
-
+    this._reloadLogs();
+    setInterval(this._reloadLogs, 60000);
     // this.props.getRole();
     // this.props.requestGetCachedDeviceList();
     // this.props.requestGetCachedSlaveList();
@@ -179,6 +199,15 @@ export default class ManagePage extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+  }
+
+  _changeTemperatureUnit = (e) => {
+    let getTemperatureUnit =  JSON.parse(localStorage.getItem('HME_manage_isCentigrade'))
+    localStorage.setItem('HME_manage_isCentigrade', !getTemperatureUnit);
+  }
+
+  _reloadLogs = (e) =>{
+    this.props.requestGetLogs();
   }
 
   _wwChanged = (value) => {
@@ -281,14 +310,14 @@ export default class ManagePage extends React.Component {
     });
     this.props.requestTestSetLedDisplay({
       devID:this.state.setupTestDeviceID,
-      groupID:this.state.groupID,
+      groupID: 0,
       WW: this.state.wwValue,
       DB: this.state.dbValue,
       BL: this.state.blValue,
       GR: this.state.grValue,
       RE: this.state.reValue,
       Bright: this.state.brightValue,
-      slaveID: this.state.slaveID
+      slaveID: this.state.setupTestSlaveID
     })
   };
 
@@ -332,6 +361,16 @@ export default class ManagePage extends React.Component {
   _logout = (e) => {
     this.props.logout();
     window.location.href = "/#/close";
+  };
+
+  _onLogActive = (e) => {
+    let logsLength = this.props.logs.length;
+    if(logsLength > 0){
+      localStorage.setItem('HME_Logs_Id',this.props.logs[0].id);
+      var notify = document.getElementById('logNotify')
+      if(notify)
+        notify.parentNode.removeChild(notify);
+    }
   };
 
   _saveReportingEmail = (e) => {
@@ -381,6 +420,8 @@ export default class ManagePage extends React.Component {
     };
     let chartOptions = {
       pointDot: false,
+      pointDotRadius: 0,
+      pointDotStrokeWidth : 0,
       scaleShowVerticalLines: false,
       datasetStroke: false,
       pointHitDetectionRadius: 0,
@@ -392,14 +433,14 @@ export default class ManagePage extends React.Component {
 
     let deviceList = [{
       payload: 0,
-      primary: 'Select Device',
-      text: 'Select Device'
+      primary: 'All Device',
+      text: 'All Device'
     }];
 
     let slaveList = [{
       payload: 0,
-      primary: 'Select Slave',
-      text: 'Select Slave'
+      primary: 'All Slave',
+      text: 'All Slave'
     }];
 
     let setupTestDeviceList = [{
@@ -441,10 +482,23 @@ export default class ManagePage extends React.Component {
     let email = this.props.reportEmail;
 
     let scheduleList = (
-      <Tab label='Schedule' value='1' key={'scheduleList'} className="tab-item">
+      <Tab label='Schedule' value='2' key={'scheduleList'} className="tab-item">
         <ScheduleList />
       </Tab>
     );
+
+    let logs = [];
+    if(this.props.logs.length > 0){
+      this.props.logs.forEach((item, i) => {
+        logs.push(
+          <h5 key={i} >{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')} [{item.type}] {item.title}</h5>
+        )
+      });
+    }else{
+      logs.push(
+        <h5 key={0} >No error message.</h5>
+      )
+    }
 
     let reportEmailTab = (
     <Tab key={'reportEmail'} label="Report" value='2' className="tab-item">
@@ -473,10 +527,10 @@ export default class ManagePage extends React.Component {
           </div>
           <div>
             <div className="row">
-              <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>溫度:</h4>
+              <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Temp:</h4>
               <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.devTemp}</h4>
-                <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>風扇:</h4>
-                <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState}</h4>
+                <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Fan:</h4>
+                <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState.toString()}</h4>
             </div>
           </div>
         </div>
@@ -499,20 +553,60 @@ export default class ManagePage extends React.Component {
           </div>
           <div style={{marginTop: '10px'}}>
             <SelectField labelMember="primary" iconStyle={{fill: '#000'}} menuItems={slaveList} onChange={this._slaveMenuIndexChanged} ref="slaveMenu" style={{width: '300px'}} />
-            <RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>
+            {/*<RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._testSlaveDevice}></RaisedButton>*/}
+            <RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true}　style={{marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}} onTouchTap={this._test}></RaisedButton>
           </div>
           <div style={{marginTop: '15px'}}>
             <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
-            <RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>
+            {/*<RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>*/}
           </div>
         </div>
       </div>
     </Tab> );
 
-    let adminFunctionTabs = [];
-    if(this.props.role == 'engineer' || this.props.role == 'administrator')
-      adminFunctionTabs.push(scheduleList, reportEmailTab, testingTab);
+    let adminFunctionTabs = [], reportEmailForm = null;
+    if(this.props.role == 'engineer' || this.props.role == 'administrator') {
+      adminFunctionTabs.push(scheduleList, testingTab);
+      reportEmailForm = (
+       <div className="self-center" style={{width: '500px'}} key={'reportForm'}>
+         <TextField
+           ref="inputReportingEmail"
+           floatingLabelText="Report Email"
+           multiLine={true}
+           value={this.state.tmpEmail}
+           onChange={this._handleEditEmail}
+           type="text" />
+         <RaisedButton onTouchTap={this._saveReportingEmail} label="Save" labelColor="#FFF" backgroundColor="#51A7F9" style={{marginTop:'40px' ,marginLeft:'15px', width: '100px', display: 'inline', position: 'absolute'}}/>
+         <RefreshIndicator
+           size={40}
+           left={10}
+           top={0}
+           status={this.props.loadingEmail}
+           style={{display: 'inline-block',
+             position: 'relative'}} />
+         </div>
+       );
+    }
 
+    let logsId = localStorage.getItem('HME_Logs_Id');
+    let notify = document.getElementsByClassName('logsTab')[0]
+    if(notify && this.props.logs.length > 0){
+      if(logsId != this.props.logs[0].id && document.getElementById('logNotify') === null){
+        notify.innerHTML = notify.innerHTML + "<img id='logNotify'></img>"
+      }
+    }
+
+    let toggleDefault = JSON.parse(localStorage.getItem('HME_manage_isCentigrade'));
+    let deviceTemp
+    if( this.props.devStatus.devTemp != 'Selse Slave & Device'){
+      if(toggleDefault){
+        deviceTemp = this.props.devStatus.devTemp+'°C'
+      }else{
+        deviceTemp = (this.props.devStatus.devTemp*1.8+32)+'°F'
+      }
+    }else{
+      deviceTemp = 'Selse Slave & Device'
+    }
     return (
       <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} tabItemContainerStyle={{backgroundColor: "#032c70", marginTop: '-15px'}} contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0)'}}>
         <Tab label="Setup" value='0' className="tab-item">
@@ -534,7 +628,7 @@ export default class ManagePage extends React.Component {
                     options={chartOptions} />
                 </div>
                 <div className="smalllRaisedButton self-center" style={{width: '325px', marginTop: '-15px'}}>
-                  <RaisedButton label="全開"  onTouchTap={this._AllOpen} style={{width: '50px', border: '1px solid #DDD'}}/>
+                  <RaisedButton label="FUll"  onTouchTap={this._AllOpen} style={{width: '50px', border: '1px solid #DDD'}}/>
                   <RaisedButton label="6500K" onTouchTap={this._6500k} style={{width: '50px', border: '1px solid #DDD'}}/>
                   <RaisedButton label="4600K" onTouchTap={this._4600k} style={{width: '50px', border: '1px solid #DDD'}}/>
                   <RaisedButton label="2950K" onTouchTap={this._2950k} style={{width: '50px', border: '1px solid #DDD'}}/>
@@ -543,26 +637,61 @@ export default class ManagePage extends React.Component {
                 </div>
               </div>
               <div className="col-md-3 col-sm-3 col-xs-3" style={{marginTop: '0px', paddingRight: '0px', paddingLeft: '21px'}}>
-                <div style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
+                <div className="unSelectable" style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
                 <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
-                <div style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
+                <div className="unSelectable" style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
                 <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
-                <div style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '2px'}}>BL {this.state.blValue}</div>
+                <div className="unSelectable" style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '2px'}}>BL {this.state.blValue}</div>
                 <SliderRc ref="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
-                <div style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '2px'}}>GR {this.state.grValue}</div>
+                <div className="unSelectable" style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '2px'}}>GR {this.state.grValue}</div>
                 <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
-                <div style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
+                <div className="unSelectable" style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
                 <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
-                <div style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
+                <div className="unSelectable" style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
                 <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle+" slider"} />
-                <div style={{marginTop: '-8px'}}>Bright {this.state.brightValue}</div>
+                <div className="unSelectable" style={{marginTop: '-8px'}}>Bright {this.state.brightValue}</div>
                 <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider" />
               </div>
             </div>
           </div>
         </Tab>
+        <Tab key={'reportEmail'} label="Report" value='1' className="tab-item">
+          <div className="tab-content self-center" >
+            {reportEmailForm}
+            <div className="self-center" style={{marginTop:'15px',width: '420px'}}>
+              <div style={{width: '420px'}}>
+                <SelectField labelMember="primary" iconStyle={{fill: '#000'}} menuItems={reportSlaveList} onChange={this._reportSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '210px'}}/>
+                <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._reportDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={reportDeviceList} style={{width: '210px', marginLeft: '5px', position: 'absolute'}}/>
+              </div>
+              <div>
+                <div className="row">
+                  <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Temp:</h4>
+                  <h4 className="col-md-4 col-sm-4 col-xs-4">{deviceTemp}</h4>
+                    <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Fan:</h4>
+                    <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState.toString()}</h4>
+                </div>
+                <div className="row">
+                  <Toggle
+                    defaultToggled={toggleDefault}
+                    label= {toggleDefault ? 'Centigrade': 'Fahrenheit'}
+                    style={{width: '150px'}}
+                    onToggle= {this._changeTemperatureUnit}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Tab>
         {adminFunctionTabs}
-        <Tab label="Logout" value='logout' onTouchTap={this._logout}  className="tab-item"/>
+        <Tab label="Logs" value='4' className="tab-item logsTab"
+          onActive={this._onLogActive}>
+          <div className="tab-content self-center">
+            <div className="self-center" style={{width: '415px', marginTop: '15px', wordBreak:'break-all'}}>
+              {logs}
+            </div>
+          </div>
+        </Tab>
+        <Tab label="Logout" value='logout' onTouchTap={this._logout}  className="tab-item btn-logout" />
       </Tabs>
     );
   }
@@ -579,7 +708,7 @@ function _injectPropsFromStore(state) {
       scanResult[slave.id] = [];
       slaveList.push({
         payload: slave.id,
-        primary: `Slave host: ${slave.host}`,
+        primary: `${slave.host}`,
         text: slave.host,
       });
     }
@@ -589,12 +718,11 @@ function _injectPropsFromStore(state) {
     for(let device of scanDevice.deviceList) {
       scanResult[device.SlaveId].push({
         payload: device.devID,
-        primary: `DeviceID: ${device.devID}`,
+        primary: `${device.devID}`,
         text: device.devID
       });
     }
   }
-
   return {
     deviceList: scanResult,
     groupList: groupList,
@@ -603,7 +731,9 @@ function _injectPropsFromStore(state) {
     reportEmail: manageSettings.reportEmail,
     loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide',
     role: login.role,
-    devStatus: manageSettings.devStatus || {devTemp: 'selse Slave & Device', fanState: 'selse Slave & Device'},
+    devStatus: manageSettings.devStatus || {devTemp: 'Selse Slave & Device', fanState: 'Selse Slave & Device'},
+    logs: manageSettings.logs || []
+
   };
 }
 
@@ -626,7 +756,8 @@ const _injectPropsFromActions = {
   requestGetDeviceStatus,
   // Auth,
   getRole,
-  logout
+  logout,
+  requestGetLogs
 }
 
 

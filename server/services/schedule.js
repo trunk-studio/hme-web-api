@@ -41,6 +41,16 @@ module.exports = {
     }
   },
 
+  delete: async(scheduleId) => {
+    try {
+      await models.Schedule.destroy({where:{id: scheduleId}});
+      await models.ScheduleDetail.destroy({where: {ScheduleId: null}});
+      await models.ScheduleDetailConfig.destroy({where: {ScheduleDetailId: null}});
+    } catch (e) {
+      throw e;
+    }
+  },
+
   createEasy: async(data) => {
     try {
       let slaveId ={};
@@ -332,15 +342,21 @@ module.exports = {
         config,
         devList
       }
-      let result = await new Promise((resolve, reject) => {
+      let result = await new Promise((done) => {
         request
         .post(`http://${slave.host}:3000/rest/slave/${slave.id}/schedule/setOnDevice`)
         .send(data)
         .end((err, res) => {
-          if(err) return reject(err);
-          resolve(res.body);
+          if(err) {
+            console.log(err);
+            done(false);
+          }
+          // resolve(res.body);
+          else
+            done(true);
         });
       });
+      return result;
     } catch (e) {
       console.log(e);
       throw e;
@@ -350,6 +366,12 @@ module.exports = {
   setFastRun: async(slave, isAll, scheduleId) => {
     try {
       let id = isAll ? null : slave.id ;
+      if( ! isAll ){
+        let schedule = await models.Schedule.findById(scheduleId);
+        if(slave.id != schedule.SlaveId){
+          id = null
+        }
+      }
       let config = await services.schedule.getCurrectSetting({
         slaveId: id,
         findScheduleId: {

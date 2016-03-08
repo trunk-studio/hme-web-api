@@ -44,6 +44,14 @@ export function requestScheduleCreate(scheduleList, slaveId) {
   };
 }
 
+export function requestScheduleDeleteLast(scheduleId, slaveId) {
+  return (dispatch) => {
+    return request
+      .post('/rest/master/schedule/delete/'+scheduleId,{slaveId: slaveId})
+      .then(response => dispatch(requestGetSlaveSchedule(slaveId)));
+  };
+}
+
 export function receivedScheduleCreate(data) {
   return {
     type: RECEIVED_CREATE_SCHEDULE,
@@ -108,9 +116,16 @@ export function receivedGetScheduleList(data) {
 }
 
 export function requestSetScheduleList(data) {
-  return request
-    .post(`/rest/master/schedule/setOnDevice`, data)
-    .then(response => dispatch(receivedSetScheduleList(response.data)));
+  console.log('!!!!!!!!!!!!!!!!!!!!!!data', data);
+  return dispatch => {
+    dispatch(updateLoadingStatus('loading'));
+    return request
+      .post(`/rest/master/schedule/setOnDevice`, data)
+      .then(response => {
+        dispatch(receivedSetScheduleList(response.data));
+        requestGetSlaveSchedule(data.slaveId);
+      });
+  }
 }
 
 export function receivedSetScheduleList(data) {

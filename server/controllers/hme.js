@@ -1,4 +1,14 @@
 import request from 'superagent'
+import ini from 'ini'
+import {exec, execSync} from 'child_process';
+
+exports.status = async function (ctx) {
+  try {
+    ctx.body = {hme: 'ready'};
+  } catch (e) {
+    throw e;
+  }
+};
 
 exports.hello = async function (ctx) {
   try {
@@ -167,7 +177,7 @@ exports.testDeviceByID = async function (ctx) {
 exports.testGruopByID = async function (ctx) {
   try {
     let groupID = ctx.params.slaveId;
-    let result = await services.hme.testGroup(groupID);
+    let result = await services.hme.testGroup(0);
     ctx.body = result
   } catch (e) {
 
@@ -277,7 +287,7 @@ exports.saveSetting = async function (ctx) {
   try {
     let data = ctx.request.body;
     let result = await services.deviceControl.saveSetting(data);
-    ctx.body = 'ok';
+    ctx.body = {result};
   } catch (e) {
     throw e;
   }
@@ -328,6 +338,37 @@ exports.updateTime = async function (ctx) {
   try {
     let result = await services.deviceControl.getMasterTimeAndUpdate();
     ctx.body = result;
+  } catch (e) {
+    ctx.body = e;
+    throw e;
+  }
+}
+
+exports.logs = async function (ctx) {
+  try {
+    let logs = await services.deviceControl.getLogs();
+    ctx.body = logs;
+  } catch (e) {
+    ctx.body = e;
+    throw e;
+  }
+}
+
+exports.reboot = async function (ctx) {
+  try {
+    let saveSetting = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+    if(saveSetting.SYSTEM.TYPE === 'slave'){
+      await services.deviceControl.registerSlave({
+        slaveHostName: saveSetting.SYSTEM.MASTER_NAME + '.local'
+      });
+    }else{
+      await services.deviceControl.registerSlave({
+        slaveHostName: saveSetting.SYSTEM.HME_SERIAL + '.local'
+      });
+    }
+    execSync('cd /root/hme-web-api/wifiConfig && make client_mode && cd -');
+    execSync('sudo /sbin/reboot');
+    ctx.body = 'ok';
   } catch (e) {
     ctx.body = e;
     throw e;

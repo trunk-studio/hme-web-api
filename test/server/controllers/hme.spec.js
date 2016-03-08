@@ -1,5 +1,19 @@
 describe("hme", () => {
 
+  it("check master status", (done) => {
+
+    request.get("/rest/master/status")
+      .expect(200)
+      .end((error, res) => {
+        // console.log('res.body', res.body);
+
+        console.log(res);
+        res.body.hme.should.be.equal("ready");
+        done(error);
+      });
+
+  });
+
   it("hello localhost", (done) => {
 
     request.get("/rest/hme/hello")

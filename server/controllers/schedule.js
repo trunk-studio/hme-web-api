@@ -55,6 +55,22 @@ exports.createSchedule = async function(ctx) {
 
 }
 
+exports.deleteLastSchedule = async function(ctx) {
+  try {
+    console.log("==== deleteLastSchedule ===");
+    let slaveId = ctx.request.body.slaveId;
+    let scheduleId = ctx.params.id;
+    let result = await services.schedule.delete(scheduleId);
+    //delete simple Schedule
+    await services.schedule.deleteSimpleScheduleBySlaveId(slaveId);
+    ctx.body =  result;
+  } catch(e) {
+    console.error(e);
+  }
+
+}
+
+
 exports.createEasySchedule = async function(ctx){
   try {
     console.log("==== createEasySchedule ===",ctx.request.body);
@@ -169,7 +185,7 @@ exports.setScheduleListToDevice = async function(ctx) {
     let slaveId = ctx.request.body.slaveId;
     console.log("slaveId!!",slaveId);
     let isAll = false;
-    if(slaveId == 0){
+    if(slaveId == 0) {
       await models.Schedule.destroy({
         where: {
           SlaveId: {
@@ -183,14 +199,30 @@ exports.setScheduleListToDevice = async function(ctx) {
       isAll = true;
       for (let slave of slaveList) {
         try {
-          await services.schedule.scheduleSetData(slave, isAll);
+          let res = await services.schedule.scheduleSetData(slave, isAll);
+          if(res.success) {
+            let slaveSchedules = await models.Schedule.findAll({where: {SlaveId: null}});
+            for( let schedule of slaveSchedules) {
+              schedule.Summit = true;
+              await schedule.save();
+            }
+          }
+
         } catch (e) {
           console.log(e);
         }
       }
     }else{
       let slave = await models.Slave.findById(slaveId);
-      await services.schedule.scheduleSetData(slave, isAll);
+      let res = await services.schedule.scheduleSetData(slave, isAll);
+      if(res.success) {
+        let slaveSchedules = await models.Schedule.findAll({where: {SlaveId: slave.id}});
+        for( let schedule of slaveSchedules) {
+          schedule.Summit = true;
+          await schedule.save();
+        }
+      }
+
     }
     ctx.body = true;
   } catch(e) {
@@ -207,10 +239,11 @@ exports.slaveSetScheduleListToDevice = async function(ctx) {
     let devList = data.devList;
     let result = await services.hme.writeTimeTabToDevices(config, {devIDs: devList});
     console.log("success:",result);
-    ctx.body = true;
+    ctx.body = {success: result};
+
   } catch (e) {
     console.error(e);
-    ctx.body = false;
+    ctx.body = {success: false};
   }
 }
 
@@ -336,8 +369,8 @@ exports.setSimRtc = async function(ctx) {
         }
       }
     }else{
-      let slave = await models.Slave.findById(slaveId, count);
-      await services.schedule.setSimRtc(slave);
+      let slave = await models.Slave.findById(slaveId);
+      await services.schedule.setSimRtc(slave, count);
     }
     ctx.body = true;
   } catch (e) {

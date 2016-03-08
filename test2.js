@@ -1,12 +1,33 @@
 
-var RestComm = [128,1,0,0,0,0,0,50,1,0,0,0,0,0,1,0,0,53,1,0]
+// pin23 = I/O Switching, pin18 = pulse output
+var GPIO = require('onoff').Gpio,
+    swPin = new GPIO(23, 'low'),
+    pulsePin = new GPIO(18, 'high');
 
-var SerialPort = require("serialport").SerialPort;
-var ser = new SerialPort('/dev/ttyUSB0', {baudrate: 115200}, true);
 
-ser.on ('open', function () {
-  ser.write(RestComm, function(err, results) {
-    console.log('Txerr' + err);
-    console.log('TX Num =' + results);
-  });
-});
+
+
+  (function() {
+    // setInterval(function () {
+    //   pulseMs(5);
+    //   clearInterval(itd);
+    // }, 30)
+    setTimeout(function () {
+      pulseMs(5);
+    }, 100);
+
+  })();
+
+
+
+function pulseMs(ms) {
+  swPin.writeSync(0);
+  pulsePin.writeSync(1);
+  swPin.writeSync(1);
+  pulsePin.writeSync(0);
+  setTimeout(function () {
+    pulsePin.writeSync(1);
+    swPin.writeSync(0);
+  }, ms);
+
+ }

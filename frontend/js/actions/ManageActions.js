@@ -3,6 +3,7 @@ import request from 'axios'
 export const RECEIVED_REPORT_EMAIL = 'RECEIVED_REPORT_EMAIL'
 export const UPDATE_EMAIL_LOADING_STATUS = 'UPDATE_EMAIL_LOADING_STATUS'
 export const GET_DEVICE_STATUS = 'GET_DEVICE_STATUS'
+export const GET_LOGS = 'GET_LOGS'
 
 export function requestGetReportEmail() {
   return (dispatch) => {
@@ -58,6 +59,24 @@ export function requestGetDeviceStatus({slaveId, devId}) {
 export function receivedGetDeviceStatus(data) {
   return {
     type: GET_DEVICE_STATUS,
+    data
+  }
+}
+
+
+export function requestGetLogs() {
+  return (dispatch) => {
+    return request
+      .get(`/rest/master/logs`)
+      .then(response => {
+        dispatch(receivedGetLogs(response.data))
+      });
+  };
+}
+
+export function receivedGetLogs(data) {
+  return {
+    type: GET_LOGS,
     data
   }
 }

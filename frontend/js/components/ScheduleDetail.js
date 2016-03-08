@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom'
 import {connect} from 'react-redux'
 import {
   requestGetScheduleDetail,
@@ -14,7 +15,7 @@ const NavigationClose = require('material-ui/lib/svg-icons/navigation/close.js')
 
 import numeral from 'numeral'
 import NVD3Chart from 'react-nvd3';
-import VerticalSlider from'vertical-rc-slider';
+import VerticalSlider from 'vertical-rc-slider';
 import Slider from 'rc-slider';
 const style = {
   width: 400,
@@ -61,7 +62,7 @@ export default class ScheduleDetail extends React.Component {
       fastRunLabel: 'FastRun',
       fastRunIntervalId: '',
       fastRunStart: false,
-      count: 0
+      count: 0,
     }
   }
 
@@ -80,6 +81,10 @@ export default class ScheduleDetail extends React.Component {
     // modify color of current dot
     $(`.nv-point-${prevState.currentIndex+1}`).attr('stroke', 'rgb(45, 127, 224)').attr('fill', 'rgb(45, 127, 224)');
     $(`.nv-point-${this.state.currentIndex+1}`).attr('stroke', 'rgba(255, 55, 36, 0.82)').attr('fill', 'rgba(255, 55, 36, 0.82)');
+
+    if($('.nvd3.nv-wrap.nv-lineChart') != null) {
+      $(ReactDOM.findDOMNode(this.refs.timeSlider)).css('width', ($('.nvd3.nv-wrap.nv-lineChart')[0].getBoundingClientRect().width - 48) + 'px' );
+    }
   }
 
   _handleWeightChanged = (val) => {
@@ -321,7 +326,7 @@ export default class ScheduleDetail extends React.Component {
       <div>
         <AppBar title="Schedule Detail"
           style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
-          titleStyle={{fontSize: '20px'}}
+          titleStyle={{fontSize: '18px'}}
           iconElementLeft={
             <IconButton onTouchTap={function() {window.location.href = '#/manage';}} >
               <NavigationClose />
@@ -329,9 +334,9 @@ export default class ScheduleDetail extends React.Component {
           }
           iconElementRight={
             <div>
-              <FlatButton label={this.state.fastRunLabel} ref="fastRun" onTouchTap={this._fastRun} style={{marginTop:'4px',marginRight:'10px',marginLeft:'auto', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
-              <FlatButton label="RESET" onTouchTap={this._handleDialogOpen} style={{marginTop:'4px',marginRight:'10px',marginLeft:'auto', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
-              <FlatButton label="save" onTouchTap={this._saveScheduleDetails} style={{didFlip:'true',marginTop:'4px',marginRight:'10px',marginLeft:'auto', backgroundColor: 'rgba(0,0,0,0)', color: '#fff'}} >
+              <FlatButton label={this.state.fastRunLabel} ref="fastRun" onTouchTap={this._fastRun} style={{marginTop:'4px', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
+              <FlatButton label="RESET" onTouchTap={this._handleDialogOpen} style={{marginTop:'4px',marginRight:'10px', color: '#fff', backgroundColor: 'rgba(0,0,0,0)'}} />
+              <FlatButton label="save" onTouchTap={this._saveScheduleDetails} style={{didFlip:'true',marginTop:'4px', backgroundColor: 'rgba(0,0,0,0)', color: '#fff'}} >
                 <RefreshIndicator
                   size={28}
                   left={0}
@@ -341,64 +346,67 @@ export default class ScheduleDetail extends React.Component {
               </FlatButton>
             </div>
           }
+          iconStyleRight={{overflowX: 'hidden', position: 'absolute', right: '0px', marginRight:'0px'}}
         />
-        <div className="background-splash self-center" style={{
+        <div className="" style={{
         width: '100%',
-        overflowX: 'hidden'
+        overflowX: 'hidden',
         }}>
-          <div className="row">
-            <div className="center-self" style={{position: 'relative'}}>
-              <div className="col-md-11 col-sm-11 col-xs-11 chart-container">
-                <NVD3Chart
-                  type="lineChart"
-                  height={215}
-                  datum={data}
-                  xAxis={{
-                    tickValues: tickMarks,
-                    tickFormat: function(d) {return _formatMinutes(d);}
-                  }}
-                  forceX={[0,MAX_TIME_INTEGER]}
-                  yAxis={{
-                    tickFormat: function(d) {return numeral(d).format('0%')}
-                  }}
-                  forceY={[0,1]} />
+          <div className="tab-content self-center" style={{width: '96%', backgroundColor: 'rgba(0,0,0,0.5)', paddingTop: '2px'}}>
+            <div className="row">
+              <div className="center-self">
+                <div className="col-md-11 col-sm-11 col-xs-11 chart-container">
+                  <NVD3Chart
+                    type="lineChart"
+                    ref="scheduleChart"
+                    height={215}
+                    datum={data}
+                    xAxis={{
+                      tickValues: tickMarks,
+                      tickFormat: function(d) {return _formatMinutes(d);}
+                    }}
+                    forceX={[0,MAX_TIME_INTEGER]}
+                    yAxis={{
+                      tickFormat: function(d) {return numeral(d).format('0%')}
+                    }}
+                    forceY={[0,1]} />
+                </div>
+                <div className="col-md-1 col-sm-1 col-xs-1" style={{marginTop: '12px', height: '150px', marginLeft: '-20px'}}>
+                  <VerticalSlider className="bright-slider"
+                    min={0} max={100} marks={SLIDER_WEIGHT_MARKS}
+                    included={false}
+                    value={sliderData.weight} onAfterChange={this._handleWeightChanged}
+                    tipFormatter={function(v){return v+'%';}}
+                    />
+                </div>
               </div>
-              <div className="col-md-1 col-sm-1 col-xs-1" style={{paddingTop: '85px',
-                position: 'absolute', right: '-60px'}}>
-                <VerticalSlider className="vertical-slider"
-                  min={0} max={100} marks={SLIDER_WEIGHT_MARKS}
-                  included={false} style={{float: 'right'}}
-                  value={sliderData.weight} onAfterChange={this._handleWeightChanged}
-                  tipFormatter={function(v){return v+'%';}}
+            </div>
+            <div className='row' style={{marginTop: '0px', marginLeft: '45px'}}>
+              <div  className="">
+                <Slider className="timeSlider" min={0} max={MAX_TIME_INTEGER} marks={timeSliderMarks} included={false}
+                  ref="timeSlider"
+                  id="timeSlider"
+                  value={sliderData.time} disabled={false}
+                  allowCross={false} style={{width: '10%'}}
+                  onAfterChange={this._handleTimetChanged}
+                  tipFormatter={function(v){return _formatMinutes(v);}}
                   />
               </div>
             </div>
-          </div>
-          <div className='row' style={{marginTop: '0px', marginLeft: '45px'}}>
-            <div style={{
-              width: '85%'
-            }} className="">
-              <Slider className="timeSlider" min={0} max={MAX_TIME_INTEGER} marks={timeSliderMarks} included={false}
-                value={sliderData.time} disabled={false}
-                allowCross={false} style={{width: '10%'}}
-                onAfterChange={this._handleTimetChanged}
-                tipFormatter={function(v){return _formatMinutes(v);}}
-                />
-            </div>
-          </div>
-          <div className="row" style={{
-            marginTop: '17px'
-            }}>
-            <div className="center-self justify-content" style={{
-              width:'90%', padding: '5px'}}>
-              {ButtonGroup1}
-            </div>
-          </div>
-          <div className="row" style={{marginTop: '-5px'
-                }}>
-            <div className="center-self justify-content" style={{
+            <div className="row" style={{
+              marginTop: '17px'
+              }}>
+              <div className="center-self justify-content" style={{
                 width:'90%', padding: '5px'}}>
-              {ButtonGroup2}
+                {ButtonGroup1}
+              </div>
+            </div>
+            <div className="row" style={{marginTop: '-5px'
+                  }}>
+              <div className="center-self justify-content" style={{
+                  width:'90%', padding: '5px'}}>
+                {ButtonGroup2}
+              </div>
             </div>
           </div>
         </div>
