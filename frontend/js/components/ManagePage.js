@@ -30,7 +30,7 @@ const LineChart = require("react-chartjs").Line;
 import { Slider} from 'material-ui';
 import SliderRc from 'rc-slider';
 import RefreshIndicator from 'material-ui/lib/refresh-indicator';
-
+import Toggle from 'material-ui/lib/toggle';
 export default class ManagePage extends React.Component {
 
   // childContextTypes() {
@@ -68,7 +68,8 @@ export default class ManagePage extends React.Component {
       setupTestSlaveId: 0,
       setupTestDeviceId: 0,
       reportSlaveID: 0,
-      reportDeviceId: 0
+      reportDeviceId: 0,
+      isCentigrade: true,
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -94,13 +95,16 @@ export default class ManagePage extends React.Component {
   };
 
   _test = (e) => {
+    console.log(this.state.slaveID);
     if( this.state.slaveID == 0){
-      this.props.requestTestGroupDevices(this.state.slaveID);
-    }else{
       if(this.state.deviceID == 0 ){
         this.props.slaveList.forEach((slave,i) => {
           this.props.requestTestGroupDevices(slave.payload);
         });
+      }
+    }else{
+      if(this.state.deviceID == 0 ){
+        this.props.requestTestGroupDevices(this.state.slaveID);
       }else{
         this.props.requestTestOneDevice(this.state.deviceID, this.state.slaveID);
       }
@@ -179,6 +183,10 @@ export default class ManagePage extends React.Component {
     if(!localStorage.getItem('HME_manage_tabIndex'))
       localStorage.setItem('HME_manage_tabIndex', 0);
     this.props.getRole();
+    let getTemperatureUnit = localStorage.getItem('HME_manage_isCentigrade');
+    if(getTemperatureUnit == null){
+      localStorage.setItem('HME_manage_isCentigrade', true);
+    }
     this.props.requestGetSlaveAndDeviceList();
     this.props.requestGetReportEmail();
     this._reloadLogs();
@@ -191,6 +199,11 @@ export default class ManagePage extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+  }
+
+  _changeTemperatureUnit = (e) => {
+    let getTemperatureUnit =  JSON.parse(localStorage.getItem('HME_manage_isCentigrade'))
+    localStorage.setItem('HME_manage_isCentigrade', !getTemperatureUnit);
   }
 
   _reloadLogs = (e) =>{
@@ -297,14 +310,14 @@ export default class ManagePage extends React.Component {
     });
     this.props.requestTestSetLedDisplay({
       devID:this.state.setupTestDeviceID,
-      groupID:this.state.groupID,
+      groupID: 0,
       WW: this.state.wwValue,
       DB: this.state.dbValue,
       BL: this.state.blValue,
       GR: this.state.grValue,
       RE: this.state.reValue,
       Bright: this.state.brightValue,
-      slaveID: this.state.slaveID
+      slaveID: this.state.setupTestSlaveID
     })
   };
 
@@ -582,6 +595,18 @@ export default class ManagePage extends React.Component {
         notify.innerHTML = notify.innerHTML + "<img id='logNotify'></img>"
       }
     }
+
+    let toggleDefault = JSON.parse(localStorage.getItem('HME_manage_isCentigrade'));
+    let deviceTemp
+    if( this.props.devStatus.devTemp != 'Selse Slave & Device'){
+      if(toggleDefault){
+        deviceTemp = this.props.devStatus.devTemp+'°C'
+      }else{
+        deviceTemp = (this.props.devStatus.devTemp*1.8+32)+'°F'
+      }
+    }else{
+      deviceTemp = 'Selse Slave & Device'
+    }
     return (
       <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} tabItemContainerStyle={{backgroundColor: "#032c70", marginTop: '-15px'}} contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0)'}}>
         <Tab label="Setup" value='0' className="tab-item">
@@ -640,10 +665,18 @@ export default class ManagePage extends React.Component {
               </div>
               <div>
                 <div className="row">
-                  <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>溫度:</h4>
-                  <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.devTemp}</h4>
-                    <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>風扇:</h4>
-                    <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState}</h4>
+                  <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Temp:</h4>
+                  <h4 className="col-md-4 col-sm-4 col-xs-4">{deviceTemp}</h4>
+                    <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Fan:</h4>
+                    <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState.toString()}</h4>
+                </div>
+                <div className="row">
+                  <Toggle
+                    defaultToggled={toggleDefault}
+                    label= {toggleDefault ? 'Centigrade': 'Fahrenheit'}
+                    style={{width: '150px'}}
+                    onToggle= {this._changeTemperatureUnit}
+                  />
                 </div>
               </div>
             </div>
