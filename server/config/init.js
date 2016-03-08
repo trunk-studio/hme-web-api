@@ -5,7 +5,6 @@ let config;
 
 try {
   config = require(`./${env}`);
-  console.log(config);
   config.default.environment = env;
   config.default.userData = {
     administrator: md5('administrator'),
@@ -15,6 +14,7 @@ try {
   config.default.secret = 'supersecret';
 }
 catch (error) {
+  console.log(error);
   debug('dev')(`No specific configuration for env ${env}`);
 }
 

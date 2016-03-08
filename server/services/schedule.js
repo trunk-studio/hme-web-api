@@ -353,7 +353,7 @@ module.exports = {
           }
           // resolve(res.body);
           else
-            done(res.body);
+            done(true);
         });
       });
       return result;
@@ -366,6 +366,12 @@ module.exports = {
   setFastRun: async(slave, isAll, scheduleId) => {
     try {
       let id = isAll ? null : slave.id ;
+      if( ! isAll ){
+        let schedule = await models.Schedule.findById(scheduleId);
+        if(slave.id != schedule.SlaveId){
+          id = null
+        }
+      }
       let config = await services.schedule.getCurrectSetting({
         slaveId: id,
         findScheduleId: {

@@ -2,6 +2,7 @@ import {SerialPort} from "serialport";
 import Encode from "./encode";
 
 
+
 let ping = require('ping');
 
 export default class Hme {
@@ -229,13 +230,24 @@ export default class Hme {
     }
   };
 
+  async SearchDevice () {
+    try {
+
+      let result = await this.resetID();
+
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  };
 
 
-  async SearchDevice ()  {
+
+  async pollingSearchDevice ()  {
     try {
       let ReDevArry = [];
       let ReDataArry = [];
-      const MAXSECHDEVNUM = 10;
+      const MAXSECHDEVNUM = 100;
 
       let params = {
         u8DevID:1,
@@ -283,6 +295,65 @@ export default class Hme {
       throw e;
     }
   };
+
+  async resetID ()  {
+  try {
+    let serialPort = this.serialPort;
+    let Rxarry = this.RxBufArry ;
+
+    console.log('resetID');
+    let restartNum = 5;
+    let success = false;
+
+    let RxRawArry = [];
+    let ReDevArry = []; //[[devID1, gID1],[devID2, gID2]]
+
+    do {
+      Rxarry.length = 0;
+      console.log('Pulse');
+      await services.hmegpio.gpioPulse(5);
+      await this.sleep(15);
+      serialPort.write([1,0], function(err, results) {
+        if(err) return reject(err);
+      });
+
+      await this.sleep(30);
+      let waitFlag = false;
+      let oldRxLen = 0;
+
+      do {
+        await this.sleep(20);
+        console.log("Rxarry:", Rxarry);
+        console.log("Rxarry.length:", Rxarry.length);
+        console.log('Rxarry:', Rxarry,'oldRxLen:',oldRxLen);
+
+        waitFlag = (Rxarry.length > oldRxLen && Rxarry[0] != 1 );
+        console.log('Rxarry[0]:',Rxarry[0]);
+        console.log('waitFlag:',waitFlag);
+        oldRxLen = Rxarry.length;
+      } while (waitFlag);
+
+      restartNum--;
+      console.log("restartNum:", restartNum);
+    } while (!(restartNum <= 0 || Rxarry[0] === 2));
+
+
+    if (Rxarry.length != 0 && (Rxarry.length % 2) == 0) {
+      for (var i = 0; i < Math.ceil(Rxarry.length/2); i++) {
+        let DevData = {
+          devID:Rxarry[i * 2] + (Rxarry[(i * 2) + 1] * 255) - 1,
+          DevGroup:0
+        }
+        ReDevArry.push(DevData); //0 is counterfeit
+      }
+    }
+
+    return ReDevArry;
+
+  } catch (e) {
+    throw e;
+  }
+};
 
   async getSlaveDeviceArray (slaveId)  {
     try {
@@ -605,8 +676,8 @@ export default class Hme {
           groupID:groupID,
           Led1Bgt: DB * Bright,
           Led2Bgt: BL * Bright,
-          Led3Bgt: GR * Bright,
-          Led4Bgt: RE * Bright,
+          Led3Bgt: RE * Bright,
+          Led4Bgt: GR * Bright,
           Led5Bgt: WW * Bright
         }
 
@@ -730,7 +801,7 @@ export default class Hme {
 
   async setDayTab (devID, groupID, dayTab)  {
     try {
-        let COpParams = {
+        let accDevParams = {
         u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
@@ -740,24 +811,10 @@ export default class Hme {
         u8Mask_Arry:[],
         RepeatNum:5
       }
-      let TxParams = {
-        Comm:[],
-        RxLen:8
-      }
-      let DecodParams = {
-        FuncCT:49,
-        devID:devID,
-        u8RxDataArry:[]
-      }
 
-      TxParams.Comm = this.encode.ClientOp(COpParams);
-      console.log('setDayTab.COpParams =', COpParams);
-      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
-        return (true);
-      } else {
-        return (false);
-      };
+      console.log('setDayTab.COpParams =', accDevParams);
+      let result =  await this.accessDevice(accDevParams);
+      return (result.success);
 
 
     } catch (e) {
@@ -839,7 +896,7 @@ export default class Hme {
     try {
         let modeIndex = {'cycle': 0, 'fullPower': 1, '6500k': 2, '4600k': 3,
                 '2950k': 4, 'savingE': 5, 'blueRed': 6}
-        let COpParams = {
+        let accDevParams = {
         u8DevID:devID,
         groupID:groupID,
         sFunc:'WordWt',
@@ -849,28 +906,9 @@ export default class Hme {
         u8Mask_Arry:[],
         RepeatNum:5
       }
-      let TxParams = {
-        Comm:[],
-        RxLen:8
-      }
-      let DecodParams = {
-        FuncCT:49,
-        devID:devID,
-        u8RxDataArry:[]
-      }
 
-      TxParams.Comm = this.encode.ClientOp(COpParams);
-      DecodParams.u8RxDataArry =  await this.UartTxRx(TxParams);
-      if(this.encode.u3ByteToWord(DecodParams.u8RxDataArry.slice(1,4)) == devID){
-        if (await this.writeFlashMemory(devID, 0)){
-          return (true);
-        }else {
-          return (false);
-        }
-      } else {
-        return (false);
-      };
-
+      let result =  await this.accessDevice(accDevParams);
+      return (result.success);
 
     } catch (e) {
       throw e;
@@ -912,16 +950,7 @@ export default class Hme {
           u8Mask_Arry:[],
           RepeatNum:5
         }
-        let TxParams = {
-          Comm:[],
-          RxLen:26
-        }
-        let DecodParams = {
-          FuncCT:33,
-          devID:devID,
-          u8RxDataArry:[]
-        }
-        console.log('u3ByteToWord=', DecodParams.u8RxDataArry);
+
         let result =  await this.accessDevice(accDevParams);
 
         if(result.success){
