@@ -7,20 +7,24 @@ module.exports = {
 
   saveDevice: async(data, slaveId) => {
     try {
+      await models.Device.destroy({
+        where: {
+          SlaveId: slaveId
+        }
+      });
       let deviceList = [];
       for(let device of data){
+
         let newDevice = {
           uid: device.devID,
           GroupId: device.GroupID,
           SlaveId: slaveId
         }
-        newDevice = await models.Device.findOrCreate({
-          where:{
-            uid: device.devID,
-            SlaveId: slaveId
-          },
-          defaults: newDevice
+
+        newDevice = await models.Device.Create({
+          newDevice
         });
+
         deviceList.push(newDevice);
       }
       return deviceList;
