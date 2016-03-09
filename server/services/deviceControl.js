@@ -21,7 +21,7 @@ module.exports = {
           SlaveId: slaveId
         }
 
-        newDevice = await models.Device.Create({
+        newDevice = await models.Device.create({
           newDevice
         });
 
