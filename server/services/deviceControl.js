@@ -21,9 +21,7 @@ module.exports = {
           SlaveId: slaveId
         }
 
-        newDevice = await models.Device.create({
-          newDevice
-        });
+        newDevice = await models.Device.create(newDevice);
 
         deviceList.push(newDevice);
       }
