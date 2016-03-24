@@ -6,10 +6,10 @@ var GPIO = require('onoff').Gpio,
     // buttonB = new GPIO(21, 'in', 'both');
 
 var exec = require('child_process').exec;
+var timeId = undefined;
 
 // define the callback function
 function lightA(err, state) {
-  var timeId = undefined;
   console.log('buttonA click', state);
   // check the state of the button
   // 1 == pressed, 0 == not pressed
@@ -21,9 +21,11 @@ function lightA(err, state) {
   } else {
     // rising edge
     console.log('rising edge');
-    timeId = setTimeout(rebuttonEvent(),3000);
+    timeId = setTimeout(function(){
+      rebuttonEvent();
+    },3000);
     // turn LED off
-    ledA.writeSync(1);
+    // ledA.writeSync(1);
   }
 }
 
