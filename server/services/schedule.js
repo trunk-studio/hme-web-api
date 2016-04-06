@@ -17,7 +17,7 @@ module.exports = {
       let scheduleConfig = [];
       for (let a = 0; a < 24; a += 2) {
         scheduleConfig.push({
-          "weight": 1,
+          "weight": 0,
           "StartTime": a +":00:00",
           "ScheduleId": schedule.id
         });
