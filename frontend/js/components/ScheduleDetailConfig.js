@@ -246,7 +246,7 @@ export default class ScheduleDetailConfig extends React.Component {
        { payload: '5', text: 'Weekly' },
     ];
     let chartData = {
-        labels: ["380","","","","","","","","","","","","","","","","","","","460","","","","","","","","","","","","","","","","","","","","540","","","","","","","","","","","","","","","","","","","","620","","","","","","","","","","","","","","","","","","","","700","","","","","","","","","","","","","","","","","","","","","780"],
+        labels: ["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],
         datasets: [
             {
                 label: "My Second dataset",
@@ -301,7 +301,7 @@ export default class ScheduleDetailConfig extends React.Component {
         <div className="self-center" style={{width: '100%', marginTop: '5px'}}>
           <div className="row">
             <div className="col-md-9 col-sm-9 col-xs-9">
-              <div className="row">
+              <div className="row" style={{width: '100%'}}>
                 <LineChart ref="chart" data={chartData} style={{
                   margin: '-10px 0 -17px 18px',
                   width: '100%',
@@ -310,31 +310,39 @@ export default class ScheduleDetailConfig extends React.Component {
                   }}
                   options={chartOptions} />
               </div>
+              <div style={{display: 'flex', justifyContent: 'space-between', paddingBottom: '0px', marginTop: '-10px', fontSize: '12px'}}>
+                <span>380</span>
+                <span>460</span>
+                <span>540</span>
+                <span>620</span>
+                <span>700</span>
+                <span>780</span>
+              </div>
+              <div className="smalllRaisedButton self-center" style={{width: '100%', display: 'flex', marginTop: '0px', justifyContent: 'space-around'}}>
+                <RaisedButton label="FUll"  onTouchTap={this._AllOpen} labelColor='#FFF' backgroundColor='#51A7F9' style={{height: '30px', width: '50px'}}/>
+                <RaisedButton label="6500K" onTouchTap={this._6500k} labelColor='#FFF' backgroundColor='#51A7F9' style={{height: '30px', width: '50px'}}/>
+                <RaisedButton label="4600K" onTouchTap={this._4600k} labelColor='#FFF' backgroundColor='#51A7F9' style={{height: '30px', width: '50px'}}/>
+                <RaisedButton label="2950K" onTouchTap={this._2950k} labelColor='#FFF' backgroundColor='#51A7F9' style={{height: '30px', width: '50px'}}/>
+                <RaisedButton label="ECO" onTouchTap={this._saving} labelColor='#FFF' backgroundColor='#51A7F9' style={{height: '30px', width: '50px'}}/>
+                <RaisedButton label="B+R" onTouchTap={this._BR} labelColor='#FFF' backgroundColor='#51A7F9' style={{height: '30px', width: '45px'}}/>
+              </div>
             </div>
-            <div className="col-md-3 col-sm-3 col-xs-3" style={{marginLeft: '-8px'}}>
-              <div className="unSelectable" style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '2px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
+            <div className="col-md-3 col-sm-3 col-xs-3" style={{marginLeft: '-8px', fontSize: '12px'}}>
+              <div className="unSelectable" style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '3px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
               <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
-              <div className="unSelectable" style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>DB {this.state.dbValue}</div>
+              <div className="unSelectable" style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '3px'}}>DB {this.state.dbValue}</div>
               <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
-              <div className="unSelectable" style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '2px'}}>BL {this.state.blValue}</div>
+              <div className="unSelectable" style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '3px'}}>BL {this.state.blValue}</div>
               <SliderRc ref="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
-              <div className="unSelectable" style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '2px'}}>GR {this.state.grValue}</div>
+              <div className="unSelectable" style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '3px'}}>GR {this.state.grValue}</div>
               <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
-              <div className="unSelectable" style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '2px'}}>RE {this.state.reValue}</div>
+              <div className="unSelectable" style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '3px'}}>RE {this.state.reValue}</div>
               <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
               <div className="unSelectable" style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '2px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
               <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle + " slider"}/>
               {/*<div>Bright {this.state.brightValue}</div>
               <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onChange={this._brightChanged} className="slider"/> */}
             </div>
-          </div>
-          <div className="self-center smalllRaisedButton" style={{width: '325px', marginTop: '-0px', paddingBottom: '15px'}}>
-            <RaisedButton label="FUll"  onTouchTap={this._AllOpen} style={{width: '50px', border: '1px solid #DDD'}}/>
-            <RaisedButton label="6500K" onTouchTap={this._6500k} style={{width: '50px', border: '1px solid #DDD'}}/>
-            <RaisedButton label="4600K" onTouchTap={this._4600k} style={{width: '50px', border: '1px solid #DDD'}}/>
-            <RaisedButton label="2950K" onTouchTap={this._2950k} style={{width: '50px', border: '1px solid #DDD'}}/>
-            <RaisedButton label="saving E" onTouchTap={this._saving} style={{width: '80px', border: '1px solid #DDD'}}/>
-            <RaisedButton label="B+R" onTouchTap={this._BR} style={{width: '45px', border: '1px solid #DDD'}}/>
           </div>
         </div>
       </div>
