@@ -104,7 +104,7 @@ export default class Routes {
     publicRoute.post('/rest/hme/setup/update', HmeController.saveSetting);
     publicRoute.get('/rest/hme/setup', HmeController.getSetting);
     publicRoute.post('/rest/hme/reboot', HmeController.reboot);
-    
+
     // master
     publicRoute.get('/rest/master/status', HmeController.status);
     publicRoute.get('/rest/master/user/', UserController.index);
@@ -228,7 +228,6 @@ export default class Routes {
               </div>
             </div>
           </section>
-
         </body>
         </html>
         `;

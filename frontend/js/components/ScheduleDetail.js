@@ -247,7 +247,8 @@ export default class ScheduleDetail extends React.Component {
   };
 
   _handleTImeInputChanged = (ref, e) => {
-    this._checkTimeInput();
+    // this._checkTimeInput();
+    // console.log(e.target.value);
     /*
     let text = e.target.value;
     if(text.length==2)
@@ -308,7 +309,7 @@ export default class ScheduleDetail extends React.Component {
           <div key={i}>
             <RaisedButton onTouchTap={function(){this._handleTimeBtnClick(i)}.bind(this)}
               fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
-              secondary={true} style={{}}
+              secondary={true} style={{height: '27px'}}
               primary={active}/>
           </div>);
       }
@@ -319,7 +320,7 @@ export default class ScheduleDetail extends React.Component {
           <div key={i}>
             <RaisedButton onTouchTap={function(){this._handleTimeBtnClick(i)}.bind(this)}
               fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
-              secondary={true} style={{}}
+              secondary={true} style={{height: '27px'}}
               primary={active} />
           </div>);
       }
@@ -350,7 +351,7 @@ export default class ScheduleDetail extends React.Component {
     return (
       <div>
         <Dialog
-          title="Warning"
+          title="Notice"
           actions={dialog}
           modal={false}
           open={this.state.open}
@@ -361,7 +362,7 @@ export default class ScheduleDetail extends React.Component {
           style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
           titleStyle={{fontSize: '18px'}}
           iconElementLeft={
-            <IconButton onTouchTap={function() {window.location.href = '#/manage';}} >
+            <IconButton onTouchTap={() => {setTimeout(() => {window.location.href = '#/manage';}, 500)}} >
               <NavigationClose />
             </IconButton>
           }
@@ -462,6 +463,7 @@ export default class ScheduleDetail extends React.Component {
             <TextField
               ref="inputStartTime"
               hintText="08:15"
+              type="time"
               floatingLabelText="StartTime"
               onChange={this._handleTImeInputChanged.bind({}, 'inputStartTime')}
               defaultValue={this.props.scheduleDetails[0]? this.props.scheduleDetails[0].StartTime.toString().slice(0,5) : ''}
@@ -471,6 +473,7 @@ export default class ScheduleDetail extends React.Component {
               }}/>
             <TextField
               ref="inputEndTime"
+              type="time"
               hintText="20:12"
               floatingLabelText="EndTime"
               onChange={this._handleTImeInputChanged.bind({}, 'inputEndTime')}
