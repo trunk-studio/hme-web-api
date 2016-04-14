@@ -314,6 +314,36 @@ exports.getDeviceStatus = async function (ctx) {
   }
 }
 
+exports.checkAllDeviceStatus = async function (ctx) {
+  try {
+    let config =  await services.deviceControl.getSetting();
+    let host = config.SYSTEM.HME_SERIAL;
+    console.log("host!!",host);
+    let slave = await models.Slave.findOne({
+      where:{
+        host: { $like: '%'+host+'%' }
+      }
+    });
+    let slaveId = slave.id;
+    let deviceList = await models.Device.findAll({where: {SlaveId: slaveId}});
+      for(let device of deviceList) {
+        let result = await services.hme.getDevState(device.uid);
+        let statusFail = result.devTemp >= 60 || !result.fanState;
+        if (statusFail) {
+          awatt models.Message.create({
+            title: message.title,
+            content: `${host} device ${device.uid} status fail`,
+            type: 'error',
+          });
+        }
+      }
+    ctx.body = 'ok';
+  } catch (e) {
+    ctx.body = e;
+    throw e;
+  }
+}
+
 exports.updateAllSlaveTime = async function (ctx) {
   try {
     let slaveList = await models.Slave.findAll();
@@ -373,7 +403,7 @@ exports.getAllSlaveLogs = async function (ctx) {
       }
     }
     let logs = await services.deviceControl.getLogs();
-    ctx.body = logArray;
+    ctx.body = logs;
   } catch (e) {
     console.log('getAllSlaveLogs!!!!!!!!!!!!!!!!!!!!!',e);
     ctx.body = e;

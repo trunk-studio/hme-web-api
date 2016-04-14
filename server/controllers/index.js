@@ -137,6 +137,7 @@ export default class Routes {
 
     // find slave Device & Groups
     publicRoute.get('/rest/slave/logs', HmeController.logs);
+    publicRoute.get('/rest/slave/checkStatus', HmeController.checkAllDeviceStatus);
     publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceListBySlave);
     publicRoute.get('/rest/slave/:slaveId/test/all', HmeController.testAllDevices);
