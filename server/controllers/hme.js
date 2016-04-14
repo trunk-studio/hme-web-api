@@ -344,13 +344,52 @@ exports.updateTime = async function (ctx) {
   }
 }
 
+exports.getAllSlaveLogs = async function (ctx) {
+  try {
+    let slaves = await models.Slave.findAll();
+    for (let slave of slaves) {
+      try {
+        let result = await new Promise((resolve, reject) => {
+          request.get(`http://${slave.host}:3000/rest/slave/logs`)
+          .end((err, res) => {
+            if(err) return reject(err);
+            resolve(res.body);
+          });
+        });
+
+        let slaveLogs = result.map(message => {
+          let log = {
+            title: message.title,
+            content: message.content,
+            type: message.type,
+          }
+          return log;
+        });
+        await Promise.all(
+          slaveLogs.map( message => models.Message.create(message))
+        );
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    let logs = await services.deviceControl.getLogs();
+    ctx.body = logArray;
+  } catch (e) {
+    console.log('getAllSlaveLogs!!!!!!!!!!!!!!!!!!!!!',e);
+    ctx.body = e;
+  }
+}
+
 exports.logs = async function (ctx) {
   try {
-    let logs = await services.deviceControl.getLogs();
+    let config =  await services.deviceControl.getSetting();
+    let logs = []
+    if(config.SYSTEM.TYPE === 'slave'){
+      logs = await services.deviceControl.salveLogsToMaster();
+    }
     ctx.body = logs;
   } catch (e) {
     ctx.body = e;
-    throw e;
   }
 }
 

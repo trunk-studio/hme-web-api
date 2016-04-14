@@ -302,6 +302,29 @@ module.exports = {
     }
   },
 
+  salveLogsToMaster: async() => {
+    try{
+      let logs = await models.Message.findAll({
+        where:{
+          sended: false,
+        }
+      });
+
+      let sendedMessages = logs.map(message => {
+        message.sended = true;
+        return message;
+      });
+      await Promise.all(
+        sendedMessages.map( message => message.save())
+      );
+
+      return logs;
+    }catch(e){
+      console.log(e);
+      throw e
+    }
+  },
+
   getLogs: async() => {
     try{
       let logs = await models.Message.findAll({
