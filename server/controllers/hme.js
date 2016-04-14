@@ -331,7 +331,7 @@ exports.checkAllDeviceStatus = async function (ctx) {
         let statusFail = result.devTemp >= 60 || !result.fanState;
         if (statusFail) {
           await models.Message.create({
-            title: message.title,
+            title: 'device status fail',
             content: `${host} device ${device.uid} status fail`,
             type: 'error',
           });
