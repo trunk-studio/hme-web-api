@@ -1,5 +1,5 @@
 import React                from 'react';
-import { AppBar, RefreshIndicator, IconButton, FlatButton , Slider, RadioButton, RadioButtonGroup, DropDownMenu, RaisedButton} from 'material-ui';
+import { AppBar, Dialog, RefreshIndicator, IconButton, FlatButton , Slider, RadioButton, RadioButtonGroup, DropDownMenu, RaisedButton} from 'material-ui';
 import { connect } from 'react-redux'
 import { requestGetScheduleDetailConfig, requestUpdateScheduleDetailConfig,
 requestPreviewLedColor} from '../actions/ScheduleDetailConfigActions'
@@ -27,7 +27,9 @@ export default class ScheduleDetailConfig extends React.Component {
       grValue: 0,
       reValue: 0,
       cctValue: 2500,
-      brightValue: 100
+      brightValue: 100,
+      open: false,
+      needSave: false,
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -172,6 +174,9 @@ export default class ScheduleDetailConfig extends React.Component {
       Bright: this.state.brightValue,
       scheduleID: this.props.params.scheduleID
     })
+    this.setState({
+      needSave: false,
+    });
   };
 
   _previewLed = (e) => {
@@ -184,8 +189,11 @@ export default class ScheduleDetailConfig extends React.Component {
       RE: this.state.reValue,
       CCT: this.state.cctValue,
       Bright: this.state.brightValue,
-      scheduleID: this.props.params.scheduleID
+      scheduleID: this.props.params.scheduleID,
     })
+    this.setState({
+      needSave: true,
+    });
   };
 
   backClick = () => {
@@ -214,6 +222,25 @@ export default class ScheduleDetailConfig extends React.Component {
 
   _goBack = (e) => {
     console.log(this);
+    this.props.history.goBack();
+  };
+
+  _saveDialogHandleOpen = () => {
+    console.log("!!!!!!!!!!!!!!!", this.state.needSave );
+    if (this.state.needSave) {
+      this.setState({open: true});
+    } else {
+      this.props.history.goBack();
+    }
+  };
+
+  _saveDialogHandleClose = () => {
+    this.setState({open: false});
+  };
+
+  _dialogActionSave = () => {
+    this.setState({open: false});
+    this._saveConfig();
     this.props.history.goBack();
   };
 
@@ -274,15 +301,34 @@ export default class ScheduleDetailConfig extends React.Component {
     }
     let configID = this.props.params.configID,
         scheduleID = this.props.params.scheduleID;
-
+    let dialog = [
+      <FlatButton
+        key={'cancelButton'}
+        label="Cancel"
+        secondary={true}
+        onTouchTap={this._saveDialogHandleClose} />,
+      <FlatButton
+        key={'resetButton'}
+        label="Save"
+        primary={true}
+        onTouchTap={this._dialogActionSave} />
+    ];
     return (
       <div style={{overflowX: 'hidden'}}>
+        <Dialog
+          title="Notice"
+          actions={dialog}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this._saveDialogHandleClose}>
+          Settings have been changed, remember to Save.
+        </Dialog>
         <AppBar
           title="Schedule Detail Confing"
           style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
           titleStyle={{fontSize: '18px'}}
           iconElementLeft={
-            <IconButton onTouchTap={this._goBack} >
+            <IconButton onTouchTap={this._saveDialogHandleOpen} >
               <NavigationClose />
             </IconButton>
           }

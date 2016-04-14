@@ -70,6 +70,7 @@ export default class ManagePage extends React.Component {
       reportSlaveID: 0,
       reportDeviceId: 0,
       isCentigrade: true,
+      toggleDefault: false,
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -191,6 +192,10 @@ export default class ManagePage extends React.Component {
     this.props.requestGetReportEmail();
     this._reloadLogs();
     setInterval(this._reloadLogs, 60000);
+
+    this.setState({
+      toggleDefault: getTemperatureUnit,
+    })
     // this.props.getRole();
     // this.props.requestGetCachedDeviceList();
     // this.props.requestGetCachedSlaveList();
@@ -204,7 +209,9 @@ export default class ManagePage extends React.Component {
   _changeTemperatureUnit = (e) => {
     let getTemperatureUnit =  JSON.parse(localStorage.getItem('HME_manage_isCentigrade'))
     localStorage.setItem('HME_manage_isCentigrade', !getTemperatureUnit);
-    this.setState({});
+    this.setState({
+      toggleDefault: !getTemperatureUnit
+    });
   }
 
   _reloadLogs = (e) =>{
@@ -309,17 +316,34 @@ export default class ManagePage extends React.Component {
     this.setState({
       SUM: newSUM
     });
-    this.props.requestTestSetLedDisplay({
-      devID:this.state.setupTestDeviceID,
-      groupID: 0,
-      WW: this.state.wwValue,
-      DB: this.state.dbValue,
-      BL: this.state.blValue,
-      GR: this.state.grValue,
-      RE: this.state.reValue,
-      Bright: this.state.brightValue,
-      slaveID: this.state.setupTestSlaveID
-    })
+    let slaveId = this.state.setupTestSlaveID || 0;
+    if (slaveId == 0) {
+      this.props.slaveList.forEach((slave,i) => {
+        this.props.requestTestSetLedDisplay({
+          devID: 0,
+          groupID: 0,
+          WW: this.state.wwValue,
+          DB: this.state.dbValue,
+          BL: this.state.blValue,
+          GR: this.state.grValue,
+          RE: this.state.reValue,
+          Bright: this.state.brightValue,
+          slaveID: slave.payload
+        });
+      });
+    } else {
+      this.props.requestTestSetLedDisplay({
+        devID:this.state.setupTestDeviceID || 0,
+        groupID: 0,
+        WW: this.state.wwValue,
+        DB: this.state.dbValue,
+        BL: this.state.blValue,
+        GR: this.state.grValue,
+        RE: this.state.reValue,
+        Bright: this.state.brightValue,
+        slaveID: this.state.setupTestSlaveID
+      })
+    }
   };
 
   _setAll = (ww, db, bl, gr, re, cct) =>{
@@ -445,10 +469,6 @@ export default class ManagePage extends React.Component {
     }];
 
     let setupTestDeviceList = [{
-      payload: 0,
-      primary: 'Select Device',
-      text: 'Select Device'
-    },{
       payload: 'all',
       primary: 'All Device',
       text: 'All Device'
@@ -456,8 +476,8 @@ export default class ManagePage extends React.Component {
 
     let setupTestSlaveList = [{
       payload: 0,
-      primary: 'Select Slave',
-      text: 'Select Slave'
+      primary: 'All Slave',
+      text: 'All Slave'
     }];
 
     let reportDeviceList = [{
@@ -602,8 +622,8 @@ export default class ManagePage extends React.Component {
         notify.innerHTML = notify.innerHTML + "<img id='logNotify'></img>"
       }
     }
-
-    let toggleDefault = JSON.parse(localStorage.getItem('HME_manage_isCentigrade'));
+    
+    let toggleDefault = this.state.toggleDefault;
     let deviceTemp
     if( this.props.devStatus.devTemp != 'Selse Slave & Device'){
       if(toggleDefault){
@@ -687,6 +707,7 @@ export default class ManagePage extends React.Component {
                 </div>
                 <div className="row">
                   <Toggle
+                    value={toggleDefault}
                     defaultToggled={toggleDefault}
                     label= {toggleDefault ? 'Centigrade': 'Fahrenheit'}
                     style={{width: '150px'}}
