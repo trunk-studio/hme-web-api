@@ -61,6 +61,8 @@ export default async (cb) => {
       console.log("ok!");
       await services.deviceControl.syncNewSlave();
       await services.deviceControl.getMasterTimeAndUpdate();
+    } else if(config.SYSTEM.TYPE === 'master' && config.SYSTEM.SETTED == true) {
+      await services.deviceControl.masterCrontab();
     }
 
 

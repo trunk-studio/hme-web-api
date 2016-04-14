@@ -261,6 +261,22 @@ module.exports = {
     }
   },
 
+  masterCrontab: async() => {
+    try {
+      let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; echo "* * */5 * * wget -O - localhost:3000/rest/admin/sendmail/error";} | crontab -'
+      exec(crontab, function(error, stdout, stderr) {
+        if (error) {
+          console.log(error);
+          throw error;
+        }
+        console.log(stdout);
+      });
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
+  },
+
   getMasterTimeAndUpdate: async() => {
     try {
       let config =  await services.deviceControl.getSetting();
@@ -286,7 +302,17 @@ module.exports = {
           });
           await services.hme.setSysTimeToDevRTC();
         }
-        let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; } | crontab -'
+        // echo "*/1 * * * * curl localhost:3000/rest/slave/checkStatus";
+        let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; echo "*/1 * * * * curl localhost:3000/rest/slave/checkStatus"; } | crontab -'
+        exec(crontab, function(error, stdout, stderr) {
+          if (error) {
+            console.log(error);
+            throw error;
+          }
+          console.log(stdout);
+        });
+      } else {
+        let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; echo "*/1 * * * * curl localhost:3000/rest/slave/logs"; } | crontab -'
         exec(crontab, function(error, stdout, stderr) {
           if (error) {
             console.log(error);
