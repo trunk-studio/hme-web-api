@@ -330,7 +330,7 @@ exports.checkAllDeviceStatus = async function (ctx) {
         let result = await services.hme.getDevState(device.uid);
         let statusFail = result.devTemp >= 60 || !result.fanState;
         if (statusFail) {
-          awatt models.Message.create({
+          await models.Message.create({
             title: message.title,
             content: `${host} device ${device.uid} status fail`,
             type: 'error',
