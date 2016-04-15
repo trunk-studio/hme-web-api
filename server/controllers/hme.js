@@ -443,3 +443,16 @@ exports.reboot = async function (ctx) {
     throw e;
   }
 }
+
+exports.tempLimit = async function (ctx) {
+  try {
+    let data = ctx.request.body;
+    let config =  await services.deviceControl.getSetting();
+    let result = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+    result.SYSTEM.TEMP_LIMIT = Math.round(data.tempLimit*10)/10;
+    fs.writeFileSync(appConfig.configPath, ini.stringify(result))
+    ctx.body = logs;
+  } catch (e) {
+    ctx.body = e;
+  }
+}

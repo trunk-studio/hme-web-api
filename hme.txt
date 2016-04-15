@@ -12,6 +12,7 @@ MASTER_NAME=master12
 SETTED=true
 TIMEZONE_OFFSET=GMT-8
 TIMEZONE_INDEX=22
+TEMP_LIMIT=60
 
 [SMTP]
 URL=http://www.aquariumlightings.com

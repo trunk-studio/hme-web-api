@@ -15,8 +15,10 @@ import {
 
 import {
   requestGetReportEmail, requestUpdateReportEmail,
-  requestGetDeviceStatus,requestGetLogs
+  requestGetDeviceStatus,requestGetLogs,
+  requestUpdateTempLimit,
 } from '../actions/ManageActions'
+import { requestGetSetupSetting } from '../actions/SetupActions'
 
 // import ThemeManager from 'material-ui/lib/styles/theme-manager';
 // import HmeTheme from '../hme_theme';
@@ -189,6 +191,7 @@ export default class ManagePage extends React.Component {
       localStorage.setItem('HME_manage_isCentigrade', true);
     }
     this.props.requestGetSlaveAndDeviceList();
+    this.props.requestGetSetupSetting();
     this.props.requestGetReportEmail();
     this._reloadLogs();
     setInterval(this._reloadLogs, 60000);
@@ -420,6 +423,14 @@ export default class ManagePage extends React.Component {
     })
   };
 
+  _tempLimeHendle = (event) => {
+    if(this.state.toggleDefault){
+      this.props.requestUpdateTempLimit(event.target.value);
+    }else{
+      this.props.requestUpdateTempLimit((event.target.value - 32)/1.8);
+    }
+  };
+
   componentWillUpdate (nextProps, nextState) {
     if(this.props.reportEmail != nextProps.reportEmail)
       this.setState({
@@ -622,14 +633,21 @@ export default class ManagePage extends React.Component {
         notify.innerHTML = notify.innerHTML + "<img id='logNotify'></img>"
       }
     }
-    
+
     let toggleDefault = this.state.toggleDefault;
-    let deviceTemp
+    let tempLimit;
+    if(toggleDefault){
+      tempLimit = Math.round(this.props.tempLimit*10)/10;
+    }else{
+      tempLimit = this.props.tempLimit*1.8+32;
+    }
+
+    let deviceTemp;
     if( this.props.devStatus.devTemp != 'Selse Slave & Device'){
       if(toggleDefault){
-        deviceTemp = this.props.devStatus.devTemp+'°C'
+        deviceTemp = this.props.devStatus.devTemp+'°C';
       }else{
-        deviceTemp = (this.props.devStatus.devTemp*1.8+32)+'°F'
+        deviceTemp = (this.props.devStatus.devTemp*1.8+32)+'°F';
       }
     }else{
       deviceTemp = 'Selse Slave & Device'
@@ -707,12 +725,16 @@ export default class ManagePage extends React.Component {
                 </div>
                 <div className="row">
                   <Toggle
+                    className="col-md-2 col-sm-2 col-xs-2"
                     value={toggleDefault}
                     defaultToggled={toggleDefault}
                     label= {toggleDefault ? 'Centigrade': 'Fahrenheit'}
                     style={{width: '150px'}}
                     onToggle= {this._changeTemperatureUnit}
                   />
+                <h4 className="col-md-4 col-sm-4 col-xs-4" style={{textAlign: 'right'}}>Temp Limit:</h4>
+                <span style={{marginTop: '16px', float: 'right'}}>▼</span>
+                <TextField ref="tempLimit" min={0} max={999} value={tempLimit} onChange={this._tempLimeHendle} type="number" style={{width: '120px', marginLeft:'10px'}}/>
                 </div>
               </div>
             </div>
@@ -734,10 +756,11 @@ export default class ManagePage extends React.Component {
 }
 
 function _injectPropsFromStore(state) {
-  let { login, scanDevice , manageSettings} = state;
+  let { login, scanDevice , manageSettings, setup} = state;
   let scanResult = [],
       slaveList = [],
-      groupList = [];
+      groupList = [],
+      tempLimit = 0;
 
   if(scanDevice.slaveList) {
     for(let slave of scanDevice.slaveList) {
@@ -759,6 +782,11 @@ function _injectPropsFromStore(state) {
       });
     }
   }
+
+  if(setup.setupSetting){
+    tempLimit = setup.setupSetting.SYSTEM.TEMP_LIMIT;
+  }
+
   return {
     deviceList: scanResult,
     groupList: groupList,
@@ -768,10 +796,12 @@ function _injectPropsFromStore(state) {
     loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide',
     role: login.role,
     devStatus: manageSettings.devStatus || {devTemp: 'Selse Slave & Device', fanState: 'Selse Slave & Device'},
-    logs: manageSettings.logs || []
+    logs: manageSettings.logs || [],
+    tempLimit: tempLimit,
 
   };
 }
+
 
 const _injectPropsFromActions = {
   // testing
@@ -793,7 +823,9 @@ const _injectPropsFromActions = {
   // Auth,
   getRole,
   logout,
-  requestGetLogs
+  requestGetLogs,
+  requestGetSetupSetting,
+  requestUpdateTempLimit,
 }
 
 
