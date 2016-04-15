@@ -328,7 +328,7 @@ exports.checkAllDeviceStatus = async function (ctx) {
     let deviceList = await models.Device.findAll({where: {SlaveId: slaveId}});
       for(let device of deviceList) {
         let result = await services.hme.getDevState(device.uid);
-        let statusFail = result.devTemp >= 60 || !result.fanState;
+        let statusFail = result.devTemp >= parseInt(config.SYSTEM.TEMP_LIMIT, 10) || !result.fanState;
         if (statusFail) {
           await models.Message.create({
             title: 'device status fail',
@@ -447,7 +447,6 @@ exports.reboot = async function (ctx) {
 exports.tempLimit = async function (ctx) {
   try {
     let data = ctx.request.body;
-    let config =  await services.deviceControl.getSetting();
     let result = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
     result.SYSTEM.TEMP_LIMIT = Math.round(data.tempLimit*10)/10;
     fs.writeFileSync(appConfig.configPath, ini.stringify(result))
