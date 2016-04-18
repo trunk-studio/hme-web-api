@@ -30,6 +30,7 @@ export default class Routes {
       '/rest/slave/:slaveId/device/:deviceId/setLedDisplay',
       '/rest/slave/:slaveId/schedule/setOnDevice',
       '/rest/slave/:slaveId/findAllDeviceGroups',
+      '/rest/slave/:slaveId/device/:deviceId/getStatus'
       ],
       async function (ctx, next){
         try {

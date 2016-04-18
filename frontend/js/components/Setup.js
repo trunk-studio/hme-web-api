@@ -161,7 +161,7 @@ export default class Setup extends React.Component  {
 
     return (
       <div style={{width: '100%', overflowX: 'hidden'}}>
-        <AppBar title="Setup"
+        <AppBar title="Spectrum"
           style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
           titleStyle={{fontSize: '20px'}}
           iconElementLeft={

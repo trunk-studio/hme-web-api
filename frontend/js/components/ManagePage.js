@@ -184,7 +184,7 @@ export default class ManagePage extends React.Component {
 
   componentDidMount() {
     if(!localStorage.getItem('HME_manage_tabIndex'))
-      localStorage.setItem('HME_manage_tabIndex', 0);
+      localStorage.setItem('HME_manage_tabIndex', 2);
     this.props.getRole();
     let getTemperatureUnit = localStorage.getItem('HME_manage_isCentigrade');
     if(getTemperatureUnit == null){
@@ -574,7 +574,7 @@ export default class ManagePage extends React.Component {
     </Tab> );
 
     let testingTab = (
-    <Tab key={'testingTab'} label="Testing" value='3' className="tab-item">
+    <Tab key={'testingTab'} label="Setup" value='3' className="tab-item">
       <div className="tab-content self-center">
         <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
           <div >
@@ -643,18 +643,22 @@ export default class ManagePage extends React.Component {
     }
 
     let deviceTemp;
+    let envTemp;
     if( this.props.devStatus.devTemp != 'Selse Slave & Device'){
       if(toggleDefault){
-        deviceTemp = this.props.devStatus.devTemp+'°C';
+        deviceTemp = this.props.devStatus.devTemp ? this.props.devStatus.devTemp+'°C' : 'null';
+        envTemp = this.props.devStatus.envTemp ? this.props.devStatus.envTemp + '°C' : 'null';
       }else{
-        deviceTemp = (this.props.devStatus.devTemp*1.8+32)+'°F';
+        deviceTemp = this.props.devStatus.devTemp ? (this.props.devStatus.devTemp*1.8+32)+'°F' : 'null';
+        envTemp = this.props.devStatus.envTemp ? (this.props.devStatus.envTemp*1.8+32)+'°F' : 'null';
       }
     }else{
       deviceTemp = 'Selse Slave & Device'
+      envTemp = 'Selse Slave & Device'
     }
     return (
       <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} tabItemContainerStyle={{backgroundColor: "#032c70", marginTop: '-15px'}} contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0)'}}>
-        <Tab label="Setup" value='0' className="tab-item">
+        <Tab label="Spectrum" value='0' className="tab-item">
           <div className="tab-content self-center">
             <div className="self-center" style={{width: '420px'}}>
               <div style={{width: '420px'}}>
@@ -720,15 +724,17 @@ export default class ManagePage extends React.Component {
                 <div className="row">
                   <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Temp:</h4>
                   <h4 className="col-md-4 col-sm-4 col-xs-4">{deviceTemp}</h4>
-                    <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Fan:</h4>
-                    <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState.toString()}</h4>
+                  <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Fan:</h4>
+                  <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState.toString()}</h4>
+                  <h4 className="col-md-4 col-sm-4 col-xs-4" style={{textAlign: 'left'}}>Env Temp:</h4>
+                  <h4 className="col-md-4 col-sm-4 col-xs-4">{envTemp}</h4>
                 </div>
                 <div className="row">
                   <Toggle
                     className="col-md-2 col-sm-2 col-xs-2"
                     value={toggleDefault}
                     defaultToggled={toggleDefault}
-                    label= {toggleDefault ? 'Centigrade': 'Fahrenheit'}
+                    label= {toggleDefault ? '°C': '°F'}
                     style={{width: '150px'}}
                     onToggle= {this._changeTemperatureUnit}
                   />
@@ -741,7 +747,7 @@ export default class ManagePage extends React.Component {
           </div>
         </Tab>
         {adminFunctionTabs}
-        <Tab label="Logs" value='4' className="tab-item logsTab"
+        <Tab label="Message" value='4' className="tab-item logsTab"
           onActive={this._onLogActive}>
           <div className="tab-content self-center">
             <div className="self-center" style={{width: '415px', marginTop: '15px', wordBreak:'break-all'}}>
@@ -795,7 +801,7 @@ function _injectPropsFromStore(state) {
     reportEmail: manageSettings.reportEmail,
     loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide',
     role: login.role,
-    devStatus: manageSettings.devStatus || {devTemp: 'Selse Slave & Device', fanState: 'Selse Slave & Device'},
+    devStatus: manageSettings.devStatus || {devTemp: 'Selse Slave & Device', fanState: 'Selse Slave & Device', envTemp: 'Selse Slave & Device'},
     logs: manageSettings.logs || [],
     tempLimit: tempLimit,
 

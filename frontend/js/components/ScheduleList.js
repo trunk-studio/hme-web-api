@@ -610,7 +610,7 @@ export default class ScheduleList extends React.Component {
             ref="snackbar"
             open={false}
             onRequestClose={this._handleRequestClose}
-            message={"已更改, 需要儲存"}
+            message={"Has changed, need to be save"}
             autoHideDuration={3000}
           />
         </div>
@@ -659,7 +659,7 @@ export default class ScheduleList extends React.Component {
             ref="snackbar"
             open={false}
             onRequestClose={this._handleRequestClose}
-            message={"已更改, 需要儲存"}
+            message={"Has changed, need to be save"}
             autoHideDuration={3000}
           />
         </div>
