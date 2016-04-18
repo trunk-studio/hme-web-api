@@ -61,7 +61,7 @@ export default async (cb) => {
       console.log("ok!");
       // await services.deviceControl.syncNewSlave();
       let registerSlave = await new Promise((resolve, reject) => {
-        request.post(`http://${config.SYSTEM.MASTER_NAME}:3000/rest/master/register/slave`)
+        request.post(`http://${config.SYSTEM.MASTER_NAME}.local:3000/rest/master/register/slave`)
         .send({
           slaveHostName: config.SYSTEM.HME_SERIAL + '.local'
         })
