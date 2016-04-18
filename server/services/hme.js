@@ -377,7 +377,9 @@ export default class Hme {
       let deviceList = [];
       if(slaveIdArray){
         deviceList = await models.Device.findAll({
-          SlaveId: slaveIdArray
+          where:{
+            SlaveId: slaveIdArray
+          }
         });
       } else {
         deviceList = await models.Device.findAll();
