@@ -289,6 +289,31 @@ module.exports = {
         });
         console.log(exist, host);
         if(exist){
+          let result = await new Promise((resolve, reject) => {
+            request.get(`http://${host}/rest/master/timezone`)
+            .end((err, res) => {
+              if(err) console.log(err);
+              resolve(res.body);
+            });
+          });
+          if (result) {
+            console.log("!!!!!!!!!!!!!!!",result);
+            let oridinConfig = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+            oridinConfig.SYSTEM.TIMEZONE_OFFSET = result.timeZone;
+            oridinConfig.SYSTEM.TIMEZONE_INDEX = result.timeZoneIndex;
+            fs.writeFileSync(appConfig.configPath, ini.stringify(oridinConfig))
+            let cmd = `sh /etc/rc.local`;
+            let updateTimeZone = await new Promise((done) => {
+              exec(cmd, function(error, stdout, stderr) {
+                if (error ||  stderr) {
+                  console.log(error, stderr);
+                  // throw error;
+                }
+                console.log(stdout);
+                done(stdout);
+              });
+            });
+          }
           let cmd = `service ntp stop && ntpdate ${host} && hwclock -w && hwclock -s`;
           let updateSysRtc = await new Promise((done) => {
             exec(cmd, function(error, stdout, stderr) {
@@ -302,17 +327,7 @@ module.exports = {
           });
           await services.hme.setSysTimeToDevRTC();
         }
-        // echo "*/1 * * * * curl localhost:3000/rest/slave/checkStatus";
         let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; echo "*/1 * * * * curl localhost:3000/rest/slave/checkStatus"; } | crontab -'
-        exec(crontab, function(error, stdout, stderr) {
-          if (error) {
-            console.log(error);
-            throw error;
-          }
-          console.log(stdout);
-        });
-      } else {
-        let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; echo "*/1 * * * * curl localhost:3000/rest/slave/logs"; } | crontab -'
         exec(crontab, function(error, stdout, stderr) {
           if (error) {
             console.log(error);

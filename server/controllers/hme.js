@@ -455,3 +455,15 @@ exports.tempLimit = async function (ctx) {
     ctx.body = e;
   }
 }
+
+exports.getTimeZone = async function (ctx) {
+  try {
+    let config =  await services.deviceControl.getSetting();
+    ctx.body = {
+      timeZone: config.SYSTEM.TIMEZONE_OFFSET,
+      timeZoneIndex: config.SYSTEM.TIMEZONE_INDEX,
+    };
+  } catch (e) {
+    ctx.body = e;
+  }
+}

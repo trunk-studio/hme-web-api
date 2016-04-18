@@ -107,6 +107,7 @@ export default class Routes {
     publicRoute.post('/rest/hme/tempLimit', HmeController.tempLimit);
 
     // master
+    publicRoute.get('/rest/master/timezone', HmeController.getTimeZone);
     publicRoute.get('/rest/master/status', HmeController.status);
     publicRoute.get('/rest/master/user/', UserController.index);
     publicRoute.post('/rest/master/login', UserController.login);
