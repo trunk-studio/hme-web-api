@@ -420,7 +420,7 @@ export default class Hme {
             resolve(res);
           });
         });
-        if (registerSlave.body.hme === 'ready') {
+        if (registerSlave.body) {
           result.push({
             id: slave.id,
             host: slave.host,
