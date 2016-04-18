@@ -79,6 +79,18 @@ export default class ScheduleDetail extends React.Component {
       if(this.state.needSave){
         this.setState({open: true});
       }else{
+        if(this.state.fastRunStart){
+          clearInterval(this.state.fastRunIntervalId);
+          this.props.requestSetSimRtc({
+            slaveId: this.props.params.slaveId,
+            count: -1
+          })
+          this.setState({
+            fastRunLabel: 'FastRun',
+            fastRunStart: false,
+            count: 0
+          })
+        }
         window.location.href = `#/schedule/${this.props.params.scheduleID}/config/${this.props.scheduleDetails[index].id}`;
       }
     }
@@ -258,6 +270,22 @@ export default class ScheduleDetail extends React.Component {
     */
   };
 
+  closeBtn = () => {
+    if(this.state.fastRunStart){
+      clearInterval(this.state.fastRunIntervalId);
+      this.props.requestSetSimRtc({
+        slaveId: this.props.params.slaveId,
+        count: -1
+      })
+      this.setState({
+        fastRunLabel: 'FastRun',
+        fastRunStart: false,
+        count: 0
+      })
+    }
+    setTimeout(() => {window.location.href = '#/manage';}, 500);
+  }
+
   render () {
 
     let scheduleDetails = this.props.scheduleDetails,
@@ -362,7 +390,7 @@ export default class ScheduleDetail extends React.Component {
           style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
           titleStyle={{fontSize: '18px'}}
           iconElementLeft={
-            <IconButton onTouchTap={() => {setTimeout(() => {window.location.href = '#/manage';}, 500)}} >
+            <IconButton onTouchTap={this.closeBtn} >
               <NavigationClose />
             </IconButton>
           }
