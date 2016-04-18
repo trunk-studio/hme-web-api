@@ -303,8 +303,11 @@ module.exports = {
           let result = await new Promise((resolve, reject) => {
             request.get(`http://${host}/rest/master/timezone`)
             .end((err, res) => {
-              if(err) console.log(err);
-              resolve(res.body);
+              if(err) {
+                console.log(err);
+              }else{
+                resolve(res.body);
+              }
             });
           });
           if (result) {
