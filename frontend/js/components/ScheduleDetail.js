@@ -91,7 +91,7 @@ export default class ScheduleDetail extends React.Component {
             count: 0
           })
         }
-        window.location.href = `#/schedule/${this.props.params.scheduleID}/config/${this.props.scheduleDetails[index].id}`;
+        window.location.href = `#/slave/${this.props.params.slaveId}/schedule/${this.props.params.scheduleID}/config/${this.props.scheduleDetails[index].id}`;
       }
     }
     this.setState({currentIndex: index});

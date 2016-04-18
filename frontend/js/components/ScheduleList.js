@@ -422,7 +422,7 @@ export default class ScheduleList extends React.Component {
           rows.push(
             <TableRow key={row.id} style={{borderBottom: '1px solid #72737A'}}>
               <TableRowColumn>
-                <RaisedButton disabled={this.state.isSetBtnClose} label="EDIT" labelColor="#FFF" backgroundColor="#51A7F9" style={{verticalAlign: 'middle'}}  linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
+                <RaisedButton disabled={this.state.isSetBtnClose} label="EDIT" labelColor="#FFF" backgroundColor="#51A7F9" style={{verticalAlign: 'middle'}}  linkButton={true} href={`#/slave/${this.state.selectedSlave||0}/schedule/edit/${row.id}`}/>
               </TableRowColumn>
               <TableRowColumn>
                 <span style={{marginTop: '16px', float: 'right'}}>▼</span>
@@ -471,7 +471,7 @@ export default class ScheduleList extends React.Component {
               <TableRowColumn>
                 <RaisedButton
                   style={{verticalAlign: 'middle'}}
-                  disabled={this.state.isSetBtnClose}  label="EDIT" labelColor="#FFF" backgroundColor="#51A7F9" linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
+                  disabled={this.state.isSetBtnClose}  label="EDIT" labelColor="#FFF" backgroundColor="#51A7F9" linkButton={true} href={`#/slave/${this.state.selectedSlave||0}/schedule/edit/${row.id}`}/>
               </TableRowColumn>
               <TableRowColumn style={{fontSize: '17px', color: '#AAA'}}>{date || ''}</TableRowColumn>
               <TableRowColumn>

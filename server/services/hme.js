@@ -384,7 +384,6 @@ export default class Hme {
       } else {
         deviceList = await models.Device.findAll();
       }
-      console.log("!!!!!!!!!!!!!!!!!!!",deviceList);
       let result = [];
       for(let device of deviceList) {
         result.push({

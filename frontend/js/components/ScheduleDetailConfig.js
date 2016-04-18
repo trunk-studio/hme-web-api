@@ -190,6 +190,8 @@ export default class ScheduleDetailConfig extends React.Component {
       CCT: this.state.cctValue,
       Bright: this.state.brightValue,
       scheduleID: this.props.params.scheduleID,
+      slaveId: this.props.params.slaveId,
+      devID: 0,
     })
     this.setState({
       needSave: true,
