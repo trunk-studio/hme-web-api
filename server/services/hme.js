@@ -1,6 +1,6 @@
 import {SerialPort} from "serialport";
 import Encode from "./encode";
-
+import request from 'superagent'
 
 
 let ping = require('ping');
