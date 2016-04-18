@@ -413,12 +413,21 @@ export default class Hme {
       let slaveList = await models.Slave.findAll();
       let result = [];
       for(let slave of slaveList) {
-        result.push({
-          id: slave.id,
-          host: slave.host,
-          description: slave.description,
-          apiVersion: slave.apiVersion
+        let registerSlave = await new Promise((resolve, reject) => {
+        request.get(`http://${slave.host}:3000/rest/master/status`)
+        .end((err, res) => {
+            if(err) console.log(err);
+            resolve(res);
+          });
         });
+        if (registerSlave.body.hme === 'ready') {
+          result.push({
+            id: slave.id,
+            host: slave.host,
+            description: slave.description,
+            apiVersion: slave.apiVersion
+          });
+        }
       }
       console.log(JSON.stringify(result,null, 4));
 

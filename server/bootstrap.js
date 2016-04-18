@@ -66,11 +66,8 @@ export default async (cb) => {
           slaveHostName: config.SYSTEM.HME_SERIAL + '.local'
         })
         .end((err, res) => {
-          if(err) {
-            console.log(err);
-          } else {
-            resolve(res.body);
-          }
+          if(err) console.log(err);
+          resolve(res);
         });
       });
       await services.deviceControl.getMasterTimeAndUpdate();
