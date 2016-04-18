@@ -178,8 +178,11 @@ module.exports = {
             request.post(`http://${slave.host}:3000/rest/slave/${slave.id}/sync/slave`)
             .send(slaves)
             .end((err, res) => {
-              if(err) return reject(err);
-              resolve(res.body);
+              if(err){
+                console.log(err);
+              } else {
+                resolve(res.body);
+              }
             });
           });
         } catch (e) {
