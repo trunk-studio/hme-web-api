@@ -548,7 +548,7 @@ export default class Hme {
       let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
       let accDevParams = {
         u8DevID:devID,
-        groupID:groupID,
+        groupID:0,
         sFunc:'WordWt',
         u8DataNum:1,
         u8Addr_Arry:[100],  //Device group
@@ -673,7 +673,7 @@ export default class Hme {
 
         let setParams = {
           devID:devID,
-          groupID:groupID,
+          groupID:0,
           Led1Bgt: DB * Bright,
           Led2Bgt: BL * Bright,
           Led3Bgt: RE * Bright,
