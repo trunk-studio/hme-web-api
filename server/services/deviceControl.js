@@ -263,6 +263,17 @@ module.exports = {
 
   masterCrontab: async() => {
     try {
+      let cmd = `service ntp stop && ntpdate 0.debian.pool.ntp.org && service ntp start`;
+      let updateSysRtc = await new Promise((done) => {
+        exec(cmd, function(error, stdout, stderr) {
+          if (error ||  stderr) {
+            console.log(error, stderr);
+            // throw error;
+          }
+          console.log(stdout);
+          done(stdout);
+        });
+      });
       let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; echo "* * */5 * * wget -O - localhost:3000/rest/admin/sendmail/error";} | crontab -'
       exec(crontab, function(error, stdout, stderr) {
         if (error) {
