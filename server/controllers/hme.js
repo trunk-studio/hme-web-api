@@ -223,7 +223,10 @@ exports.getCachedSlaveList = async function (ctx) {
 
 exports.getCachedSlaveAndDeviceList = async function (ctx) {
   try {
-    let [slaveList, deviceList] = await Promise.all([services.hme.getCachedSlaveList(), services.hme.getCachedDeviceList()]);
+    // let [slaveList, deviceList] = await Promise.all([services.hme.getCachedSlaveList(), services.hme.getCachedDeviceList()]);
+    let slaveList = await services.hme.getCachedSlaveList();
+    let slaveIdArray = slaveList.map((slave) => slave.id);
+    let deviceList = await services.hme.getCachedDeviceList(slaveIdArray);
     ctx.body = {
       slaveList: slaveList,
       deviceList: deviceList

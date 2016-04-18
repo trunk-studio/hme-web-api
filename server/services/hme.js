@@ -372,9 +372,17 @@ export default class Hme {
     }
   };
 
-  async getCachedDeviceList ()  {
+  async getCachedDeviceList (slaveIdArray)  {
     try {
-      let deviceList = await models.Device.findAll();
+      let deviceList = [];
+      if(slaveIdArray){
+        deviceList = await models.Device.findAll({
+          SlaveId: slaveIdArray
+        });
+      } else {
+        deviceList = await models.Device.findAll();
+      }
+      console.log("!!!!!!!!!!!!!!!!!!!",deviceList);
       let result = [];
       for(let device of deviceList) {
         result.push({
