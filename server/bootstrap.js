@@ -52,14 +52,24 @@ export default async (cb) => {
 
     let config =  await services.deviceControl.getSetting();
     console.log("hme.txt",config);
-    if(config.SYSTEM.HME_SERIAL){
-      await services.deviceControl.registerSlave({
-        slaveHostName: config.SYSTEM.HME_SERIAL + '.local'
-      });
-    }
+    // if(config.SYSTEM.HME_SERIAL){
+    //   await services.deviceControl.registerSlave({
+    //     slaveHostName: config.SYSTEM.HME_SERIAL + '.local'
+    //   });
+    // }
     if(config.SYSTEM.TYPE === 'slave' && config.SYSTEM.SETTED == true){
       console.log("ok!");
-      await services.deviceControl.syncNewSlave();
+      // await services.deviceControl.syncNewSlave();
+      let registerSlave = await new Promise((resolve, reject) => {
+        request.post(`http://${config.SYSTEM.MASTER_NAME}:3000/rest/master/register/slave`)
+        .send({
+          slaveHostName: config.SYSTEM.HME_SERIAL + '.local'
+        })
+        .end((err, res) => {
+          if(err) console.log(err);
+          resolve(res.body);
+        });
+      });
       await services.deviceControl.getMasterTimeAndUpdate();
     } else if(config.SYSTEM.TYPE === 'master' && config.SYSTEM.SETTED == true) {
       await services.deviceControl.masterCrontab();
