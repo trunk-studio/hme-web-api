@@ -229,7 +229,6 @@ export default class ScheduleDetailConfig extends React.Component {
   };
 
   _saveDialogHandleOpen = () => {
-    console.log("!!!!!!!!!!!!!!!", this.state.needSave );
     if (this.state.needSave) {
       this.setState({open: true});
     } else {
@@ -244,6 +243,11 @@ export default class ScheduleDetailConfig extends React.Component {
   _dialogActionSave = () => {
     this.setState({open: false});
     this._saveConfig();
+    this.props.history.goBack();
+  };
+
+  _saveDialogHandleClose = () => {
+    this.setState({open: false});
     this.props.history.goBack();
   };
 
@@ -309,9 +313,9 @@ export default class ScheduleDetailConfig extends React.Component {
         key={'cancelButton'}
         label="Cancel"
         secondary={true}
-        onTouchTap={this._saveDialogHandleClose} />,
+        onTouchTap={this._saveDialogHandleCancel} />,
       <FlatButton
-        key={'resetButton'}
+        key={'SaveButton'}
         label="Save"
         primary={true}
         onTouchTap={this._dialogActionSave} />
