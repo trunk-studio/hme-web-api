@@ -410,7 +410,6 @@ exports.getAllSlaveLogs = async function (ctx) {
     let logs = await services.deviceControl.getLogs();
     ctx.body = logs;
   } catch (e) {
-    console.log('getAllSlaveLogs!!!!!!!!!!!!!!!!!!!!!',e);
     ctx.body = e;
   }
 }
