@@ -119,6 +119,7 @@ export default class Routes {
     publicRoute.post('/rest/master/register/slave', HmeController.registerSlave);
     publicRoute.get('/rest/master/syncAllSlaveAndDevice', HmeController.syncAllSlaveAndDevice);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
+    publicRoute.post('/rest/master/schedule/baseAll', ScheduleController.createScheduleBaseAll);
     publicRoute.post('/rest/master/schedule/delete/:id', ScheduleController.deleteLastSchedule);
     publicRoute.post('/rest/master/schedule/easy/create', ScheduleController.createEasySchedule);
     publicRoute.get('/rest/master/schedule/findAll', ScheduleController.getAllSchedule);
