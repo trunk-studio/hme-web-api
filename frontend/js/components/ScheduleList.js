@@ -4,7 +4,7 @@ import { requestScheduleCreate, requestGetScheduleList,
    updateScheduleFirstDate, updateScheduleDay,
    requestSetScheduleList,requestGetSlaveSchedule,
    requestUpdateScheduleList,requestGetEasySchedule,
-   requestUpdateEasyScheduleList,requestScheduleDeleteLast
+   requestUpdateEasyScheduleList,requestScheduleDeleteLast,
  } from '../actions/ScheduleListActions'
 import moment from 'moment';
 import {requestGetCachedSlaveList} from '../actions/TestActions';
@@ -702,7 +702,7 @@ const _injectPropsFromActions = {
   requestGetSlaveSchedule,
   requestGetEasySchedule,
   requestUpdateEasyScheduleList,
-  requestScheduleDeleteLast
+  requestScheduleDeleteLast,
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleList);

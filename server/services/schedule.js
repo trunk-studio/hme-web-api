@@ -277,13 +277,61 @@ module.exports = {
         }
       });
       if(schedules.length == 0){
+        await services.schedule.createScheduleBaseAll(slaveId);
         schedules = await models.Schedule.findAll({
           where: {
-            SlaveId: null
+            SlaveId: slaveId,
           }
         });
       }
       return schedules;
+    } catch (e) {
+      throw e;
+    }
+  },
+
+  createScheduleBaseAll: async(slaveId) => {
+    try {
+      let allSlaveScheduleList = await models.Schedule.findAll({
+        where: {
+          SlaveId: null,
+        }
+      });
+      for (let schedule of allSlaveScheduleList) {
+        let originSchedule = {};
+        originSchedule = {...schedule.dataValues};
+        delete originSchedule.id;
+        originSchedule.SlaveId = slaveId;
+        let newSchedule = await models.Schedule.create(originSchedule);
+
+        let allSlaveScheduleDetailList = await models.ScheduleDetail.findAll({
+          where: {
+            ScheduleId: schedule.dataValues.id,
+          }
+        });
+
+        for (let scheduleDetail of allSlaveScheduleDetailList) {
+          let originScheduleDetail = {};
+          originScheduleDetail = {...scheduleDetail.dataValues};
+          delete originScheduleDetail.id;
+          originScheduleDetail.ScheduleId = newSchedule.id;
+          let newScheduleDetail = await models.ScheduleDetail.create(originScheduleDetail);
+
+          let allSlaveScheduleDetailConfigList = await models.ScheduleDetailConfig.findAll({
+            where: {
+              ScheduleDetailId: scheduleDetail.dataValues.id,
+            }
+          });
+
+          for (let ScheduleDetailConfig of allSlaveScheduleDetailConfigList) {
+            let originScheduleDetailConfig = {};
+            originScheduleDetailConfig = {...ScheduleDetailConfig.dataValues};
+            delete originScheduleDetailConfig.id;
+            originScheduleDetailConfig.ScheduleDetailId = newScheduleDetail.id;
+            await models.ScheduleDetailConfig.create(originScheduleDetailConfig);
+          }
+        }
+      }
     } catch (e) {
       throw e;
     }

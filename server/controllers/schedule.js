@@ -59,46 +59,8 @@ exports.createScheduleBaseAll = async function(ctx) {
   try {
     console.log("==== createScheduleBaseAll ===", ctx.request.body);
     let date = ctx.request.body
-    let allSlaveScheduleList = await models.Schedule.findAll({
-      where: {
-        SlaveId: null,
-      }
-    });
-    for (let schedule of allSlaveScheduleList) {
-      let originSchedule = {};
-      originSchedule = {...schedule.dataValues};
-      delete originSchedule.id;
-      originSchedule.SlaveId = date.SlaveId;
-      let newSchedule = await models.Schedule.create(originSchedule);
-      console.log("schedule.dataValues!!!!!!!!!!!!!!!!!!!!!!!!!!!!",schedule.dataValues);
-      let allSlaveScheduleDetailList = await models.ScheduleDetail.findAll({
-        where: {
-          ScheduleId: schedule.dataValues.id,
-        }
-      });
-      console.log("allSlaveScheduleDetailList!!!!!!!!!!!!!!!!!!!!!!!",allSlaveScheduleDetailList);
-      for (let scheduleDetail of allSlaveScheduleDetailList) {
-        let originScheduleDetail = {};
-        originScheduleDetail = {...scheduleDetail.dataValues};
-        delete originScheduleDetail.id;
-        originScheduleDetail.ScheduleId = newSchedule.id;
-        let newScheduleDetail = await models.ScheduleDetail.create(originScheduleDetail);
-
-        let allSlaveScheduleDetailConfigList = await models.ScheduleDetailConfig.findAll({
-          where: {
-            ScheduleDetailId: scheduleDetail.dataValues.id,
-          }
-        });
-        console.log("allSlaveScheduleDetailConfigList!!!!!!!!!!!!!!!!!!!!!!!",allSlaveScheduleDetailConfigList);
-        for (let ScheduleDetailConfig of allSlaveScheduleDetailConfigList) {
-          let originScheduleDetailConfig = {};
-          originScheduleDetailConfig = {...ScheduleDetailConfig.dataValues};
-          delete originScheduleDetailConfig.id;
-          originScheduleDetailConfig.ScheduleDetailId = newScheduleDetail.id;
-          await models.ScheduleDetailConfig.create(originScheduleDetailConfig);
-        }
-      }
-    }
+    await services.schedule.createScheduleBaseAll(date.SlaveId);
+    ctx.body =  'ok';
   } catch (e) {
     console.error(e);
   }
