@@ -101,17 +101,17 @@ exports.previewLedColor = async function (ctx) {
     if(schedule.SlaveId === null){
       let slaveList = await models.Slave.findAll();
       for (let slave of slaveList) {
-        devices = await models.Device.findAll({
-          where:{
-            SlaveId: slave.id
-          }
-        });
-        for(let device of devices){
+        // devices = await models.Device.findAll({
+        //   where:{
+        //     SlaveId: slave.id
+        //   }
+        // });
+        // for(let device of devices){
           try {
-            ledData.devID = device.id;
+            // ledData.devID = device.uid;
             let result = await new Promise((resolve, reject) => {
-              request
-              .post(`http://${slave.host}:3000/rest/slave/${slave.id}/device/${device.id}/setLedDisplay`)
+              // request.post(`http://${slave.host}:3000/rest/slave/${slave.id}/device/${device.uid}/setLedDisplay`)
+              request.post(`http://${slave.host}:3000/rest/slave/${slave.id}/device/0/setLedDisplay`)
               .send(ledData)
               .end((err, res) => {
                 if(err) return reject(err);
@@ -121,22 +121,22 @@ exports.previewLedColor = async function (ctx) {
           } catch (e) {
             console.log(e);
           }
-        }
+        // }
       }
     }else{
       let slave = await models.Slave.findById(schedule.SlaveId);
-      devices = await models.Device.findAll({
-        where:{
-          SlaveId: schedule.SlaveId
-        }
-      })
-      ledData.groupID = slave.id;
-      for(let device of devices){
+      // devices = await models.Device.findAll({
+      //   where:{
+      //     SlaveId: schedule.SlaveId
+      //   }
+      // })
+      // ledData.groupID = slave.id;
+      // for(let device of devices){
         try {
-          ledData.devID = device.id;
+          ledData.devID = device.uid;
           let result = await new Promise((resolve, reject) => {
-            request
-            .post(`http://${slave.host}:3000/rest/slave/${schedule.SlaveId}/device/${device.id}/setLedDisplay`)
+            // request.post(`http://${slave.host}:3000/rest/slave/${schedule.SlaveId}/device/${device.uid}/setLedDisplay`)
+            request.post(`http://${slave.host}:3000/rest/slave/${schedule.SlaveId}/device/0/setLedDisplay`)
             .send(ledData)
             .end((err, res) => {
               if(err) return reject(err);
@@ -146,7 +146,7 @@ exports.previewLedColor = async function (ctx) {
         } catch (e) {
           console.log(e);
         }
-      }
+      // }
     }
     ctx.body = 'ok'
   } catch (e) {
