@@ -96,6 +96,8 @@ exports.previewLedColor = async function (ctx) {
       GR: data.GR,
       RE: data.RE,
       Bright: data.Bright,
+      devID: data.devID,
+      groupID: data.groupID,
     };
     let devices;
     if(schedule.SlaveId === null){
@@ -133,7 +135,7 @@ exports.previewLedColor = async function (ctx) {
       // ledData.groupID = slave.id;
       // for(let device of devices){
         try {
-          ledData.devID = device.uid;
+          // ledData.devID = device.uid;
           let result = await new Promise((resolve, reject) => {
             // request.post(`http://${slave.host}:3000/rest/slave/${schedule.SlaveId}/device/${device.uid}/setLedDisplay`)
             request.post(`http://${slave.host}:3000/rest/slave/${schedule.SlaveId}/device/0/setLedDisplay`)

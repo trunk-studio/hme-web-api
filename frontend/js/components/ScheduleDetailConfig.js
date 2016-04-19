@@ -192,6 +192,7 @@ export default class ScheduleDetailConfig extends React.Component {
       scheduleID: this.props.params.scheduleID,
       slaveId: this.props.params.slaveId,
       devID: 0,
+      groupID: 0,
     })
     this.setState({
       needSave: true,
