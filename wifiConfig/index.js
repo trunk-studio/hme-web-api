@@ -6,6 +6,7 @@ var GPIO = require('onoff').Gpio,
     // buttonB = new GPIO(21, 'in', 'both');
 
 var exec = require('child_process').exec;
+var timeId = undefined;
 
 // define the callback function
 function lightA(err, state) {
@@ -13,37 +14,47 @@ function lightA(err, state) {
   // check the state of the button
   // 1 == pressed, 0 == not pressed
   if(state == 1) {
+    console.log('clearTimeout');
+    clearTimeout(timeId);
 
-    var updateIniCmd = 'crudini --set --existing /boot/hme.txt SYSTEM SETTED false &&'+
-    'crudini --set --existing /boot/hme.txt SYSTEM MODE AP';
-
-    console.log('=== updateIniCmd ===', updateIniCmd);
-    exec(updateIniCmd, function(error, stdout, stderr) {
-      console.log(error);
-      console.log(stdout);
-      console.log(stderr);
-    });
-
-    // turn LED blinking
-    var ledInterval = setInterval(function(){
-      ledA.writeSync(ledA.readSync() === 0 ? 1 : 0)
-    }, 100);
-
-    var cmd = 'cd /root/hme-web-api/wifiConfig && make ap_mode && sudo /sbin/reboot';
-
-    console.log('=== cmd ===', cmd);
-    exec(cmd, function(error, stdout, stderr) {
-      console.log(error);
-      console.log(stdout);
-      console.log(stderr);
-      clearInterval(ledInterval);
-      ledA.writeSync(0);
-    });
 
   } else {
+    // rising edge
+    console.log('rising edge');
+    timeId = setTimeout(function(){
+      rebuttonEvent();
+    },3000);
     // turn LED off
-    ledA.writeSync(1);
+    // ledA.writeSync(1);
   }
+}
+
+function rebuttonEvent() {
+  var updateIniCmd = 'crudini --set --existing /boot/hme.txt SYSTEM SETTED false &&'+
+  'crudini --set --existing /boot/hme.txt SYSTEM MODE AP';
+
+  console.log('=== updateIniCmd ===', updateIniCmd);
+  exec(updateIniCmd, function(error, stdout, stderr) {
+    console.log(error);
+    console.log(stdout);
+    console.log(stderr);
+  });
+
+  // turn LED blinking
+  var ledInterval = setInterval(function(){
+    ledA.writeSync(ledA.readSync() === 0 ? 1 : 0)
+  }, 100);
+
+  var cmd = 'cd /root/hme-web-api/wifiConfig && make ap_mode && sudo /sbin/reboot';
+
+  console.log('=== cmd ===', cmd);
+  exec(cmd, function(error, stdout, stderr) {
+    console.log(error);
+    console.log(stdout);
+    console.log(stderr);
+    clearInterval(ledInterval);
+    ledA.writeSync(0);
+  });
 }
 
 // function lightB(err, state) {
