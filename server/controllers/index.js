@@ -30,6 +30,7 @@ export default class Routes {
       '/rest/slave/:slaveId/device/:deviceId/setLedDisplay',
       '/rest/slave/:slaveId/schedule/setOnDevice',
       '/rest/slave/:slaveId/findAllDeviceGroups',
+      '/rest/slave/:slaveId/device/:deviceId/getStatus'
       ],
       async function (ctx, next){
         try {
@@ -104,18 +105,21 @@ export default class Routes {
     publicRoute.post('/rest/hme/setup/update', HmeController.saveSetting);
     publicRoute.get('/rest/hme/setup', HmeController.getSetting);
     publicRoute.post('/rest/hme/reboot', HmeController.reboot);
+    publicRoute.post('/rest/hme/tempLimit', HmeController.tempLimit);
 
     // master
+    publicRoute.get('/rest/master/timezone', HmeController.getTimeZone);
     publicRoute.get('/rest/master/status', HmeController.status);
     publicRoute.get('/rest/master/user/', UserController.index);
     publicRoute.post('/rest/master/login', UserController.login);
     publicRoute.post('/rest/master/saveEmail', HmeController.saveEmail);
     publicRoute.get('/rest/master/loadEmail', HmeController.loadEmail);
     publicRoute.post('/rest/master/updateTime', HmeController.updateAllSlaveTime);
-    publicRoute.get('/rest/master/logs', HmeController.logs);
+    publicRoute.get('/rest/master/logs', HmeController.getAllSlaveLogs);
     publicRoute.post('/rest/master/register/slave', HmeController.registerSlave);
     publicRoute.get('/rest/master/syncAllSlaveAndDevice', HmeController.syncAllSlaveAndDevice);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
+    publicRoute.post('/rest/master/schedule/baseAll', ScheduleController.createScheduleBaseAll);
     publicRoute.post('/rest/master/schedule/delete/:id', ScheduleController.deleteLastSchedule);
     publicRoute.post('/rest/master/schedule/easy/create', ScheduleController.createEasySchedule);
     publicRoute.get('/rest/master/schedule/findAll', ScheduleController.getAllSchedule);
@@ -136,6 +140,8 @@ export default class Routes {
     publicRoute.post('/rest/master/schedule/setSimRtc', ScheduleController.setSimRtc);
 
     // find slave Device & Groups
+    publicRoute.get('/rest/slave/logs', HmeController.logs);
+    publicRoute.get('/rest/slave/checkStatus', HmeController.checkAllDeviceStatus);
     publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceListBySlave);
     publicRoute.get('/rest/slave/:slaveId/test/all', HmeController.testAllDevices);

@@ -96,21 +96,24 @@ exports.previewLedColor = async function (ctx) {
       GR: data.GR,
       RE: data.RE,
       Bright: data.Bright,
+      devID: data.devID,
+      groupID: data.groupID,
     };
     let devices;
     if(schedule.SlaveId === null){
       let slaveList = await models.Slave.findAll();
       for (let slave of slaveList) {
-        devices = await models.Device.findAll({
-          where:{
-            SlaveId: slave.id
-          }
-        });
+        // devices = await models.Device.findAll({
+        //   where:{
+        //     SlaveId: slave.id
+        //   }
+        // });
+        // for(let device of devices){
           try {
-            ledData.devID = 0;
+            // ledData.devID = device.uid;
             let result = await new Promise((resolve, reject) => {
-              request
-              .post(`http://${slave.host}:3000/rest/slave/${slave.id}/device/0/setLedDisplay`)
+              // request.post(`http://${slave.host}:3000/rest/slave/${slave.id}/device/${device.uid}/setLedDisplay`)
+              request.post(`http://${slave.host}:3000/rest/slave/${slave.id}/device/0/setLedDisplay`)
               .send(ledData)
               .end((err, res) => {
                 if(err) return reject(err);
@@ -120,20 +123,22 @@ exports.previewLedColor = async function (ctx) {
           } catch (e) {
             console.log(e);
           }
+        // }
       }
     }else{
       let slave = await models.Slave.findById(schedule.SlaveId);
-      devices = await models.Device.findAll({
-        where:{
-          SlaveId: schedule.SlaveId
-        }
-      })
-      ledData.groupID = slave.id;
+      // devices = await models.Device.findAll({
+      //   where:{
+      //     SlaveId: schedule.SlaveId
+      //   }
+      // })
+      // ledData.groupID = slave.id;
+      // for(let device of devices){
         try {
-          ledData.devID = 0;
+          // ledData.devID = device.uid;
           let result = await new Promise((resolve, reject) => {
-            request
-            .post(`http://${slave.host}:3000/rest/slave/${schedule.SlaveId}/device/0/setLedDisplay`)
+            // request.post(`http://${slave.host}:3000/rest/slave/${schedule.SlaveId}/device/${device.uid}/setLedDisplay`)
+            request.post(`http://${slave.host}:3000/rest/slave/${schedule.SlaveId}/device/0/setLedDisplay`)
             .send(ledData)
             .end((err, res) => {
               if(err) return reject(err);
@@ -143,6 +148,7 @@ exports.previewLedColor = async function (ctx) {
         } catch (e) {
           console.log(e);
         }
+      // }
     }
     ctx.body = 'ok'
   } catch (e) {
@@ -219,7 +225,10 @@ exports.getCachedSlaveList = async function (ctx) {
 
 exports.getCachedSlaveAndDeviceList = async function (ctx) {
   try {
-    let [slaveList, deviceList] = await Promise.all([services.hme.getCachedSlaveList(), services.hme.getCachedDeviceList()]);
+    // let [slaveList, deviceList] = await Promise.all([services.hme.getCachedSlaveList(), services.hme.getCachedDeviceList()]);
+    let slaveList = await services.hme.getCachedSlaveList();
+    let slaveIdArray = slaveList.map((slave) => slave.id);
+    let deviceList = await services.hme.getCachedDeviceList(slaveIdArray);
     ctx.body = {
       slaveList: slaveList,
       deviceList: deviceList
@@ -310,6 +319,36 @@ exports.getDeviceStatus = async function (ctx) {
   }
 }
 
+exports.checkAllDeviceStatus = async function (ctx) {
+  try {
+    let config =  await services.deviceControl.getSetting();
+    let host = config.SYSTEM.HME_SERIAL;
+    console.log("host!!",host);
+    let slave = await models.Slave.findOne({
+      where:{
+        host: { $like: '%'+host+'%' }
+      }
+    });
+    let slaveId = slave.id;
+    let deviceList = await models.Device.findAll({where: {SlaveId: slaveId}});
+      for(let device of deviceList) {
+        let result = await services.hme.getDevState(device.uid);
+        let statusFail = result.devTemp >= parseInt(config.SYSTEM.TEMP_LIMIT, 10) || !result.fanState;
+        if (statusFail) {
+          await models.Message.create({
+            title: 'device status fail',
+            content: `${host} device ${device.uid} status fail`,
+            type: 'error',
+          });
+        }
+      }
+    ctx.body = 'ok';
+  } catch (e) {
+    ctx.body = e;
+    throw e;
+  }
+}
+
 exports.updateAllSlaveTime = async function (ctx) {
   try {
     let slaveList = await models.Slave.findAll();
@@ -340,13 +379,51 @@ exports.updateTime = async function (ctx) {
   }
 }
 
-exports.logs = async function (ctx) {
+exports.getAllSlaveLogs = async function (ctx) {
   try {
+    let slaves = await models.Slave.findAll();
+    for (let slave of slaves) {
+      try {
+        let result = await new Promise((resolve, reject) => {
+          request.get(`http://${slave.host}:3000/rest/slave/logs`)
+          .end((err, res) => {
+            if(err) return reject(err);
+            resolve(res.body);
+          });
+        });
+
+        let slaveLogs = result.map(message => {
+          let log = {
+            title: message.title,
+            content: message.content,
+            type: message.type,
+          }
+          return log;
+        });
+        await Promise.all(
+          slaveLogs.map( message => models.Message.create(message))
+        );
+      } catch (e) {
+        console.log(e);
+      }
+    }
     let logs = await services.deviceControl.getLogs();
     ctx.body = logs;
   } catch (e) {
     ctx.body = e;
-    throw e;
+  }
+}
+
+exports.logs = async function (ctx) {
+  try {
+    let config =  await services.deviceControl.getSetting();
+    let logs = []
+    if(config.SYSTEM.TYPE === 'slave'){
+      logs = await services.deviceControl.salveLogsToMaster();
+    }
+    ctx.body = logs;
+  } catch (e) {
+    ctx.body = e;
   }
 }
 
@@ -368,5 +445,29 @@ exports.reboot = async function (ctx) {
   } catch (e) {
     ctx.body = e;
     throw e;
+  }
+}
+
+exports.tempLimit = async function (ctx) {
+  try {
+    let data = ctx.request.body;
+    let result = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+    result.SYSTEM.TEMP_LIMIT = Math.round(data.tempLimit*10)/10;
+    fs.writeFileSync(appConfig.configPath, ini.stringify(result))
+    ctx.body = logs;
+  } catch (e) {
+    ctx.body = e;
+  }
+}
+
+exports.getTimeZone = async function (ctx) {
+  try {
+    let config =  await services.deviceControl.getSetting();
+    ctx.body = {
+      timeZone: config.SYSTEM.TIMEZONE_OFFSET,
+      timeZoneIndex: config.SYSTEM.TIMEZONE_INDEX,
+    };
+  } catch (e) {
+    ctx.body = e;
   }
 }

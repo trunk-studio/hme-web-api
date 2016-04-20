@@ -66,8 +66,11 @@ export function requestPreviewLedColor(updateData) {
   ]
   return (dispatch) => {
     dispatch(receivedUpdateScheduleDetailConfig(data));
-    return request
-      .post(`/rest/master/schedule/previewLedColor`,updateData);
+    if(updateData.slaveId == 0){
+      return request.post(`/rest/master/schedule/previewLedColor`,updateData);
+    } else {
+      return request.post(`/rest/slave/${updateData.slaveId}/device/0/setLedDisplay`,updateData);
+    }
   };
 }
 

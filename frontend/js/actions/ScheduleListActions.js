@@ -116,7 +116,6 @@ export function receivedGetScheduleList(data) {
 }
 
 export function requestSetScheduleList(data) {
-  console.log('!!!!!!!!!!!!!!!!!!!!!!data', data);
   return dispatch => {
     dispatch(updateLoadingStatus('loading'));
     return request

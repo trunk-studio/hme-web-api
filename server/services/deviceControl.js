@@ -161,7 +161,7 @@ module.exports = {
           apiVersion: 'null'
         }
       });
-      // await services.deviceControl.syncNewSlave();
+      await services.deviceControl.syncNewSlave();
       return slave
     } catch (e) {
       console.log(e);
@@ -178,8 +178,8 @@ module.exports = {
             request.post(`http://${slave.host}:3000/rest/slave/${slave.id}/sync/slave`)
             .send(slaves)
             .end((err, res) => {
-              if(err) return reject(err);
-              resolve(res.body);
+              if(err) console.log(err);
+              resolve('ok');
             });
           });
         } catch (e) {
@@ -261,6 +261,33 @@ module.exports = {
     }
   },
 
+  masterCrontab: async() => {
+    try {
+      let cmd = `service ntp stop && ntpdate 0.debian.pool.ntp.org && service ntp start`;
+      let updateSysRtc = await new Promise((done) => {
+        exec(cmd, function(error, stdout, stderr) {
+          if (error ||  stderr) {
+            console.log(error, stderr);
+            // throw error;
+          }
+          console.log(stdout);
+          done(stdout);
+        });
+      });
+      let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; echo "* * */5 * * wget -O - localhost:3000/rest/admin/sendmail/error"; echo "*/4 * * * * curl localhost:3000/rest/master/logs";} | crontab -'
+      exec(crontab, function(error, stdout, stderr) {
+        if (error) {
+          console.log(error);
+          throw error;
+        }
+        console.log(stdout);
+      });
+    } catch (e) {
+      console.log(e);
+      throw e
+    }
+  },
+
   getMasterTimeAndUpdate: async() => {
     try {
       let config =  await services.deviceControl.getSetting();
@@ -273,6 +300,33 @@ module.exports = {
         });
         console.log(exist, host);
         if(exist){
+          let result = await new Promise((resolve, reject) => {
+            request.get(`http://${host}/rest/master/timezone`)
+            .end((err, res) => {
+              if(err) {
+                console.log(err);
+              }else{
+                resolve(res.body);
+              }
+            });
+          });
+          if (result) {
+            let oridinConfig = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+            oridinConfig.SYSTEM.TIMEZONE_OFFSET = result.timeZone;
+            oridinConfig.SYSTEM.TIMEZONE_INDEX = result.timeZoneIndex;
+            fs.writeFileSync(appConfig.configPath, ini.stringify(oridinConfig))
+            let cmd = `sh /etc/rc.local`;
+            let updateTimeZone = await new Promise((done) => {
+              exec(cmd, function(error, stdout, stderr) {
+                if (error ||  stderr) {
+                  console.log(error, stderr);
+                  // throw error;
+                }
+                console.log(stdout);
+                done(stdout);
+              });
+            });
+          }
           let cmd = `service ntp stop && ntpdate ${host} && hwclock -w && hwclock -s`;
           let updateSysRtc = await new Promise((done) => {
             exec(cmd, function(error, stdout, stderr) {
@@ -286,7 +340,7 @@ module.exports = {
           });
           await services.hme.setSysTimeToDevRTC();
         }
-        let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; } | crontab -'
+        let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; echo "*/5 * * * * curl localhost:3000/rest/slave/checkStatus";} | crontab -'
         exec(crontab, function(error, stdout, stderr) {
           if (error) {
             console.log(error);
@@ -299,6 +353,29 @@ module.exports = {
     } catch (e) {
       console.log(e);
       throw e;
+    }
+  },
+
+  salveLogsToMaster: async() => {
+    try{
+      let logs = await models.Message.findAll({
+        where:{
+          sended: false,
+        }
+      });
+
+      let sendedMessages = logs.map(message => {
+        message.sended = true;
+        return message;
+      });
+      await Promise.all(
+        sendedMessages.map( message => message.save())
+      );
+
+      return logs;
+    }catch(e){
+      console.log(e);
+      throw e
     }
   },
 

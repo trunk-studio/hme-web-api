@@ -15,8 +15,10 @@ import {
 
 import {
   requestGetReportEmail, requestUpdateReportEmail,
-  requestGetDeviceStatus,requestGetLogs
+  requestGetDeviceStatus,requestGetLogs,
+  requestUpdateTempLimit,
 } from '../actions/ManageActions'
+import { requestGetSetupSetting } from '../actions/SetupActions'
 
 // import ThemeManager from 'material-ui/lib/styles/theme-manager';
 // import HmeTheme from '../hme_theme';
@@ -70,6 +72,7 @@ export default class ManagePage extends React.Component {
       reportSlaveID: 0,
       reportDeviceId: 0,
       isCentigrade: true,
+      toggleDefault: false,
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -181,16 +184,21 @@ export default class ManagePage extends React.Component {
 
   componentDidMount() {
     if(!localStorage.getItem('HME_manage_tabIndex'))
-      localStorage.setItem('HME_manage_tabIndex', 0);
+      localStorage.setItem('HME_manage_tabIndex', 2);
     this.props.getRole();
     let getTemperatureUnit = localStorage.getItem('HME_manage_isCentigrade');
     if(getTemperatureUnit == null){
       localStorage.setItem('HME_manage_isCentigrade', true);
     }
     this.props.requestGetSlaveAndDeviceList();
+    this.props.requestGetSetupSetting();
     this.props.requestGetReportEmail();
     this._reloadLogs();
     setInterval(this._reloadLogs, 60000);
+
+    this.setState({
+      toggleDefault: getTemperatureUnit,
+    })
     // this.props.getRole();
     // this.props.requestGetCachedDeviceList();
     // this.props.requestGetCachedSlaveList();
@@ -204,7 +212,9 @@ export default class ManagePage extends React.Component {
   _changeTemperatureUnit = (e) => {
     let getTemperatureUnit =  JSON.parse(localStorage.getItem('HME_manage_isCentigrade'))
     localStorage.setItem('HME_manage_isCentigrade', !getTemperatureUnit);
-    this.setState({});
+    this.setState({
+      toggleDefault: !getTemperatureUnit
+    });
   }
 
   _reloadLogs = (e) =>{
@@ -309,17 +319,34 @@ export default class ManagePage extends React.Component {
     this.setState({
       SUM: newSUM
     });
-    this.props.requestTestSetLedDisplay({
-      devID:this.state.setupTestDeviceID,
-      groupID: 0,
-      WW: this.state.wwValue,
-      DB: this.state.dbValue,
-      BL: this.state.blValue,
-      GR: this.state.grValue,
-      RE: this.state.reValue,
-      Bright: this.state.brightValue,
-      slaveID: this.state.setupTestSlaveID
-    })
+    let slaveId = this.state.setupTestSlaveID || 0;
+    if (slaveId == 0) {
+      this.props.slaveList.forEach((slave,i) => {
+        this.props.requestTestSetLedDisplay({
+          devID: 0,
+          groupID: 0,
+          WW: this.state.wwValue,
+          DB: this.state.dbValue,
+          BL: this.state.blValue,
+          GR: this.state.grValue,
+          RE: this.state.reValue,
+          Bright: this.state.brightValue,
+          slaveID: slave.payload
+        });
+      });
+    } else {
+      this.props.requestTestSetLedDisplay({
+        devID:this.state.setupTestDeviceID || 0,
+        groupID: 0,
+        WW: this.state.wwValue,
+        DB: this.state.dbValue,
+        BL: this.state.blValue,
+        GR: this.state.grValue,
+        RE: this.state.reValue,
+        Bright: this.state.brightValue,
+        slaveID: this.state.setupTestSlaveID
+      })
+    }
   };
 
   _setAll = (ww, db, bl, gr, re, cct) =>{
@@ -396,6 +423,14 @@ export default class ManagePage extends React.Component {
     })
   };
 
+  _tempLimeHendle = (event) => {
+    if(this.state.toggleDefault){
+      this.props.requestUpdateTempLimit(event.target.value);
+    }else{
+      this.props.requestUpdateTempLimit((event.target.value - 32)/1.8);
+    }
+  };
+
   componentWillUpdate (nextProps, nextState) {
     if(this.props.reportEmail != nextProps.reportEmail)
       this.setState({
@@ -445,10 +480,6 @@ export default class ManagePage extends React.Component {
     }];
 
     let setupTestDeviceList = [{
-      payload: 0,
-      primary: 'Select Device',
-      text: 'Select Device'
-    },{
       payload: 'all',
       primary: 'All Device',
       text: 'All Device'
@@ -456,8 +487,8 @@ export default class ManagePage extends React.Component {
 
     let setupTestSlaveList = [{
       payload: 0,
-      primary: 'Select Slave',
-      text: 'Select Slave'
+      primary: 'All Slave',
+      text: 'All Slave'
     }];
 
     let reportDeviceList = [{
@@ -543,7 +574,7 @@ export default class ManagePage extends React.Component {
     </Tab> );
 
     let testingTab = (
-    <Tab key={'testingTab'} label="Testing" value='3' className="tab-item">
+    <Tab key={'testingTab'} label="Setup" value='3' className="tab-item">
       <div className="tab-content self-center">
         <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
           <div >
@@ -603,20 +634,31 @@ export default class ManagePage extends React.Component {
       }
     }
 
-    let toggleDefault = JSON.parse(localStorage.getItem('HME_manage_isCentigrade'));
-    let deviceTemp
+    let toggleDefault = this.state.toggleDefault;
+    let tempLimit;
+    if(toggleDefault){
+      tempLimit = Math.round(this.props.tempLimit*10)/10;
+    }else{
+      tempLimit = this.props.tempLimit*1.8+32;
+    }
+
+    let deviceTemp;
+    let envTemp;
     if( this.props.devStatus.devTemp != 'Selse Slave & Device'){
       if(toggleDefault){
-        deviceTemp = this.props.devStatus.devTemp+'°C'
+        deviceTemp = this.props.devStatus.devTemp ? this.props.devStatus.devTemp+'°C' : 'null';
+        envTemp = this.props.devStatus.envTemp ? this.props.devStatus.envTemp + '°C' : 'null';
       }else{
-        deviceTemp = (this.props.devStatus.devTemp*1.8+32)+'°F'
+        deviceTemp = this.props.devStatus.devTemp ? (this.props.devStatus.devTemp*1.8+32)+'°F' : 'null';
+        envTemp = this.props.devStatus.envTemp ? (this.props.devStatus.envTemp*1.8+32)+'°F' : 'null';
       }
     }else{
       deviceTemp = 'Selse Slave & Device'
+      envTemp = 'Selse Slave & Device'
     }
     return (
       <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} tabItemContainerStyle={{backgroundColor: "#032c70", marginTop: '-15px'}} contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0)'}}>
-        <Tab label="Setup" value='0' className="tab-item">
+        <Tab label="Spectrum" value='0' className="tab-item">
           <div className="tab-content self-center">
             <div className="self-center" style={{width: '420px'}}>
               <div style={{width: '420px'}}>
@@ -682,23 +724,30 @@ export default class ManagePage extends React.Component {
                 <div className="row">
                   <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Temp:</h4>
                   <h4 className="col-md-4 col-sm-4 col-xs-4">{deviceTemp}</h4>
-                    <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Fan:</h4>
-                    <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState.toString()}</h4>
+                  <h4 className="col-md-2 col-sm-2 col-xs-2" style={{textAlign: 'right'}}>Fan:</h4>
+                  <h4 className="col-md-4 col-sm-4 col-xs-4">{this.props.devStatus.fanState.toString()}</h4>
+                  <h4 className="col-md-4 col-sm-4 col-xs-4" style={{textAlign: 'left'}}>Env Temp:</h4>
+                  <h4 className="col-md-4 col-sm-4 col-xs-4">{envTemp}</h4>
                 </div>
                 <div className="row">
                   <Toggle
+                    className="col-md-2 col-sm-2 col-xs-2"
+                    value={toggleDefault}
                     defaultToggled={toggleDefault}
-                    label= {toggleDefault ? 'Centigrade': 'Fahrenheit'}
+                    label= {toggleDefault ? '°C': '°F'}
                     style={{width: '150px'}}
                     onToggle= {this._changeTemperatureUnit}
                   />
+                <h4 className="col-md-4 col-sm-4 col-xs-4" style={{textAlign: 'right'}}>Temp Limit:</h4>
+                <span style={{marginTop: '16px', float: 'right'}}>▼</span>
+                <TextField ref="tempLimit" min={0} max={999} value={tempLimit} onChange={this._tempLimeHendle} type="number" style={{width: '120px', marginLeft:'10px'}}/>
                 </div>
               </div>
             </div>
           </div>
         </Tab>
         {adminFunctionTabs}
-        <Tab label="Logs" value='4' className="tab-item logsTab"
+        <Tab label="Message" value='4' className="tab-item logsTab"
           onActive={this._onLogActive}>
           <div className="tab-content self-center">
             <div className="self-center" style={{width: '415px', marginTop: '15px', wordBreak:'break-all'}}>
@@ -713,10 +762,11 @@ export default class ManagePage extends React.Component {
 }
 
 function _injectPropsFromStore(state) {
-  let { login, scanDevice , manageSettings} = state;
+  let { login, scanDevice , manageSettings, setup} = state;
   let scanResult = [],
       slaveList = [],
-      groupList = [];
+      groupList = [],
+      tempLimit = 0;
 
   if(scanDevice.slaveList) {
     for(let slave of scanDevice.slaveList) {
@@ -738,6 +788,11 @@ function _injectPropsFromStore(state) {
       });
     }
   }
+
+  if(setup.setupSetting){
+    tempLimit = setup.setupSetting.SYSTEM.TEMP_LIMIT;
+  }
+
   return {
     deviceList: scanResult,
     groupList: groupList,
@@ -746,11 +801,13 @@ function _injectPropsFromStore(state) {
     reportEmail: manageSettings.reportEmail,
     loadingEmail: manageSettings.loadingEmail? manageSettings.loadingEmail : 'hide',
     role: login.role,
-    devStatus: manageSettings.devStatus || {devTemp: 'Selse Slave & Device', fanState: 'Selse Slave & Device'},
-    logs: manageSettings.logs || []
+    devStatus: manageSettings.devStatus || {devTemp: 'Selse Slave & Device', fanState: 'Selse Slave & Device', envTemp: 'Selse Slave & Device'},
+    logs: manageSettings.logs || [],
+    tempLimit: tempLimit,
 
   };
 }
+
 
 const _injectPropsFromActions = {
   // testing
@@ -772,7 +829,9 @@ const _injectPropsFromActions = {
   // Auth,
   getRole,
   logout,
-  requestGetLogs
+  requestGetLogs,
+  requestGetSetupSetting,
+  requestUpdateTempLimit,
 }
 
 
