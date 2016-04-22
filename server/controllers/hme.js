@@ -471,3 +471,29 @@ exports.getTimeZone = async function (ctx) {
     ctx.body = e;
   }
 }
+
+exports.checkUpgrade = async function (ctx) {
+  try {
+    let status =  await services.deviceControl.needUpdate();
+    ctx.body = {
+      status
+    };
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}
+
+exports.upgrade = async function (ctx) {
+  try {
+    let status =  await services.deviceControl.needUpdate();
+    ctx.body = {
+      status
+    };
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}

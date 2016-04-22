@@ -225,6 +225,18 @@ describe("device", () => {
         done(e);
       }
     });
+
+    it.only("check check version", async(done) => {
+      try {
+        let result = await services.deviceControl.needUpdate();
+        console.log("result",result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
   });
 
 });

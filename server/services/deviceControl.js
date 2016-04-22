@@ -395,4 +395,34 @@ module.exports = {
     }
   },
 
+  needUpdate: async() => {
+    try {
+      let config =  await services.deviceControl.getSetting();
+      let cmd = `wget "https://docs.google.com/uc?authuser=0&id=0B-XkApzKpJ7QbTh2WnVsSHhCLU0&export=download" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info > /dev/null 2>&1; cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`;
+      let onlineVersion = await new Promise((done) => {
+        exec(cmd, function(error, stdout, stderr) {
+          if (error) {
+            throw error;
+          }
+          console.log(stdout);
+          done(stdout);
+        });
+      });
+      const nowVersion = process.env.npm_package_version.split('.');
+      onlineVersion = onlineVersion.split('.');
+      for (let i = 0; i < nowVersion.length; i++) {
+        console.log(nowVersion[i],onlineVersion[i]);
+        if (parseInt(nowVersion[i], 10) < parseInt(onlineVersion[i], 10)) {
+          return true;
+        } else if (parseInt(nowVersion[i], 10) != parseInt(onlineVersion[i], 10)) {
+          return false
+        }
+      }
+      return false;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
+
 }
