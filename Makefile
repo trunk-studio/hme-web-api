@@ -1,3 +1,11 @@
+BACKUP_PATH = ../hmeBak
+UPDATE_PACKAGE_NAME = hme.tgz
+UPDATE_PACKAGE_PATH = ./client_upgrade
+buid-update-package:
+	tar zcvf ${UPDATE_PACKAGE_NAME} --exclude=.git --exclude=db.development.sqlite \
+	--exclude=server/config ${UPDATE_PACKAGE_PATH}
+
+
 dev-env-build:
 
 	- docker-machine rm -f hme-keystore hme-master hme-slave-01
