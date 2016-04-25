@@ -195,7 +195,11 @@ export default class Routes {
     publicRoute.get('/main', async function(ctx, next) {
       try {
         let config =  await services.deviceControl.getSetting();
-        let host = config.SYSTEM.MASTER_NAME + '.local';
+        let host;
+        if (config.SYSTEM.TYPE === 'master')
+          host = config.SYSTEM.HME_SERIAL + '.local';
+        else
+          host = config.SYSTEM.MASTER_NAME + '.local';
         const HTML = `
         <!DOCTYPE html>
         <html>
