@@ -485,9 +485,9 @@ exports.checkUpgrade = async function (ctx) {
   }
 }
 
-exports.upgrade = async function (ctx) {
+exports.downloadUpgrade = async function (ctx) {
   try {
-    let status =  await services.deviceControl.needUpdate();
+    let status =  await services.deviceControl.downloadUpdate();
     ctx.body = {
       status
     };

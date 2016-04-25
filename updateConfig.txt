@@ -1,0 +1,6 @@
+[SYSTEM]
+BACKUP_PATH=../hmeBak
+DOWNLOAD_LINK=http://hmefileserver/hlp600/firmware/latest
+UPDATE_PACKAGE_PATH=../hmeBak
+BUILD_UPDATE_PACKAGE_PATH=client_upgrade
+UPDATE_PACKAGE_NAME=hme.tgz

@@ -395,9 +395,19 @@ module.exports = {
     }
   },
 
+  getUpdateSetting: async() => {
+    try{
+      let result = await ini.parse(fs.readFileSync('./updateConfig.txt', 'utf-8'));
+      return result;
+    }catch(e){
+      console.log(e);
+      throw e
+    }
+  },
+
   needUpdate: async() => {
     try {
-      let config =  await services.deviceControl.getSetting();
+      let config =  await services.deviceControl.getUpdateSetting();
       let cmd = `wget "https://docs.google.com/uc?authuser=0&id=0B-XkApzKpJ7QbTh2WnVsSHhCLU0&export=download" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info > /dev/null 2>&1; cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`;
       let onlineVersion = await new Promise((done) => {
         exec(cmd, function(error, stdout, stderr) {
@@ -424,5 +434,39 @@ module.exports = {
       throw e;
     }
   },
+
+  downloadUpdate: async() => {
+    try {
+      const config =  await services.deviceControl.getUpdateSetting();
+      const downloadTgz = `wget "${config.SYSTEM.DOWNLOAD_LINK}/${config.SYSTEM.UPDATE_PACKAGE_NAME}" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/${config.SYSTEM.UPDATE_PACKAGE_NAME};`;
+      const downloadMd5 = `wget "${config.SYSTEM.DOWNLOAD_LINK}/hme.md5" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5;`;
+      const downloadInfo = `wget "${config.SYSTEM.DOWNLOAD_LINK}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info;`;
+      const downloadCmd = downloadTgz + downloadMd5 + downloadInfo;
+      let download = await new Promise((done) => {
+        exec(downloadCmd, function(error, stdout, stderr) {
+          if (error) {
+            throw error;
+          }
+          console.log(stdout);
+          done(stdout);
+        });
+      });
+      const checkMd5Cmd = `cd ${config.SYSTEM.UPDATE_PACKAGE_PATH}; md5sum -c hme.md5`;
+      console.log("cmd => ",checkMd5Cmd);
+      let onlineVersion = await new Promise((done) => {
+        exec(checkMd5Cmd, function(error, stdout, stderr) {
+          if (error || stderr) {
+            throw error;
+          }
+          done(stdout);
+        });
+      });
+      const isOk = onlineVersion.indexOf('OK') !== -1;
+      return isOk;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
 
 }

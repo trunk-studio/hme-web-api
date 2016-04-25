@@ -226,9 +226,20 @@ describe("device", () => {
       }
     });
 
-    it.only("check check version", async(done) => {
+    it("check check version", async(done) => {
       try {
         let result = await services.deviceControl.needUpdate();
+        console.log("result",result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it.only("check check downloadUpdate", async(done) => {
+      try {
+        let result = await services.deviceControl.downloadUpdate();
         console.log("result",result);
         done();
       } catch (e) {

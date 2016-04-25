@@ -117,7 +117,7 @@ export default class Routes {
     publicRoute.post('/rest/master/updateTime', HmeController.updateAllSlaveTime);
     publicRoute.get('/rest/master/logs', HmeController.getAllSlaveLogs);
     publicRoute.get('/rest/master/checkUpgrade', HmeController.checkUpgrade);
-    publicRoute.post('/rest/master/upgrade', HmeController.upgrade);
+    publicRoute.post('/rest/master/downloadUpgrade', HmeController.downloadUpgrade);
     publicRoute.post('/rest/master/register/slave', HmeController.registerSlave);
     publicRoute.get('/rest/master/syncAllSlaveAndDevice', HmeController.syncAllSlaveAndDevice);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);

@@ -1,17 +1,17 @@
-# BACKUP_PATH = ../hmeBak
-# BUILD_UPDATE_PACKAGE_PATH = client_upgrade
-# UPDATE_PACKAGE_NAME = hme.tgz
 FTP_USER_NAME = pi
 FTP_IP = 192.168.168.193
 FTP_UPDATE_PACKAGE_PATH = ~/
-BACKUP_PATH = $(shell crudini --get ./hme.txt SYSTEM BACKUP_PATH)
-BUILD_UPDATE_PACKAGE_PATH = $(shell crudini --get ./hme.txt SYSTEM BUILD_UPDATE_PACKAGE_PATH)
-UPDATE_PACKAGE_NAME = $(shell crudini --get ./hme.txt SYSTEM UPDATE_PACKAGE_NAME)
+BACKUP_PATH = ../hmeBak
+BUILD_UPDATE_PACKAGE_PATH = client_upgrade
+UPDATE_PACKAGE_NAME = hme.tgz
+# BACKUP_PATH = $(shell crudini --get ./updateConfig.txt SYSTEM BACKUP_PATH)
+# BUILD_UPDATE_PACKAGE_PATH = $(shell crudini --get ./updateConfig.txt SYSTEM BUILD_UPDATE_PACKAGE_PATH)
+# UPDATE_PACKAGE_NAME = $(shell crudini --get ./updateConfig.txt SYSTEM UPDATE_PACKAGE_NAME)
 
 buid-update-package:
 	tar zcvf ${BUILD_UPDATE_PACKAGE_PATH}/${UPDATE_PACKAGE_NAME} --exclude=.git --exclude=db.development.sqlite \
 	--exclude=server/config ./
-	md5sum ${BUILD_UPDATE_PACKAGE_PATH}/${UPDATE_PACKAGE_NAME} | awk '{print $$1}' > ${BUILD_UPDATE_PACKAGE_PATH}/hme.md5
+	md5sum ${BUILD_UPDATE_PACKAGE_PATH}/${UPDATE_PACKAGE_NAME} > ${BUILD_UPDATE_PACKAGE_PATH}/hme.md5
 	#node -pe 'JSON.parse(process.argv[1]).version' "$$(cat package.json)" > ${UPDATE_PACKAGE_PATH}/hme.info
 	cat package.json| jsawk "return this.version" > ${UPDATE_PACKAGE_PATH}/hme.info
 	scp ${BUILD_UPDATE_PACKAGE_PATH}/hme.* ${FTP_USER_NAME}@${FTP_IP}:${FTP_UPDATE_PACKAGE_PATH}
