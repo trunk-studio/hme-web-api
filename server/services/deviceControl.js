@@ -9,7 +9,9 @@ module.exports = {
     try {
       await models.Device.destroy({
         where: {
-          SlaveId: slaveId
+          SlaveId: {
+            $ne: 0
+          }
         }
       });
       let deviceList = [];
