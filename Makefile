@@ -13,8 +13,8 @@ buid-update-package:
 	--exclude=server/config ./
 	md5sum ${BUILD_UPDATE_PACKAGE_PATH}/${UPDATE_PACKAGE_NAME} > ${BUILD_UPDATE_PACKAGE_PATH}/hme.md5
 	#node -pe 'JSON.parse(process.argv[1]).version' "$$(cat package.json)" > ${UPDATE_PACKAGE_PATH}/hme.info
-	cat package.json| jsawk "return this.version" > ${UPDATE_PACKAGE_PATH}/hme.info
-	scp ${BUILD_UPDATE_PACKAGE_PATH}/hme.* ${FTP_USER_NAME}@${FTP_IP}:${FTP_UPDATE_PACKAGE_PATH}
+	cat package.json| jsawk "return this.version" > ${BUILD_UPDATE_PACKAGE_PATH}/hme.info
+	#scp ${BUILD_UPDATE_PACKAGE_PATH}/hme.* ${FTP_USER_NAME}@${FTP_IP}:${FTP_UPDATE_PACKAGE_PATH}
 
 
 

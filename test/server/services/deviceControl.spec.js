@@ -237,7 +237,7 @@ describe("device", () => {
 
     });
 
-    it.only("check check downloadUpdate", async(done) => {
+    it.skip("check check downloadUpdate", async(done) => {
       try {
         let result = await services.deviceControl.downloadUpdate();
         console.log("result",result);

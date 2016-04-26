@@ -408,7 +408,7 @@ module.exports = {
   needUpdate: async() => {
     try {
       let config =  await services.deviceControl.getUpdateSetting();
-      let cmd = `wget "https://docs.google.com/uc?authuser=0&id=0B-XkApzKpJ7QbTh2WnVsSHhCLU0&export=download" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info > /dev/null 2>&1; cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`;
+      let cmd = `wget "${config.SYSTEM.DOWNLOAD_LINK}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info > /dev/null 2>&1; cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`;
       let onlineVersion = await new Promise((done) => {
         exec(cmd, function(error, stdout, stderr) {
           if (error) {
@@ -462,6 +462,31 @@ module.exports = {
         });
       });
       const isOk = onlineVersion.indexOf('OK') !== -1;
+      if (isOk) {
+        const unTarCmd = `cd ${config.SYSTEM.UPDATE_PACKAGE_PATH}; tar Zxvf ${config.SYSTEM.UPDATE_PACKAGE_NAME}`;
+        console.log("cmd => ",unTarCmd);
+        let unTar = await new Promise((done) => {
+          exec(unTarCmd, function(error, stdout, stderr) {
+            if (error || stderr) {
+              throw error;
+            }
+            done(stdout);
+          });
+        });
+        const backUpCmd = `cp -r ~/hme-web-api ${config.SYSTEM.BACKUP_PATH}`;
+        console.log("cmd => ",backUpCmd);
+        let backUp = await new Promise((done) => {
+          exec(backUpCmd, function(error, stdout, stderr) {
+            if (error || stderr) {
+              throw error;
+            }
+            done(stdout);
+          });
+        });
+        let systemConfig = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+        systemConfig.SYSTEM.UPDATE = true;
+        fs.writeFileSync(appConfig.configPath, ini.stringify(systemConfig));
+      }
       return isOk;
     } catch (e) {
       console.log(e);
