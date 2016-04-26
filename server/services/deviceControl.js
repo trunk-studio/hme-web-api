@@ -299,7 +299,7 @@ module.exports = {
           done(stdout);
         });
       });
-      let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; echo "* * */5 * * wget -O - localhost:3000/rest/admin/sendmail/error"; echo "*/4 * * * * curl localhost:3000/rest/master/logs"; echo "*/5 * * * * curl localhost:3000/rest/slave/checkStatus";} | crontab -'
+      let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; echo "* * * * 2 wget -O - localhost:3000/rest/admin/sendmail/error"; echo "*/4 * * * * curl localhost:3000/rest/master/logs"; echo "*/5 * * * * curl localhost:3000/rest/slave/checkStatus";} | crontab -'
       exec(crontab, function(error, stdout, stderr) {
         if (error) {
           console.log(error);
