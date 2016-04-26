@@ -226,7 +226,7 @@ describe("device", () => {
       }
     });
 
-    it("check check version", async(done) => {
+    it.skip("check check version", async(done) => {
       try {
         let result = await services.deviceControl.needUpdate();
         console.log("result",result);
