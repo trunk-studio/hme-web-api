@@ -750,9 +750,11 @@ export default class ManagePage extends React.Component {
                     style={{width: '150px'}}
                     onToggle= {this._changeTemperatureUnit}
                   />
-                <h4 className="col-md-4 col-sm-4 col-xs-4" style={{textAlign: 'right'}}>Temp Limit:</h4>
-                <span style={{marginTop: '16px', float: 'right'}}>▼</span>
-                <TextField ref="tempLimit" min={0} max={999} value={tempLimit} onChange={this._tempLimeHendle} type="number" style={{width: '120px', marginLeft:'10px'}}/>
+                <div style={{display: 'none'}}>
+                  <h4 className="col-md-4 col-sm-4 col-xs-4" style={{textAlign: 'right'}}>Temp Limit:</h4>
+                  <span style={{marginTop: '16px', float: 'right'}}>▼</span>
+                  <TextField ref="tempLimit" min={0} max={999} value={tempLimit} onChange={this._tempLimeHendle} type="number" style={{width: '120px', marginLeft:'10px'}}/>
+                </div>
                 </div>
               </div>
             </div>
