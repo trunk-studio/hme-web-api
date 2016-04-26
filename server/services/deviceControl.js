@@ -37,6 +37,7 @@ module.exports = {
     try {
       let deviceArray =  await services.hme.SearchDevice();
       await services.deviceControl.saveDevice(deviceArray, slaveId);
+      return true
     } catch (e) {
       throw e;
     }
@@ -85,6 +86,7 @@ module.exports = {
           let result = await new Promise((resolve, reject) => {
             request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
               if(err) return reject(err);
+              console.log("syncAllSlaveAndDevice =>", slave.id, res.body);
               resolve(res.body);
             });
           });
