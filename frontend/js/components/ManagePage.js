@@ -661,8 +661,8 @@ export default class ManagePage extends React.Component {
         deviceTemp = this.props.devStatus.devTemp ? this.props.devStatus.devTemp+'°C' : 'null';
         envTemp = this.props.devStatus.envTemp ? this.props.devStatus.envTemp + '°C' : 'null';
       }else{
-        deviceTemp = this.props.devStatus.devTemp ? (this.props.devStatus.devTemp*1.8+32)+'°F' : 'null';
-        envTemp = this.props.devStatus.envTemp ? (this.props.devStatus.envTemp*1.8+32)+'°F' : 'null';
+        deviceTemp = this.props.devStatus.devTemp ? Math.round((this.props.devStatus.devTemp*1.8+32)*100)/100+'°F' : 'null';
+        envTemp = this.props.devStatus.envTemp ? Math.round((this.props.devStatus.envTemp*1.8+32)*100)/100+'°F' : 'null';
       }
     }else{
       deviceTemp = 'Selse Slave & Device'
