@@ -9,9 +9,7 @@ module.exports = {
     try {
       await models.Device.destroy({
         where: {
-          SlaveId: {
-            $ne: 0
-          }
+          SlaveId: slaveId
         }
       });
       let deviceList = [];
@@ -89,6 +87,11 @@ module.exports = {
               console.log("syncAllSlaveAndDevice =>", slave.id, res.body);
               resolve(res.body);
             });
+          });
+          await models.Device.destroy({
+            where: {
+              SlaveId: slave.id
+            }
           });
           let getCacheDeviceListResult = await new Promise((resolve, reject) => {
             request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/getCachedDeviceList`).end((err, res) => {
