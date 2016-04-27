@@ -438,9 +438,11 @@ module.exports = {
   downloadUpdate: async() => {
     try {
       const config =  await services.deviceControl.getUpdateSetting();
-      const downloadTgz = `wget "${config.SYSTEM.DOWNLOAD_LINK}/${config.SYSTEM.UPDATE_PACKAGE_NAME}" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/${config.SYSTEM.UPDATE_PACKAGE_NAME};`;
-      const downloadMd5 = `wget "${config.SYSTEM.DOWNLOAD_LINK}/hme.md5" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5;`;
-      const downloadInfo = `wget "${config.SYSTEM.DOWNLOAD_LINK}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info;`;
+      const ftpFtpLogin = `--user='' --password=''`
+      const ftpUrl = `ftp://${config.SYSTEM.FTP_HOST}/${config.SYSTEM.FTP_DIRECTORY}`;
+      const downloadTgz = `wget ${ftpFtpLogin} "${ftpUrl}/${config.SYSTEM.UPDATE_PACKAGE_NAME}" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/${config.SYSTEM.UPDATE_PACKAGE_NAME};`;
+      const downloadMd5 = `wget ${ftpFtpLogin} "${ftpUrl}/hme.md5" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5;`;
+      const downloadInfo = `wget ${ftpFtpLogin} "${ftpUrl}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info;`;
       const downloadCmd = downloadTgz + downloadMd5 + downloadInfo;
       let download = await new Promise((done) => {
         exec(downloadCmd, function(error, stdout, stderr) {
@@ -473,19 +475,19 @@ module.exports = {
             done(stdout);
           });
         });
-        const backUpCmd = `cp -r ~/hme-web-api ${config.SYSTEM.BACKUP_PATH}`;
-        console.log("cmd => ",backUpCmd);
-        let backUp = await new Promise((done) => {
-          exec(backUpCmd, function(error, stdout, stderr) {
-            if (error || stderr) {
-              throw error;
-            }
-            done(stdout);
-          });
-        });
-        let systemConfig = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
-        systemConfig.SYSTEM.UPDATE = true;
-        fs.writeFileSync(appConfig.configPath, ini.stringify(systemConfig));
+        // const backUpCmd = `cp -r ~/hme-web-api ${config.SYSTEM.BACKUP_PATH}`;
+        // console.log("cmd => ",backUpCmd);
+        // let backUp = await new Promise((done) => {
+        //   exec(backUpCmd, function(error, stdout, stderr) {
+        //     if (error || stderr) {
+        //       throw error;
+        //     }
+        //     done(stdout);
+        //   });
+        // });
+        // let systemConfig = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+        // systemConfig.SYSTEM.UPDATE = true;
+        // fs.writeFileSync(appConfig.configPath, ini.stringify(systemConfig));
       }
       return isOk;
     } catch (e) {

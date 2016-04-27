@@ -4,3 +4,5 @@ DOWNLOAD_LINK=http://hmefileserver/hlp600/firmware/latest
 UPDATE_PACKAGE_PATH=../hmeBak
 BUILD_UPDATE_PACKAGE_PATH=client_upgrade
 UPDATE_PACKAGE_NAME=hme.tgz
+FTP_HOST=aquariumlightings.com
+FTP_DIRECTORY=/public_ftp/hlp600/firmware/latest
