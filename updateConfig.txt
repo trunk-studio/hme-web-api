@@ -1,7 +1,7 @@
 [SYSTEM]
-BACKUP_PATH=../hmeBak
+BACKUP_PATH=/Users/FuD/Projects/hmeBak
 DOWNLOAD_LINK=http://hmefileserver/hlp600/firmware/latest
-UPDATE_PACKAGE_PATH=../hmeBak
+UPDATE_PACKAGE_PATH=/Users/FuD/Projects/hmeBak
 BUILD_UPDATE_PACKAGE_PATH=client_upgrade
 UPDATE_PACKAGE_NAME=hme.tgz
 FTP_HOST=aquariumlightings.com

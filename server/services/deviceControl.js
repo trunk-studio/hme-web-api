@@ -408,7 +408,9 @@ module.exports = {
   needUpdate: async() => {
     try {
       let config =  await services.deviceControl.getUpdateSetting();
-      let cmd = `wget "${config.SYSTEM.DOWNLOAD_LINK}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info > /dev/null 2>&1; cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`;
+      const ftpFtpLogin = `--user='aquarium' --password=''`
+      const ftpUrl = `ftp://${config.SYSTEM.FTP_HOST}/${config.SYSTEM.FTP_DIRECTORY}`;
+      const cmd = `wget ${ftpFtpLogin} "${ftpUrl}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info > /dev/null 2>&1; cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`;
       let onlineVersion = await new Promise((done) => {
         exec(cmd, function(error, stdout, stderr) {
           if (error) {
@@ -438,12 +440,13 @@ module.exports = {
   downloadUpdate: async() => {
     try {
       const config =  await services.deviceControl.getUpdateSetting();
-      const ftpFtpLogin = `--user='' --password=''`
+      const ftpFtpLogin = `--user='aquarium' --password=''`
       const ftpUrl = `ftp://${config.SYSTEM.FTP_HOST}/${config.SYSTEM.FTP_DIRECTORY}`;
       const downloadTgz = `wget ${ftpFtpLogin} "${ftpUrl}/${config.SYSTEM.UPDATE_PACKAGE_NAME}" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/${config.SYSTEM.UPDATE_PACKAGE_NAME};`;
       const downloadMd5 = `wget ${ftpFtpLogin} "${ftpUrl}/hme.md5" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5;`;
       const downloadInfo = `wget ${ftpFtpLogin} "${ftpUrl}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info;`;
       const downloadCmd = downloadTgz + downloadMd5 + downloadInfo;
+      console.log("downloadCmd => ", downloadCmd);
       let download = await new Promise((done) => {
         exec(downloadCmd, function(error, stdout, stderr) {
           if (error) {
@@ -465,29 +468,20 @@ module.exports = {
       });
       const isOk = onlineVersion.indexOf('OK') !== -1;
       if (isOk) {
-        const unTarCmd = `cd ${config.SYSTEM.UPDATE_PACKAGE_PATH}; tar Zxvf ${config.SYSTEM.UPDATE_PACKAGE_NAME}`;
-        console.log("cmd => ",unTarCmd);
-        let unTar = await new Promise((done) => {
-          exec(unTarCmd, function(error, stdout, stderr) {
+        const unTarBackCmd = `make untar-backup > /dev/null 2>&1;`;
+        console.log("cmd => ",unTarBackCmd);
+        let unTarBack = await new Promise((done) => {
+          exec(unTarBackCmd, function(error, stdout, stderr) {
             if (error || stderr) {
               throw error;
             }
             done(stdout);
           });
         });
-        // const backUpCmd = `cp -r ~/hme-web-api ${config.SYSTEM.BACKUP_PATH}`;
-        // console.log("cmd => ",backUpCmd);
-        // let backUp = await new Promise((done) => {
-        //   exec(backUpCmd, function(error, stdout, stderr) {
-        //     if (error || stderr) {
-        //       throw error;
-        //     }
-        //     done(stdout);
-        //   });
-        // });
-        // let systemConfig = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
-        // systemConfig.SYSTEM.UPDATE = true;
-        // fs.writeFileSync(appConfig.configPath, ini.stringify(systemConfig));
+        console.log(unTarBack);
+        let systemConfig = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+        systemConfig.SYSTEM.UPDATE = true;
+        fs.writeFileSync(appConfig.configPath, ini.stringify(systemConfig));
       }
       return isOk;
     } catch (e) {
