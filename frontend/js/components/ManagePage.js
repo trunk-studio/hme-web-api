@@ -8,7 +8,7 @@ import {
   requestSearchSlave, requestGetCachedSlaveList,
   requestSearchSlaveAndDevice, requestGetSlaveAndDeviceList,
   requestCheckUpgrade, requestDownloadUpgrade,
-  requestChangeUpgradeStatus
+  requestChangeUpgradeStatus, requestUpdateReboot
 } from '../actions/TestActions'
 
 import {
@@ -478,6 +478,7 @@ export default class ManagePage extends React.Component {
 
   _handleReboot = () => {
     this._dialogHandleClose();
+    this.props.requestUpdateReboot();
     window.location.href = "/#/close";
     console.log("Reboot!!!!!!!!");
   }
@@ -948,6 +949,7 @@ const _injectPropsFromActions = {
   requestCheckUpgrade,
   requestDownloadUpgrade,
   requestChangeUpgradeStatus,
+  requestUpdateReboot,
 }
 
 

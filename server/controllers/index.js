@@ -105,6 +105,7 @@ export default class Routes {
     publicRoute.post('/rest/hme/setup/update', HmeController.saveSetting);
     publicRoute.get('/rest/hme/setup', HmeController.getSetting);
     publicRoute.post('/rest/hme/reboot', HmeController.reboot);
+    publicRoute.get('/rest/hme/updateReboot', HmeController.updateReboot);
     publicRoute.post('/rest/hme/tempLimit', HmeController.tempLimit);
 
     // master

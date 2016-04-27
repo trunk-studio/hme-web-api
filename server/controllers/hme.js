@@ -447,6 +447,16 @@ exports.reboot = async function (ctx) {
     throw e;
   }
 }
+exports.updateReboot = async function (ctx) {
+  try {
+    // execSync('sudo /sbin/reboot');
+    console.log("Reboot!!!!!");
+    ctx.body = 'ok';
+  } catch (e) {
+    ctx.body = e;
+    throw e;
+  }
+}
 
 exports.tempLimit = async function (ctx) {
   try {

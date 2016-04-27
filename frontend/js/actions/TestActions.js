@@ -210,3 +210,13 @@ export function requestDownloadUpgrade() {
       });
   }
 }
+
+export function requestUpdateReboot() {
+  return (dispatch) => {
+    return request
+      .get('/rest/hme/updateReboot')
+      .then((response) => {
+        dispatch(() => {})
+      });
+  }
+}
