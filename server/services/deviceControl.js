@@ -410,6 +410,7 @@ module.exports = {
       let config =  await services.deviceControl.getUpdateSetting();
       const url = `${config.SYSTEM.DOWNLOAD_LINK}`;
       const cmd = `wget "${url}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info > /dev/null 2>&1; cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`;
+      console.log("cmd => ",cmd);
       let onlineVersion = await new Promise((done) => {
         exec(cmd, function(error, stdout, stderr) {
           if (error) {
@@ -420,6 +421,8 @@ module.exports = {
         });
       });
       const nowVersion = process.env.npm_package_version.split('.');
+      console.log("nowVersion => ",nowVersion);
+      console.log("onlineVersion => ",onlineVersion);
       onlineVersion = onlineVersion.split('.');
       for (let i = 0; i < nowVersion.length; i++) {
         console.log(nowVersion[i],onlineVersion[i]);
