@@ -2,6 +2,7 @@ import request from 'superagent'
 import ini from 'ini'
 import ping from 'ping';
 import {exec, execSync} from 'child_process';
+import pjson from './package.json';
 
 module.exports = {
 
@@ -420,8 +421,8 @@ module.exports = {
           done(stdout);
         });
       });
-      console.log("npm_package_version => ",process);
-      const nowVersion = process.env.npm_package_version.split('.');
+      console.log("npm_package_version => ",pjson.version);
+      const nowVersion = pjson.version.split('.');
       console.log("nowVersion => ",nowVersion);
       console.log("onlineVersion => ",onlineVersion);
       onlineVersion = onlineVersion.split('.');
