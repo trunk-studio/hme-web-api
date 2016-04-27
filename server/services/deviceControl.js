@@ -420,7 +420,7 @@ module.exports = {
           done(stdout);
         });
       });
-      console.log("npm_package_version => ",process.env);
+      console.log("npm_package_version => ",process);
       const nowVersion = process.env.npm_package_version.split('.');
       console.log("nowVersion => ",nowVersion);
       console.log("onlineVersion => ",onlineVersion);
