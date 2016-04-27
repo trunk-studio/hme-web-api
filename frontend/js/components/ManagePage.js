@@ -438,6 +438,14 @@ export default class ManagePage extends React.Component {
       });
   };
 
+  _handleDownloadUpdate = () => {
+
+  }
+
+  _handleReboot = () => {
+
+  }
+
   render() {
     let chartData = {
         labels: ["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],
@@ -595,6 +603,10 @@ export default class ManagePage extends React.Component {
           <div style={{marginTop: '15px'}}>
             <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._deviceMenuIndexChanged} ref="deviceMenu" menuItems={deviceList} style={{width: '300px'}}/>
             {/*<RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>*/}
+          </div>
+          <div style={{marginTop: '15px', display: 'flex', justifyContent: 'space-around'}}>
+            <RaisedButton label="Download Update" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._handleDownloadUpdate} />
+            <RaisedButton label="Reboot" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._handleReboot} />
           </div>
         </div>
       </div>

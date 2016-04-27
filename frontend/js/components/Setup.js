@@ -49,7 +49,8 @@ export default class Setup extends React.Component  {
     if(nextProps.isApply == 'success' && this.state.message != APPLY_SUCCESS ) {
       // console.log('!!!!!!!!!!!!!!!!!!!obj');
       setTimeout(function() {
-        window.location.href = "/#/close";
+        window.open(window.location.href.split('/#/')[0] + '/#/login');
+        window.location.href = "/#/close";        
       }, 8000);
       this.setState({message: APPLY_SUCCESS });
     }
