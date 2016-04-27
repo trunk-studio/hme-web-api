@@ -13,7 +13,7 @@ SETTED=true
 TIMEZONE_OFFSET=GMT-8
 TIMEZONE_INDEX=22
 TEMP_LIMIT=null
-UPDATE=false
+UPDATE=true
 
 [SMTP]
 URL=http://www.aquariumlightings.com

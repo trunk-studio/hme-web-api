@@ -408,9 +408,8 @@ module.exports = {
   needUpdate: async() => {
     try {
       let config =  await services.deviceControl.getUpdateSetting();
-      const ftpFtpLogin = `--user='aquarium' --password=''`
-      const ftpUrl = `ftp://${config.SYSTEM.FTP_HOST}/${config.SYSTEM.FTP_DIRECTORY}`;
-      const cmd = `wget ${ftpFtpLogin} "${ftpUrl}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info > /dev/null 2>&1; cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`;
+      const url = `${config.SYSTEM.DOWNLOAD_LINK}`;
+      const cmd = `wget "${url}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info > /dev/null 2>&1; cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`;
       let onlineVersion = await new Promise((done) => {
         exec(cmd, function(error, stdout, stderr) {
           if (error) {
@@ -440,11 +439,10 @@ module.exports = {
   downloadUpdate: async() => {
     try {
       const config =  await services.deviceControl.getUpdateSetting();
-      const ftpFtpLogin = `--user='aquarium' --password=''`
-      const ftpUrl = `ftp://${config.SYSTEM.FTP_HOST}/${config.SYSTEM.FTP_DIRECTORY}`;
-      const downloadTgz = `wget ${ftpFtpLogin} "${ftpUrl}/${config.SYSTEM.UPDATE_PACKAGE_NAME}" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/${config.SYSTEM.UPDATE_PACKAGE_NAME};`;
-      const downloadMd5 = `wget ${ftpFtpLogin} "${ftpUrl}/hme.md5" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5;`;
-      const downloadInfo = `wget ${ftpFtpLogin} "${ftpUrl}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info;`;
+      const url = `${config.SYSTEM.DOWNLOAD_LINK}`;
+      const downloadTgz = `wget "${url}/${config.SYSTEM.UPDATE_PACKAGE_NAME}" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/${config.SYSTEM.UPDATE_PACKAGE_NAME};`;
+      const downloadMd5 = `wget "${url}/hme.md5" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5;`;
+      const downloadInfo = `wget "${url}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info;`;
       const downloadCmd = downloadTgz + downloadMd5 + downloadInfo;
       console.log("downloadCmd => ", downloadCmd);
       let download = await new Promise((done) => {

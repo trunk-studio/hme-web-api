@@ -3,7 +3,9 @@ import {
   RECEIVED_DEVICEGROUP,
   RECEIVED_TEST_SET_LED_DISPLAY,
   RECEIVED_SLAVE_LIST,
-  SCANNING
+  SCANNING,
+  RECEIVED_NEED_UPGRADE,
+  RECEIVED_UPGRADE_DOWNLOAD
 } from '../actions/TestActions'
 
 export function scanDevice(state = { }, action) {
@@ -32,6 +34,16 @@ export function scanDevice(state = { }, action) {
       return {
         ...state,
         scanning: action.data
+      }
+    case RECEIVED_NEED_UPGRADE:
+      return {
+        ...state,
+        needUpdate: action.data
+      }
+    case RECEIVED_UPGRADE_DOWNLOAD:
+      return {
+        ...state,
+        downloadStatus: action.data
       }
     default:
       return state

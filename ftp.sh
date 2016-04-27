@@ -1,6 +1,6 @@
 #!/bin/bash
 HOST='aquariumlightings.com'
-DIRECTORY='/public_ftp/hlp600/firmware/latest'
+DIRECTORY='/public_html/cloud/hlp600/firmware/latest'
 #HOST=$(crudini --get ./updateConfig.txt SYSTEM FTP_HOST)
 #DIRECTORY=$(crudini --get ./updateConfig.txt SYSTEM FTP_DIRECTORY)
 USER='aquarium'

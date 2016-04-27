@@ -1,8 +1,8 @@
 [SYSTEM]
 BACKUP_PATH=/Users/FuD/Projects/hmeBak
-DOWNLOAD_LINK=http://hmefileserver/hlp600/firmware/latest
+DOWNLOAD_LINK=http://aquariumlightings.com/cloud/hlp600/firmware/latest
 UPDATE_PACKAGE_PATH=/Users/FuD/Projects/hmeBak
 BUILD_UPDATE_PACKAGE_PATH=client_upgrade
 UPDATE_PACKAGE_NAME=hme.tgz
 FTP_HOST=aquariumlightings.com
-FTP_DIRECTORY=/public_ftp/hlp600/firmware/latest
+FTP_DIRECTORY=/public_html/cloud/hlp600/firmware/latest
