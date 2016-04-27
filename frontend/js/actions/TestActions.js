@@ -203,7 +203,7 @@ export function requestDownloadUpgrade() {
   return (dispatch) => {
     dispatch(scanStatus('loading'));
     return request
-      .post('/rest/master/downloadUpgrade')
+      .post('/rest/master/downloadUpgrade', { timeout: 600000 })
       .then((response) => {
         dispatch(receivedDownloadStatus(response.data.status))
         dispatch(scanStatus('hide'));

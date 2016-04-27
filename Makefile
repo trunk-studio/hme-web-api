@@ -15,8 +15,11 @@ buid-update-package:
 	cat ${HME_PATH}/package.json | jsawk "return this.version" > ${BUILD_UPDATE_PACKAGE_PATH}/hme.info
 	sh ftp.sh
 
-untar-backup:
+untar:
 	tar zxvf ${UPDATE_PACKAGE_PATH}/${UPDATE_PACKAGE_NAME} -C ${UPDATE_PACKAGE_PATH}
+	cp -r ${HME_PATH}/db.development.sqlite ${HME_PATH}/server/config ${BACKUP_PATH}
+
+backup:
 	cp -r ${HME_PATH} ${BACKUP_PATH}
 
 dev-env-build:

@@ -466,7 +466,7 @@ module.exports = {
       });
       const isOk = onlineVersion.indexOf('OK') !== -1;
       if (isOk) {
-        const unTarBackCmd = `make untar-backup > /dev/null 2>&1;`;
+        const unTarBackCmd = `make untar > /dev/null 2>&1;`;
         console.log("cmd => ",unTarBackCmd);
         let unTarBack = await new Promise((done) => {
           exec(unTarBackCmd, function(error, stdout, stderr) {
