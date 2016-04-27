@@ -2,7 +2,7 @@ import request from 'superagent'
 import ini from 'ini'
 import ping from 'ping';
 import {exec, execSync} from 'child_process';
-import pjson from './package.json';
+import pjson from '../../package.json';
 
 module.exports = {
 
