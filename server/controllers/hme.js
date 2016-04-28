@@ -1,6 +1,7 @@
 import request from 'superagent'
 import ini from 'ini'
 import {exec, execSync} from 'child_process';
+import fs from 'fs';
 
 exports.status = async function (ctx) {
   try {
@@ -449,6 +450,34 @@ exports.reboot = async function (ctx) {
 }
 exports.updateReboot = async function (ctx) {
   try {
+    let slaveList = await models.Slave.findAll();
+    let config =  await services.deviceControl.getSetting();
+    for (let slave of slaveList) {
+      try {
+        if(slave.host.indexOf(config.SYSTEM.HME_SERIAL) === -1){
+          let result = await new Promise((resolve, reject) => {
+            request.get(`http://${slave.host}:3000/rest/slave/updateReboot`)
+            .end((err, res) => {
+              if(err) return reject(err);
+              resolve(res.body);
+            });
+          });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    // execSync('sudo /sbin/reboot');
+    ctx.body = 'ok';
+    console.log("Reboot!!!!!");
+  } catch (e) {
+    ctx.body = e;
+    throw e;
+  }
+}
+
+exports.slaveUpdateReboot = async function (ctx) {
+  try {
     // execSync('sudo /sbin/reboot');
     console.log("Reboot!!!!!");
     ctx.body = 'ok';
@@ -501,6 +530,64 @@ exports.downloadUpgrade = async function (ctx) {
     ctx.body = {
       status
     };
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}
+
+exports.checkUpdateFileMd5 = async function (ctx) {
+  try {
+    // let status =  await services.deviceControl.checkHasUpdateFile();
+    // ctx.body = {
+    //   status
+    // };
+    let slaveList = await models.Slave.findAll();
+    let stautsArray = [];
+    for (let slave of slaveList) {
+      try {
+        let result = await new Promise((resolve, reject) => {
+          request.get(`http://${slave.host}:3000/rest/slave/checkMd5`)
+          .end((err, res) => {
+            if(err) return reject(err);
+            resolve(res.body);
+          });
+        });
+        stautsArray.push(result.body.status)
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    let status = stautsArray.indexOf(false) === -1;
+    ctx.body = {
+      status,
+    }
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}
+
+exports.slaveCheckFileMd5 = async function (ctx) {
+  try {
+    let status =  await services.deviceControl.checkHasUpdateFile();
+    ctx.body = {
+      status
+    };
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}
+
+exports.masterUpdateFile = async function (ctx) {
+  try {
+    const config =  await services.deviceControl.getUpdateSetting();
+    ctx.type = 'application/x-tar';
+    ctx.body = fs.createReadStream(`${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`)
   } catch (e) {
     ctx.body = {
       status: false

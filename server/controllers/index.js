@@ -117,8 +117,10 @@ export default class Routes {
     publicRoute.get('/rest/master/loadEmail', HmeController.loadEmail);
     publicRoute.post('/rest/master/updateTime', HmeController.updateAllSlaveTime);
     publicRoute.get('/rest/master/logs', HmeController.getAllSlaveLogs);
+    publicRoute.get('/rest/master/newTgz', HmeController.masterUpdateFile);
     publicRoute.get('/rest/master/checkUpgrade', HmeController.checkUpgrade);
     publicRoute.post('/rest/master/downloadUpgrade', HmeController.downloadUpgrade);
+    publicRoute.get('/rest/master/checkMd5', HmeController.checkUpdateFileMd5);
     publicRoute.post('/rest/master/register/slave', HmeController.registerSlave);
     publicRoute.get('/rest/master/syncAllSlaveAndDevice', HmeController.syncAllSlaveAndDevice);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
@@ -145,6 +147,8 @@ export default class Routes {
     // find slave Device & Groups
     publicRoute.get('/rest/slave/logs', HmeController.logs);
     publicRoute.get('/rest/slave/checkStatus', HmeController.checkAllDeviceStatus);
+    publicRoute.get('/rest/slave/checkMd5', HmeController.slaveCheckFileMd5);
+    publicRoute.get('/rest/slave/updateReboot', HmeController.slaveUpdateReboot);
     publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceListBySlave);
     publicRoute.get('/rest/slave/:slaveId/test/all', HmeController.testAllDevices);

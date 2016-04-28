@@ -248,6 +248,17 @@ describe("device", () => {
 
     });
 
+    it(" check checkUpdateFileMd5", async(done) => {
+      try {
+        let result = await services.deviceControl.checkUpdateFileMd5();
+        console.log("result",result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
   });
 
 });

@@ -3,6 +3,106 @@ import ini from 'ini'
 import ping from 'ping';
 import {exec, execSync} from 'child_process';
 import pjson from '../../package.json';
+import { EventEmitter } from 'events';
+let event = new EventEmitter();
+
+event.on('downloadCmd', async(cmd) =>  {
+  let isFinish =  await services.deviceControl.checkHasUpdateFile();
+  if (!isFinish) {
+    console.log("event cmd => ", cmd);
+    let cmdOutput = await new Promise((done) => {
+      exec(cmd, function(error, stdout, stderr) {
+        if (error) {
+          throw error;
+        }
+        console.log(stdout);
+        done(stdout);
+      });
+    });
+    console.log(cmdOutput);
+  }
+  event.emit('checkMd5');
+});
+
+event.on('checkMd5', async(cmd) => {
+  try {
+    const config =  await services.deviceControl.getUpdateSetting();
+    let hasMd5Cmd =  `cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5`;
+    let hasMd5 = await new Promise((done) => {
+      try {
+        exec(hasMd5Cmd, function(error, stdout, stderr) {
+          if(error) throw e;
+          done(stdout);
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    });
+    const checkMd5Cmd = `cd ${config.SYSTEM.UPDATE_PACKAGE_PATH}; md5sum -c hme.md5`;
+    console.log("cmd => ",checkMd5Cmd);
+    let onlineVersion = '';
+    if (hasMd5) {
+      onlineVersion = await new Promise((done) => {
+        try {
+          exec(checkMd5Cmd, function(error, stdout, stderr) {
+            done(stdout);
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      });
+    }
+    const isOk = onlineVersion.indexOf('OK') !== -1;
+    if(isOk){
+      let systemConfig =  await services.deviceControl.getSetting();
+      if(systemConfig.SYSTEM.TYPE === 'master'){
+        event.emit('rsync');
+      }
+      event.emit('untar');
+    }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+event.on('rsync', async(cmd) => {
+  try {
+    const rsyncCmd = `make untar > /dev/null 2>&1;`;
+    console.log("cmd => ",rsyncCmd);
+    let rsync = await new Promise((done) => {
+      exec(rsync, function(error, stdout, stderr) {
+        if (error) {
+          throw error;
+        }
+        done(stdout);
+      });
+    });
+    console.log(rsync);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+event.on('untar', async(cmd) => {
+  try {
+    const unTarBackCmd = `make untar > /dev/null 2>&1;`;
+    console.log("cmd => ",unTarBackCmd);
+    let unTarBack = await new Promise((done) => {
+      exec(unTarBackCmd, function(error, stdout, stderr) {
+        if (error || stderr) {
+          throw error;
+        }
+        done(stdout);
+      });
+    });
+    console.log(unTarBack);
+    let systemConfig = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+    systemConfig.SYSTEM.UPDATE = true;
+    fs.writeFileSync(appConfig.configPath, ini.stringify(systemConfig));
+  } catch (e) {
+    console.log(e);
+  }
+});
 
 module.exports = {
 
@@ -450,47 +550,36 @@ module.exports = {
       const downloadInfo = `wget "${url}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info;`;
       const downloadCmd = downloadTgz + downloadMd5 + downloadInfo;
       console.log("downloadCmd => ", downloadCmd);
-      let download = await new Promise((done) => {
-        exec(downloadCmd, function(error, stdout, stderr) {
-          if (error) {
-            throw error;
-          }
-          console.log(stdout);
-          done(stdout);
-        });
-      });
-      const checkMd5Cmd = `cd ${config.SYSTEM.UPDATE_PACKAGE_PATH}; md5sum -c hme.md5`;
-      console.log("cmd => ",checkMd5Cmd);
-      let onlineVersion = await new Promise((done) => {
-        exec(checkMd5Cmd, function(error, stdout, stderr) {
-          if (error || stderr) {
-            throw error;
-          }
-          done(stdout);
-        });
-      });
-      const isOk = onlineVersion.indexOf('OK') !== -1;
-      if (isOk) {
-        const unTarBackCmd = `make untar > /dev/null 2>&1;`;
-        console.log("cmd => ",unTarBackCmd);
-        let unTarBack = await new Promise((done) => {
-          exec(unTarBackCmd, function(error, stdout, stderr) {
-            if (error || stderr) {
-              throw error;
-            }
-            done(stdout);
-          });
-        });
-        console.log(unTarBack);
-        let systemConfig = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
-        systemConfig.SYSTEM.UPDATE = true;
-        fs.writeFileSync(appConfig.configPath, ini.stringify(systemConfig));
-      }
-      return isOk;
+      event.emit('downloadCmd', downloadCmd);
+      return true;
     } catch (e) {
       console.log(e);
       throw e;
     }
-  }
+  },
+
+  checkHasUpdateFile: async() => {
+    try {
+      let systemConfig =  await services.deviceControl.getSetting();
+      const isUnTar = systemConfig.SYSTEM.UPDATE;
+      console.log('isUnTar', isUnTar);
+      return isUnTar;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
+
+  slaveSyncUpdateFile: async() => {
+    try {
+      let systemConfig =  await services.deviceControl.getSetting();
+      const isUnTar = systemConfig.SYSTEM.UPDATE;
+      console.log('isUnTar', isUnTar);
+      return isUnTar;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
 
 }
