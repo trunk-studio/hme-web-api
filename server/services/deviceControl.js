@@ -526,7 +526,7 @@ module.exports = {
         });
       } else {
         onlineVersion = await new Promise((resolve, reject) => {
-          request.get(`http://${slave.host}:3000/rest/master/version`)
+          request.get(`http://${systemConfig.SYSTEM.MASTER_NAME}:3000/rest/master/version`)
           .end((err, res) => {
             if(err) return reject(err);
             resolve(res.body.version);
