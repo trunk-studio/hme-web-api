@@ -39,7 +39,7 @@ event.on('checkMd5', async(cmd) => {
       }
     });
     const checkMd5Cmd = `cd ${config.SYSTEM.UPDATE_PACKAGE_PATH}; md5sum -c hme.md5`;
-    console.log("cmd => ",checkMd5Cmd);
+    console.log("checkMd5Cmd => ",checkMd5Cmd);
     let onlineVersion = '';
     if (hasMd5) {
       onlineVersion = await new Promise((done) => {
@@ -53,6 +53,7 @@ event.on('checkMd5', async(cmd) => {
       });
     }
     const isOk = onlineVersion.indexOf('OK') !== -1;
+    console.log("isOk =>", isOk);
     if(isOk){
       let systemConfig =  await services.deviceControl.getSetting();
       if(systemConfig.SYSTEM.TYPE === 'master'){
@@ -61,6 +62,7 @@ event.on('checkMd5', async(cmd) => {
           try {
             if(slave.host.indexOf(systemConfig.SYSTEM.HME_SERIAL) === -1){
               let result = await new Promise((resolve, reject) => {
+                console.log(`get http://${slave.host}:3000/rest/master/downloadUpgrade`);
                 request.get(`http://${slave.host}:3000/rest/master/downloadUpgrade`)
                 .end((err, res) => {
                   if(err) return reject(err);
@@ -83,7 +85,7 @@ event.on('checkMd5', async(cmd) => {
 event.on('untar', async(cmd) => {
   try {
     const unTarBackCmd = `make untar > /dev/null 2>&1;`;
-    console.log("cmd => ",unTarBackCmd);
+    console.log("unTarBackCmd => ",unTarBackCmd);
     let unTarBack = await new Promise((done) => {
       exec(unTarBackCmd, function(error, stdout, stderr) {
         if (error || stderr) {
@@ -548,11 +550,11 @@ module.exports = {
       } else {
         url = `${systemConfig.SYSTEM.MASTER_NAME}.local:3000/rest/master/download`;
       }
-      // const downloadTgz = `wget "${url}/${config.SYSTEM.UPDATE_PACKAGE_NAME}" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/${config.SYSTEM.UPDATE_PACKAGE_NAME};`;
+      const downloadTgz = `wget "${url}/${config.SYSTEM.UPDATE_PACKAGE_NAME}" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/${config.SYSTEM.UPDATE_PACKAGE_NAME};`;
       const downloadMd5 = `wget "${url}/hme.md5" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5;`;
       const downloadInfo = `wget "${url}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info;`;
-      // const downloadCmd = downloadTgz + downloadMd5 + downloadInfo;
-      const downloadCmd = downloadMd5 + downloadInfo;
+      const downloadCmd = downloadTgz + downloadMd5 + downloadInfo;
+      // const downloadCmd = downloadMd5 + downloadInfo;
       console.log("downloadCmd => ", downloadCmd);
       event.emit('downloadCmd', downloadCmd);
       return true;
