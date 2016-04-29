@@ -8,7 +8,8 @@ import {
   requestSearchSlave, requestGetCachedSlaveList,
   requestSearchSlaveAndDevice, requestGetSlaveAndDeviceList,
   requestCheckUpgrade, requestDownloadUpgrade,
-  requestChangeUpgradeStatus, requestUpdateReboot
+  requestChangeUpgradeStatus, requestUpdateReboot,
+  requestChangeDownloadStatus,requestCheckDownloadFinish,
 } from '../actions/TestActions'
 
 import {
@@ -53,6 +54,8 @@ export default class ManagePage extends React.Component {
       open: false,
       open2: false,
       open3: false,
+      count: 0,
+      interval: null,
       cctSliderStyle: 'slider',
       currentIndex: 0,
       DB: [0 ,0 ,0 ,0 ,0 ,0.001011122 ,0.005055612 ,0.008088979 ,0.018200202 ,0.037411527 ,0.072800809 ,0.127401416 ,0.209302326 ,0.323559151 ,0.477249747 ,0.649140546 ,0.68958544 ,0.649140546 ,0.520728008 ,0.416582406 ,0.333670374 ,0.260869565 ,0.209302326 ,0.164812942 ,0.128412538 ,0.098078868 ,0.072800809 ,0.053589484 ,0.038422649 ,0.026289181 ,0.018200202 ,0.012133468 ,0.008088979 ,0.005055612 ,0.003033367 ,0.002022245 ,0.002022245 ,0.002022245 ,0.001011122 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0],
@@ -448,10 +451,23 @@ export default class ManagePage extends React.Component {
       this.setState({open: true});
     }
     if(nextProps.downloadStatus === false){
-      this.setState({open2: true});
+      this.setState({
+        open2: true,
+        count: 0,
+        interval: this.state.interval ? clearInterval(this.state.interval) : null,
+      });
     }else if(nextProps.downloadStatus === true){
-      this.setState({open3: true});
+      this.setState({
+        open3: true,
+        count: 0,
+        interval: this.state.interval ? clearInterval(this.state.interval) : null,
+      });
     }
+  }
+
+  _dialog3HandleClose = () => {
+    this.props.requestChangeDownloadStatus(null);
+    this._dialogHandleClose();
   }
 
   _dialogHandleClose = () => {
@@ -472,8 +488,25 @@ export default class ManagePage extends React.Component {
       open2: false,
       open3: false,
     });
-    this.props.requestChangeUpgradeStatus(false)
-    setTimeout(() => {this.props.requestDownloadUpgrade();}, 500);
+    this.props.requestChangeUpgradeStatus(false);
+    this.props.requestDownloadUpgrade();
+    let interval = setInterval(() => {
+      this.props.requestCheckDownloadFinish()
+      if(this.state.count >= 1800){
+        this.props.requestChangeDownloadStatus(false);
+      }
+      this.setState({
+        count: this.state.count + 1,
+      })
+    }, 1000);
+
+    this.setState({
+      open: false,
+      open2: false,
+      open3: false,
+      count: 0,
+      interval: interval,
+    });
   }
 
   _handleReboot = () => {
@@ -649,7 +682,7 @@ export default class ManagePage extends React.Component {
         key={'cancel'}
         label="Cancel"
         secondary={true}
-        onTouchTap={this._dialogHandleClose} />,
+        onTouchTap={this._dialog3HandleClose} />,
       <FlatButton
         key={'SaveButton'}
         label="Yes"
@@ -950,6 +983,8 @@ const _injectPropsFromActions = {
   requestDownloadUpgrade,
   requestChangeUpgradeStatus,
   requestUpdateReboot,
+  requestChangeDownloadStatus,
+  requestCheckDownloadFinish,
 }
 
 

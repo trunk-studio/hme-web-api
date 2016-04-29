@@ -28,6 +28,7 @@ event.on('checkMd5', async(cmd) => {
   try {
     const config =  await services.deviceControl.getUpdateSetting();
     let hasMd5Cmd =  `cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5`;
+    console.log("hasMd5Cmd => ", hasMd5Cmd);
     let hasMd5 = await new Promise((done) => {
       try {
         exec(hasMd5Cmd, function(error, stdout, stderr) {
@@ -62,8 +63,8 @@ event.on('checkMd5', async(cmd) => {
           try {
             if(slave.host.indexOf(systemConfig.SYSTEM.HME_SERIAL) === -1){
               let result = await new Promise((resolve, reject) => {
-                console.log(`get http://${slave.host}:3000/rest/master/downloadUpgrade`);
-                request.get(`http://${slave.host}:3000/rest/master/downloadUpgrade`)
+                console.log(`post http://${slave.host}:3000/rest/master/downloadUpgrade`);
+                request.post(`http://${slave.host}:3000/rest/master/downloadUpgrade`)
                 .end((err, res) => {
                   if(err) return reject(err);
                   resolve(res.body);

@@ -554,13 +554,13 @@ exports.checkUpdateFileMd5 = async function (ctx) {
             resolve(res.body);
           });
         });
-        stautsArray.push(result.body.status)
+        stautsArray.push(result.status)
       } catch (e) {
         console.log(e);
       }
     }
     console.log("stautsArray =>", stautsArray);
-    let status = stautsArray.indexOf(false) === -1;
+    let status = stautsArray.indexOf(false) === -1 && stautsArray.length !== 0 ;
     ctx.body = {
       status,
     }

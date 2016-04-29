@@ -199,14 +199,33 @@ export function receivedDownloadStatus(data) {
   }
 }
 
+export function requestChangeDownloadStatus(status) {
+  return (dispatch) => {
+    return dispatch(receivedDownloadStatus(status));
+  }
+}
+
+export function requestCheckDownloadFinish() {
+  return (dispatch) => {
+    return request
+      .get('/rest/master/checkMd5')
+      .then((response) => {
+        console.log(response.data);
+        if(response.data.status){
+          dispatch(receivedDownloadStatus(response.data.status));
+          dispatch(scanStatus('hide'));
+        }
+      });
+  }
+}
+
 export function requestDownloadUpgrade() {
   return (dispatch) => {
     dispatch(scanStatus('loading'));
     return request
-      .post('/rest/master/downloadUpgrade', { timeout: 600000 })
+      .post('/rest/master/downloadUpgrade')
       .then((response) => {
-        dispatch(receivedDownloadStatus(response.data.status))
-        dispatch(scanStatus('hide'));
+        dispatch(() => {});
       });
   }
 }
