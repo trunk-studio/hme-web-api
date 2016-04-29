@@ -548,7 +548,7 @@ module.exports = {
       } else {
         url = `${systemConfig.SYSTEM.MASTER_NAME}.local:3000/rest/master/download`;
       }
-      const downloadTgz = `wget "${url}/${config.SYSTEM.UPDATE_PACKAGE_NAME}" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/${config.SYSTEM.UPDATE_PACKAGE_NAME};`;
+      // const downloadTgz = `wget "${url}/${config.SYSTEM.UPDATE_PACKAGE_NAME}" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/${config.SYSTEM.UPDATE_PACKAGE_NAME};`;
       const downloadMd5 = `wget "${url}/hme.md5" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5;`;
       const downloadInfo = `wget "${url}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info;`;
       const downloadCmd = downloadTgz + downloadMd5 + downloadInfo;
