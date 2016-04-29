@@ -1,8 +1,9 @@
 HME_PATH=/Users/FuD/Projects/hme-web-api
 BACKUP_PATH = /Users/FuD/Downloads/hme_backup
-BUILD_UPDATE_PACKAGE_PATH = /Users/FuD/Projects/hme-web-api/client_upgrade
+BUILD_UPDATE_PACKAGE_PATH = /Users/FuD/Downloads/hmeup
 UPDATE_PACKAGE_NAME = hme.tgz
 UPDATE_PACKAGE_PATH=/Users/FuD/Projects/hmeBak
+# HME_PATH=/root/hme-web-api
 # BACKUP_PATH = $(shell crudini --get ./updateConfig.txt SYSTEM BACKUP_PATH)
 # BUILD_UPDATE_PACKAGE_PATH = $(shell crudini --get ./updateConfig.txt SYSTEM BUILD_UPDATE_PACKAGE_PATH)
 # UPDATE_PACKAGE_NAME = $(shell crudini --get ./updateConfig.txt SYSTEM UPDATE_PACKAGE_NAME)

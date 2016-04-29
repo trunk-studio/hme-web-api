@@ -559,6 +559,7 @@ exports.checkUpdateFileMd5 = async function (ctx) {
         console.log(e);
       }
     }
+    console.log("stautsArray =>", stautsArray);
     let status = stautsArray.indexOf(false) === -1;
     ctx.body = {
       status,
