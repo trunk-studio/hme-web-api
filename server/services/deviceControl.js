@@ -608,7 +608,8 @@ module.exports = {
         }
       }
       console.log("stautsArray =>", stautsArray);
-      let status = stautsArray.indexOf(false) === -1 && stautsArray.length !== 0 ;
+      let needUpdate = stautsArray.indexOf(true) !== -1;
+      let status = needUpdate && stautsArray.length !== 0 ;
       return status;
     } catch (e) {
       console.log(e);
