@@ -513,6 +513,11 @@ export default class ManagePage extends React.Component {
     this._dialogHandleClose();
     this.props.requestUpdateReboot();
     window.location.href = "/#/close";
+    this.props.requestChangeDownloadStatus(null);
+    this.setState({
+      count: 0,
+      interval: this.state.interval ? clearInterval(this.state.interval) : null,
+    });
     console.log("Reboot!!!!!!!!");
   }
 
