@@ -1,19 +1,20 @@
-HME_PATH=/Users/FuD/Projects/hme-web-api
-BACKUP_PATH = /Users/FuD/Downloads/hme_backup
+# HME_PATH=/Users/FuD/Projects/hme-web-api
+HME_PATH=/root/hme-web-api
+# BACKUP_PATH = /Users/FuD/Downloads/hme_backup
+BACKUP_PATH = $(shell crudini --get ./updateConfig.txt SYSTEM BACKUP_PATH)
 BUILD_UPDATE_PACKAGE_PATH = /Users/FuD/Downloads/hmeup
-UPDATE_PACKAGE_NAME = hme.tgz
-UPDATE_PACKAGE_PATH=/Users/FuD/Projects/hmeBak
-# HME_PATH=/root/hme-web-api
-# BACKUP_PATH = $(shell crudini --get ./updateConfig.txt SYSTEM BACKUP_PATH)
 # BUILD_UPDATE_PACKAGE_PATH = $(shell crudini --get ./updateConfig.txt SYSTEM BUILD_UPDATE_PACKAGE_PATH)
+UPDATE_PACKAGE_NAME = hme.tgz
 # UPDATE_PACKAGE_NAME = $(shell crudini --get ./updateConfig.txt SYSTEM UPDATE_PACKAGE_NAME)
-# UPDATE_PACKAGE_PATH = $(shell crudini --get ./updateConfig.txt SYSTEM UPDATE_PACKAGE_PATH)
+# UPDATE_PACKAGE_PATH=/Users/FuD/Projects/hmeBak
+UPDATE_PACKAGE_PATH = $(shell crudini --get ./updateConfig.txt SYSTEM UPDATE_PACKAGE_PATH)
 
 buid-update-package:
 	tar zcvf ${BUILD_UPDATE_PACKAGE_PATH}/${UPDATE_PACKAGE_NAME} --exclude=.git --exclude=db.development.sqlite \
 	--exclude=server/config --exclude=ftp.sh ./
 	echo "$$(md5sum ${BUILD_UPDATE_PACKAGE_PATH}/${UPDATE_PACKAGE_NAME} | awk '{ print $$1 }') ${UPDATE_PACKAGE_NAME}" > ${BUILD_UPDATE_PACKAGE_PATH}/hme.md5
-	cat ${HME_PATH}/package.json | jsawk "return this.version" > ${BUILD_UPDATE_PACKAGE_PATH}/hme.info
+	# cat ${HME_PATH}/package.json | jsawk "return this.version" > ${BUILD_UPDATE_PACKAGE_PATH}/hme.info
+	cat /Users/FuD/Projects/hme-web-api/package.json | jsawk "return this.version" > ${BUILD_UPDATE_PACKAGE_PATH}/hme.info
 	sh ftp.sh
 
 untar:

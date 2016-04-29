@@ -467,7 +467,7 @@ exports.updateReboot = async function (ctx) {
         console.log(e);
       }
     }
-    // execSync('sudo /sbin/reboot');
+    execSync('sudo /sbin/reboot');
     ctx.body = 'ok';
     console.log("Reboot!!!!!");
   } catch (e) {
@@ -478,7 +478,7 @@ exports.updateReboot = async function (ctx) {
 
 exports.slaveUpdateReboot = async function (ctx) {
   try {
-    // execSync('sudo /sbin/reboot');
+    execSync('sudo /sbin/reboot');
     console.log("Reboot!!!!!");
     ctx.body = 'ok';
   } catch (e) {
