@@ -583,11 +583,12 @@ exports.slaveCheckFileMd5 = async function (ctx) {
   }
 }
 
-exports.masterUpdateFile = async function (ctx) {
+exports.downloadMasterUpdateFile = async function (ctx) {
   try {
+    let filename = ctx.params.filename;
     const config =  await services.deviceControl.getUpdateSetting();
     ctx.type = 'application/x-tar';
-    ctx.body = fs.createReadStream(`${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`)
+    ctx.body = fs.createReadStream(`${config.SYSTEM.UPDATE_PACKAGE_PATH}/${filename}`)
   } catch (e) {
     ctx.body = {
       status: false

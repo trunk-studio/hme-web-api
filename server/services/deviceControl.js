@@ -56,28 +56,25 @@ event.on('checkMd5', async(cmd) => {
     if(isOk){
       let systemConfig =  await services.deviceControl.getSetting();
       if(systemConfig.SYSTEM.TYPE === 'master'){
-        event.emit('rsync');
+        let slaveList = await models.Slave.findAll();
+        for (let slave of slaveList) {
+          try {
+            if(slave.host.indexOf(systemConfig.SYSTEM.HME_SERIAL) === -1){
+              let result = await new Promise((resolve, reject) => {
+                request.get(`http://${slave.host}:3000/rest/master/downloadUpgrade`)
+                .end((err, res) => {
+                  if(err) return reject(err);
+                  resolve(res.body);
+                });
+              });
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
       }
       event.emit('untar');
     }
-  } catch (e) {
-    console.log(e);
-  }
-});
-
-event.on('rsync', async(cmd) => {
-  try {
-    const rsyncCmd = `make untar > /dev/null 2>&1;`;
-    console.log("cmd => ",rsyncCmd);
-    let rsync = await new Promise((done) => {
-      exec(rsync, function(error, stdout, stderr) {
-        if (error) {
-          throw error;
-        }
-        done(stdout);
-      });
-    });
-    console.log(rsync);
   } catch (e) {
     console.log(e);
   }
@@ -544,7 +541,13 @@ module.exports = {
   downloadUpdate: async() => {
     try {
       const config =  await services.deviceControl.getUpdateSetting();
-      const url = `${config.SYSTEM.DOWNLOAD_LINK}`;
+      let systemConfig =  await services.deviceControl.getSetting();
+      let url = '';
+      if (systemConfig.SYSTEM.TYPE === 'master'){
+        url = `${config.SYSTEM.DOWNLOAD_LINK}`;
+      } else {
+        url = `${systemConfig.SYSTEM.MASTER_NAME}.local:3000/rest/master/download`;
+      }
       const downloadTgz = `wget "${url}/${config.SYSTEM.UPDATE_PACKAGE_NAME}" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/${config.SYSTEM.UPDATE_PACKAGE_NAME};`;
       const downloadMd5 = `wget "${url}/hme.md5" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5;`;
       const downloadInfo = `wget "${url}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info;`;

@@ -117,7 +117,7 @@ export default class Routes {
     publicRoute.get('/rest/master/loadEmail', HmeController.loadEmail);
     publicRoute.post('/rest/master/updateTime', HmeController.updateAllSlaveTime);
     publicRoute.get('/rest/master/logs', HmeController.getAllSlaveLogs);
-    publicRoute.get('/rest/master/newTgz', HmeController.masterUpdateFile);
+    publicRoute.get('/rest/master/download/:filename', HmeController.downloadMasterUpdateFile);
     publicRoute.get('/rest/master/checkUpgrade', HmeController.checkUpgrade);
     publicRoute.post('/rest/master/downloadUpgrade', HmeController.downloadUpgrade);
     publicRoute.get('/rest/master/checkMd5', HmeController.checkUpdateFileMd5);
