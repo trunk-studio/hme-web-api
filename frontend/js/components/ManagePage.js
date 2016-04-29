@@ -492,13 +492,13 @@ export default class ManagePage extends React.Component {
     this.props.requestDownloadUpgrade();
     let interval = setInterval(() => {
       this.props.requestCheckDownloadFinish()
-      if(this.state.count >= 1800){
+      if(this.state.count >= 100){
         this.props.requestChangeDownloadStatus(false);
       }
       this.setState({
         count: this.state.count + 1,
       })
-    }, 1000);
+    }, 60000);
 
     this.setState({
       open: false,

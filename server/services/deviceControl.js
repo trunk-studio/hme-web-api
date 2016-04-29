@@ -509,18 +509,30 @@ module.exports = {
   needUpdate: async() => {
     try {
       let config =  await services.deviceControl.getUpdateSetting();
-      const url = `${config.SYSTEM.DOWNLOAD_LINK}`;
-      const cmd = `wget "${url}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info > /dev/null 2>&1; cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`;
-      console.log("cmd => ",cmd);
-      let onlineVersion = await new Promise((done) => {
-        exec(cmd, function(error, stdout, stderr) {
-          if (error) {
-            throw error;
-          }
-          console.log(stdout);
-          done(stdout);
+      let systemConfig =  await services.deviceControl.getSetting();
+      let onlineVersion;
+      if (systemConfig.SYSTEM.TYPE === 'master') {
+        const url = `${config.SYSTEM.DOWNLOAD_LINK}`;
+        const cmd = `wget "${url}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info > /dev/null 2>&1; cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`;
+        console.log("cmd => ",cmd);
+        onlineVersion = await new Promise((done) => {
+          exec(cmd, function(error, stdout, stderr) {
+            if (error) {
+              throw error;
+            }
+            console.log(stdout);
+            done(stdout);
+          });
         });
-      });
+      } else {
+        onlineVersion = await new Promise((resolve, reject) => {
+          request.get(`http://${slave.host}:3000/rest/master/version`)
+          .end((err, res) => {
+            if(err) return reject(err);
+            resolve(res.body.version);
+          });
+        });
+      }
       console.log("npm_package_version => ",pjson.version);
       const nowVersion = pjson.version.split('.');
       console.log("nowVersion => ",nowVersion);
@@ -577,12 +589,37 @@ module.exports = {
     }
   },
 
-  slaveSyncUpdateFile: async() => {
+  checkAllSlaveVersion: async() => {
     try {
-      let systemConfig =  await services.deviceControl.getSetting();
-      const isUnTar = systemConfig.SYSTEM.UPDATE;
-      console.log('isUnTar', isUnTar);
-      return isUnTar;
+      let slaveList = await models.Slave.findAll();
+      let stautsArray = [];
+      for (let slave of slaveList) {
+        try {
+          let result = await new Promise((resolve, reject) => {
+            request.get(`http://${slave.host}:3000/rest/master/checkVersion`)
+            .end((err, res) => {
+              if(err) return reject(err);
+              resolve(res.body);
+            });
+          });
+          stautsArray.push(result.status)
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      console.log("stautsArray =>", stautsArray);
+      let status = stautsArray.indexOf(false) === -1 && stautsArray.length !== 0 ;
+      return status;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
+
+  version: async() => {
+    try {
+      console.log("npm_package_version => ",pjson.version);
+      return pjson.version;
     } catch (e) {
       console.log(e);
       throw e;

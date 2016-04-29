@@ -511,7 +511,20 @@ exports.getTimeZone = async function (ctx) {
   }
 }
 
-exports.checkUpgrade = async function (ctx) {
+exports.checkAllSlaveVersion = async function (ctx) {
+  try {
+    let status =  await services.deviceControl.checkAllSlaveVersion();
+    ctx.body = {
+      status
+    };
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}
+
+exports.checkVersion = async function (ctx) {
   try {
     let status =  await services.deviceControl.needUpdate();
     ctx.body = {
@@ -590,6 +603,19 @@ exports.downloadMasterUpdateFile = async function (ctx) {
     const config =  await services.deviceControl.getUpdateSetting();
     ctx.type = 'application/x-tar';
     ctx.body = fs.createReadStream(`${config.SYSTEM.UPDATE_PACKAGE_PATH}/${filename}`)
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}
+
+exports.version = async function (ctx) {
+  try {
+    const version =  await services.deviceControl.version();
+    ctx.body = {
+      version
+    }
   } catch (e) {
     ctx.body = {
       status: false
