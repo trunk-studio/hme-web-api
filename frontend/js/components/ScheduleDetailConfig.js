@@ -240,6 +240,10 @@ export default class ScheduleDetailConfig extends React.Component {
     this.setState({open: false});
   };
 
+  _saveDialogHandleCancel = () => {
+    this.props.history.goBack();
+  };
+
   _dialogActionSave = () => {
     this.setState({open: false});
     this._saveConfig();
@@ -311,7 +315,7 @@ export default class ScheduleDetailConfig extends React.Component {
     let dialog = [
       <FlatButton
         key={'cancelButton'}
-        label="Cancel"
+        label="Don't save"
         secondary={true}
         onTouchTap={this._saveDialogHandleCancel} />,
       <FlatButton

@@ -661,8 +661,8 @@ export default class ManagePage extends React.Component {
         deviceTemp = this.props.devStatus.devTemp ? this.props.devStatus.devTemp+'°C' : 'null';
         envTemp = this.props.devStatus.envTemp ? this.props.devStatus.envTemp + '°C' : 'null';
       }else{
-        deviceTemp = this.props.devStatus.devTemp ? (this.props.devStatus.devTemp*1.8+32)+'°F' : 'null';
-        envTemp = this.props.devStatus.envTemp ? (this.props.devStatus.envTemp*1.8+32)+'°F' : 'null';
+        deviceTemp = this.props.devStatus.devTemp ? Math.round((this.props.devStatus.devTemp*1.8+32)*100)/100+'°F' : 'null';
+        envTemp = this.props.devStatus.envTemp ? Math.round((this.props.devStatus.envTemp*1.8+32)*100)/100+'°F' : 'null';
       }
     }else{
       deviceTemp = 'Selse Slave & Device'
@@ -750,9 +750,11 @@ export default class ManagePage extends React.Component {
                     style={{width: '150px'}}
                     onToggle= {this._changeTemperatureUnit}
                   />
-                <h4 className="col-md-4 col-sm-4 col-xs-4" style={{textAlign: 'right'}}>Temp Limit:</h4>
-                <span style={{marginTop: '16px', float: 'right'}}>▼</span>
-                <TextField ref="tempLimit" min={0} max={999} value={tempLimit} onChange={this._tempLimeHendle} type="number" style={{width: '120px', marginLeft:'10px'}}/>
+                <div style={{display: 'none'}}>
+                  <h4 className="col-md-4 col-sm-4 col-xs-4" style={{textAlign: 'right'}}>Temp Limit:</h4>
+                  <span style={{marginTop: '16px', float: 'right'}}>▼</span>
+                  <TextField ref="tempLimit" min={0} max={999} value={tempLimit} onChange={this._tempLimeHendle} type="number" style={{width: '120px', marginLeft:'10px'}}/>
+                </div>
                 </div>
               </div>
             </div>

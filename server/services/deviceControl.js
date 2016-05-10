@@ -35,6 +35,7 @@ module.exports = {
     try {
       let deviceArray =  await services.hme.SearchDevice();
       await services.deviceControl.saveDevice(deviceArray, slaveId);
+      return true
     } catch (e) {
       throw e;
     }
@@ -80,27 +81,26 @@ module.exports = {
       let devicesLists =[];
       for (let slave of slaveList) {
         try {
+          await models.Device.destroy({
+            where: {
+              SlaveId: slave.id
+            }
+          });
           let result = await new Promise((resolve, reject) => {
             request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/searchDevice`).end((err, res) => {
               if(err) return reject(err);
+              console.log("syncAllSlaveAndDevice =>", slave.id, res.body);
               resolve(res.body);
             });
           });
-
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      for (let slave of slaveList) {
-        try {
-          let result = await new Promise((resolve, reject) => {
+          let getCacheDeviceListResult = await new Promise((resolve, reject) => {
             request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/getCachedDeviceList`).end((err, res) => {
               if(err) return reject(err);
               resolve(res.body);
             });
           });
-          devicesLists.push(result);
-          for(let device of result) {
+          devicesLists.push(getCacheDeviceListResult);
+          for(let device of getCacheDeviceListResult) {
             await models.Device.findOrCreate({
               where: {
                 uid: device.devID,
@@ -116,6 +116,31 @@ module.exports = {
           console.log(e);
         }
       }
+      // for (let slave of slaveList) {
+      //   try {
+      //     let getCacheDeviceListResult = await new Promise((resolve, reject) => {
+      //       request.get(`http://${slave.host}:3000/rest/slave/${slave.id}/getCachedDeviceList`).end((err, res) => {
+      //         if(err) return reject(err);
+      //         resolve(res.body);
+      //       });
+      //     });
+      //     devicesLists.push(getCacheDeviceListResult);
+      //     for(let device of getCacheDeviceListResult) {
+      //       await models.Device.findOrCreate({
+      //         where: {
+      //           uid: device.devID,
+      //           SlaveId: device.SlaveId
+      //         },
+      //         defaults: {
+      //           uid: device.devID,
+      //           SlaveId: device.SlaveId
+      //         }
+      //       })
+      //     }
+      //   } catch (e) {
+      //     console.log(e);
+      //   }
+      // }
     } catch (e) {
       console.log(e);
       throw e
@@ -274,7 +299,7 @@ module.exports = {
           done(stdout);
         });
       });
-      let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; echo "* * */5 * * wget -O - localhost:3000/rest/admin/sendmail/error"; echo "*/4 * * * * curl localhost:3000/rest/master/logs";} | crontab -'
+      let crontab = 'crontab -r; crontab -l | { cat; echo "* */12 * * * wget -O - --post-data=json localhost:3000/rest/slave/0/updateTime"; echo "* * * * 2 wget -O - localhost:3000/rest/admin/sendmail/error"; echo "*/4 * * * * curl localhost:3000/rest/master/logs"; echo "*/5 * * * * curl localhost:3000/rest/slave/checkStatus";} | crontab -'
       exec(crontab, function(error, stdout, stderr) {
         if (error) {
           console.log(error);
