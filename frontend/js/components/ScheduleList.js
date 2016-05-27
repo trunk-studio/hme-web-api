@@ -611,7 +611,7 @@ export default class ScheduleList extends React.Component {
             open={false}
             onRequestClose={this._handleRequestClose}
             message={"Has changed, need to be save"}
-            autoHideDuration={3000}
+            autoHideDuration={10000}
           />
         </div>
         <div id="scheduleList" className={proDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>

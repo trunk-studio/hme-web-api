@@ -334,11 +334,20 @@ exports.checkAllDeviceStatus = async function (ctx) {
     let deviceList = await models.Device.findAll({where: {SlaveId: slaveId}});
       for(let device of deviceList) {
         let result = await services.hme.getDevState(device.uid);
-        let statusFail = result.devTemp >= parseInt(config.SYSTEM.TEMP_LIMIT, 10) || !result.fanState;
+        let tempError = result.devTemp >= parseInt(config.SYSTEM.TEMP_LIMIT, 10);
+        let fanError = !result.fanState;
+        let statusFail = tempError || fanError;
         if (statusFail) {
+          let info = '';
+          if(tempError) {
+            info += 'Temp Error, ';
+          }
+          if(fanError) {
+            info += 'Fan Statu Error ';
+          }
           await models.Message.create({
-            title: 'device status fail',
-            content: `${host} device ${device.uid} status fail`,
+            title: `${host} device ${device.uid} ${info}`,
+            content: `${host} device ${device.uid} ${info}`,
             type: 'error',
           });
         }

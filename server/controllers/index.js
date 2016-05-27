@@ -240,7 +240,7 @@ export default class Routes {
           <section class="stickers float">
             <div class="container">
               <div class="row">
-                <div class="col-lg-12 col-md-12 col-xs-12 text-center">
+                <div class="col-lg-4 col-md-4 col-xs-4 text-center">
                   <div class="sticker-wrapper">
                     <img src="/public/assets/images/download.png" alt="ipad gallery background" class="img-responsive sticker1" /></div>
                 </div>

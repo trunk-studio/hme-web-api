@@ -71,6 +71,10 @@ export default class App extends React.Component {
     }
   };
 
+  _redirectToLogin = (nextState, replaceState) => {
+    window.location = window.location.href.split('/#/')[0];
+  }
+
   render() {
     return (
       <Router history={browserHistory} >
@@ -82,7 +86,7 @@ export default class App extends React.Component {
         <Route path="/slave/:slaveId/schedule/edit/:scheduleID" component={ScheduleDetail} onEnter={this._requireAuth}/>
         <Route path="/slave/:slaveId/schedule/:scheduleID/config/:configID" component={ScheduleDetailConfig} onEnter={this._requireAuth}/>
         <Route path="/setup" component={Setup} onEnter={this._alreadySetup} />
-        <Route path="/close" component={LoginPage} />
+        <Route path="/close" component={LoginPage} onEnter={this._redirectToLogin} />
       </Router>
     );
   }
