@@ -1,6 +1,7 @@
 import request from 'superagent'
 import ini from 'ini'
 import {exec, execSync} from 'child_process';
+import fs from 'fs';
 
 exports.status = async function (ctx) {
   try {
@@ -96,22 +97,24 @@ exports.previewLedColor = async function (ctx) {
       GR: data.GR,
       RE: data.RE,
       Bright: data.Bright,
+      devID: data.devID,
+      groupID: data.groupID,
     };
     let devices;
     if(schedule.SlaveId === null){
       let slaveList = await models.Slave.findAll();
       for (let slave of slaveList) {
-        devices = await models.Device.findAll({
-          where:{
-            SlaveId: slave.id
-          }
-        });
-        for(let device of devices){
+        // devices = await models.Device.findAll({
+        //   where:{
+        //     SlaveId: slave.id
+        //   }
+        // });
+        // for(let device of devices){
           try {
-            ledData.devID = device.id;
+            // ledData.devID = device.uid;
             let result = await new Promise((resolve, reject) => {
-              request
-              .post(`http://${slave.host}:3000/rest/slave/${slave.id}/device/${device.id}/setLedDisplay`)
+              // request.post(`http://${slave.host}:3000/rest/slave/${slave.id}/device/${device.uid}/setLedDisplay`)
+              request.post(`http://${slave.host}:3000/rest/slave/${slave.id}/device/0/setLedDisplay`)
               .send(ledData)
               .end((err, res) => {
                 if(err) return reject(err);
@@ -121,22 +124,22 @@ exports.previewLedColor = async function (ctx) {
           } catch (e) {
             console.log(e);
           }
-        }
+        // }
       }
     }else{
       let slave = await models.Slave.findById(schedule.SlaveId);
-      devices = await models.Device.findAll({
-        where:{
-          SlaveId: schedule.SlaveId
-        }
-      })
-      ledData.groupID = slave.id;
-      for(let device of devices){
+      // devices = await models.Device.findAll({
+      //   where:{
+      //     SlaveId: schedule.SlaveId
+      //   }
+      // })
+      // ledData.groupID = slave.id;
+      // for(let device of devices){
         try {
-          ledData.devID = device.id;
+          // ledData.devID = device.uid;
           let result = await new Promise((resolve, reject) => {
-            request
-            .post(`http://${slave.host}:3000/rest/slave/${schedule.SlaveId}/device/${device.id}/setLedDisplay`)
+            // request.post(`http://${slave.host}:3000/rest/slave/${schedule.SlaveId}/device/${device.uid}/setLedDisplay`)
+            request.post(`http://${slave.host}:3000/rest/slave/${schedule.SlaveId}/device/0/setLedDisplay`)
             .send(ledData)
             .end((err, res) => {
               if(err) return reject(err);
@@ -146,7 +149,7 @@ exports.previewLedColor = async function (ctx) {
         } catch (e) {
           console.log(e);
         }
-      }
+      // }
     }
     ctx.body = 'ok'
   } catch (e) {
@@ -223,7 +226,10 @@ exports.getCachedSlaveList = async function (ctx) {
 
 exports.getCachedSlaveAndDeviceList = async function (ctx) {
   try {
-    let [slaveList, deviceList] = await Promise.all([services.hme.getCachedSlaveList(), services.hme.getCachedDeviceList()]);
+    // let [slaveList, deviceList] = await Promise.all([services.hme.getCachedSlaveList(), services.hme.getCachedDeviceList()]);
+    let slaveList = await services.hme.getCachedSlaveList();
+    let slaveIdArray = slaveList.map((slave) => slave.id);
+    let deviceList = await services.hme.getCachedDeviceList(slaveIdArray);
     ctx.body = {
       slaveList: slaveList,
       deviceList: deviceList
@@ -314,6 +320,45 @@ exports.getDeviceStatus = async function (ctx) {
   }
 }
 
+exports.checkAllDeviceStatus = async function (ctx) {
+  try {
+    let config =  await services.deviceControl.getSetting();
+    let host = config.SYSTEM.HME_SERIAL;
+    console.log("host!!",host);
+    let slave = await models.Slave.findOne({
+      where:{
+        host: { $like: '%'+host+'%' }
+      }
+    });
+    let slaveId = slave.id;
+    let deviceList = await models.Device.findAll({where: {SlaveId: slaveId}});
+      for(let device of deviceList) {
+        let result = await services.hme.getDevState(device.uid);
+        let tempError = result.devTemp >= parseInt(config.SYSTEM.TEMP_LIMIT, 10);
+        let fanError = !result.fanState;
+        let statusFail = tempError || fanError;
+        if (statusFail) {
+          let info = '';
+          if(tempError) {
+            info += 'Temp Error, ';
+          }
+          if(fanError) {
+            info += 'Fan Statu Error ';
+          }
+          await models.Message.create({
+            title: `${host} device ${device.uid} ${info}`,
+            content: `${host} device ${device.uid} ${info}`,
+            type: 'error',
+          });
+        }
+      }
+    ctx.body = 'ok';
+  } catch (e) {
+    ctx.body = e;
+    throw e;
+  }
+}
+
 exports.updateAllSlaveTime = async function (ctx) {
   try {
     let slaveList = await models.Slave.findAll();
@@ -344,13 +389,51 @@ exports.updateTime = async function (ctx) {
   }
 }
 
-exports.logs = async function (ctx) {
+exports.getAllSlaveLogs = async function (ctx) {
   try {
+    let slaves = await models.Slave.findAll();
+    for (let slave of slaves) {
+      try {
+        let result = await new Promise((resolve, reject) => {
+          request.get(`http://${slave.host}:3000/rest/slave/logs`)
+          .end((err, res) => {
+            if(err) return reject(err);
+            resolve(res.body);
+          });
+        });
+
+        let slaveLogs = result.map(message => {
+          let log = {
+            title: message.title,
+            content: message.content,
+            type: message.type,
+          }
+          return log;
+        });
+        await Promise.all(
+          slaveLogs.map( message => models.Message.create(message))
+        );
+      } catch (e) {
+        console.log(e);
+      }
+    }
     let logs = await services.deviceControl.getLogs();
     ctx.body = logs;
   } catch (e) {
     ctx.body = e;
-    throw e;
+  }
+}
+
+exports.logs = async function (ctx) {
+  try {
+    let config =  await services.deviceControl.getSetting();
+    let logs = []
+    if(config.SYSTEM.TYPE === 'slave'){
+      logs = await services.deviceControl.salveLogsToMaster();
+    }
+    ctx.body = logs;
+  } catch (e) {
+    ctx.body = e;
   }
 }
 
@@ -372,5 +455,179 @@ exports.reboot = async function (ctx) {
   } catch (e) {
     ctx.body = e;
     throw e;
+  }
+}
+exports.updateReboot = async function (ctx) {
+  try {
+    let slaveList = await models.Slave.findAll();
+    let config =  await services.deviceControl.getSetting();
+    for (let slave of slaveList) {
+      try {
+        if(slave.host.indexOf(config.SYSTEM.HME_SERIAL) === -1){
+          let result = await new Promise((resolve, reject) => {
+            request.get(`http://${slave.host}:3000/rest/slave/updateReboot`)
+            .end((err, res) => {
+              if(err) return reject(err);
+              resolve(res.body);
+            });
+          });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    execSync('sudo /sbin/reboot');
+    ctx.body = 'ok';
+    console.log("Reboot!!!!!");
+  } catch (e) {
+    ctx.body = e;
+    throw e;
+  }
+}
+
+exports.slaveUpdateReboot = async function (ctx) {
+  try {
+    execSync('sudo /sbin/reboot');
+    console.log("Reboot!!!!!");
+    ctx.body = 'ok';
+  } catch (e) {
+    ctx.body = e;
+    throw e;
+  }
+}
+
+exports.tempLimit = async function (ctx) {
+  try {
+    let data = ctx.request.body;
+    let result = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+    result.SYSTEM.TEMP_LIMIT = Math.round(data.tempLimit*10)/10;
+    fs.writeFileSync(appConfig.configPath, ini.stringify(result))
+    ctx.body = logs;
+  } catch (e) {
+    ctx.body = e;
+  }
+}
+
+exports.getTimeZone = async function (ctx) {
+  try {
+    let config =  await services.deviceControl.getSetting();
+    ctx.body = {
+      timeZone: config.SYSTEM.TIMEZONE_OFFSET,
+      timeZoneIndex: config.SYSTEM.TIMEZONE_INDEX,
+    };
+  } catch (e) {
+    ctx.body = e;
+  }
+}
+
+exports.checkAllSlaveVersion = async function (ctx) {
+  try {
+    let status =  await services.deviceControl.checkAllSlaveVersion();
+    ctx.body = {
+      status
+    };
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}
+
+exports.checkVersion = async function (ctx) {
+  try {
+    let status =  await services.deviceControl.needUpdate();
+    ctx.body = {
+      status
+    };
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}
+
+exports.downloadUpgrade = async function (ctx) {
+  try {
+    let status =  await services.deviceControl.downloadUpdate();
+    ctx.body = {
+      status
+    };
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}
+
+exports.checkUpdateFileMd5 = async function (ctx) {
+  try {
+    // let status =  await services.deviceControl.checkHasUpdateFile();
+    // ctx.body = {
+    //   status
+    // };
+    let slaveList = await models.Slave.findAll();
+    let stautsArray = [];
+    for (let slave of slaveList) {
+      try {
+        let result = await new Promise((resolve, reject) => {
+          request.get(`http://${slave.host}:3000/rest/slave/checkMd5`)
+          .end((err, res) => {
+            if(err) return reject(err);
+            resolve(res.body);
+          });
+        });
+        stautsArray.push(result.status)
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    console.log("stautsArray =>", stautsArray);
+    let status = stautsArray.indexOf(false) === -1 && stautsArray.length !== 0 ;
+    ctx.body = {
+      status,
+    }
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}
+
+exports.slaveCheckFileMd5 = async function (ctx) {
+  try {
+    let status =  await services.deviceControl.checkHasUpdateFile();
+    ctx.body = {
+      status
+    };
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}
+
+exports.downloadMasterUpdateFile = async function (ctx) {
+  try {
+    let filename = ctx.params.filename;
+    const config =  await services.deviceControl.getUpdateSetting();
+    ctx.type = 'application/x-tar';
+    ctx.body = fs.createReadStream(`${config.SYSTEM.UPDATE_PACKAGE_PATH}/${filename}`)
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
+  }
+}
+
+exports.version = async function (ctx) {
+  try {
+    const version =  await services.deviceControl.version();
+    ctx.body = {
+      version
+    }
+  } catch (e) {
+    ctx.body = {
+      status: false
+    };
   }
 }

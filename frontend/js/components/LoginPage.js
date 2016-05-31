@@ -19,7 +19,7 @@ export default class LoginPage extends React.Component {
     super(props);
     this.state = {
       loadingStatus: 'ready',
-      role: 'operator',
+      role: 'administrator',
       sendLogin: false
     }
   }
@@ -50,6 +50,7 @@ export default class LoginPage extends React.Component {
     this.setState({
       sendLogin: true
     });
+    localStorage.setItem('HME_manage_tabIndex', 2);
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -67,7 +68,7 @@ export default class LoginPage extends React.Component {
 
   render() {
     let roles = [
-      { payload: 'operator', text: 'operator' },
+      // { payload: 'operator', text: 'operator' },
       { payload: 'administrator', text: 'administrator' },
       { payload: 'engineer', text: 'engineer' }
     ];

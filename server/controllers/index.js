@@ -30,6 +30,7 @@ export default class Routes {
       '/rest/slave/:slaveId/device/:deviceId/setLedDisplay',
       '/rest/slave/:slaveId/schedule/setOnDevice',
       '/rest/slave/:slaveId/findAllDeviceGroups',
+      '/rest/slave/:slaveId/device/:deviceId/getStatus'
       ],
       async function (ctx, next){
         try {
@@ -104,18 +105,28 @@ export default class Routes {
     publicRoute.post('/rest/hme/setup/update', HmeController.saveSetting);
     publicRoute.get('/rest/hme/setup', HmeController.getSetting);
     publicRoute.post('/rest/hme/reboot', HmeController.reboot);
-    
+    publicRoute.get('/rest/hme/updateReboot', HmeController.updateReboot);
+    publicRoute.post('/rest/hme/tempLimit', HmeController.tempLimit);
+
     // master
+    publicRoute.get('/rest/master/timezone', HmeController.getTimeZone);
     publicRoute.get('/rest/master/status', HmeController.status);
     publicRoute.get('/rest/master/user/', UserController.index);
     publicRoute.post('/rest/master/login', UserController.login);
     publicRoute.post('/rest/master/saveEmail', HmeController.saveEmail);
     publicRoute.get('/rest/master/loadEmail', HmeController.loadEmail);
     publicRoute.post('/rest/master/updateTime', HmeController.updateAllSlaveTime);
-    publicRoute.get('/rest/master/logs', HmeController.logs);
+    publicRoute.get('/rest/master/logs', HmeController.getAllSlaveLogs);
+    publicRoute.get('/rest/master/download/:filename', HmeController.downloadMasterUpdateFile);
+    publicRoute.get('/rest/master/checkUpgrade', HmeController.checkAllSlaveVersion);
+    publicRoute.get('/rest/master/checkVersion', HmeController.checkVersion);
+    publicRoute.get('/rest/master/version', HmeController.version);
+    publicRoute.post('/rest/master/downloadUpgrade', HmeController.downloadUpgrade);
+    publicRoute.get('/rest/master/checkMd5', HmeController.checkUpdateFileMd5);
     publicRoute.post('/rest/master/register/slave', HmeController.registerSlave);
     publicRoute.get('/rest/master/syncAllSlaveAndDevice', HmeController.syncAllSlaveAndDevice);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
+    publicRoute.post('/rest/master/schedule/baseAll', ScheduleController.createScheduleBaseAll);
     publicRoute.post('/rest/master/schedule/delete/:id', ScheduleController.deleteLastSchedule);
     publicRoute.post('/rest/master/schedule/easy/create', ScheduleController.createEasySchedule);
     publicRoute.get('/rest/master/schedule/findAll', ScheduleController.getAllSchedule);
@@ -136,6 +147,10 @@ export default class Routes {
     publicRoute.post('/rest/master/schedule/setSimRtc', ScheduleController.setSimRtc);
 
     // find slave Device & Groups
+    publicRoute.get('/rest/slave/logs', HmeController.logs);
+    publicRoute.get('/rest/slave/checkStatus', HmeController.checkAllDeviceStatus);
+    publicRoute.get('/rest/slave/checkMd5', HmeController.slaveCheckFileMd5);
+    publicRoute.get('/rest/slave/updateReboot', HmeController.slaveUpdateReboot);
     publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceListBySlave);
     publicRoute.get('/rest/slave/:slaveId/test/all', HmeController.testAllDevices);
@@ -189,7 +204,11 @@ export default class Routes {
     publicRoute.get('/main', async function(ctx, next) {
       try {
         let config =  await services.deviceControl.getSetting();
-        let host = config.SYSTEM.MASTER_NAME + '.local';
+        let host;
+        if (config.SYSTEM.TYPE === 'master')
+          host = config.SYSTEM.HME_SERIAL + '.local';
+        else
+          host = config.SYSTEM.MASTER_NAME + '.local';
         const HTML = `
         <!DOCTYPE html>
         <html>
@@ -221,14 +240,13 @@ export default class Routes {
           <section class="stickers float">
             <div class="container">
               <div class="row">
-                <div class="col-lg-12 col-md-12 col-xs-12 text-center">
+                <div class="col-lg-4 col-md-4 col-xs-4 text-center">
                   <div class="sticker-wrapper">
                     <img src="/public/assets/images/download.png" alt="ipad gallery background" class="img-responsive sticker1" /></div>
                 </div>
               </div>
             </div>
           </section>
-
         </body>
         </html>
         `;

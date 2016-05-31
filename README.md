@@ -3,7 +3,12 @@ HME server
 
 docker run
 ----------
+### build 更新包
+install md5sum、jsawk
 
+Mac
+`brew install md5sha1sum`
+`brew install jsawk`
 ### build
 
 ARM: docker-compose run --rm --service-ports web-arm /bin/bash -l

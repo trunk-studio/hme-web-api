@@ -4,27 +4,27 @@ module.exports = (sequelize, DataTypes) => {
   var ScheduleDetailConfig = sequelize.define('ScheduleDetailConfig', {
     WW:{
       type: DataTypes.INTEGER,
-      defaultValue: 0,
+      defaultValue: 100,
       allowNull: false
     },
     DB:{
       type: DataTypes.INTEGER,
-      defaultValue: 0,
+      defaultValue: 100,
       allowNull: false
     },
     BL:{
       type: DataTypes.INTEGER,
-      defaultValue: 0,
+      defaultValue: 100,
       allowNull: false
     },
     GR:{
       type: DataTypes.INTEGER,
-      defaultValue: 0,
+      defaultValue: 100,
       allowNull: false
     },
     RE:{
       type: DataTypes.INTEGER,
-      defaultValue: 0,
+      defaultValue: 100,
       allowNull: false
     },
     CCT:{

@@ -63,6 +63,8 @@ export default class ScheduleDetail extends React.Component {
       fastRunIntervalId: '',
       fastRunStart: false,
       count: 0,
+      needSave: false,
+      open: false,
     }
   }
 
@@ -71,10 +73,34 @@ export default class ScheduleDetail extends React.Component {
   }
 
   _handleTimeBtnClick(index) {
-    if(index == this.state.currentIndex)
-      window.location.href = `#/schedule/${this.props.params.scheduleID}/config/${this.props.scheduleDetails[index].id}`;
+    // if(index == this.state.currentIndex)
+    //   window.location.href = `#/schedule/${this.props.params.scheduleID}/config/${this.props.scheduleDetails[index].id}`;
+    if(index == this.state.currentIndex){
+      if(this.state.needSave){
+        this.setState({open: true});
+      }else{
+        if(this.state.fastRunStart){
+          clearInterval(this.state.fastRunIntervalId);
+          this.props.requestSetSimRtc({
+            slaveId: this.props.params.slaveId,
+            count: -1
+          })
+          this.setState({
+            fastRunLabel: 'FastRun',
+            fastRunStart: false,
+            count: 0
+          })
+        }
+        window.location.href = `#/slave/${this.props.params.slaveId}/schedule/${this.props.params.scheduleID}/config/${this.props.scheduleDetails[index].id}`;
+      }
+    }
     this.setState({currentIndex: index});
   };
+
+  _saveDialogHandleClose = () => {
+    this.setState({open: false});
+  };
+
 
   componentDidUpdate(prevProps, prevState) {
 
@@ -95,6 +121,7 @@ export default class ScheduleDetail extends React.Component {
     this.props.modifySchedule({
       schedules: dailySchedules
     });
+    this.setState({needSave: true});
   };
 
   _handleTimetChanged = (val) => {
@@ -116,11 +143,13 @@ export default class ScheduleDetail extends React.Component {
      this.props.modifySchedule({
        schedules: dailySchedules
      });
+     this.setState({needSave: true});
   };
 
   _saveScheduleDetails = (e) => {
     // console.log('save',this.props.scheduleDetails);
     this.props.requestUpdateScheduleDetails(this.props.scheduleDetails);
+    this.setState({needSave: false});
   };
 
   _fastRun = (e) => {
@@ -230,7 +259,8 @@ export default class ScheduleDetail extends React.Component {
   };
 
   _handleTImeInputChanged = (ref, e) => {
-    this._checkTimeInput();
+    // this._checkTimeInput();
+    // console.log(e.target.value);
     /*
     let text = e.target.value;
     if(text.length==2)
@@ -239,6 +269,22 @@ export default class ScheduleDetail extends React.Component {
       this.refs[ref].setValue(text.slice(0,5));
     */
   };
+
+  closeBtn = () => {
+    if(this.state.fastRunStart){
+      clearInterval(this.state.fastRunIntervalId);
+      this.props.requestSetSimRtc({
+        slaveId: this.props.params.slaveId,
+        count: -1
+      })
+      this.setState({
+        fastRunLabel: 'FastRun',
+        fastRunStart: false,
+        count: 0
+      })
+    }
+    setTimeout(() => {window.location.href = '#/manage';}, 500);
+  }
 
   render () {
 
@@ -291,7 +337,7 @@ export default class ScheduleDetail extends React.Component {
           <div key={i}>
             <RaisedButton onTouchTap={function(){this._handleTimeBtnClick(i)}.bind(this)}
               fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
-              secondary={true} style={{}}
+              secondary={true} style={{height: '27px'}}
               primary={active}/>
           </div>);
       }
@@ -302,7 +348,7 @@ export default class ScheduleDetail extends React.Component {
           <div key={i}>
             <RaisedButton onTouchTap={function(){this._handleTimeBtnClick(i)}.bind(this)}
               fullWidth={true} label={_formatMinutes(this.props.scheduleDetails[i].StartTimeInteger)}
-              secondary={true} style={{}}
+              secondary={true} style={{height: '27px'}}
               primary={active} />
           </div>);
       }
@@ -321,14 +367,30 @@ export default class ScheduleDetail extends React.Component {
         onTouchTap={this._dialogActionReset} />
     ];
 
+    let dialog = [
+      <FlatButton
+        label="OK"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={this._saveDialogHandleClose}
+      />
+    ];
 
     return (
       <div>
+        <Dialog
+          title="Notice"
+          actions={dialog}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this._saveDialogHandleClose}>
+          Settings have been changed, remember to Save.
+        </Dialog>
         <AppBar title="Schedule Detail"
           style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
           titleStyle={{fontSize: '18px'}}
           iconElementLeft={
-            <IconButton onTouchTap={function() {window.location.href = '#/manage';}} >
+            <IconButton onTouchTap={this.closeBtn} >
               <NavigationClose />
             </IconButton>
           }
@@ -429,6 +491,7 @@ export default class ScheduleDetail extends React.Component {
             <TextField
               ref="inputStartTime"
               hintText="08:15"
+              type="time"
               floatingLabelText="StartTime"
               onChange={this._handleTImeInputChanged.bind({}, 'inputStartTime')}
               defaultValue={this.props.scheduleDetails[0]? this.props.scheduleDetails[0].StartTime.toString().slice(0,5) : ''}
@@ -438,6 +501,7 @@ export default class ScheduleDetail extends React.Component {
               }}/>
             <TextField
               ref="inputEndTime"
+              type="time"
               hintText="20:12"
               floatingLabelText="EndTime"
               onChange={this._handleTImeInputChanged.bind({}, 'inputEndTime')}

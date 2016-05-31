@@ -4,7 +4,7 @@ import { requestScheduleCreate, requestGetScheduleList,
    updateScheduleFirstDate, updateScheduleDay,
    requestSetScheduleList,requestGetSlaveSchedule,
    requestUpdateScheduleList,requestGetEasySchedule,
-   requestUpdateEasyScheduleList,requestScheduleDeleteLast
+   requestUpdateEasyScheduleList,requestScheduleDeleteLast,
  } from '../actions/ScheduleListActions'
 import moment from 'moment';
 import {requestGetCachedSlaveList} from '../actions/TestActions';
@@ -187,15 +187,19 @@ export default class ScheduleList extends React.Component {
   _addRow = (e) => {
     let selectedSlave = (this.state.selectedSlave != 0)? this.state.selectedSlave : null;
     // console.log(selectedSlave, this.props.scheduleList[0].SlaveId);
-    if(this.props.scheduleList.length > 0  && this.props.scheduleList[0].SlaveId === selectedSlave){
-      this.props.requestScheduleCreate(this.props.scheduleList, selectedSlave);
-    }else {
-      this.props.requestScheduleCreate([], selectedSlave);
+    if(this.props.scheduleList.length < 5) {
+      if(this.props.scheduleList.length > 0 && this.props.scheduleList[0].SlaveId === selectedSlave){
+        this.props.requestScheduleCreate(this.props.scheduleList, selectedSlave);
+      }else {
+        this.props.requestScheduleCreate([], selectedSlave);
+      }
+      this.setState({
+        isSetBtnClose: true
+      });
+      this.refs.snackbar.setState({open: true});
+    } else {
+      alert("5 is the row's maximum");
     }
-    this.setState({
-      isSetBtnClose: true
-    });
-    this.refs.snackbar.setState({open: true});
   };
 
   _deleteLastRow = (e) => {
@@ -416,11 +420,12 @@ export default class ScheduleList extends React.Component {
             date = new Date(tmpScheduleList[i].StartDate);
           console.log(tmpScheduleList[i]);
           rows.push(
-            <TableRow key={row.id} style={{borderBottom: '1px solid #72737A', backgroundColor: (tmpScheduleList[i].Summit)? '' : 'red' }}>
+            <TableRow key={row.id} style={{borderBottom: '1px solid #72737A'}}>
               <TableRowColumn>
-                <RaisedButton disabled={this.state.isSetBtnClose} label="EDIT" style={{verticalAlign: 'middle'}}  linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
+                <RaisedButton disabled={this.state.isSetBtnClose} label="EDIT" labelColor="#FFF" backgroundColor="#51A7F9" style={{verticalAlign: 'middle'}}  linkButton={true} href={`#/slave/${this.state.selectedSlave||0}/schedule/edit/${row.id}`}/>
               </TableRowColumn>
               <TableRowColumn>
+                <span style={{marginTop: '16px', float: 'right'}}>▼</span>
                 <TextField
                   style={{verticalAlign: 'middle'}}
                   defaultValue={moment(date).format('YYYY-MM-DD')}
@@ -438,6 +443,7 @@ export default class ScheduleList extends React.Component {
                   */}
               </TableRowColumn>
               <TableRowColumn>
+                <span style={{marginTop: '16px', float: 'right'}}>▼</span>
                 <TextField
                   type="number"
                   onChange={this._calculateDate.bind({}, i)}
@@ -461,14 +467,15 @@ export default class ScheduleList extends React.Component {
             date = yyyy +'/'+ (mm[1]?mm:"0"+mm[0]) +'/'+ dd;
           }
           rows.push(
-            <TableRow key={row.id} style={{borderBottom: '1px solid #72737A', backgroundColor: (tmpScheduleList[i].Summit)? '' : 'red' }}>
+            <TableRow key={row.id} style={{borderBottom: '1px solid #72737A'}}>
               <TableRowColumn>
                 <RaisedButton
                   style={{verticalAlign: 'middle'}}
-                  disabled={this.state.isSetBtnClose}  label="EDIT" linkButton={true} href={`#/schedule/${this.state.selectedSlave||0}/edit/${row.id}`}/>
+                  disabled={this.state.isSetBtnClose}  label="EDIT" labelColor="#FFF" backgroundColor="#51A7F9" linkButton={true} href={`#/slave/${this.state.selectedSlave||0}/schedule/edit/${row.id}`}/>
               </TableRowColumn>
               <TableRowColumn style={{fontSize: '17px', color: '#AAA'}}>{date || ''}</TableRowColumn>
               <TableRowColumn>
+                <span style={{marginTop: '16px', float: 'right'}}>▼</span>
                 <TextField
                   type="number"
                   onChange={this._calculateDate.bind({}, i)}
@@ -536,7 +543,7 @@ export default class ScheduleList extends React.Component {
     return (
       <div className="tab-content self-center">
         <Dialog
-          title="Warning"
+          title="Notice"
           actions={dialogActions}
           modal={false}
           open={this.state.open}
@@ -544,7 +551,7 @@ export default class ScheduleList extends React.Component {
           The actions will cover all the last schedule setting.
         </Dialog>
         <Dialog
-          title="Warning"
+          title="Notice"
           actions={dayDialogActions}
           modal={false}
           open={this.state.dayWarnOpen}
@@ -557,7 +564,7 @@ export default class ScheduleList extends React.Component {
               <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._handleSlaveSelect} menuItems={slaveList} style={{width: '160px', float: 'left'}} value={slaveSelectFieldIndex} />
               <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveEasyScheduleList} style={{width:'65px', marginLeft: '10px'}} />
               <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose} style={{ width:'75px', marginLeft: '10px'}} />
-              <RaisedButton ref="scheduleSetBtn" label="Pro" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'65px', marginLeft: '10px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Advanced" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width: '100px', marginLeft: '10px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}
@@ -568,26 +575,26 @@ export default class ScheduleList extends React.Component {
           </div>
           <div className="row">
             <div className="col-md-4 col-sm-4 col-xs-4" style={{paddingLeft:'30px', backgroundSize: 'cover', backgroundImage: 'url(/public/assets/images/spring.png)',backgroundRepeat: 'no-repeat', backgroundOrigin: 'content-box'}}>
-              <p style={{marginLeft:'40px'}}> Spring </p>
+              <p style={{marginLeft:'40px', color: 'rgb(0, 45, 119)', fontWeight: 'bold'}}> Spring </p>
               <RadioButtonGroup ref="springHours"  name="shipSpeed" valueSelected={ this.state.springHour } onChange={this._handleEditTextField.bind({}, 'springHour')} >
-                <RadioButton value="12" label="12 Hours" />
-                <RadioButton value="18" label="18 Hours" />
+                <RadioButton value="12" label="12 Hours" labelStyle={{color: 'rgb(33, 97, 0)'}}/>
+                <RadioButton value="18" label="18 Hours" labelStyle={{color: 'rgb(33, 97, 0)'}}/>
               </RadioButtonGroup>
                 <TextField ref="springDay" hintText="Days" min={0} max={9999} type="number" style={{width: '50px', marginLeft:'40px'}} value={this.state.springDays} onChange={this._handleEditTextField.bind({},　'springDays')}　/>
             </div>
             <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px', backgroundSize: 'cover', backgroundImage: 'url(/public/assets/images/summer.png)',backgroundRepeat: 'no-repeat', backgroundOrigin: 'content-box'}}>
-              <p style={{marginLeft:'40px'}}> Summer </p>
+              <p style={{marginLeft:'40px', color: 'rgb(0, 45, 119)', fontWeight: 'bold'}}> Summer </p>
               <RadioButtonGroup ref="summerHours" name="shipSpeed" valueSelected={ this.state.summerHour }  onChange={this._handleEditTextField.bind({}, 'summerHour')}>
-                <RadioButton value="18" label="18 Hours" />
-                <RadioButton value="24" label="24 Hours" />
+                <RadioButton value="18" label="18 Hours" labelStyle={{color: 'rgb(33, 97, 0)'}}/>
+                <RadioButton value="24" label="24 Hours" labelStyle={{color: 'rgb(33, 97, 0)'}}/>
               </RadioButtonGroup>
                 <TextField ref="summerDay" hintText="Days" min={0} max={9999} type="number" style={{width: '50px', marginLeft:'40px'}} value={this.state.summerDays} onChange={this._handleEditTextField.bind({},　'summerDays')}　/>
             </div>
             <div className="col-md-4 col-sm-4 col-xs-4"  style={{paddingLeft:'30px', backgroundSize: 'cover', backgroundImage: 'url(/public/assets/images/fall.png)',backgroundRepeat: 'no-repeat', backgroundOrigin: 'content-box'}}>
-              <p style={{marginLeft:'40px'}}> Fall </p>
+              <p style={{marginLeft:'40px', color: 'rgb(0, 45, 119)', fontWeight: 'bold'}}> Fall </p>
               <RadioButtonGroup ref="fallHours" name="shipSpeed" valueSelected={ this.state.fallHour }  onChange={this._handleEditTextField.bind({}, 'fallHour')} >
-                <RadioButton value="12" label="12 Hours" />
-                <RadioButton value="14" label="14 Hours" />
+                <RadioButton value="12" label="12 Hours" labelStyle={{color: 'rgb(33, 97, 0)'}}/>
+                <RadioButton value="14" label="14 Hours" labelStyle={{color: 'rgb(33, 97, 0)'}}/>
               </RadioButtonGroup>
                 <TextField ref="fallDay" hintText="Days" min={0} max={9999} type="number" style={{width: '50px', marginLeft:'40px'}} value={this.state.fallDays} onChange={this._handleEditTextField.bind({},　'fallDays')}　/>
             </div>
@@ -603,8 +610,8 @@ export default class ScheduleList extends React.Component {
             ref="snackbar"
             open={false}
             onRequestClose={this._handleRequestClose}
-            message={"已更改, 需要儲存"}
-            autoHideDuration={3000}
+            message={"Has changed, need to be save"}
+            autoHideDuration={10000}
           />
         </div>
         <div id="scheduleList" className={proDiv} style={{width: '100%', overflowX: 'hidden', minHeight: '320px'}}>
@@ -622,7 +629,7 @@ export default class ScheduleList extends React.Component {
               <RaisedButton ref="scheduleAddBtn" label="Del" labelColor="#FFF" backgroundColor="#51A7F9" disabled={(this.state.selectedSlave == -1)} onTouchTap={this._deleteLastRow} style={{width:'50px',marginLeft: '10px'}}/>
               <RaisedButton label="Save" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._saveScheduleList} style={{width:'50px',marginLeft: '10px'}} disabled={(this.state.selectedSlave == -1)} />
               <RaisedButton ref="scheduleSetBtn" label="Summit" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._warnHandleOpen} disabled={this.state.isSetBtnClose || (this.state.selectedSlave == -1)} style={{width:'60px', marginLeft: '10px'}} />
-              <RaisedButton ref="scheduleSetBtn" label="Simple" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'60px', marginLeft: '10px'}} />
+              <RaisedButton ref="scheduleSetBtn" label="Basic" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._switchView} style={{width:'60px', marginLeft: '10px'}} />
               <RefreshIndicator
                 size={30}
                 left={8}
@@ -652,7 +659,7 @@ export default class ScheduleList extends React.Component {
             ref="snackbar"
             open={false}
             onRequestClose={this._handleRequestClose}
-            message={"已更改, 需要儲存"}
+            message={"Has changed, need to be save"}
             autoHideDuration={3000}
           />
         </div>
@@ -671,7 +678,7 @@ function _injectPropsFromStore(state) {
       slaveList.push({
         payload: slave.id,
         primary: `${slave.host}`,
-        text: slave.host,
+        text: slave.host.split('.local'),
       });
     }
   }
@@ -695,7 +702,7 @@ const _injectPropsFromActions = {
   requestGetSlaveSchedule,
   requestGetEasySchedule,
   requestUpdateEasyScheduleList,
-  requestScheduleDeleteLast
+  requestScheduleDeleteLast,
 }
 
 export default connect(_injectPropsFromStore, _injectPropsFromActions)(ScheduleList);

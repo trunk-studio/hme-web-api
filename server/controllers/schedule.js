@@ -43,7 +43,7 @@ exports.getConfigDetail = async function(ctx) {
 
 exports.createSchedule = async function(ctx) {
   try {
-    console.log("==== createSchedule ===");
+    console.log("==== createSchedule ===", ctx.request.body);
     let newSchedule = ctx.request.body;
     let result = await services.schedule.create(newSchedule);
     //delete simple Schedule
@@ -53,6 +53,17 @@ exports.createSchedule = async function(ctx) {
     console.error(e);
   }
 
+}
+
+exports.createScheduleBaseAll = async function(ctx) {
+  try {
+    console.log("==== createScheduleBaseAll ===", ctx.request.body);
+    let date = ctx.request.body
+    await services.schedule.createScheduleBaseAll(date.SlaveId);
+    ctx.body =  'ok';
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 exports.deleteLastSchedule = async function(ctx) {

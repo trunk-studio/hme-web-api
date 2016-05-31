@@ -1,6 +1,6 @@
 import {SerialPort} from "serialport";
 import Encode from "./encode";
-
+import request from 'superagent'
 
 
 let ping = require('ping');
@@ -372,9 +372,18 @@ export default class Hme {
     }
   };
 
-  async getCachedDeviceList ()  {
+  async getCachedDeviceList (slaveIdArray)  {
     try {
-      let deviceList = await models.Device.findAll();
+      let deviceList = [];
+      if(slaveIdArray){
+        deviceList = await models.Device.findAll({
+          where:{
+            SlaveId: slaveIdArray
+          }
+        });
+      } else {
+        deviceList = await models.Device.findAll();
+      }
       let result = [];
       for(let device of deviceList) {
         result.push({
@@ -413,12 +422,21 @@ export default class Hme {
       let slaveList = await models.Slave.findAll();
       let result = [];
       for(let slave of slaveList) {
-        result.push({
-          id: slave.id,
-          host: slave.host,
-          description: slave.description,
-          apiVersion: slave.apiVersion
+        let slaveStatus = await new Promise((resolve, reject) => {
+        request.get(`http://${slave.host}:3000/rest/master/status`)
+        .end((err, res) => {
+            if(err) console.log(err);
+            resolve(res);
+          });
         });
+        if (slaveStatus) {
+          result.push({
+            id: slave.id,
+            host: slave.host,
+            description: slave.description,
+            apiVersion: slave.apiVersion
+          });
+        }
       }
       console.log(JSON.stringify(result,null, 4));
 
@@ -548,7 +566,7 @@ export default class Hme {
       let CtrlModeTable = {'Normal':0, 'Fast':1, 'Interact':2};
       let accDevParams = {
         u8DevID:devID,
-        groupID:groupID,
+        groupID:0,
         sFunc:'WordWt',
         u8DataNum:1,
         u8Addr_Arry:[100],  //Device group
@@ -673,7 +691,7 @@ export default class Hme {
 
         let setParams = {
           devID:devID,
-          groupID:groupID,
+          groupID:0,
           Led1Bgt: DB * Bright,
           Led2Bgt: BL * Bright,
           Led3Bgt: RE * Bright,

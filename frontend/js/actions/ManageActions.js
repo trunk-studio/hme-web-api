@@ -4,6 +4,7 @@ export const RECEIVED_REPORT_EMAIL = 'RECEIVED_REPORT_EMAIL'
 export const UPDATE_EMAIL_LOADING_STATUS = 'UPDATE_EMAIL_LOADING_STATUS'
 export const GET_DEVICE_STATUS = 'GET_DEVICE_STATUS'
 export const GET_LOGS = 'GET_LOGS'
+export const UPDATE_TEMP_LIMIT = 'UPDATE_TEMP_LIMIT'
 
 export function requestGetReportEmail() {
   return (dispatch) => {
@@ -40,6 +41,23 @@ export function updateEmailLoadingStatus(status) {
   return {
     type: UPDATE_EMAIL_LOADING_STATUS,
     status
+  }
+}
+
+export function updateTempLimit(value) {
+  return {
+    type: UPDATE_TEMP_LIMIT,
+    value
+  }
+}
+
+export function requestUpdateTempLimit(value) {
+  return (dispatch) => {
+    return request
+      .post('/rest/hme/tempLimit', {tempLimit: value})
+      .then( function() {
+        dispatch(updateTempLimit(value));
+      });
   }
 }
 

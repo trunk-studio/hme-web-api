@@ -16,3 +16,5 @@ scheduleconfig/*
 bower_components
 email
 setup
+!client_upgrade/
+client_upgrade/*

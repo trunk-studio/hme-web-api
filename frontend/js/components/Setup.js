@@ -18,7 +18,7 @@ const timezones = [
    -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ];
 
 const APPLY_FAILED = 'Apply failed, Please try again.';
-const APPLY_SUCCESS = "The device is rebooting for seeting. please wait for 2 mins and enter serial number again.";
+const APPLY_SUCCESS = "The device is rebooting for seeting. please wait for 3 mins and enter serial number again.";
 export default class Setup extends React.Component  {
 
   constructor(props) {
@@ -31,6 +31,7 @@ export default class Setup extends React.Component  {
       tmpMaster: '',
       timezoneIndex: 14,
       message: null,
+      applied: false,
     }
   }
 
@@ -45,13 +46,18 @@ export default class Setup extends React.Component  {
     if(nextProps.isApply == 'failed' && this.state.message != APPLY_FAILED )  {
       this.setState({message: APPLY_FAILED });
     }
-
-    if(nextProps.isApply == 'success' && this.state.message != APPLY_SUCCESS ) {
-      // console.log('!!!!!!!!!!!!!!!!!!!obj');
+    if( this.props.isApply != 'success' && nextProps.isApply == 'success' && this.state.message != APPLY_SUCCESS && this.state.applied === false) {
+      this.setState({
+        applied: true,
+      });
+      document.getElementById('react-view').dataset.page="";
       setTimeout(function() {
         window.location.href = "/#/close";
-      }, 8000);
-      this.setState({message: APPLY_SUCCESS });
+      },  3 * 60 * 1000 );
+
+      this.setState({
+        message: APPLY_SUCCESS,
+      });
     }
   }
 
@@ -161,7 +167,7 @@ export default class Setup extends React.Component  {
 
     return (
       <div style={{width: '100%', overflowX: 'hidden'}}>
-        <AppBar title="Setup"
+        <AppBar title="Spectrum"
           style={{height: '55px', minHeight: '0px', marginTop: '-9px', backgroundColor: '#032c70'}}
           titleStyle={{fontSize: '20px'}}
           iconElementLeft={

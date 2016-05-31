@@ -58,13 +58,13 @@ section.ipad {
 .float {
   position: fixed;
   top: calc(45% + 200px);
-  left: calc(57% - 150px);
+  left: 75%;
 }
 .stickers {
   margin-bottom: 0px;
 }
 .sticker-wrapper {
-  margin: -90px auto;
+  margin: 0px auto;
 }
 .sticker1 {
   margin: 0 auto;

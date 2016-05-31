@@ -5,7 +5,8 @@ export const RECEIVED_SCAN = 'RECEIVED_SCAN'
 export const REQUEST_DEVICEGROUP = 'REQUEST_DEVICEGROUP'
 export const RECEIVED_DEVICEGROUP = 'RECEIVED_DEVICEGROUP'
 export const RECEIVED_SLAVE_LIST = 'RECEIVED_SLAVE_LIST'
-
+export const RECEIVED_NEED_UPGRADE = 'RECEIVED_NEED_UPGRADE'
+export const RECEIVED_UPGRADE_DOWNLOAD = 'RECEIVED_UPGRADE_DOWNLOAD'
 export const RECEIVED_TEST_SET_LED_DISPLAY = 'RECEIVED_TEST_SET_LED_DISPLAY'
 export const SCANNING = 'SCANNING'
 
@@ -164,4 +165,77 @@ export function requestDeviceGroup(slaveID) {
       .get(`/rest/slave/${slaveID}/findAllDeviceGroups`)
       .then(response => dispatch(receivedDeviceGroup(response.data)));
   };
+}
+
+export function receivedCheckUpgrade(data) {
+  return {
+    type: RECEIVED_NEED_UPGRADE,
+    data
+  }
+}
+
+export function requestChangeUpgradeStatus(status) {
+  return (dispatch) => {
+    return dispatch(receivedCheckUpgrade(status));
+  }
+}
+
+export function requestCheckUpgrade() {
+  return (dispatch) => {
+    dispatch(scanStatus('loading'));
+    return request
+      .get('/rest/master/checkUpgrade')
+      .then((response) => {
+        dispatch(receivedCheckUpgrade(response.data.status))
+        dispatch(scanStatus('hide'));
+      });
+  }
+}
+
+export function receivedDownloadStatus(data) {
+  return {
+    type: RECEIVED_UPGRADE_DOWNLOAD,
+    data
+  }
+}
+
+export function requestChangeDownloadStatus(status) {
+  return (dispatch) => {
+    return dispatch(receivedDownloadStatus(status));
+  }
+}
+
+export function requestCheckDownloadFinish() {
+  return (dispatch) => {
+    return request
+      .get('/rest/master/checkMd5')
+      .then((response) => {
+        console.log(response.data);
+        if(response.data.status){
+          dispatch(receivedDownloadStatus(response.data.status));
+          dispatch(scanStatus('hide'));
+        }
+      });
+  }
+}
+
+export function requestDownloadUpgrade() {
+  return (dispatch) => {
+    dispatch(scanStatus('loading'));
+    return request
+      .post('/rest/master/downloadUpgrade')
+      .then((response) => {
+        dispatch(() => {});
+      });
+  }
+}
+
+export function requestUpdateReboot() {
+  return (dispatch) => {
+    return request
+      .get('/rest/hme/updateReboot')
+      .then((response) => {
+        dispatch(() => {})
+      });
+  }
 }
