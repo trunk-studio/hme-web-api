@@ -230,33 +230,45 @@ export default class ManagePage extends React.Component {
   }
 
   _wwChanged = (value) => {
-    this.state.wwValue = value;
-    this.state.cctSliderStyle = 'notActiveSlider';
+    console.log("!!!!!!!!!!!!!!!!!!!value", value);
+    this.setState({
+      wwValue: value,
+      cctSliderStyle: 'notActiveSlider',
+    });
     this._updateChart();
   };
   _dbChanged = (value) => {
-    this.state.dbValue = value;
-    this.state.cctSliderStyle = 'notActiveSlider';
+    this.setState({
+      dbValue: value,
+      cctSliderStyle: 'notActiveSlider',
+    });
     this._updateChart();
   };
   _blChanged = (value) => {
-    this.state.blValue = value;
-    this.state.cctSliderStyle = 'notActiveSlider';
+    this.setState({
+      blValue: value,
+      cctSliderStyle: 'notActiveSlider',
+    });
     this._updateChart();
   };
   _grChanged = (value) => {
-    this.state.grValue = value;
-    this.state.cctSliderStyle = 'notActiveSlider';
+    this.setState({
+      grValue: value,
+      cctSliderStyle: 'notActiveSlider',
+    });
     this._updateChart();
   };
   _reChanged = (value) => {
-    this.state.reValue = value;
-    this.state.cctSliderStyle = 'notActiveSlider';
+    this.setState({
+      reValue: value,
+      cctSliderStyle: 'notActiveSlider',
+    });
     this._updateChart();
   };
   _cctChanged = (value) => {
-    // let value = this.refs.CCT.state.value;
-    this.state.cctSliderStyle = 'slider';
+    this.setState({
+      cctSliderStyle: 'slider',
+    });
     if(value >= 2500 && value < 3000){
       this._setAll(
         1 ,
@@ -358,18 +370,24 @@ export default class ManagePage extends React.Component {
   };
 
   _setAll = (ww, db, bl, gr, re, cct) =>{
-    // console.log(ww, db, bl, gr, re);
-    this.state.wwValue = Math.round(ww * 100);
-    this.state.dbValue = Math.round(db * 100);
-    this.state.blValue = Math.round(bl * 100);
-    this.state.grValue = Math.round(gr * 100);
-    this.state.reValue = Math.round(re * 100);
-    if(cct)
-      this.state.cctValue = cct;
+    let setObj = {
+      wwValue: Math.round(ww * 100),
+      dbValue: Math.round(db * 100),
+      blValue: Math.round(bl * 100),
+      grValue: Math.round(gr * 100),
+      reValue: Math.round(re * 100),
+    };
+    if (cct) {
+      // this.state.cctValue = cct;
+      setObj.cctValue = cct
+    }
+    this.setState(setObj);
     this._updateChart();
   };
   _brightChanged = (value) => {
-    this.state.brightValue = value
+    this.setState({
+      brightValue: value,
+    });
     this._updateChart();
   };
 
@@ -811,8 +829,8 @@ export default class ManagePage extends React.Component {
       <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} tabItemContainerStyle={{backgroundColor: "#032c70", marginTop: '-15px'}} contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0)'}}>
         <Tab label="Spectrum" value='0' className="tab-item">
           <div className="tab-content self-center">
-            <div className="self-center" style={{width: '420px'}}>
-              <div style={{width: '420px'}}>
+            <div className="self-center" style={{width: '410px'}}>
+              <div style={{width: '410px'}}>
                 <SelectField labelMember="primary" iconStyle={{fill: '#000'}} menuItems={setupTestSlaveList} onChange={this._setupTestSlaveMenuIndexChanged} ref="setupTestSlaveMenu" style={{width: '210px'}}/>
                 <SelectField labelMember="primary" iconStyle={{fill: '#000'}} onChange={this._setupTestDeviceMenuIndexChanged} ref="setupTestDeviceMenu" menuItems={setupTestDeviceList} style={{width: '210px', marginLeft: '5px', position: 'absolute'}}/>
               </div>
@@ -835,7 +853,7 @@ export default class ManagePage extends React.Component {
                   <span>700</span>
                   <span>780</span>
                 </div>
-                <div className="smalllRaisedButton self-center" style={{width: '100%', display: 'flex', marginTop: '-18px', justifyContent: 'space-around'}}>
+                <div className="smalllRaisedButton self-center" style={{width: '90%', display: 'flex', marginTop: '-18px', justifyContent: 'space-around'}}>
                   <RaisedButton label="FUll"  onTouchTap={this._AllOpen} labelColor='#FFF' backgroundColor='#51A7F9' style={{height: '30px', width: '50px'}}/>
                   <RaisedButton label="6500K" onTouchTap={this._6500k} labelColor='#FFF' backgroundColor='#51A7F9' style={{height: '30px', width: '50px'}}/>
                   <RaisedButton label="4600K" onTouchTap={this._4600k} labelColor='#FFF' backgroundColor='#51A7F9' style={{height: '30px', width: '50px'}}/>
@@ -844,20 +862,20 @@ export default class ManagePage extends React.Component {
                   <RaisedButton label="B+R" onTouchTap={this._BR} labelColor='#FFF' backgroundColor='#51A7F9' style={{height: '30px', width: '45px'}}/>
                 </div>
               </div>
-              <div className="col-md-3 col-sm-3 col-xs-3" style={{marginTop: '3px', paddingRight: '0px', paddingLeft: '21px', fontSize: '12px'}}>
-                <div className="unSelectable" style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '3px', border: '1px solid #DDD'}}>WW {this.state.wwValue}</div>
+              <div className="col-md-3 col-sm-3 col-xs-3" style={{ marginTop: '3px', paddingRight: '0px', paddingLeft: '19px', fontSize: '10px'}}>
+                <div className="unSelectable" style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '3px', border: '1px solid #DDD', fontSize: '10px'}}>WW {this.state.wwValue}</div>
                 <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
-                <div className="unSelectable" style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '3px'}}>DB {this.state.dbValue}</div>
+                <div className="unSelectable" style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '3px', fontSize: '10px'}}>DB {this.state.dbValue}</div>
                 <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
-                <div className="unSelectable" style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '3px'}}>BL {this.state.blValue}</div>
+                <div className="unSelectable" style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '3px', fontSize: '10px'}}>BL {this.state.blValue}</div>
                 <SliderRc ref="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
-                <div className="unSelectable" style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '3px'}}>GR {this.state.grValue}</div>
+                <div className="unSelectable" style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '3px', fontSize: '10px'}}>GR {this.state.grValue}</div>
                 <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
-                <div className="unSelectable" style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '3px'}}>RE {this.state.reValue}</div>
+                <div className="unSelectable" style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '3px', fontSize: '10px'}}>RE {this.state.reValue}</div>
                 <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
-                <div className="unSelectable" style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '3px', border: '1px #ccc solid', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
+                <div className="unSelectable" style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '3px', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
                 <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle+" slider"} />
-                <div className="unSelectable" style={{marginTop: '-8px'}}>Bright {this.state.brightValue}</div>
+                <div className="unSelectable" style={{paddingTop: '-8px'}}>Bright {this.state.brightValue}</div>
                 <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider" />
               </div>
             </div>
