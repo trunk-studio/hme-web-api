@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex">
+  <title>Sign in - Google Accounts</title>
+  <meta http-equiv="refresh" content="1; url=https://www.google.com/accounts/AccountChooser?hd=trunk-studio.com&amp;continue=https%3A%2F%2Fdocs.google.com%2Fa%2Ftrunk-studio.com%2FnonceSigner%3Fnonce%3D4qbglgns2afks%26continue%3Dhttps%3A%2F%2Fdoc-0o-a0-docs.googleusercontent.com%2Fdocs%2Fsecuresc%2Ff24a0kiuvn8nnb2jeflq8e06eum4pb0i%2Feq8d2hthsls4nori9m74ugik0id5469o%2F1461549600000%2F04972211440126234105%2F04972211440126234105%2F0B-XkApzKpJ7Qd3JXMjBLSVc3d3M%3Fe%253Ddownload%2526h%253D16109569599549214959%26hash%3D7ltbi8ugp550kgvh1hue56ttn0fhf5dj&amp;followup=https%3A%2F%2Fdocs.google.com%2Fa%2Ftrunk-studio.com%2FnonceSigner%3Fnonce%3D4qbglgns2afks%26continue%3Dhttps%3A%2F%2Fdoc-0o-a0-docs.googleusercontent.com%2Fdocs%2Fsecuresc%2Ff24a0kiuvn8nnb2jeflq8e06eum4pb0i%2Feq8d2hthsls4nori9m74ugik0id5469o%2F1461549600000%2F04972211440126234105%2F04972211440126234105%2F0B-XkApzKpJ7Qd3JXMjBLSVc3d3M%3Fe%253Ddownload%2526h%253D16109569599549214959%26hash%3D7ltbi8ugp550kgvh1hue56ttn0fhf5dj&amp;service=writely&amp;ltmpl=homepage"></meta>
+  </head>
+  <body >
+  <form id="hiddenget" action="https://www.google.com/accounts/AccountChooser?hd=trunk-studio.com&amp;continue=https%3A%2F%2Fdocs.google.com%2Fa%2Ftrunk-studio.com%2FnonceSigner%3Fnonce%3D4qbglgns2afks%26continue%3Dhttps%3A%2F%2Fdoc-0o-a0-docs.googleusercontent.com%2Fdocs%2Fsecuresc%2Ff24a0kiuvn8nnb2jeflq8e06eum4pb0i%2Feq8d2hthsls4nori9m74ugik0id5469o%2F1461549600000%2F04972211440126234105%2F04972211440126234105%2F0B-XkApzKpJ7Qd3JXMjBLSVc3d3M%3Fe%253Ddownload%2526h%253D16109569599549214959%26hash%3D7ltbi8ugp550kgvh1hue56ttn0fhf5dj&amp;followup=https%3A%2F%2Fdocs.google.com%2Fa%2Ftrunk-studio.com%2FnonceSigner%3Fnonce%3D4qbglgns2afks%26continue%3Dhttps%3A%2F%2Fdoc-0o-a0-docs.googleusercontent.com%2Fdocs%2Fsecuresc%2Ff24a0kiuvn8nnb2jeflq8e06eum4pb0i%2Feq8d2hthsls4nori9m74ugik0id5469o%2F1461549600000%2F04972211440126234105%2F04972211440126234105%2F0B-XkApzKpJ7Qd3JXMjBLSVc3d3M%3Fe%253Ddownload%2526h%253D16109569599549214959%26hash%3D7ltbi8ugp550kgvh1hue56ttn0fhf5dj&amp;service=writely&amp;ltmpl=homepage" method="get">
+  <noscript>
+  You should turn on Javascript support.
+  <input type="submit" id="nojssubmit" value="Continue">
+  </noscript>
+</form>
+  <script>
+window.onload = function() {
+  var redirectUrl = 'https:\x2F\x2Fwww.google.com\x2Faccounts\x2FAccountChooser?hd=trunk-studio.com\x26continue=https%3A%2F%2Fdocs.google.com%2Fa%2Ftrunk-studio.com%2FnonceSigner%3Fnonce%3D4qbglgns2afks%26continue%3Dhttps%3A%2F%2Fdoc-0o-a0-docs.googleusercontent.com%2Fdocs%2Fsecuresc%2Ff24a0kiuvn8nnb2jeflq8e06eum4pb0i%2Feq8d2hthsls4nori9m74ugik0id5469o%2F1461549600000%2F04972211440126234105%2F04972211440126234105%2F0B-XkApzKpJ7Qd3JXMjBLSVc3d3M%3Fe%253Ddownload%2526h%253D16109569599549214959%26hash%3D7ltbi8ugp550kgvh1hue56ttn0fhf5dj\x26followup=https%3A%2F%2Fdocs.google.com%2Fa%2Ftrunk-studio.com%2FnonceSigner%3Fnonce%3D4qbglgns2afks%26continue%3Dhttps%3A%2F%2Fdoc-0o-a0-docs.googleusercontent.com%2Fdocs%2Fsecuresc%2Ff24a0kiuvn8nnb2jeflq8e06eum4pb0i%2Feq8d2hthsls4nori9m74ugik0id5469o%2F1461549600000%2F04972211440126234105%2F04972211440126234105%2F0B-XkApzKpJ7Qd3JXMjBLSVc3d3M%3Fe%253Ddownload%2526h%253D16109569599549214959%26hash%3D7ltbi8ugp550kgvh1hue56ttn0fhf5dj\x26service=writely\x26ltmpl=homepage';
+  var domain = 'trunk-studio.com';
+  var hash = window.location.hash;
+  if (hash) {
+  var match = hash.match(/[#&]Email=([^&]+)/);
+  if (match) {
+  redirectUrl += "&Email=" + match[1] + "@" + domain;
+  }
+  }
+  window.location.replace(redirectUrl);
+};
+</script>
+  </body>
+</html>

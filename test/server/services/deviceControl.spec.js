@@ -225,6 +225,40 @@ describe("device", () => {
         done(e);
       }
     });
+
+    it.skip("check check version", async(done) => {
+      try {
+        let result = await services.deviceControl.needUpdate();
+        console.log("result",result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it.skip("check check downloadUpdate", async(done) => {
+      try {
+        let result = await services.deviceControl.downloadUpdate();
+        console.log("result",result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+    it(" check checkUpdateFileMd5", async(done) => {
+      try {
+        let result = await services.deviceControl.checkUpdateFileMd5();
+        console.log("result",result);
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
   });
 
 });

@@ -6,7 +6,10 @@ import {
   requestTestGroupDevices, requestTestAllDevices,
   requestTestSetLedDisplay, requestGetCachedDeviceList,
   requestSearchSlave, requestGetCachedSlaveList,
-  requestSearchSlaveAndDevice, requestGetSlaveAndDeviceList
+  requestSearchSlaveAndDevice, requestGetSlaveAndDeviceList,
+  requestCheckUpgrade, requestDownloadUpgrade,
+  requestChangeUpgradeStatus, requestUpdateReboot,
+  requestChangeDownloadStatus,requestCheckDownloadFinish,
 } from '../actions/TestActions'
 
 import {
@@ -29,7 +32,7 @@ const Tabs = require('material-ui/lib/tabs/tabs');
 const Tab = require('material-ui/lib/tabs/tab');
 const ScheduleList = require('./ScheduleList');
 const LineChart = require("react-chartjs").Line;
-import { Slider} from 'material-ui';
+import { Slider, Dialog, FlatButton } from 'material-ui';
 import SliderRc from 'rc-slider';
 import RefreshIndicator from 'material-ui/lib/refresh-indicator';
 import Toggle from 'material-ui/lib/toggle';
@@ -48,6 +51,11 @@ export default class ManagePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      open: false,
+      open2: false,
+      open3: false,
+      count: 0,
+      interval: null,
       cctSliderStyle: 'slider',
       currentIndex: 0,
       DB: [0 ,0 ,0 ,0 ,0 ,0.001011122 ,0.005055612 ,0.008088979 ,0.018200202 ,0.037411527 ,0.072800809 ,0.127401416 ,0.209302326 ,0.323559151 ,0.477249747 ,0.649140546 ,0.68958544 ,0.649140546 ,0.520728008 ,0.416582406 ,0.333670374 ,0.260869565 ,0.209302326 ,0.164812942 ,0.128412538 ,0.098078868 ,0.072800809 ,0.053589484 ,0.038422649 ,0.026289181 ,0.018200202 ,0.012133468 ,0.008088979 ,0.005055612 ,0.003033367 ,0.002022245 ,0.002022245 ,0.002022245 ,0.001011122 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0],
@@ -438,12 +446,79 @@ export default class ManagePage extends React.Component {
       });
   };
 
-  _handleDownloadUpdate = () => {
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.needUpdate === true){
+      this.setState({open: true});
+    }
+    if(nextProps.downloadStatus === false){
+      this.setState({
+        open2: true,
+        count: 0,
+        interval: this.state.interval ? clearInterval(this.state.interval) : null,
+      });
+    }else if(nextProps.downloadStatus === true){
+      this.setState({
+        open3: true,
+        count: 0,
+        interval: this.state.interval ? clearInterval(this.state.interval) : null,
+      });
+    }
+  }
 
+  _dialog3HandleClose = () => {
+    this.props.requestChangeDownloadStatus(null);
+    this._dialogHandleClose();
+  }
+
+  _dialogHandleClose = () => {
+    this.setState({
+      open: false,
+      open2: false,
+      open3: false,
+    });
+  };
+
+  _handleDownloadUpdate = () => {
+    this.props.requestCheckUpgrade();
+  }
+
+  _dialogDownloadNow = () => {
+    this.setState({
+      open: false,
+      open2: false,
+      open3: false,
+    });
+    this.props.requestChangeUpgradeStatus(false);
+    this.props.requestDownloadUpgrade();
+    let interval = setInterval(() => {
+      this.props.requestCheckDownloadFinish()
+      if(this.state.count >= 100){
+        this.props.requestChangeDownloadStatus(false);
+      }
+      this.setState({
+        count: this.state.count + 1,
+      })
+    }, 10000);
+
+    this.setState({
+      open: false,
+      open2: false,
+      open3: false,
+      count: 0,
+      interval: interval,
+    });
   }
 
   _handleReboot = () => {
-
+    this._dialogHandleClose();
+    this.props.requestUpdateReboot();
+    window.location.href = "/#/close";
+    this.props.requestChangeDownloadStatus(null);
+    this.setState({
+      count: 0,
+      interval: this.state.interval ? clearInterval(this.state.interval) : null,
+    });
+    console.log("Reboot!!!!!!!!");
   }
 
   render() {
@@ -581,8 +656,71 @@ export default class ManagePage extends React.Component {
       </div>
     </Tab> );
 
+    let dialog = [
+      <FlatButton
+        key={'cancel'}
+        label="Cancel"
+        secondary={true}
+        onTouchTap={this._dialogHandleClose} />,
+      <FlatButton
+        key={'SaveButton'}
+        label="Yes"
+        primary={true}
+        onTouchTap={this._dialogDownloadNow} />
+    ];
+
+    let dialog2 = [
+      <FlatButton
+        key={'cancel'}
+        label="Cancel"
+        secondary={true}
+        onTouchTap={this._dialogHandleClose} />,
+      <FlatButton
+        key={'SaveButton'}
+        label="Yes"
+        primary={true}
+        onTouchTap={this._dialogDownloadNow} />
+    ];
+
+    let dialog3 = [
+      <FlatButton
+        key={'cancel'}
+        label="Cancel"
+        secondary={true}
+        onTouchTap={this._dialog3HandleClose} />,
+      <FlatButton
+        key={'SaveButton'}
+        label="Yes"
+        primary={true}
+        onTouchTap={this._handleReboot} />
+    ];
+
     let testingTab = (
     <Tab key={'testingTab'} label="Setup" value='3' className="tab-item">
+      <Dialog
+        title="Notice"
+        actions={dialog}
+        modal={false}
+        open={this.state.open}
+        onRequestClose={this._dialogHandleClose}>
+        Have new version, download now ?
+      </Dialog>
+      <Dialog
+        title="Notice"
+        actions={dialog2}
+        modal={false}
+        open={this.state.open2}
+        onRequestClose={this._dialogHandleClose}>
+        Download fail, download again ?
+      </Dialog>
+      <Dialog
+        title="Notice"
+        actions={dialog3}
+        modal={false}
+        open={this.state.open3}
+        onRequestClose={this._dialogHandleClose}>
+        Already to update , Reboot now ?
+      </Dialog>
       <div className="tab-content self-center">
         <div className="self-center" style={{width: '415px', marginTop: '15px'}}>
           <div >
@@ -605,7 +743,7 @@ export default class ManagePage extends React.Component {
             {/*<RaisedButton label="Test" labelColor="#FFF" backgroundColor="#51A7F9" secondary={true} style={{marginLeft:'15px', width: '100px', position: 'absolute'}} onTouchTap={this._testOneDevice}></RaisedButton>*/}
           </div>
           <div style={{marginTop: '15px', display: 'flex', justifyContent: 'space-around'}}>
-            <RaisedButton label="Download Update" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._handleDownloadUpdate} />
+            <RaisedButton label="Check Update" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._handleDownloadUpdate} />
             <RaisedButton label="Reboot" labelColor="#FFF" backgroundColor="#51A7F9" onTouchTap={this._handleReboot} />
           </div>
         </div>
@@ -668,6 +806,7 @@ export default class ManagePage extends React.Component {
       deviceTemp = 'Selse Slave & Device'
       envTemp = 'Selse Slave & Device'
     }
+
     return (
       <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} tabItemContainerStyle={{backgroundColor: "#032c70", marginTop: '-15px'}} contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0)'}}>
         <Tab label="Spectrum" value='0' className="tab-item">
@@ -818,7 +957,8 @@ function _injectPropsFromStore(state) {
     devStatus: manageSettings.devStatus || {devTemp: 'Selse Slave & Device', fanState: 'Selse Slave & Device', envTemp: 'Selse Slave & Device'},
     logs: manageSettings.logs || [],
     tempLimit: tempLimit,
-
+    needUpdate: scanDevice.needUpdate || false,
+    downloadStatus: scanDevice.downloadStatus,
   };
 }
 
@@ -846,6 +986,12 @@ const _injectPropsFromActions = {
   requestGetLogs,
   requestGetSetupSetting,
   requestUpdateTempLimit,
+  requestCheckUpgrade,
+  requestDownloadUpgrade,
+  requestChangeUpgradeStatus,
+  requestUpdateReboot,
+  requestChangeDownloadStatus,
+  requestCheckDownloadFinish,
 }
 
 

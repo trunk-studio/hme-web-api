@@ -2,6 +2,107 @@ import request from 'superagent'
 import ini from 'ini'
 import ping from 'ping';
 import {exec, execSync} from 'child_process';
+import pjson from '../../package.json';
+import { EventEmitter } from 'events';
+let event = new EventEmitter();
+
+event.on('downloadCmd', async(cmd) =>  {
+  let isFinish =  await services.deviceControl.checkHasUpdateFile();
+  if (!isFinish) {
+    console.log("event cmd => ", cmd);
+    let cmdOutput = await new Promise((done) => {
+      exec(cmd, function(error, stdout, stderr) {
+        if (error) {
+          throw error;
+        }
+        console.log(stdout);
+        done(stdout);
+      });
+    });
+    console.log(cmdOutput);
+  }
+  event.emit('checkMd5');
+});
+
+event.on('checkMd5', async(cmd) => {
+  try {
+    const config =  await services.deviceControl.getUpdateSetting();
+    let hasMd5Cmd =  `cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5`;
+    console.log("hasMd5Cmd => ", hasMd5Cmd);
+    let hasMd5 = await new Promise((done) => {
+      try {
+        exec(hasMd5Cmd, function(error, stdout, stderr) {
+          if(error) throw e;
+          done(stdout);
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    });
+    const checkMd5Cmd = `cd ${config.SYSTEM.UPDATE_PACKAGE_PATH}; md5sum -c hme.md5`;
+    console.log("checkMd5Cmd => ",checkMd5Cmd);
+    let onlineVersion = '';
+    if (hasMd5) {
+      onlineVersion = await new Promise((done) => {
+        try {
+          exec(checkMd5Cmd, function(error, stdout, stderr) {
+            done(stdout);
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      });
+    }
+    const isOk = onlineVersion.indexOf('OK') !== -1;
+    console.log("isOk =>", isOk);
+    if(isOk){
+      let systemConfig =  await services.deviceControl.getSetting();
+      if(systemConfig.SYSTEM.TYPE === 'master'){
+        let slaveList = await models.Slave.findAll();
+        for (let slave of slaveList) {
+          try {
+            if(slave.host.indexOf(systemConfig.SYSTEM.HME_SERIAL) === -1){
+              let result = await new Promise((resolve, reject) => {
+                console.log(`post http://${slave.host}:3000/rest/master/downloadUpgrade`);
+                request.post(`http://${slave.host}:3000/rest/master/downloadUpgrade`)
+                .end((err, res) => {
+                  if(err) return reject(err);
+                  resolve(res.body);
+                });
+              });
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+      event.emit('untar');
+    }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+event.on('untar', async(cmd) => {
+  try {
+    const unTarBackCmd = `make untar > /dev/null 2>&1;`;
+    console.log("unTarBackCmd => ",unTarBackCmd);
+    let unTarBack = await new Promise((done) => {
+      exec(unTarBackCmd, function(error, stdout, stderr) {
+        if (error || stderr) {
+          throw error;
+        }
+        done(stdout);
+      });
+    });
+    console.log(unTarBack);
+    let systemConfig = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+    systemConfig.SYSTEM.UPDATE = true;
+    fs.writeFileSync(appConfig.configPath, ini.stringify(systemConfig));
+  } catch (e) {
+    console.log(e);
+  }
+});
 
 module.exports = {
 
@@ -417,6 +518,137 @@ module.exports = {
     }catch(e){
       console.log(e);
       throw e
+    }
+  },
+
+  getUpdateSetting: async() => {
+    try{
+      let result = await ini.parse(fs.readFileSync('./updateConfig.txt', 'utf-8'));
+      return result;
+    }catch(e){
+      console.log(e);
+      throw e
+    }
+  },
+
+  needUpdate: async() => {
+    try {
+      let config =  await services.deviceControl.getUpdateSetting();
+      let systemConfig =  await services.deviceControl.getSetting();
+      let onlineVersion;
+      if (systemConfig.SYSTEM.TYPE === 'master') {
+        const url = `${config.SYSTEM.DOWNLOAD_LINK}`;
+        const cmd = `wget "${url}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info > /dev/null 2>&1; cat ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info`;
+        console.log("cmd => ",cmd);
+        onlineVersion = await new Promise((done) => {
+          exec(cmd, function(error, stdout, stderr) {
+            if (error) {
+              throw error;
+            }
+            console.log(stdout);
+            done(stdout);
+          });
+        });
+      } else {
+        onlineVersion = await new Promise((resolve, reject) => {
+          request.get(`http://${systemConfig.SYSTEM.MASTER_NAME}.local:3000/rest/master/version`)
+          .end((err, res) => {
+            if(err) return reject(err);
+            resolve(res.body.version);
+          });
+        });
+      }
+      console.log("npm_package_version => ",pjson.version);
+      const nowVersion = pjson.version.split('.');
+      console.log("nowVersion => ",nowVersion);
+      console.log("onlineVersion => ",onlineVersion);
+      onlineVersion = onlineVersion.split('.');
+      for (let i = 0; i < nowVersion.length; i++) {
+        console.log(nowVersion[i],onlineVersion[i]);
+        if (parseInt(nowVersion[i], 10) < parseInt(onlineVersion[i], 10)) {
+          return true;
+        } else if (parseInt(nowVersion[i], 10) != parseInt(onlineVersion[i], 10)) {
+          return false
+        }
+      }
+      return false;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
+
+  downloadUpdate: async() => {
+    try {
+      const config =  await services.deviceControl.getUpdateSetting();
+      let systemConfig =  await services.deviceControl.getSetting();
+      let url = '';
+      if (systemConfig.SYSTEM.TYPE === 'master'){
+        url = `${config.SYSTEM.DOWNLOAD_LINK}`;
+      } else {
+        url = `${systemConfig.SYSTEM.MASTER_NAME}.local:3000/rest/master/download`;
+      }
+      const downloadTgz = `wget "${url}/${config.SYSTEM.UPDATE_PACKAGE_NAME}" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/${config.SYSTEM.UPDATE_PACKAGE_NAME};`;
+      const downloadMd5 = `wget "${url}/hme.md5" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.md5;`;
+      const downloadInfo = `wget "${url}/hme.info" -O ${config.SYSTEM.UPDATE_PACKAGE_PATH}/hme.info;`;
+      const downloadCmd = downloadTgz + downloadMd5 + downloadInfo;
+      // const downloadCmd = downloadMd5 + downloadInfo;
+      console.log("downloadCmd => ", downloadCmd);
+      event.emit('downloadCmd', downloadCmd);
+      return true;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
+
+  checkHasUpdateFile: async() => {
+    try {
+      let systemConfig =  await services.deviceControl.getSetting();
+      const isUnTar = systemConfig.SYSTEM.UPDATE;
+      console.log('isUnTar', isUnTar);
+      return isUnTar;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
+
+  checkAllSlaveVersion: async() => {
+    try {
+      let slaveList = await models.Slave.findAll();
+      let stautsArray = [];
+      for (let slave of slaveList) {
+        try {
+          let result = await new Promise((resolve, reject) => {
+            request.get(`http://${slave.host}:3000/rest/master/checkVersion`)
+            .end((err, res) => {
+              if(err) return reject(err);
+              resolve(res.body);
+            });
+          });
+          stautsArray.push(result.status)
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      console.log("stautsArray =>", stautsArray);
+      let needUpdate = stautsArray.indexOf(true) !== -1;
+      let status = needUpdate && stautsArray.length !== 0 ;
+      return status;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
+
+  version: async() => {
+    try {
+      console.log("npm_package_version => ",pjson.version);
+      return pjson.version;
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
   },
 

@@ -105,6 +105,7 @@ export default class Routes {
     publicRoute.post('/rest/hme/setup/update', HmeController.saveSetting);
     publicRoute.get('/rest/hme/setup', HmeController.getSetting);
     publicRoute.post('/rest/hme/reboot', HmeController.reboot);
+    publicRoute.get('/rest/hme/updateReboot', HmeController.updateReboot);
     publicRoute.post('/rest/hme/tempLimit', HmeController.tempLimit);
 
     // master
@@ -116,6 +117,12 @@ export default class Routes {
     publicRoute.get('/rest/master/loadEmail', HmeController.loadEmail);
     publicRoute.post('/rest/master/updateTime', HmeController.updateAllSlaveTime);
     publicRoute.get('/rest/master/logs', HmeController.getAllSlaveLogs);
+    publicRoute.get('/rest/master/download/:filename', HmeController.downloadMasterUpdateFile);
+    publicRoute.get('/rest/master/checkUpgrade', HmeController.checkAllSlaveVersion);
+    publicRoute.get('/rest/master/checkVersion', HmeController.checkVersion);
+    publicRoute.get('/rest/master/version', HmeController.version);
+    publicRoute.post('/rest/master/downloadUpgrade', HmeController.downloadUpgrade);
+    publicRoute.get('/rest/master/checkMd5', HmeController.checkUpdateFileMd5);
     publicRoute.post('/rest/master/register/slave', HmeController.registerSlave);
     publicRoute.get('/rest/master/syncAllSlaveAndDevice', HmeController.syncAllSlaveAndDevice);
     publicRoute.post('/rest/master/schedule/create', ScheduleController.createSchedule);
@@ -142,6 +149,8 @@ export default class Routes {
     // find slave Device & Groups
     publicRoute.get('/rest/slave/logs', HmeController.logs);
     publicRoute.get('/rest/slave/checkStatus', HmeController.checkAllDeviceStatus);
+    publicRoute.get('/rest/slave/checkMd5', HmeController.slaveCheckFileMd5);
+    publicRoute.get('/rest/slave/updateReboot', HmeController.slaveUpdateReboot);
     publicRoute.get('/rest/slave/:slaveId/searchDevice', HmeController.searchDevice);
     publicRoute.get('/rest/slave/:slaveId/getCachedDeviceList', HmeController.getCachedDeviceListBySlave);
     publicRoute.get('/rest/slave/:slaveId/test/all', HmeController.testAllDevices);
