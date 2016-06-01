@@ -81,6 +81,13 @@ export default class ManagePage extends React.Component {
       reportDeviceId: 0,
       isCentigrade: true,
       toggleDefault: false,
+      wwDrop: false,
+      dbDrop: false,
+      blDrop: false,
+      grDrop: false,
+      reDrop: false,
+      cctDrop: false,
+      brightDrop: false,
     }
     this.state.DB.forEach((data,i) => {
       this.state.SUM.push(this.state.DB[i]+
@@ -229,101 +236,188 @@ export default class ManagePage extends React.Component {
     this.props.requestGetLogs();
   }
 
+  _wwOnChanged = (value) => {
+    if (!this.state.wwDrop) {
+      this.setState({
+        wwDrop: true,
+        dbDrop: false,
+        blDrop: false,
+        grDrop: false,
+        reDrop: false,
+        cctDrop: false,
+        brightDrop: false,
+      });
+    }
+  };
+  _dbOnChanged = (value) => {
+    if (!this.state.dbDrop) {
+      this.setState({
+        wwDrop: false,
+        dbDrop: true,
+        blDrop: false,
+        grDrop: false,
+        reDrop: false,
+        cctDrop: false,
+        brightDrop: false,
+      });
+    }
+  };
+  _blOnChanged = (value) => {
+    if (!this.state.blDrop) {
+      this.setState({
+        wwDrop: false,
+        dbDrop: false,
+        blDrop: true,
+        grDrop: false,
+        reDrop: false,
+        cctDrop: false,
+        brightDrop: false,
+      });
+    }
+  };
+  _grOnChanged = (value) => {
+    if (!this.state.grDrop) {
+      this.setState({
+        wwDrop: false,
+        dbDrop: false,
+        blDrop: false,
+        grDrop: true,
+        reDrop: false,
+        cctDrop: false,
+        brightDrop: false,
+      });
+    }
+  };
+  _reOnChanged = (value) => {
+    if (!this.state.reDrop) {
+      this.setState({
+        wwDrop: false,
+        dbDrop: false,
+        blDrop: false,
+        grDrop: false,
+        reDrop: true,
+        cctDrop: false,
+        brightDrop: false,
+      });
+    }
+  };
+  _brightOnChanged = (value) => {
+    if (!this.state.brightDrop) {
+      this.setState({
+        wwDrop: false,
+        dbDrop: false,
+        blDrop: false,
+        grDrop: false,
+        reDrop: false,
+        cctDrop: false,
+        brightDrop: true,
+      });
+    }
+  };
+  _cctOnChanged = (value) => {
+    if (!this.state.cctDrop) {
+      this.setState({
+        wwDrop: false,
+        dbDrop: false,
+        blDrop: false,
+        grDrop: false,
+        reDrop: false,
+        cctDrop: true,
+        brightDrop: false,
+      });
+    }
+  };
+
+
+
   _wwChanged = (value) => {
-    console.log("!!!!!!!!!!!!!!!!!!!value", value);
     this.setState({
       wwValue: value,
-      cctSliderStyle: 'notActiveSlider',
     });
     this._updateChart();
   };
   _dbChanged = (value) => {
     this.setState({
       dbValue: value,
-      cctSliderStyle: 'notActiveSlider',
     });
     this._updateChart();
   };
   _blChanged = (value) => {
     this.setState({
       blValue: value,
-      cctSliderStyle: 'notActiveSlider',
     });
     this._updateChart();
   };
   _grChanged = (value) => {
     this.setState({
       grValue: value,
-      cctSliderStyle: 'notActiveSlider',
     });
     this._updateChart();
   };
   _reChanged = (value) => {
     this.setState({
       reValue: value,
-      cctSliderStyle: 'notActiveSlider',
     });
     this._updateChart();
   };
   _cctChanged = (value) => {
-    this.setState({
-      cctSliderStyle: 'slider',
-    });
-    if(value >= 2500 && value < 3000){
-      this._setAll(
-        1 ,
-        0 ,
-        0.14 + (0.25 - 0.14) * ((value - 2500) / (3000 - 2500)),
-        0.3  + (0.3 - 0.185 ) * ((value - 2500) / (3000 - 2500)),
-        1 ,
-        value
-      );
-    }else if(value >= 3000 && value < 4000){
-      this._setAll(
-        1 ,
-        0.6  * ((value - 3000) / (4000 - 3000)),
-        0.25 + (0.47 - 0.25) * ((value - 3000) / (4000 - 3000)),
-        0.3  + (0.53 - 0.3 ) * ((value - 3000) / (4000 - 3000)),
-        1    + (0.74 - 1   ) * ((value - 3000) / (4000 - 3000)),
-        value
-      );
-    }else if(value >= 4000 && value < 5000){
-      this._setAll(
-        1 ,
-        0.6  + (0.8 - 0.6)  * ((value - 4000) / (5000 - 4000)),
-        0.47 + (0.68 - 0.47) * ((value - 4000) / (5000 - 4000)),
-        0.53 + (0.75 - 0.53) * ((value - 4000) / (5000 - 4000)),
-        0.74 + (0.47 - 0.74) * ((value - 4000) / (5000 - 4000)),
-        value
-      );
-    }else if(value >= 5000 && value < 6500){
-      this._setAll(
-        1    + (0.8  - 1   ) * ((value - 5000) / (6500 - 5000)),
-        0.8  + (1    - 0.8 ) * ((value - 5000) / (6500 - 5000)),
-        0.68 + (0.9  - 0.68) * ((value - 5000) / (6500 - 5000)),
-        0.75 + (1    - 0.75) * ((value - 5000) / (6500 - 5000)),
-        0.47 + (0.2  - 0.47) * ((value - 5000) / (6500 - 5000)),
-        value
-      );
-    }else if(value >= 6500 && value < 10000){
-      this._setAll(
-        0.8 + (0.6 - 0.8) * ((value - 6500) / (10000 - 6500)),
-        1,
-        0.9 + (1   - 0.9) * ((value - 6500) / (10000 - 6500)),
-        1   + (0.7 - 1  ) * ((value - 6500) / (10000 - 6500)),
-        0.2 + (0.1 - 0.2) * ((value - 6500) / (10000 - 6500)),
-        value
-      );
-    }else if(value >= 10000 && value < 16000){
-      this._setAll(
-        0.6 + (0.4 - 0.6) * ((value - 10000) / (16000 - 10000)),
-        1,
-        1,
-        0.7 + (0.5 - 0.7) * ((value - 10000) / (16000 - 10000)),
-        0.1 * ((value - 10000) / (16000 - 10000)),
-        value
-      );
-    }
+    // if (this.state.cctDrop) {
+      if(value >= 2500 && value < 3000){
+        this._setAll(
+          1 ,
+          0 ,
+          0.14 + (0.25 - 0.14) * ((value - 2500) / (3000 - 2500)),
+          0.3  + (0.3 - 0.185 ) * ((value - 2500) / (3000 - 2500)),
+          1 ,
+          value
+        );
+      }else if(value >= 3000 && value < 4000){
+        this._setAll(
+          1 ,
+          0.6  * ((value - 3000) / (4000 - 3000)),
+          0.25 + (0.47 - 0.25) * ((value - 3000) / (4000 - 3000)),
+          0.3  + (0.53 - 0.3 ) * ((value - 3000) / (4000 - 3000)),
+          1    + (0.74 - 1   ) * ((value - 3000) / (4000 - 3000)),
+          value
+        );
+      }else if(value >= 4000 && value < 5000){
+        this._setAll(
+          1 ,
+          0.6  + (0.8 - 0.6)  * ((value - 4000) / (5000 - 4000)),
+          0.47 + (0.68 - 0.47) * ((value - 4000) / (5000 - 4000)),
+          0.53 + (0.75 - 0.53) * ((value - 4000) / (5000 - 4000)),
+          0.74 + (0.47 - 0.74) * ((value - 4000) / (5000 - 4000)),
+          value
+        );
+      }else if(value >= 5000 && value < 6500){
+        this._setAll(
+          1    + (0.8  - 1   ) * ((value - 5000) / (6500 - 5000)),
+          0.8  + (1    - 0.8 ) * ((value - 5000) / (6500 - 5000)),
+          0.68 + (0.9  - 0.68) * ((value - 5000) / (6500 - 5000)),
+          0.75 + (1    - 0.75) * ((value - 5000) / (6500 - 5000)),
+          0.47 + (0.2  - 0.47) * ((value - 5000) / (6500 - 5000)),
+          value
+        );
+      }else if(value >= 6500 && value < 10000){
+        this._setAll(
+          0.8 + (0.6 - 0.8) * ((value - 6500) / (10000 - 6500)),
+          1,
+          0.9 + (1   - 0.9) * ((value - 6500) / (10000 - 6500)),
+          1   + (0.7 - 1  ) * ((value - 6500) / (10000 - 6500)),
+          0.2 + (0.1 - 0.2) * ((value - 6500) / (10000 - 6500)),
+          value
+        );
+      }else if(value >= 10000 && value < 16000){
+        this._setAll(
+          0.6 + (0.4 - 0.6) * ((value - 10000) / (16000 - 10000)),
+          1,
+          1,
+          0.7 + (0.5 - 0.7) * ((value - 10000) / (16000 - 10000)),
+          0.1 * ((value - 10000) / (16000 - 10000)),
+          value
+        );
+      }
+    // }
   };
 
   _updateChart = (e) => {
@@ -369,7 +463,7 @@ export default class ManagePage extends React.Component {
     }
   };
 
-  _setAll = (ww, db, bl, gr, re, cct) =>{
+  _setAll = (ww, db, bl, gr, re, cct) => {
     let setObj = {
       wwValue: Math.round(ww * 100),
       dbValue: Math.round(db * 100),
@@ -824,7 +918,6 @@ export default class ManagePage extends React.Component {
       deviceTemp = 'Selse Slave & Device'
       envTemp = 'Selse Slave & Device'
     }
-
     return (
       <Tabs className="tabs-container" initialSelectedIndex={tabIndex} onChange={this._handleTabChanged} tabItemContainerStyle={{backgroundColor: "#032c70", marginTop: '-15px'}} contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0)'}}>
         <Tab label="Spectrum" value='0' className="tab-item">
@@ -864,19 +957,19 @@ export default class ManagePage extends React.Component {
               </div>
               <div className="col-md-3 col-sm-3 col-xs-3" style={{ marginTop: '3px', paddingRight: '0px', paddingLeft: '19px', fontSize: '10px'}}>
                 <div className="unSelectable" style={{backgroundColor: '#fff', paddingLeft: "10px", marginBottom: '3px', border: '1px solid #DDD', fontSize: '10px'}}>WW {this.state.wwValue}</div>
-                <SliderRc ref="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
+                <SliderRc key="WW" name="WW" value={this.state.wwValue} onAfterChange={this._wwChanged} className="slider"/>
                 <div className="unSelectable" style={{backgroundColor: '#0B07F3', color: '#fff', paddingLeft: "10px" ,marginBottom: '3px', fontSize: '10px'}}>DB {this.state.dbValue}</div>
-                <SliderRc ref="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
+                <SliderRc key="DB" name="DB" value={this.state.dbValue} onAfterChange={this._dbChanged} className="slider"/>
                 <div className="unSelectable" style={{backgroundColor: '#79DAF7', paddingLeft: "10px" ,marginBottom: '3px', fontSize: '10px'}}>BL {this.state.blValue}</div>
-                <SliderRc ref="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
+                <SliderRc key="BL" name="BL" value={this.state.blValue} onAfterChange={this._blChanged} className="slider"/>
                 <div className="unSelectable" style={{backgroundColor: '#39F136', paddingLeft: "10px" ,marginBottom: '3px', fontSize: '10px'}}>GR {this.state.grValue}</div>
-                <SliderRc ref="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
+                <SliderRc key="GR" name="GR" value={this.state.grValue} onAfterChange={this._grChanged} className="slider"/>
                 <div className="unSelectable" style={{backgroundColor: '#F30505', color: '#fff', paddingLeft: "10px" ,marginBottom: '3px', fontSize: '10px'}}>RE {this.state.reValue}</div>
-                <SliderRc ref="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
+                <SliderRc key="RE" name="RE" value={this.state.reValue} onAfterChange={this._reChanged} className="slider"/>
                 <div className="unSelectable" style={{backgroundImage: 'url(/public/assets/images/cct.png)', backgroundSize: '100%', marginBottom: '3px', paddingLeft: "10px"}}><span style={{color: '#000'}}>CCT {this.state.cctValue}</span></div>
-                <SliderRc ref="CCT" name="CCT" defaultValue={2500} min={2500} max={9000} value={this.state.cctValue} onAfterChange={this._cctChanged} className={this.state.cctSliderStyle+" slider"} />
+                <SliderRc key="CCT" name="CCT" min={2500} max={9000} onAfterChange={this._cctChanged} className="slider" />
                 <div className="unSelectable" style={{paddingTop: '-8px'}}>Bright {this.state.brightValue}</div>
-                <SliderRc ref="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider" />
+                <SliderRc KET="Bright" name="Bright" value={this.state.brightValue} onAfterChange={this._brightChanged} className="slider" />
               </div>
             </div>
           </div>

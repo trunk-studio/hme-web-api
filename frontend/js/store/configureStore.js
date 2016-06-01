@@ -1,3 +1,4 @@
+
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 // import { combineReducers } from 'redux'
@@ -7,11 +8,19 @@ import thunk from 'redux-thunk';
 import { autoRehydrate, persistStore } from 'redux-persist';
 
 const rootReducer = combineReducers(reducers);
-
-const createStoreWithMiddleware = applyMiddleware(
-  thunkMiddleware,
-  createLogger()
-)(createStore)
+const env = process.env.NODE_ENV || 'development';
+let createStoreWithMiddleware;
+console.log(env);
+if (env === 'development') {
+  createStoreWithMiddleware = applyMiddleware(
+    thunkMiddleware,
+    createLogger()
+  )(createStore)
+} else {
+  createStoreWithMiddleware = applyMiddleware(
+    thunkMiddleware,
+  )(createStore)
+}
 
 export default function configureStore(initialState) {
   const store = autoRehydrate()((dispatch) => (createStoreWithMiddleware(rootReducer, initialState)))(rootReducer);
