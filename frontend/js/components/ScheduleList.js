@@ -418,7 +418,7 @@ export default class ScheduleList extends React.Component {
           let date;
           if(tmpScheduleList[i].StartDate)
             date = new Date(tmpScheduleList[i].StartDate);
-          console.log(tmpScheduleList[i]);
+          // console.log(tmpScheduleList[i]);
           rows.push(
             <TableRow key={row.id} style={{borderBottom: '1px solid #72737A'}}>
               <TableRowColumn>

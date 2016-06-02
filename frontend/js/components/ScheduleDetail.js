@@ -183,7 +183,7 @@ export default class ScheduleDetail extends React.Component {
     let count = this.state.count;
     time.add(30 * count,'m');
     count++;
-    console.log(time.format());
+    // console.log(time.format());
     this.props.requestSetSimRtc({
       slaveId: this.props.params.slaveId,
       count: count
@@ -327,7 +327,7 @@ export default class ScheduleDetail extends React.Component {
       ]
     }];
     // console.log('===', data, dots);
-    console.log(dots, tickMarks);
+    // console.log(dots, tickMarks);
     let ButtonGroup1 = [],
         ButtonGroup2 = [];
     if(scheduleDetails.length) {

@@ -113,7 +113,7 @@ export default class ManagePage extends React.Component {
   };
 
   _test = (e) => {
-    console.log(this.state.slaveID);
+    // console.log(this.state.slaveID);
     if( this.state.slaveID == 0){
       if(this.state.deviceID == 0 ){
         this.props.slaveList.forEach((slave,i) => {

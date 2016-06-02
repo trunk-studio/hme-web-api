@@ -7,7 +7,7 @@ export const REQUEST_UPDATE_SCHEDULE_DETAIL_CONFIG = 'REQUEST_UPDATE_SCHEDULE_DE
 export const RECEIVED_UPDATE_SCHEDULE_DETAIL_CONFIG = 'RECEIVED_UPDATE_SCHEDULE_DETAIL_CONFIG'
 export const UPDATE_SCHEDULE_DETAIL_CONFIG_LOADING_STATUS = 'UPDATE_SCHEDULE_DETAIL_CONFIG_LOADING_STATUS'
 export function requestGetScheduleDetailConfig(id) {
-  console.log(id);
+  // console.log(id);
   return (dispatch) => {
     dispatch(updateScheduleDetailConfigLoadingStatus('loading'));
     return request

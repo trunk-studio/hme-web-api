@@ -111,7 +111,7 @@ export default class Setup extends React.Component  {
       TIMEZONE_OFFSET: this._formatOffset(timezones[this.state.timezoneIndex] * -1),
       TIMEZONE_INDEX: this.state.timezoneIndex
     };
-    console.log(setting);
+    // console.log(setting);
     this.props.requestUpdateSetup(setting);
 
   };

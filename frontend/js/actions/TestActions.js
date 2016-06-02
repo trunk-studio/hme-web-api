@@ -210,7 +210,7 @@ export function requestCheckDownloadFinish() {
     return request
       .get('/rest/master/checkMd5')
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         if(response.data.status){
           dispatch(receivedDownloadStatus(response.data.status));
           dispatch(scanStatus('hide'));

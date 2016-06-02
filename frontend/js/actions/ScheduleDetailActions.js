@@ -23,7 +23,7 @@ export function requestGetScheduleDetail(scheduleID) {
 }
 
 export function receivedScheduleDetail(data) {
-  console.log('received',data);
+  // console.log('received',data);
   return {
     type: RECEIVED_SCHEDULE_DETAIL,
     data

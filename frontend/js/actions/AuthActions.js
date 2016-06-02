@@ -21,7 +21,7 @@ export function requestLogin(loginData) {
 
 export function receivedLogin(data) {
   if(data.success) {
-    console.log('data', data);
+    // console.log('data', data);
     localStorage.setItem('token', data.jwt);
   }
   return {
