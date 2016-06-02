@@ -433,11 +433,26 @@ export default class ManagePage extends React.Component {
     this.setState({
       SUM: newSUM
     });
-    let slaveId = this.state.setupTestSlaveID || 0;
-    if (slaveId == 0) {
-      this.props.slaveList.forEach((slave,i) => {
+
+    setTimeout(() => {
+      let slaveId = this.state.setupTestSlaveID || 0;
+      if (slaveId == 0) {
+        this.props.slaveList.forEach((slave,i) => {
+          this.props.requestTestSetLedDisplay({
+            devID: 0,
+            groupID: 0,
+            WW: this.state.wwValue,
+            DB: this.state.dbValue,
+            BL: this.state.blValue,
+            GR: this.state.grValue,
+            RE: this.state.reValue,
+            Bright: this.state.brightValue,
+            slaveID: slave.payload
+          });
+        });
+      } else {
         this.props.requestTestSetLedDisplay({
-          devID: 0,
+          devID:this.state.setupTestDeviceID || 0,
           groupID: 0,
           WW: this.state.wwValue,
           DB: this.state.dbValue,
@@ -445,22 +460,10 @@ export default class ManagePage extends React.Component {
           GR: this.state.grValue,
           RE: this.state.reValue,
           Bright: this.state.brightValue,
-          slaveID: slave.payload
-        });
-      });
-    } else {
-      this.props.requestTestSetLedDisplay({
-        devID:this.state.setupTestDeviceID || 0,
-        groupID: 0,
-        WW: this.state.wwValue,
-        DB: this.state.dbValue,
-        BL: this.state.blValue,
-        GR: this.state.grValue,
-        RE: this.state.reValue,
-        Bright: this.state.brightValue,
-        slaveID: this.state.setupTestSlaveID
-      })
-    }
+          slaveID: this.state.setupTestSlaveID
+        })
+      }
+    }, 100);
   };
 
   _setAll = (ww, db, bl, gr, re, cct) => {
