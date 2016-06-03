@@ -249,29 +249,26 @@ module.exports = {
   },
 
   saveEmail: async(emailString) => {
-    try {
-      fs.outputFile('./email', emailString, function (err) {
-        if(err) throw new Error(err);
-      })
+    try{
+      let result = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+      result.SYSTEM.REPORT_EMAIL = emailString;
+      fs.writeFileSync(appConfig.configPath, ini.stringify(result))
       return 'ok';
-    } catch (e) {
+    }catch(e){
       console.log(e);
-      throw e;
+      return false;
+      throw e
     }
   },
 
   loadEmail: async() => {
-    try {
-      let result = await new Promise((resolve, reject) => {
-        fs.readFile('./email', 'utf8', function (err, data) {
-          if(err) return reject(err);
-          resolve(data);
-        });
-      });
-      return result
-    } catch (e) {
+    try{
+      let result = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
+      return result.SYSTEM.REPORT_EMAIL;
+    }catch(e){
       console.log(e);
-      throw e;
+      return false;
+      throw e
     }
   },
 

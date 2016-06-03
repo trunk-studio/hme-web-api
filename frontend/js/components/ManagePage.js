@@ -586,6 +586,7 @@ export default class ManagePage extends React.Component {
   }
 
   _dialogHandleClose = () => {
+    this.props.requestChangeUpgradeStatus(false);
     this.setState({
       open: false,
       open2: false,
