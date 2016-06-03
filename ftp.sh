@@ -5,10 +5,10 @@ DIRECTORY='/public_html/cloud/hlp600/firmware/latest'
 #DIRECTORY=$(crudini --get ./updateConfig.txt SYSTEM FTP_DIRECTORY)
 USER='aquarium'
 PASS=''
-BUILD_UPDATE_PACKAGE_PATH=/Users/FuD/Downloads/hmeup
-UPDATE_PACKAGE_NAME=hme.tgz
-# BUILD_UPDATE_PACKAGE_PATH=$(crudini --get ./updateConfig.txt SYSTEM BUILD_UPDATE_PACKAGE_PATH)
-# BUILD_UPDATE_PACKAGE_PATH=$(crudini --get ./updateConfig.txt SYSTEM UPDATE_PACKAGE_NAME)
+# BUILD_UPDATE_PACKAGE_PATH=/Users/FuD/Downloads/hmeup
+# UPDATE_PACKAGE_NAME=hme.tgz
+BUILD_UPDATE_PACKAGE_PATH=$(crudini --get ./updateConfig.txt SYSTEM BUILD_UPDATE_PACKAGE_PATH)
+UPDATE_PACKAGE_NAME=$(crudini --get ./updateConfig.txt SYSTEM UPDATE_PACKAGE_NAME)
 cd $BUILD_UPDATE_PACKAGE_PATH
 ftp -n $HOST <<END_SCRIPT
 user $USER $PASS

@@ -2,7 +2,7 @@
 BACKUP_PATH=/root/hme_back_up
 DOWNLOAD_LINK=http://aquariumlightings.com/cloud/hlp600/firmware/latest
 UPDATE_PACKAGE_PATH=/root/hme_update_package
-BUILD_UPDATE_PACKAGE_PATH=client_upgrade
+BUILD_UPDATE_PACKAGE_PATH=/root/build
 UPDATE_PACKAGE_NAME=hme.tgz
 FTP_HOST=aquariumlightings.com
 FTP_DIRECTORY=/public_html/cloud/hlp600/firmware/latest
