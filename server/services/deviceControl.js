@@ -87,19 +87,21 @@ event.on('untar', async(cmd) => {
   try {
     const unTarBackCmd = `make untar > /dev/null 2>&1;`;
     console.log("unTarBackCmd => ",unTarBackCmd);
-    let unTarBack = await new Promise((done) => {
-      exec(unTarBackCmd, function(error, stdout, stderr) {
-        if (error || stderr) {
-          throw error;
-        }
-        done(stdout);
-      });
-    });
-    console.log(unTarBack);
+    // let unTarBack = await new Promise((done) => {
+    //   exec(unTarBackCmd, function(error, stdout, stderr) {
+    //     if (error || stderr) {
+    //       throw error;
+    //     }
+    //     done(stdout);
+    //   });
+    // });
+    await exec(unTarBackCmd);
+    // console.log(unTarBack);
     let systemConfig = await ini.parse(fs.readFileSync(appConfig.configPath, 'utf-8'));
     systemConfig.SYSTEM.UPDATE = true;
     fs.writeFileSync(appConfig.configPath, ini.stringify(systemConfig));
   } catch (e) {
+    event.emit('untar');
     console.log(e);
   }
 });
