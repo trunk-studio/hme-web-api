@@ -20,8 +20,8 @@ buid-update-package:
 	sh ftp.sh
 
 untar:
-	tar zxvf ${UPDATE_PACKAGE_PATH}/${UPDATE_PACKAGE_NAME} -C ${UPDATE_PACKAGE_PATH}
 	cp -r ${HME_PATH}/db.development.sqlite ${HME_PATH}/server/config ${BACKUP_PATH}
+	tar zxvf ${UPDATE_PACKAGE_PATH}/${UPDATE_PACKAGE_NAME} -C ${HME_PATH}
 
 backup:
 	cp -r ${HME_PATH} ${BACKUP_PATH}

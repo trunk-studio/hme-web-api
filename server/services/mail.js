@@ -60,7 +60,7 @@ export default class Mail {
       action: 'SendEmail',
       key: iniConfig.SMTP.KEY,
       from: iniConfig.SMTP.FROM,
-      to: iniConfig.SMTP.TO,
+      to: iniConfig.SYSTEM.REPORT_EMAIL,
       subject: 'logger report',
       body: content
     }
